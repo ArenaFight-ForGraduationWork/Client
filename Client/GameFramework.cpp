@@ -21,6 +21,7 @@ CGameFramework::CGameFramework()
 
 	m_pd3dDepthStencilBuffer = NULL;
 	m_pd3dDepthStencilView = NULL;
+	// 테스트를 위해 쓸모없는 주석을 추가한다
 }
 
 CGameFramework::~CGameFramework()
