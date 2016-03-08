@@ -18,6 +18,7 @@
 *		나중에 바뀌는대로 바꿔라....
 */
 
+#define ID_DIVIDE 10000
 
 class CObjectManager
 {
@@ -43,7 +44,7 @@ public:
 	* PLAYER : 나와 다른 유저들을 구분해야 할까? 고민 좀 해봐야겠음
 	* BUFF_CRYSTAL : 일단 이렇게 써놨는데. 충돌체크X 존재O인 오브젝트
 	*/
-	enum class ObjectType :BYTE{
+	enum class eObjectType :BYTE{
 		START = 0,
 		LAND = 0,
 		NATURAL_FEATURE,
@@ -54,7 +55,7 @@ public:
 	};
 
 private:
-	std::map<ObjectType, std::vector<CObject*>> m_mObjects;
+	std::map<eObjectType, std::vector<CObject*>> m_mObjects;
 
 	CResourceManager *pResourceManager;
 
