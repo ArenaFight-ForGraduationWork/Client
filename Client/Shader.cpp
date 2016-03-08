@@ -19,6 +19,9 @@ CShader::~CShader()
 	if (m_pd3dVertexShader) m_pd3dVertexShader->Release();
 	if (m_pd3dPixelShader) m_pd3dPixelShader->Release();
 	if (m_pd3dVertexLayout) m_pd3dVertexLayout->Release();
+
+	if (m_pd3dcbWorldMatrix) m_pd3dcbWorldMatrix->Release();
+	if (m_pd3dcbMaterial) m_pd3dcbMaterial->Release();
 }
 
 void CShader::InsertObject(CObject *pObject)
@@ -43,8 +46,6 @@ bool CShader::ReleaseObject(UINT id)
 
 void CShader::ReleaseAllObjects()
 {
-	if (m_pd3dcbWorldMatrix) m_pd3dcbWorldMatrix->Release();
-	if (m_pd3dcbMaterial) m_pd3dcbMaterial->Release();
 	m_vObjects.clear();
 }
 
@@ -182,16 +183,6 @@ void CDiffusedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceConte
 {
 	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
 }
-
-//void CDiffusedShader::BuildObjects(ID3D11Device *pd3dDevice)
-//{
-//	CreateShaderVariables(pd3dDevice);
-//}
-//
-//void CDiffusedShader::ReleaseObjects()
-//{
-//	CShader::ReleaseAllObjects();
-//}
 
 void CDiffusedShader::AnimateObjects(float fTimeElapsed)
 {

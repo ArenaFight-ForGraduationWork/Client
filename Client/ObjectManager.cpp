@@ -20,6 +20,7 @@ CObjectManager::CObjectManager(ID3D11Device *pd3dDevice)
 
 CObjectManager::~CObjectManager()
 {
+	DeleteObjectAll();
 }
 
 CObjectManager* CObjectManager::GetSingleton(ID3D11Device *pd3dDevice)
@@ -102,7 +103,7 @@ void CObjectManager::DeleteObjectAll()
 	for (BYTE i = (BYTE)CResourceManager::ShaderType::START; i < (BYTE)CResourceManager::ShaderType::END; ++i)
 	{
 		pShader = pResourceManager->GetShaderByShaderType((CResourceManager::ShaderType)i);
-		pShader->ReleaseAllObjects();
+		if (pShader)	pShader->ReleaseAllObjects();
 	}
 
 	// 2) 해당 오브젝트 해제 후 삭제

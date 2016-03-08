@@ -22,14 +22,14 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	_LoadMaterials();
 	_CreateShaders(pd3dDevice);
 
-	for (BYTE i = (BYTE)ResourceType::START; i<(BYTE)ResourceType::END; ++i)
+	for (BYTE i = (BYTE)ResourceType::START; i < (BYTE)ResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
 	m_vResources[(int)ResourceType::Cube]->SetIDs(0, 0, 0, 1);
 }
 
 CResourceManager::~CResourceManager()
 {
-	for (BYTE i = (BYTE)ResourceType::START; (BYTE)ResourceType::END; ++i)
+	for (BYTE i = (BYTE)ResourceType::START; i < (BYTE)ResourceType::END; ++i)
 		delete m_vResources[i];
 	m_vResources.clear();
 
