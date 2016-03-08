@@ -15,7 +15,7 @@ CScene::~CScene()
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CResourceManager *pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
-	m_vShaders.push_back(pResourceManager->GetShaderByShaderType(CResourceManager::ShaderType::IlluminatedTextured));
+	m_vShaders.push_back(pResourceManager->GetShaderByShaderType(CResourceManager::eShaderType::IlluminatedTextured));
 
 	BuildLights(pd3dDevice);
 }

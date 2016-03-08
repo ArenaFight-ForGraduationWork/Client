@@ -36,27 +36,27 @@ private:
 class CResourceManager
 {
 public:
-	enum class ResourceType : BYTE{
+	enum class eResourceType : BYTE{
 		START = 0,
 		Cube = 0,
 		Airplain,
 		END
 	};
-	enum class ShaderType : BYTE{
+	enum class eShaderType : BYTE{
 		START = 0,
 		Diffused = 0,
 		IlluminatedTextured,
 		END
 	};
 
-	CMesh* GetMesh(ResourceType type);
-	CTexture* GetTexture(ResourceType type);
-	CMaterial* GetMaterial(ResourceType type);
-	CShader* GetShaderByResourceType(ResourceType type);
-	CShader* GetShaderByShaderType(ShaderType type);
+	CMesh* GetMesh(eResourceType type);
+	CTexture* GetTexture(eResourceType type);
+	CMaterial* GetMaterial(eResourceType type);
+	CShader* GetShaderByResourceType(eResourceType type);
+	CShader* GetShaderByShaderType(eShaderType type);
 
-	bool IsTextureEnable(ResourceType type);
-	bool IsMaterialEnable(ResourceType type);
+	bool IsTextureEnable(eResourceType type);
+	bool IsMaterialEnable(eResourceType type);
 
 	static CResourceManager* GetSingleton(ID3D11Device *pd3dDevice);
 

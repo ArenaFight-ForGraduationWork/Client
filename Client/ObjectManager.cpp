@@ -33,28 +33,28 @@ void CObjectManager::Insert(UINT id, int x, int y, int z, int dx, int dy, int dz
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
-	pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::ResourceType::Cube));
-	pObject->SetMaterial(pResourceManager->GetMaterial(CResourceManager::ResourceType::Cube));
-	pObject->SetTexture(pResourceManager->GetTexture(CResourceManager::ResourceType::Cube));
+	pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::eResourceType::Cube));
+	pObject->SetMaterial(pResourceManager->GetMaterial(CResourceManager::eResourceType::Cube));
+	pObject->SetTexture(pResourceManager->GetTexture(CResourceManager::eResourceType::Cube));
 	pObject->MoveAbsolute(x, y, z);
 	pObject->RotateAbsolute(x, y, z);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
-	CShader *pShader = pResourceManager->GetShaderByResourceType(CResourceManager::ResourceType::Cube);
+	CShader *pShader = pResourceManager->GetShaderByResourceType(CResourceManager::eResourceType::Cube);
 	pShader->InsertObject(pObject);
 }
 void CObjectManager::Insert(UINT id, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
-	pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::ResourceType::Cube));
-	pObject->SetMaterial(pResourceManager->GetMaterial(CResourceManager::ResourceType::Cube));
-	pObject->SetTexture(pResourceManager->GetTexture(CResourceManager::ResourceType::Cube));
+	pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::eResourceType::Cube));
+	pObject->SetMaterial(pResourceManager->GetMaterial(CResourceManager::eResourceType::Cube));
+	pObject->SetTexture(pResourceManager->GetTexture(CResourceManager::eResourceType::Cube));
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
-	CShader *pShader = pResourceManager->GetShaderByResourceType(CResourceManager::ResourceType::Cube);
+	CShader *pShader = pResourceManager->GetShaderByResourceType(CResourceManager::eResourceType::Cube);
 	pShader->InsertObject(pObject);
 }
 
@@ -80,9 +80,9 @@ void CObjectManager::DeleteObject(UINT id)
 		{
 			// 1) 쉐이더와의 연결 해제
 			CShader *pShader;
-			for (BYTE i = (BYTE)CResourceManager::ShaderType::START; i < (BYTE)CResourceManager::ShaderType::END; ++i)
+			for (BYTE i = (BYTE)CResourceManager::eShaderType::START; i < (BYTE)CResourceManager::eShaderType::END; ++i)
 			{
-				pShader = pResourceManager->GetShaderByShaderType((CResourceManager::ShaderType)i);
+				pShader = pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i);
 				if (pShader->ReleaseObject(id))	break;
 			}
 
@@ -100,9 +100,9 @@ void CObjectManager::DeleteObjectAll()
 {
 	// 1) 모든 쉐이더의 오브젝트와의 연결 해제
 	CShader *pShader;
-	for (BYTE i = (BYTE)CResourceManager::ShaderType::START; i < (BYTE)CResourceManager::ShaderType::END; ++i)
+	for (BYTE i = (BYTE)CResourceManager::eShaderType::START; i < (BYTE)CResourceManager::eShaderType::END; ++i)
 	{
-		pShader = pResourceManager->GetShaderByShaderType((CResourceManager::ShaderType)i);
+		pShader = pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i);
 		if (pShader)	pShader->ReleaseAllObjects();
 	}
 

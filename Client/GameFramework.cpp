@@ -294,7 +294,7 @@ void CGameFramework::BuildObjects()
 	{
 		CObject *pObject = new CObject(UINT(1010));
 		CResourceManager *pResourceManager = CResourceManager::GetSingleton(m_pd3dDevice);
-		pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::ResourceType::Airplain));
+		pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::eResourceType::Airplain));
 		pObject->MoveAbsolute(0, 0, 0);
 		m_pPlayer->SetObject(pObject);
 	}
