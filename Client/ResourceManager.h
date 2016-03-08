@@ -33,15 +33,19 @@ private:
 };
 
 
+
+enum class eResourceType : BYTE{
+	START = 0,
+	Cube = 0,
+	Airplain,
+	END
+};
+
+
+
 class CResourceManager
 {
 public:
-	enum class eResourceType : BYTE{
-		START = 0,
-		Cube = 0,
-		Airplain,
-		END
-	};
 	enum class eShaderType : BYTE{
 		START = 0,
 		Diffused = 0,

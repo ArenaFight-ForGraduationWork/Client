@@ -15,7 +15,12 @@ CScene::~CScene()
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
 	CResourceManager *pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
-	m_vShaders.push_back(pResourceManager->GetShaderByShaderType(CResourceManager::eShaderType::IlluminatedTextured));
+	for (BYTE i = (BYTE)CResourceManager::eShaderType::START; i < (BYTE)CResourceManager::eShaderType::END; ++i)
+	{
+		m_vShaders.push_back(pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i));
+	}
+
+	//m_vShaders.push_back(pResourceManager->GetShaderByShaderType(CResourceManager::eShaderType::IlluminatedTextured));
 
 	BuildLights(pd3dDevice);
 }

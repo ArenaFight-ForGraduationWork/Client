@@ -27,8 +27,8 @@ public:
 	~CObjectManager();
 
 	/* ~데이터를 가진 오브젝트를 추가 */
-	void Insert(UINT id, int x, int y, int z, int dx, int dy, int dz);
-	void Insert(UINT id, D3DXVECTOR3 position, D3DXVECTOR3 direction);
+	void Insert(UINT id, eResourceType eType, int x, int y, int z, int dx, int dy, int dz);
+	void Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction);
 
 	CObject* FindObject(UINT id);
 	const std::vector<CObject*> FindObjectInCategory(const UINT id);

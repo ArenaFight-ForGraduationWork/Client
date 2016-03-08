@@ -29,32 +29,32 @@ CObjectManager* CObjectManager::GetSingleton(ID3D11Device *pd3dDevice)
 	return &instance;
 }
 
-void CObjectManager::Insert(UINT id, int x, int y, int z, int dx, int dy, int dz)
+void CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int z, int dx, int dy, int dz)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
-	pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::eResourceType::Cube));
-	pObject->SetMaterial(pResourceManager->GetMaterial(CResourceManager::eResourceType::Cube));
-	pObject->SetTexture(pResourceManager->GetTexture(CResourceManager::eResourceType::Cube));
+	pObject->SetMesh(pResourceManager->GetMesh(eType));
+	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
+	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->MoveAbsolute(x, y, z);
 	pObject->RotateAbsolute(x, y, z);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
-	CShader *pShader = pResourceManager->GetShaderByResourceType(CResourceManager::eResourceType::Cube);
+	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
 }
-void CObjectManager::Insert(UINT id, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+void CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
-	pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::eResourceType::Cube));
-	pObject->SetMaterial(pResourceManager->GetMaterial(CResourceManager::eResourceType::Cube));
-	pObject->SetTexture(pResourceManager->GetTexture(CResourceManager::eResourceType::Cube));
+	pObject->SetMesh(pResourceManager->GetMesh(eType));
+	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
+	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
-	CShader *pShader = pResourceManager->GetShaderByResourceType(CResourceManager::eResourceType::Cube);
+	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
 }
 

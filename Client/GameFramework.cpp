@@ -203,19 +203,19 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (m_pObjectManager->FindObject(0))
 				m_pObjectManager->DeleteObject(0);
 			else
-				m_pObjectManager->Insert(0, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(0, eResourceType::Airplain, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F6:
 			if (m_pObjectManager->FindObject(1))
 				m_pObjectManager->DeleteObject(1);
 			else
-				m_pObjectManager->Insert(1, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(1, eResourceType::Cube, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F7:
 			if (m_pObjectManager->FindObject(2))
 				m_pObjectManager->DeleteObject(2);
 			else
-				m_pObjectManager->Insert(2, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 
 		case VK_ESCAPE:
@@ -294,7 +294,7 @@ void CGameFramework::BuildObjects()
 	{
 		CObject *pObject = new CObject(UINT(1010));
 		CResourceManager *pResourceManager = CResourceManager::GetSingleton(m_pd3dDevice);
-		pObject->SetMesh(pResourceManager->GetMesh(CResourceManager::eResourceType::Airplain));
+		pObject->SetMesh(pResourceManager->GetMesh(eResourceType::Airplain));
 		pObject->MoveAbsolute(0, 0, 0);
 		m_pPlayer->SetObject(pObject);
 	}
