@@ -291,13 +291,7 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
-	{
-		CObject *pObject = new CObject(UINT(1010));
-		CResourceManager *pResourceManager = CResourceManager::GetSingleton(m_pd3dDevice);
-		pObject->SetMesh(pResourceManager->GetMesh(eResourceType::Airplain));
-		pObject->MoveAbsolute(0, 0, 0);
-		m_pPlayer->SetObject(pObject);
-	}
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
 	m_pPlayer->CreateShader(m_pd3dDevice);
 
 	// 1) Ä«¸Þ¶ó init

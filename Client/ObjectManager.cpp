@@ -29,7 +29,7 @@ CObjectManager* CObjectManager::GetSingleton(ID3D11Device *pd3dDevice)
 	return &instance;
 }
 
-void CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int z, int dx, int dy, int dz)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int z, int dx, int dy, int dz)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
@@ -42,8 +42,10 @@ void CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int z, i
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
+
+	return pObject;
 }
-void CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
@@ -56,6 +58,8 @@ void CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, 
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
+
+	return pObject;
 }
 
 CObject* CObjectManager::FindObject(UINT id)
