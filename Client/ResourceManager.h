@@ -39,6 +39,7 @@ public:
 	enum class ResourceType : BYTE{
 		START = 0,
 		Cube = 0,
+		Airplain,
 		END
 	};
 	enum class ShaderType : BYTE{

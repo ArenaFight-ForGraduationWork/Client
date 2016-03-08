@@ -25,6 +25,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	for (BYTE i = (BYTE)ResourceType::START; i < (BYTE)ResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
 	m_vResources[(int)ResourceType::Cube]->SetIDs(0, 0, 0, 1);
+	m_vResources[(int)ResourceType::Airplain]->SetIDs(1, 0, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -85,10 +86,11 @@ CResourceManager* CResourceManager::GetSingleton(ID3D11Device *pd3dDevice)
 
 void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 {
-	CMesh *pMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
-
 	// 0 : 큐브
-	m_mMesh[0] = pMesh;
+	m_mMesh[0] = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
+
+	// 1 : 비행기
+	m_mMesh[1] = new CAirplaneMesh(pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
 }
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {
