@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "Object.h"
-#include "Shader.h"
 
 
 
@@ -28,16 +27,12 @@ public:
 	void RotateAbsolute(const float x, const float y, const float z);
 	void RotateAbsolute(const D3DXVECTOR3 *vec);
 
-	void CreateShader(ID3D11Device *pd3dDevice);
-	void Render(ID3D11DeviceContext *pd3dDeviceContext);
-
 	const D3DXVECTOR3* GetPosition();
 
 protected:
 
 private:
 	CObject *m_pObject;
-	CShader *m_pShader;
 
 	/* m/s */
 	float m_fSpeed;

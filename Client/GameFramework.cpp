@@ -292,7 +292,6 @@ void CGameFramework::BuildObjects()
 
 	m_pPlayer = new CPlayer();
 	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
-	m_pPlayer->CreateShader(m_pd3dDevice);
 
 	// 1) Ä«¸Ş¶ó init
 	m_pCamera = new CThirdPersonCamera();
@@ -403,7 +402,6 @@ void CGameFramework::FrameAdvance()
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
 	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
-	if (m_pPlayer) m_pPlayer->Render(m_pd3dDeviceContext);
 
 	m_pDXGISwapChain->Present(0, 0);
 

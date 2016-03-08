@@ -98,19 +98,7 @@ public:
 
 
 
-class CPlayerShader : public CDiffusedShader
-{
-public:
-	CPlayerShader();
-	virtual ~CPlayerShader();
 
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
-
-	//virtual void ReleaseObjects();
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
 
 
 

@@ -262,31 +262,3 @@ void CIlluminatedTexturedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 
 
 
-CPlayerShader::CPlayerShader()
-{
-}
-
-CPlayerShader::~CPlayerShader()
-{
-}
-
-void CPlayerShader::CreateShader(ID3D11Device *pd3dDevice)
-{
-	CDiffusedShader::CreateShader(pd3dDevice);
-}
-
-void CPlayerShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
-{
-	CDiffusedShader::CreateShaderVariables(pd3dDevice);
-}
-
-void CPlayerShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld)
-{
-	CDiffusedShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
-}
-
-void CPlayerShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CDiffusedShader::Render(pd3dDeviceContext);
-}
-
