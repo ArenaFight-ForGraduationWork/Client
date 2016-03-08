@@ -21,39 +21,24 @@ CShader::~CShader()
 	if (m_pd3dVertexLayout) m_pd3dVertexLayout->Release();
 }
 
-//void CShader::BuildObjects(ID3D11Device *pd3dDevice)
-//{
-//}
-
-//void CShader::ReleaseObjects()
-//{
-//	if (m_pd3dcbWorldMatrix) m_pd3dcbWorldMatrix->Release();
-//	if (m_pd3dcbMaterial) m_pd3dcbMaterial->Release();
-//
-//	//if (m_ppObjects)
-//	//{
-//	//	for (int j = 0; j < m_nObjects; j++) delete m_ppObjects[j];
-//	//	delete[] m_ppObjects;
-//	//}
-//}
-
 void CShader::InsertObject(CObject *pObject)
 {
 	m_vObjects.push_back(pObject);
 }
 
-void CShader::ReleaseObject(UINT id)
+bool CShader::ReleaseObject(UINT id)
 {
 	for (auto p = m_vObjects.begin(); p != m_vObjects.end();)
 	{
 		if (id == (*p)->GetId())
 		{
 			p = m_vObjects.erase(p);
-			break;
+			return TRUE;
 		}
 		else
 			++p;
 	}
+	return FALSE;
 }
 
 void CShader::ReleaseAllObjects()
@@ -271,85 +256,6 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 	pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
-//
-//void CIlluminatedTexturedShader::BuildObjects(ID3D11Device *pd3dDevice)
-//{
-//	CMaterial **ppMaterials = new CMaterial*[3];
-//	ppMaterials[0] = new CMaterial();
-//	ppMaterials[0]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.5f, 0.0f, 0.0f, 1.0f);
-//	ppMaterials[0]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.5f, 0.0f, 0.0f, 1.0f);
-//	ppMaterials[0]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 5.0f);
-//	ppMaterials[0]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-//	ppMaterials[1] = new CMaterial();
-//	ppMaterials[1]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.5f, 0.0f, 1.0f);
-//	ppMaterials[1]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.5f, 0.0f, 1.0f);
-//	ppMaterials[1]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 10.0f);
-//	ppMaterials[1]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-//	ppMaterials[2] = new CMaterial();
-//	ppMaterials[2]->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(0.0f, 0.0f, 0.5f, 1.0f);
-//	ppMaterials[2]->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 0.5f, 1.0f);
-//	ppMaterials[2]->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.0f, 0.5f, 10.0f);
-//	ppMaterials[2]->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-//
-//	ID3D11SamplerState *pd3dSamplerState = NULL;
-//	D3D11_SAMPLER_DESC d3dSamplerDesc;
-//	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-//	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-//	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-//	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-//	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-//	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-//	d3dSamplerDesc.MinLOD = 0;
-//	d3dSamplerDesc.MaxLOD = 0;
-//	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
-//
-//	ID3D11ShaderResourceView *pd3dTexture = NULL;
-//	CTexture **ppTextures = new CTexture*[3];
-//	ppTextures[0] = new CTexture(1);
-//	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data\\Stone01.jpg"), NULL, NULL, &pd3dTexture, NULL);
-//	ppTextures[0]->SetTexture(0, pd3dTexture, pd3dSamplerState);
-//	ppTextures[1] = new CTexture(1);
-//	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data\\Brick01.jpg"), NULL, NULL, &pd3dTexture, NULL);
-//	ppTextures[1]->SetTexture(0, pd3dTexture, pd3dSamplerState);
-//	ppTextures[2] = new CTexture(1);
-//	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data\\Wood01.jpg"), NULL, NULL, &pd3dTexture, NULL);
-//	ppTextures[2]->SetTexture(0, pd3dTexture, pd3dSamplerState);
-//
-//	CMesh *pMeshIlluminatedTextured = new CCubeMeshIlluminatedTextured(pd3dDevice, 12.0f, 12.0f, 12.0f);
-//
-//	int xObjects = 3, yObjects = 3, zObjects = 3, i = 0, nObjectTypes = 2;
-//
-//	float fxPitch = 12.0f * 1.7f;
-//	float fyPitch = 12.0f * 1.7f;
-//	float fzPitch = 12.0f * 1.7f;
-//	CObject *pObject = nullptr;
-//	for (int x = -xObjects; x <= xObjects; x++)
-//	{
-//		for (int y = -yObjects; y <= yObjects; y++)
-//		{
-//			for (int z = -zObjects; z <= zObjects; z++)
-//			{
-//				pObject = new CObject(i);
-//				pObject->SetMesh(pMeshIlluminatedTextured);
-//				pObject->SetMaterial(ppMaterials[i % 3]);
-//				pObject->SetTexture(ppTextures[i % 3]);
-//				pObject->MoveAbsolute((x*(fxPitch*nObjectTypes) + 1 * fxPitch), (y*(fyPitch*nObjectTypes) + 1 * fyPitch), (z*(fzPitch*nObjectTypes) + 1 * fzPitch));
-//				i += 1;
-//				m_vObjects.push_back(pObject);
-//			}
-//		}
-//	}
-//
-//	CreateShaderVariables(pd3dDevice);
-//
-//	delete[] ppTextures;
-//	delete[] ppMaterials;
-//}
-//
-//void CIlluminatedTexturedShader::ReleaseObjects()
-//{
-//	CShader::ReleaseAllObjects();
-//}
 
 void CIlluminatedTexturedShader::AnimateObjects(float fTimeElapsed)
 {
@@ -372,11 +278,6 @@ CPlayerShader::CPlayerShader()
 CPlayerShader::~CPlayerShader()
 {
 }
-//
-//void CPlayerShader::ReleaseObjects()
-//{
-//	CDiffusedShader::ReleaseObjects();
-//}
 
 void CPlayerShader::CreateShader(ID3D11Device *pd3dDevice)
 {

@@ -82,19 +82,15 @@ void CObjectManager::DeleteObject(UINT id)
 			for (BYTE i = (BYTE)CResourceManager::ShaderType::START; i < (BYTE)CResourceManager::ShaderType::END; ++i)
 			{
 				pShader = pResourceManager->GetShaderByShaderType((CResourceManager::ShaderType)i);
-				pShader->ReleaseObject(id);
-				/*
-				이 부분 쉐이더 전체를 도니까 이거 어떻게 좀 바꿔야겠다
-				bool을 반환하게 해서 확인할까
-				*/
+				if (pShader->ReleaseObject(id))	break;
 			}
 
 			// 2) 오브젝트맵에서 삭제
 			CObject *pObject = m_mObjects[(ObjectType)(id / 10000)][i];
 			m_mObjects[(ObjectType)(id / 10000)].erase(m_mObjects[(ObjectType)(id / 10000)].begin() + i);
 
-			//// 3) 해당 오브젝트 제거
-			//pObject->~CObject();
+			// 3) 해당 오브젝트 제거
+			pObject->~CObject();
 		}
 	}
 }
@@ -110,7 +106,7 @@ void CObjectManager::DeleteObjectAll()
 	}
 
 	// 2) 해당 오브젝트 해제 후 삭제
-	for (short i = 0; i < m_mObjects.size(); ++i)
+	for (BYTE i = 0; i < m_mObjects.size(); ++i)
 	{
 		for (auto obj : m_mObjects[(ObjectType)i])
 		{

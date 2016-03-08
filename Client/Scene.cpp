@@ -22,12 +22,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 void CScene::ReleaseObjects()
 {
-	//// 쉐이더 객체 리스트의 각 객체를 소멸시키고 리스트를 소멸시킨다
-	//if (m_ppShaders)
-	//{
-	//	//for (int i = 0; i < m_nShaders; ++i) m_ppShaders[i]->ReleaseObjects();
-	//	delete[] m_ppShaders;
-	//}
 	m_vShaders.clear();
 }
 

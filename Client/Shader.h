@@ -27,7 +27,7 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CTexture *pTexture);
 
 	void InsertObject(CObject *pObject);
-	void ReleaseObject(UINT id);
+	bool ReleaseObject(UINT id);
 	void ReleaseAllObjects();
 
 	//virtual void BuildObjects(ID3D11Device *pd3dDevice);

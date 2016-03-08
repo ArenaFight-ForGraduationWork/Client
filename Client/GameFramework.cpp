@@ -274,6 +274,8 @@ void CGameFramework::OnDestroy()
 {
 	ReleaseObjects();
 
+	m_pObjectManager->DeleteObjectAll();
+
 	if (m_pd3dDeviceContext) m_pd3dDeviceContext->ClearState();
 	if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
