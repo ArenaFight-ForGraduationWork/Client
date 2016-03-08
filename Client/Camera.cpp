@@ -18,7 +18,7 @@ CCamera::CCamera()
 
 	m_pd3dxvLookAtWorld = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	m_nMode = 0x00;
+	m_eMode = eCameraMode::THIRD_PERSON_CAMERA;
 
 	m_pd3dxmtxView = new D3DXMATRIX();
 	D3DXMatrixIdentity(m_pd3dxmtxView);
@@ -124,7 +124,7 @@ const float CCamera::GetYaw()
 
 CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 {
-	m_nMode = THIRD_PERSON_CAMERA;
+	m_eMode = eCameraMode::THIRD_PERSON_CAMERA;
 }
 
 void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
