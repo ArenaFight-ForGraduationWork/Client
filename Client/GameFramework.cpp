@@ -16,7 +16,6 @@ CGameFramework::CGameFramework()
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
-	m_pScene = NULL;
 	_tcscpy_s(m_pszBuffer, _T("LapProject ("));
 
 	m_pd3dDepthStencilBuffer = NULL;
@@ -38,6 +37,8 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	// 오브젝트 매니저를 초기화한다
 	m_pObjectManager = CObjectManager::GetSingleton(m_pd3dDevice);
+	// 씬 매니저를 초기화한다
+	m_pSceneManager = CSceneManager::GetSingleton();
 
 	//렌더링할 객체(게임 월드 객체)를 생성한다. 
 	BuildObjects();
@@ -287,8 +288,10 @@ void CGameFramework::OnDestroy()
 
 void CGameFramework::BuildObjects()
 {
-	m_pScene = new CScene();
-	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
+	if (m_pSceneManager)
+	{
+		m_pSceneManager->BuildObjects(m_pd3dDevice);
+	}
 
 	m_pPlayer = new CPlayer();
 	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
@@ -310,8 +313,10 @@ void CGameFramework::BuildObjects()
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	//if (m_pScene) m_pScene->ReleaseObjects();
+	//if (m_pScene) delete m_pScene;
+	if (m_pSceneManager)
+		m_pSceneManager->Destroy();
 
 	if (m_pPlayer)	delete m_pPlayer;
 }
@@ -383,7 +388,8 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	if (m_pSceneManager)
+		m_pSceneManager->AnimateObjects(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::FrameAdvance()
@@ -401,7 +407,9 @@ void CGameFramework::FrameAdvance()
 	// 5) 카메라 쉐이더 update
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
+	//if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
+	if (m_pSceneManager)
+		m_pSceneManager->Render(m_pd3dDeviceContext);
 
 	m_pDXGISwapChain->Present(0, 0);
 
