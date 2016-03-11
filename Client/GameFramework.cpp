@@ -21,7 +21,6 @@ CGameFramework::CGameFramework()
 
 	m_pd3dDepthStencilBuffer = NULL;
 	m_pd3dDepthStencilView = NULL;
-	// 테스트를 위해 쓸모없는 주석을 추가한다
 }
 
 CGameFramework::~CGameFramework()
@@ -204,19 +203,19 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (m_pObjectManager->FindObject(0))
 				m_pObjectManager->DeleteObject(0);
 			else
-				m_pObjectManager->Insert(0, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(0, eResourceType::Airplain, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F6:
 			if (m_pObjectManager->FindObject(1))
 				m_pObjectManager->DeleteObject(1);
 			else
-				m_pObjectManager->Insert(1, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(1, eResourceType::Cube, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F7:
 			if (m_pObjectManager->FindObject(2))
 				m_pObjectManager->DeleteObject(2);
 			else
-				m_pObjectManager->Insert(2, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 
 		case VK_ESCAPE:
@@ -274,6 +273,8 @@ void CGameFramework::OnDestroy()
 {
 	ReleaseObjects();
 
+	m_pObjectManager->DeleteObjectAll();
+
 	if (m_pd3dDeviceContext) m_pd3dDeviceContext->ClearState();
 	if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
@@ -290,14 +291,7 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
-	{
-		CMesh *pMesh = new CAirplaneMesh(m_pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
-		CObject *pObject = new CObject(UINT(1010));
-		pObject->SetMesh(pMesh);
-		pObject->MoveAbsolute(0, 0, 0);
-		m_pPlayer->SetObject(pObject);
-	}
-	m_pPlayer->CreateShader(m_pd3dDevice);
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
 
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
@@ -408,7 +402,6 @@ void CGameFramework::FrameAdvance()
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
 	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
-	if (m_pPlayer) m_pPlayer->Render(m_pd3dDeviceContext);
 
 	m_pDXGISwapChain->Present(0, 0);
 

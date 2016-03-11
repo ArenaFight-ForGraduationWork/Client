@@ -5,7 +5,6 @@
 CPlayer::CPlayer()
 {
 	m_pObject = nullptr;
-	m_pShader = new CPlayerShader();
 
 	m_fSpeed = 100;
 }
@@ -100,19 +99,5 @@ const D3DXVECTOR3* CPlayer::GetPosition()
 	return &D3DXVECTOR3(0, 0, 0);
 }
 
-void CPlayer::CreateShader(ID3D11Device *pd3dDevice)
-{
-	m_pShader->CreateShader(pd3dDevice);
-	m_pShader->CreateShaderVariables(pd3dDevice);
-}
-void CPlayer::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	if (m_pShader && m_pObject)
-	{
-		m_pShader->UpdateShaderVariables(pd3dDeviceContext, m_pObject->GetWorldMatrix());
-		m_pShader->Render(pd3dDeviceContext);
-		if (m_pObject->GetMesh())
-			m_pObject->GetMesh()->Render(pd3dDeviceContext);
-	}
-}
+
 

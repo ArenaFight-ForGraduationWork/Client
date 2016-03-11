@@ -3,11 +3,6 @@
 
 
 
-//카메라의 종류(모드: Mode)를 나타내는 상수를 다음과 같이 선언한다.
-#define THIRD_PERSON_CAMERA	0x01
-
-
-
 struct VS_CB_VIEWPROJECTION_MATRIX
 {
 	D3DXMATRIX m_d3dxmtxView;
@@ -24,7 +19,14 @@ public:
 	CCamera();
 	~CCamera();
 
-	DWORD GetMode() { return m_nMode; }
+	enum class eCameraMode : BYTE{
+		START = 0,
+		THIRD_PERSON_CAMERA = 0,
+		END
+	};
+
+
+	eCameraMode GetMode() { return m_eMode; }
 
 	void GenerateViewMatrix();
 	void GenerateViewMatrix(const D3DXVECTOR3 *pd3dxvEyePosition, const D3DXVECTOR3 *pd3dxvLookAt, const D3DXVECTOR3 *pd3dxvUp);
@@ -79,7 +81,7 @@ protected:
 	float m_fTheta;
 	float m_fDistanceFromObject;
 
-	DWORD m_nMode;
+	eCameraMode m_eMode;
 
 	/* 월드좌표계에서 카메라가 바라보는 점 */
 	D3DXVECTOR3 *m_pd3dxvLookAtWorld;

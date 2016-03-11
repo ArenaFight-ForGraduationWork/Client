@@ -1,4 +1,7 @@
-#pragma once
+#ifndef SCENE_H_
+#define SCENE_H_
+
+
 
 #include "Object.h"
 #include "Shader.h"
@@ -7,6 +10,10 @@
 #define POINT_LIGHT		1.0f
 #define SPOT_LIGHT		2.0f
 #define DIRECTIONAL_LIGHT	3.0f
+
+
+
+
 
 struct LIGHT
 {
@@ -25,9 +32,9 @@ struct LIGHT
 	float padding;
 };
 
-//상수 버퍼는 크기가 16의 배수가 되어야 한다. 
 struct LIGHTS
 {
+	//상수 버퍼는 크기가 16의 배수가 되어야 한다. 
 	LIGHT m_pLights[MAX_LIGHTS];
 	D3DXCOLOR m_d3dxcGlobalAmbient;
 	D3DXVECTOR4 m_d3dxvCameraPosition;
@@ -36,9 +43,6 @@ struct LIGHTS
 
 class CScene
 {
-private:
-	std::vector<CShader*> m_vShaders;
-
 public:
 	CScene();
 	~CScene();
@@ -59,4 +63,11 @@ public:
 	void BuildLights(ID3D11Device *pd3dDevice);
 	void UpdateLights(ID3D11DeviceContext *pd3dDeviceContext);
 	void ReleaseLights();
+
+private:
+	std::vector<CShader*> m_vShaders;
 };
+
+
+
+#endif

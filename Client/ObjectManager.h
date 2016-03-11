@@ -18,6 +18,7 @@
 *		나중에 바뀌는대로 바꿔라....
 */
 
+#define ID_DIVIDE 10000
 
 class CObjectManager
 {
@@ -26,8 +27,8 @@ public:
 	~CObjectManager();
 
 	/* ~데이터를 가진 오브젝트를 추가 */
-	void Insert(UINT id, int x, int y, int z, int dx, int dy, int dz);
-	void Insert(UINT id, D3DXVECTOR3 position, D3DXVECTOR3 direction);
+	CObject* Insert(UINT id, eResourceType eType, int x = 0, int y = 0, int z = 0, int dx = 0, int dy = 0, int dz = 0);
+	CObject* Insert(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
 
 	CObject* FindObject(UINT id);
 	const std::vector<CObject*> FindObjectInCategory(const UINT id);
@@ -43,7 +44,7 @@ public:
 	* PLAYER : 나와 다른 유저들을 구분해야 할까? 고민 좀 해봐야겠음
 	* BUFF_CRYSTAL : 일단 이렇게 써놨는데. 충돌체크X 존재O인 오브젝트
 	*/
-	enum class ObjectType :BYTE{
+	enum class eObjectType :BYTE{
 		START = 0,
 		LAND = 0,
 		NATURAL_FEATURE,
@@ -54,7 +55,7 @@ public:
 	};
 
 private:
-	std::map<ObjectType, std::vector<CObject*>> m_mObjects;
+	std::map<eObjectType, std::vector<CObject*>> m_mObjects;
 
 	CResourceManager *pResourceManager;
 

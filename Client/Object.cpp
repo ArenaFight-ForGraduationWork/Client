@@ -5,7 +5,7 @@
 
 CMaterial::CMaterial()
 {
-	m_nReferences = 0;
+	m_nReferences = 1;
 	m_pMaterial = new MATERIAL();
 }
 CMaterial::~CMaterial()
@@ -29,7 +29,7 @@ void CMaterial::Release()
 
 CTexture::CTexture(int nTextures)
 {
-	m_nReferences = 0;
+	m_nReferences = 1;
 	m_nTextures = nTextures;
 
 	m_ppd3dsrvTextures = new ID3D11ShaderResourceView*[m_nTextures];

@@ -22,14 +22,15 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	_LoadMaterials();
 	_CreateShaders(pd3dDevice);
 
-	for (BYTE i = (BYTE)ResourceType::START; i<(BYTE)ResourceType::END; ++i)
+	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
-	m_vResources[(int)ResourceType::Cube]->SetIDs(0, 0, 0, 1);
+	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
+	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
 {
-	for (BYTE i = (BYTE)ResourceType::START; (BYTE)ResourceType::END; ++i)
+	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		delete m_vResources[i];
 	m_vResources.clear();
 
@@ -39,38 +40,38 @@ CResourceManager::~CResourceManager()
 	m_mShader.clear();
 }
 
-CMesh* CResourceManager::GetMesh(ResourceType type)
+CMesh* CResourceManager::GetMesh(eResourceType type)
 {
 	BYTE id = m_vResources[(int)type]->GetMeshID();
 	return m_mMesh[id];
 }
-CTexture* CResourceManager::GetTexture(ResourceType type)
+CTexture* CResourceManager::GetTexture(eResourceType type)
 {
 	BYTE id = m_vResources[(int)type]->GetTextureID();
 	return m_mTexture[id];
 }
-CMaterial* CResourceManager::GetMaterial(ResourceType type)
+CMaterial* CResourceManager::GetMaterial(eResourceType type)
 {
 	BYTE id = m_vResources[(int)type]->GetMaterialID();
 	return m_mMaterial[id];
 }
-CShader* CResourceManager::GetShaderByResourceType(ResourceType type)
+CShader* CResourceManager::GetShaderByResourceType(eResourceType type)
 {
 	BYTE id = m_vResources[(int)type]->GetShaderID();
 	return m_mShader[id];
 }
-CShader* CResourceManager::GetShaderByShaderType(ShaderType type)
+CShader* CResourceManager::GetShaderByShaderType(eShaderType type)
 {
 	return m_mShader[(int)type];
 }
 
-bool CResourceManager::IsTextureEnable(ResourceType type)
+bool CResourceManager::IsTextureEnable(eResourceType type)
 {
 	if (m_vResources[(int)type]->GetTextureID() > -1)
 		return true;
 	return false;
 }
-bool CResourceManager::IsMaterialEnable(ResourceType type)
+bool CResourceManager::IsMaterialEnable(eResourceType type)
 {
 	if (m_vResources[(int)type]->GetMaterialID() > -1)
 		return true;
@@ -85,10 +86,11 @@ CResourceManager* CResourceManager::GetSingleton(ID3D11Device *pd3dDevice)
 
 void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 {
-	CMesh *pMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
-
 	// 0 : 큐브
-	m_mMesh[0] = pMesh;
+	m_mMesh[0] = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
+
+	// 1 : 비행기
+	m_mMesh[1] = new CAirplaneMesh(pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
 }
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {
