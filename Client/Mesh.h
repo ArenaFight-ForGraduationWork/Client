@@ -38,6 +38,10 @@ protected:
 
 private:
 	int m_nReferences;
+	long long m_AnimationMaxTime = 0;
+	int m_AnimationIndexCount = 0;
+
+	XMFLOAT4X4** m_ppResult[5];
 };
 
 
@@ -68,15 +72,71 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 private:
-	/* 정점의 법선 벡터 계산. 정점 데이터와 인덱스 데이터 사용 */
-	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
-
+	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
 	void SetTriAngleListVertexNormal(BYTE *pVertices);	/* 정점의 법선 벡터 계산. 인덱스 버퍼를 쓰지 않는 삼각형 리스트용 */
 	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);	/* 정점의 법선벡터의 평균 계산. 인덱스 버퍼를 사용할 경우 */
-	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
+	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
 };
 
 
+class CMyModel : public CMesh
+{
+public:
+	CMyModel(ID3D11Device *pd3dDevice, char* pFbxName, char* pTxtName, D3DXVECTOR3 d3dxvScale = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	virtual ~CMyModel();
 
+	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+	//정점이 포함된 삼각형의 법선벡터를 계산하는 함수.
+	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);
+	void SetTriAngleListVertexNormal(BYTE *pVertices);
+	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);
+	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
+
+private:
+	std::vector<CTexturedNormalVertex*> pVertices;
+	CTexturedNormalVertex* ppVertices;
+};
+
+class CMyAni : public CMesh
+{
+public:
+	CMyAni(ID3D11Device *pd3dDevice, char* pFbxName, char* pTxtName);
+
+	//수정시작합니다. 한줄
+	CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt);
+
+	virtual ~CMyAni();
+
+	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);
+	void SetTriAngleListVertexNormal(BYTE *pVertices);
+	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);
+	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
+
+
+private:
+	vector<CAnimationVertex*> pVertices;
+	CAnimationVertex* ppVertices;
+
+	//수정시작합니다. 한줄
+	FILE *fp[2];	//일단 달리기, 어택 두개기 때문에 2를 써둔다.
+
+};
+
+class CSkyBoxMesh : public CCubeMeshIlluminatedTextured
+{
+public:
+	CSkyBoxMesh(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks);
+	virtual ~CSkyBoxMesh();
+
+	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+	ID3D11DepthStencilState* DSLessEqual;
+};
 
 #endif
