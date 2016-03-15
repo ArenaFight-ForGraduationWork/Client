@@ -70,11 +70,13 @@ public:
 	CTexturedNormalVertex() { m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f); m_d3dxvNormal = D3DXVECTOR3(0.0f, 0.0f, 0.0f); m_d3dxvTexCoord = D3DXVECTOR2(0.0f, 0.0f); }
 	~CTexturedNormalVertex() { }
 
-	D3DXVECTOR3 GetPosition(){	return m_d3dxvPosition;}
+	D3DXVECTOR3 GetPosition(){ return m_d3dxvPosition; }
 	D3DXVECTOR3 GetNormal()  { return m_d3dxvNormal; }
-	D3DXVECTOR3 GetUV()	{ return m_d3dxvTexCoord; }
+	D3DXVECTOR2 GetUV()	{ return m_d3dxvTexCoord; }
 
+	void SetPosition(D3DXVECTOR3 d3dxvPosition) { m_d3dxvPosition = d3dxvPosition; }
 	void SetNormal(D3DXVECTOR3 d3dxvNormal) { m_d3dxvNormal = d3dxvNormal; }
+	void SetUV(D3DXVECTOR2 d3dxvTexCoord) { m_d3dxvTexCoord = d3dxvTexCoord; }
 };
 
 class CAnimationVertex
