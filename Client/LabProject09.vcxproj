@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Fbx.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameClient.h" />
     <ClInclude Include="Mesh.h" />
@@ -106,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Fbx.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="Mesh.cpp" />

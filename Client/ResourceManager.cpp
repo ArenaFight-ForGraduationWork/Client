@@ -24,7 +24,8 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
-	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
+	//m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
+	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 1, 0, 1);
 	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
 }
 
@@ -116,6 +117,13 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[0] = tempTexture;
+
+	// 1: monA
+	tempTexture = new CTexture(1);
+	tempTextureAddress = L"./Data/Monkey_monA.png";
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
+	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	m_mTexture[1] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
 {

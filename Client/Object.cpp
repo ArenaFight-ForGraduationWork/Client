@@ -47,6 +47,11 @@ CTexture::~CTexture()
 void CTexture::AddRef()
 {
 	m_nReferences++;
+	for (int i = 0; i < m_nTextures; ++i)
+	{
+		if (m_ppd3dsrvTextures[i]) m_ppd3dsrvTextures[i]->AddRef();
+		if (m_ppd3dSamplerStates[i]) m_ppd3dSamplerStates[i]->AddRef();
+	}
 }
 
 void CTexture::Release()
