@@ -411,7 +411,7 @@ D3DXVECTOR3 CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertice
 //
 //===============================================================
 
-CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* pFbxName, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
+CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
 {
 	
 	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(ptxtName, pVertices);
@@ -423,9 +423,14 @@ CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* pFbxName, char* ptxtName, D3D
 
 	for (int i = 0; i < pVertices.size(); ++i)
 	{
-		ppVertices[i].GetPosition() = pVertices.at(i)->GetPosition();
+
+		ppVertices[i].SetPosition(pVertices.at(i)->GetPosition());
+		ppVertices[i].SetNormal(pVertices.at(i)->GetNormal());
+		ppVertices[i].SetUV(pVertices.at(i)->GetUV());
+
+		/*ppVertices[i].GetPosition() = pVertices.at(i)->GetPosition();
 		ppVertices[i].GetNormal() = pVertices.at(i)->GetNormal();
-		ppVertices[i].GetUV() = pVertices.at(i)->GetUV();
+		ppVertices[i].GetUV() = pVertices.at(i)->GetUV();*/
 
 		/*ppVertices[i].m_d3dxvPosition = pVertices.at(i)->m_d3dxvPosition;
 		ppVertices[i].m_d3dxvNormal = pVertices.at(i)->m_d3dxvNormal;

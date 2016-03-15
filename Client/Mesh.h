@@ -79,10 +79,12 @@ private:
 };
 
 
+
+
 class CMyModel : public CMesh
 {
 public:
-	CMyModel(ID3D11Device *pd3dDevice, char* pFbxName, char* pTxtName, D3DXVECTOR3 d3dxvScale = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	CMyModel(ID3D11Device *pd3dDevice, char* pTxtName, D3DXVECTOR3 d3dxvScale = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
 	virtual ~CMyModel();
 
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
@@ -98,6 +100,7 @@ private:
 	std::vector<CTexturedNormalVertex*> pVertices;
 	CTexturedNormalVertex* ppVertices;
 };
+
 
 class CMyAni : public CMesh
 {
