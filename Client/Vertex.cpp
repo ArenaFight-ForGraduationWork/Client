@@ -21,6 +21,21 @@ CDiffusedVertex::~CDiffusedVertex()
 {
 }
 
+void CAnimationVertex::AddBone(int index, float weight)
+{
+	for (int i = 0; i < 8; ++i)
+	{
+		if (BoneWeightArr[i] <= 0.0f)
+		{
+			BoneIndexArr[i] = index;
+			BoneWeightArr[i] = weight;
+			return;
+		}
+	}
+
+	//만약 배열을 벗어나면 첫번째 인덱스에 다 더한다.
+	BoneWeightArr[0] += weight;
+}
 
 
 

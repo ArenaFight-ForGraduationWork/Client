@@ -90,6 +90,11 @@ CObject::CObject(UINT id)
 	m_pTexture = nullptr;
 
 	m_id = id;
+
+	for (int i = 0; i < 5; ++i)
+		m_AniMaxTime[i] = 0.0f;
+	g_pd3dcbBoneMatrix = nullptr;
+	g_pcbBoneMatrix = nullptr;
 }
 
 CObject::~CObject()
@@ -273,3 +278,75 @@ const D3DXMATRIX* CObject::_GetRotationMatrix()
 	return &mtxRotate;
 }
 
+void CObject::SetResult(XMFLOAT4X4*** result)
+{
+	m_pppResult = result;
+}
+
+void CObject::SetTime(long long *time)
+{
+	for (int i = 0; i < 5; ++i)
+	{
+		m_AniMaxTime[i] = time[i];
+		cout << i << "번째 maxtime:" << m_AniMaxTime[i] << endl;
+	}
+
+}
+
+void CObject::SetAniIndexCount(int count)
+{
+	m_AnimationIndexCount = count;
+	cout << "애니메이션 인덱스 갯수 : " << m_AnimationIndexCount << endl;
+}
+
+void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext)
+{
+	//애니메이션을 위한 본 매트릭스 상수버퍼 생성
+	D3D11_BUFFER_DESC BD;
+	::ZeroMemory(&BD, sizeof(D3D11_BUFFER_DESC));
+	BD.Usage = D3D11_USAGE::D3D11_USAGE_DYNAMIC;
+	BD.ByteWidth = sizeof(VS_CB_BONE_MATRIX);
+	BD.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	BD.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
+
+	pd3dDevice->CreateBuffer(&BD, NULL, &g_pd3dcbBoneMatrix);
+
+	pd3dDeviceContext->Map(g_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &g_d3dMappedResource);
+
+	g_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)g_d3dMappedResource.pData;
+
+	for (int i = 0; i < 128; i++)
+		g_pcbBoneMatrix->m_XMmtxBone[i] = XMMatrixIdentity();
+
+	pd3dDeviceContext->Unmap(g_pd3dcbBoneMatrix, NULL);
+}
+
+void CObject::PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext)
+{
+	if (PreState != StateNum)
+	{
+		PreState = StateNum;
+		m_fAnimationPlaytime = 0.0f;
+	}
+	m_fAnimationPlaytime += 0.01f;
+	NowTime = m_fAnimationPlaytime * 1000;
+
+	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
+	{
+		NowTime -= m_AniMaxTime[StateNum];
+		m_fAnimationPlaytime = 0;
+	}
+
+
+
+	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+	{
+		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
+		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+	}
+
+	if (g_pd3dcbBoneMatrix != nullptr)
+	{
+		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+	}
+}

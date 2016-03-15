@@ -6,11 +6,16 @@ CFbx::CFbx()
 {
 	m_fAnimationPlayTime = 0.0f;
 	m_llAnimationMaxTime = 0;
+
+	for (int i = 0; i < 5; ++i)
+		m_ppResult[i] = nullptr;
 }
 
 
 CFbx::~CFbx()
 {
+	/*for (int i = 0; i < 5; ++i)
+		m_ppResult[i] = nullptr;*/
 }
 
 CFbx* CFbx::m_instance;

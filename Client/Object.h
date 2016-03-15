@@ -5,6 +5,10 @@
 
 #include "Mesh.h"
 
+struct VS_CB_BONE_MATRIX
+{
+	XMMATRIX m_XMmtxBone[128];
+};
 
 /* 재질 관련 정보를 표현 */
 struct MATERIAL
@@ -104,6 +108,24 @@ public:
 
 	virtual void Animate(float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+	/*애니메이션을 위한*/
+	ID3D11Buffer *g_pd3dcbBoneMatrix = nullptr;
+	D3D11_MAPPED_SUBRESOURCE g_d3dMappedResource;
+	VS_CB_BONE_MATRIX *g_pcbBoneMatrix = nullptr;
+
+	void SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext);
+	void PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext);
+	void SetAniIndexCount(int);
+	void SetResult(XMFLOAT4X4***);
+	void SetTime(long long*);
+
+	XMFLOAT4X4 ***m_pppResult;
+	float m_fAnimationPlaytime = 0.0f;
+	long long  NowTime;
+	int PreState;	//이전 상태
+	long long m_AniMaxTime[5];
+	int m_AnimationIndexCount;
 
 private:
 	D3DXMATRIX *m_pd3dxmtxWorld;

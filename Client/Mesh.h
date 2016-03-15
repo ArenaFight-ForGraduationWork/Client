@@ -25,8 +25,8 @@ public:
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	long long SetAnimationMaxTime(long long time) { m_AnimationMaxTime = time; }
-	int SetAnimationIndexCnt(int cnt) { m_AnimationIndexCount = cnt; }
+	void SetAnimationMaxTime(long long time) { m_AnimationMaxTime = time; }
+	void SetAnimationIndexCnt(int cnt) { m_AnimationIndexCount = cnt; }
 
 
 protected:
