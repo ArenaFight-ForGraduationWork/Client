@@ -5,6 +5,8 @@
 
 #pragma once
 
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#define _CRT_SECURE_NO_WARNINGS
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
@@ -42,6 +44,14 @@
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 #include <vector>
 #include <map>
+#include <xnamath.h>
+#include <string>
+#include <iostream>
+#include <stdio.h>
+#include <assert.h>
+//#include <fbxsdk.h>
+using namespace std;
+
 
 #define VS_SLOT_VIEWPROJECTION_MATRIX	0x00
 #define VS_SLOT_WORLD_MATRIX			0x01		// 상수 버퍼를 연결할 슬롯 번호
@@ -65,3 +75,4 @@
 #define DIR_UP			0x10
 #define DIR_DOWN		0x20
 
+#define ANIMATION_COUNT 5		//아직은 안씀, 최대한 5로 통일 시켜야 편리함... 
