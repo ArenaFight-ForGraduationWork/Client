@@ -38,6 +38,7 @@ enum class eResourceType : BYTE{
 	START = 0,
 	Cube = 0,
 	Airplain,
+	MonA,
 	END
 };
 

@@ -64,6 +64,7 @@ using namespace std;
 
 //프레임 버퍼의 크기와 종횡비(Aspect Ratio)를 나타내는 상수를 다음과 같이 선언한다.
 #define FRAME_BUFFER_WIDTH	640
+
 #define FRAME_BUFFER_HEIGHT	480
 #define ASPECT_RATIO	(float(FRAME_BUFFER_WIDTH)/float(FRAME_BUFFER_HEIGHT))
 
