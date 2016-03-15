@@ -27,6 +27,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	//m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
 	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 1, 0, 1);
 	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
+	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 1);
 }
 
 CResourceManager::~CResourceManager()
@@ -92,6 +93,9 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 
 	// 1 : ºñÇà±â
 	m_mMesh[1] = new CAirplaneMesh(pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
+
+	// 2: monA
+	m_mMesh[2] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(1, 1, 1));
 }
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {
@@ -124,6 +128,13 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[1] = tempTexture;
+
+	// 2: monB
+	tempTexture = new CTexture(1);
+	tempTextureAddress = L"./Data/Forest_monster.png";
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
+	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	m_mTexture[2] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
 {
