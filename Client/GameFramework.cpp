@@ -209,7 +209,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (m_pObjectManager->FindObject(1))
 				m_pObjectManager->DeleteObject(1);
 			else
-				m_pObjectManager->Insert(1, eResourceType::MonA, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(3, eResourceType::MonA, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
 				//m_pObjectManager->Insert(1, eResourceType::Cube, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F7:
