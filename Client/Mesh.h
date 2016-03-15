@@ -12,6 +12,10 @@
 class CMesh
 {
 public:
+
+	XMFLOAT4X4** m_ppResult[5];
+	long long m_AniMaxTime[5];
+
 	CMesh(ID3D11Device *pd3dDevice);
 	virtual ~CMesh();
 
@@ -19,8 +23,11 @@ public:
 	void Release();
 
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+	long long SetAnimationMaxTime(long long time) { m_AnimationMaxTime = time; }
+	int SetAnimationIndexCnt(int cnt) { m_AnimationIndexCount = cnt; }
+
 
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
@@ -41,7 +48,7 @@ private:
 	long long m_AnimationMaxTime = 0;
 	int m_AnimationIndexCount = 0;
 
-	XMFLOAT4X4** m_ppResult[5];
+	
 };
 
 

@@ -560,3 +560,139 @@ void CMyModel::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrim
 		pVertex->SetNormal(d3dxvSumOfNormal);
 	}
 }
+
+//=========================================
+//
+// 애니메이션을 가진 클래스
+//
+//=========================================
+
+
+CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3dDevice)
+{
+	CFbx::GetInstance()->Fbx_ReadTextFile_Info(CharNum);
+	m_nVertices = CFbx::GetInstance()->GetSize();
+
+	ppVertices = new CAnimationVertex[m_nVertices];
+
+	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
+
+	for (int i = 0; i < StateCnt; ++i)
+	{
+		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
+		m_ppResult[i] = CFbx::GetInstance()->GetResult(i);
+		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		cout << i << "번째 maxtime*_*:" << m_AniMaxTime[i] << endl;
+	}
+	SetAnimationMaxTime(CFbx::GetInstance()->GetAnimationIndexCount());
+	CFbx::GetInstance()->Fbx_ReadTextFile_Weight(CharNum, ppVertices);
+
+	m_nStride = sizeof(CAnimationVertex);
+	m_nOffset = 0;
+	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	CalculateVertexNormal((BYTE *)ppVertices, NULL);
+	D3D11_BUFFER_DESC d3dBufferDesc;
+	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	d3dBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	d3dBufferDesc.ByteWidth = m_nStride * m_nVertices;
+	d3dBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	d3dBufferDesc.CPUAccessFlags = 0;
+	D3D11_SUBRESOURCE_DATA d3dBufferData;
+	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
+	d3dBufferData.pSysMem = ppVertices;
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
+	CreateRasterizerState(pd3dDevice);
+}
+
+CMyAni::~CMyAni()
+{
+	CMesh::~CMesh();
+}
+
+void CMyAni::CreateRasterizerState(ID3D11Device *pd3dDevice)
+{
+	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
+	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+	d3dRasterizerDesc.CullMode = D3D11_CULL_BACK;
+	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
+}
+
+void CMyAni::Render(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	CMesh::Render(pd3dDeviceContext);
+}
+
+void CMyAni::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
+{
+	switch (m_d3dPrimitiveTopology)
+	{
+	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
+		if (!pIndices)
+			SetTriAngleListVertexNormal(pVertices);
+		else
+			SetAverageVertexNormal(pVertices, pIndices, (m_nIndices / 3), 3, false);
+		break;
+
+	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
+		SetAverageVertexNormal(pVertices, pIndices, (pIndices) ? (m_nIndices - 2) : (m_nVertices - 2), 1, true);
+		break;
+	default:
+		break;
+	}
+}
+
+void CMyAni::SetTriAngleListVertexNormal(BYTE *pVertices)
+{
+	D3DXVECTOR3 d3dxvNormal;
+	CTexturedNormalVertex *pVertex = NULL;
+
+	int nPrimitives = m_nVertices / 3;
+	for (int i = 0; i < nPrimitives; i++)
+	{
+		d3dxvNormal = CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
+		pVertex = (CTexturedNormalVertex *)(pVertices + ((i * 3 + 0) * m_nStride));
+		pVertex->SetNormal(d3dxvNormal);
+		pVertex = (CTexturedNormalVertex *)(pVertices + ((i * 3 + 1) * m_nStride));
+		pVertex->SetNormal(d3dxvNormal);
+		pVertex = (CTexturedNormalVertex *)(pVertices + ((i * 3 + 2) * m_nStride));
+		pVertex->SetNormal(d3dxvNormal);
+	}
+}
+
+D3DXVECTOR3 CMyAni::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
+{
+	D3DXVECTOR3 d3dxvNormal(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 d3dxvP0 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex0)));
+	D3DXVECTOR3 d3dxvP1 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex1)));
+	D3DXVECTOR3 d3dxvP2 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex2)));
+	D3DXVECTOR3 d3dxvEdge1 = d3dxvP1 - d3dxvP0;
+	D3DXVECTOR3 d3dxvEdge2 = d3dxvP2 - d3dxvP0;
+	D3DXVec3Cross(&d3dxvNormal, &d3dxvEdge1, &d3dxvEdge2);
+	D3DXVec3Normalize(&d3dxvNormal, &d3dxvNormal);
+	return(d3dxvNormal);
+}
+
+void CMyAni::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
+{
+	D3DXVECTOR3 d3dxvSumOfNormal(0.0f, 0.0f, 0.0f);
+	CTexturedNormalVertex *pVertex = NULL;
+	USHORT nIndex0, nIndex1, nIndex2;
+
+	for (UINT j = 0; j < m_nVertices; j++)
+	{
+		d3dxvSumOfNormal = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		for (int i = 0; i < nPrimitives; i++)
+		{
+			nIndex0 = (bStrip) ? (((i % 2) == 0) ? (i*nOffset + 0) : (i*nOffset + 1)) : (i*nOffset + 0);
+			if (pIndices) nIndex0 = pIndices[nIndex0];
+			nIndex1 = (bStrip) ? (((i % 2) == 0) ? (i*nOffset + 1) : (i*nOffset + 0)) : (i*nOffset + 1);
+			if (pIndices) nIndex1 = pIndices[nIndex1];
+			nIndex2 = (pIndices) ? pIndices[i*nOffset + 2] : (i*nOffset + 2);
+			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j)) d3dxvSumOfNormal += CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2);
+		}
+		D3DXVec3Normalize(&d3dxvSumOfNormal, &d3dxvSumOfNormal);
+		pVertex = (CTexturedNormalVertex *)(pVertices + (j * m_nStride));
+		pVertex->SetNormal(d3dxvSumOfNormal);
+	}
+}
