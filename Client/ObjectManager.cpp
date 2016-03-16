@@ -62,6 +62,29 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	return pObject;
 }
 
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction, int a)
+{
+	//애니메이션 데이터 전용
+	CObject *pObject = new CObject(id);
+	pObject->SetMesh(pResourceManager->GetMesh(eType));
+	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
+	pObject->SetTexture(pResourceManager->GetTexture(eType));
+	
+	//pObject->SetTime();
+	//pObject->SetConstantBuffer();
+	//pObject->SetResult();
+	//pObject->SetAniIndexCount();
+	
+	pObject->MoveAbsolute(&position);
+	pObject->RotateAbsolute(&direction);
+	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
+
+	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
+	pShader->InsertObject(pObject);
+
+	return pObject;
+}
+
 CObject* CObjectManager::FindObject(UINT id)
 {
 	for (auto obj : m_mObjects[(eObjectType)(id / ID_DIVIDE)])

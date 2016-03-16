@@ -92,7 +92,18 @@ public:
 
 
 
+class CPlayerShader : public CShader
+{
+public:
+	CPlayerShader();
+	virtual ~CPlayerShader();
 
+	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
+	
+	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+};
 
 
 

@@ -415,3 +415,97 @@ float4 PSTexturedLighting(VS_TEXTURED_LIGHTING_OUTPUT input) : SV_Target
 	return(cColor);
 }
 
+#define MAX_MATRIX 128
+struct VS_ANIMATION_INPUT
+{
+	float3 position : POSITION;
+	float3 normal : NORMAL;
+	float2 tex2dcoord : TEXCOORD0;
+	uint4 Bones1 : BONES0;
+	uint4 Bones2 : BONES1;
+	float4 Weights1 : WEIGHTS0;
+	float4 Weights2 : WEIGHTS1;
+};
+
+struct VS_ANIMATION_OUTPUT
+{
+	float4 position : SV_POSITION;
+	float3 positionW : POSITION;
+	float3 normalW : NORMAL;
+	float2 tex2dcoord : TEXCOORD0;
+};
+
+cbuffer cbBoneWorldMatrix : register(b2)
+{
+	row_major matrix gmtxBone[MAX_MATRIX] : packoffset(c0);
+};
+
+VS_ANIMATION_OUTPUT VS_ANIMATION(VS_ANIMATION_INPUT input)
+{
+	VS_ANIMATION_OUTPUT output = (VS_ANIMATION_OUTPUT)0;
+
+	float4 Pos = float4(input.position, 1);
+
+		uint iBone0 = input.Bones1.r;
+	uint iBone1 = input.Bones1.g;
+	uint iBone2 = input.Bones1.b;
+	uint iBone3 = input.Bones1.a;
+	uint iBone4 = input.Bones2.r;
+	uint iBone5 = input.Bones2.g;
+	uint iBone6 = input.Bones2.b;
+	uint iBone7 = input.Bones2.a;
+
+	float fWeight0 = input.Weights1.r;
+	float fWeight1 = input.Weights1.g;
+	float fWeight2 = input.Weights1.b;
+	float fWeight3 = input.Weights1.a;
+	float fWeight4 = input.Weights2.r;
+	float fWeight5 = input.Weights2.g;
+	float fWeight6 = input.Weights2.b;
+	float fWeight7 = input.Weights2.a;
+
+	matrix m0 = gmtxBone[iBone0];
+	matrix m1 = gmtxBone[iBone1];
+	matrix m2 = gmtxBone[iBone2];
+	matrix m3 = gmtxBone[iBone3];
+	matrix m4 = gmtxBone[iBone4];
+	matrix m5 = gmtxBone[iBone5];
+	matrix m6 = gmtxBone[iBone6];
+	matrix m7 = gmtxBone[iBone7];
+
+	if (fWeight0 > 0) output.position += fWeight0 * mul(Pos, m0);
+	if (fWeight1 > 0) output.position += fWeight1 * mul(Pos, m1);
+	if (fWeight2 > 0) output.position += fWeight2 * mul(Pos, m2);
+	if (fWeight3 > 0) output.position += fWeight3 * mul(Pos, m3);
+	if (fWeight4 > 0) output.position += fWeight4 * mul(Pos, m4);
+	if (fWeight5 > 0) output.position += fWeight5 * mul(Pos, m5);
+	if (fWeight6 > 0) output.position += fWeight6 * mul(Pos, m6);
+	if (fWeight7 > 0) output.position += fWeight7 * mul(Pos, m7);
+
+	//matrix mtxWorldViewProjection = mul(gmtxWorld, gmtxView);
+	//mtxWorldViewProjection = mul(mtxWorldViewProjection, gmtxProjection);
+	//output.normalW = mul(input.normal, (float3x3)gmtxWorld);
+	//output.positionW = mul(input.position, (float3x3)gmtxWorld);
+	//output.position = mul(output.position, mtxWorldViewProjection);
+	//output.tex2dcoord = input.tex2dcoord;
+
+
+	output.normalW = mul(input.normal, (float3x3)gmtxWorld);
+	output.positionW = mul(Pos, (float3x3)gmtxWorld);
+	output.positionW += float3(gmtxWorld._41, gmtxWorld._42, gmtxWorld._43);
+	matrix mtxWorldViewProjection = mul(gmtxWorld, gmtxView);
+	mtxWorldViewProjection = mul(mtxWorldViewProjection, gmtxProjection);
+	output.position = mul(output.position, mtxWorldViewProjection);
+	output.tex2dcoord = input.tex2dcoord;
+
+	return output;
+}
+
+//쉐이더 파일("Effect.fx")에 다음과 같이 픽셀 - 쉐이더 함수를 추가한다.
+float4 PS_ANIMATION(VS_ANIMATION_OUTPUT input) : SV_Target
+{
+	input.normalW = normalize(input.normalW);
+	float4 cIllumination = Lighting(input.positionW, input.normalW);
+		float4 cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord)* cIllumination;
+		return(cColor);
+}

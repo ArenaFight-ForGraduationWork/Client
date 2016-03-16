@@ -26,7 +26,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 		m_vResources.push_back(new CResource());
 	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
 	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
-	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 1);
+	m_vResources[(int)eResourceType::MonB]->SetIDs(2, 2, 0, 1);
 }
 
 CResourceManager::~CResourceManager()
@@ -93,12 +93,13 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	// 1 : 비행기
 	m_mMesh[1] = new CAirplaneMesh(pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
 
-	// 2: monA, object용
-	m_mMesh[2] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(1, 1, 1));
+	// 2: monB, object용
+	m_mMesh[2] = new CMyModel(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
 
 	// 3: monA, animation 용
 	m_mMesh[3] = new CMyAni(pd3dDevice, 0, 3);
 }
+
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {
 	ID3D11SamplerState *pd3dSamplerState = NULL;
@@ -163,6 +164,13 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[1] = pShader;
+
+	// 2 : PlayerShader
+	pShader = new CPlayerShader();
+	pShader->CreateShader(pd3dDevice);
+	pShader->CreateShaderVariables(pd3dDevice);
+	m_mShader[2] = pShader;
+
 }
 
 

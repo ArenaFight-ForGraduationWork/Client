@@ -38,7 +38,8 @@ enum class eResourceType : BYTE{
 	START = 0,
 	Cube = 0,
 	Airplain,
-	MonA,
+	MonB,	//임시 object 용도
+	MonA,	//임시 animation 용도
 	END
 };
 
@@ -51,6 +52,7 @@ public:
 		START = 0,
 		Diffused = 0,
 		IlluminatedTextured,
+		Player,
 		END
 	};
 

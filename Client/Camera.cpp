@@ -12,7 +12,7 @@ CCamera::CCamera()
 	m_pd3dxvLook = new D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
 	m_fTheta = 270.0f;
-	m_fDistanceFromObject = 50.0f;
+	m_fDistanceFromObject = 250.0f;			//카메라 거리 떨어지게 끔
 
 	m_fTimeLag = 0.0f;
 
