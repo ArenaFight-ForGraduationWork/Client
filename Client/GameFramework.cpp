@@ -8,6 +8,11 @@ CGameFramework::CGameFramework()
 
 	m_OperationMode = MODE_KEYBOARD;
 
+	m_ptOldCursorPos.x = 0;
+	m_ptOldCursorPos.y = 0;
+	m_ptNewCursorPos.x = 0;
+	m_ptNewCursorPos.y = 0;
+
 	m_pd3dDevice = NULL;
 	m_pDXGISwapChain = NULL;
 	m_pd3dRenderTargetView = NULL;
@@ -168,24 +173,36 @@ bool CGameFramework::CreateDirect3DDisplay()
 
 void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	switch (nMessageID)
+	switch (m_OperationMode)
 	{
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
-		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다.
-		SetCapture(hWnd);
-		GetCursorPos(&m_ptOldCursorPos);
-		break;
-	case WM_LBUTTONUP:
-	case WM_RBUTTONUP:
-		//마우스 캡쳐를 해제한다.
-		ReleaseCapture();
-		break;
-	case WM_MOUSEWHEEL:
-		SetFocus(hWnd);
-		break;
-	default:
-		break;
+	case MODE_MOUSE:
+	{
+		switch (nMessageID)
+		{
+		case WM_MOUSEMOVE:
+			m_ptOldCursorPos.x = m_ptNewCursorPos.x;
+			m_ptOldCursorPos.y = m_ptNewCursorPos.y;
+			m_ptNewCursorPos.x = LOWORD(lParam);
+			m_ptNewCursorPos.y = HIWORD(lParam);
+
+			if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
+				m_pCamera->RotatebyYaw(-150 * m_GameTimer.GetTimeElapsed());
+			else
+				m_pCamera->RotatebyYaw(150 * m_GameTimer.GetTimeElapsed());
+			break;
+		case WM_MOUSEWHEEL:
+			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+				m_pCamera->Zoom(200 * m_GameTimer.GetTimeElapsed());
+			else
+				m_pCamera->Zoom(-200 * m_GameTimer.GetTimeElapsed());
+			break;
+		default: break;
+		}
+	}	break;
+	case MODE_KEYBOARD:
+	{
+	}	break;
+	default: break;
 	}
 }
 
@@ -261,6 +278,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
+	case WM_MOUSEWHEEL:
 		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
@@ -336,35 +354,6 @@ void CGameFramework::ProcessInput()
 			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
 			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
 			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
-		}
-		if (GetCapture() == m_hWnd)
-		{
-			float cxDelta = 0.0f, cyDelta = 0.0f;
-			POINT ptCursorPos;
-
-			// 마우스 커서가 화면에 보이지 않게 한다
-			SetCursor(NULL);
-			// 현재 마우스 커서의 위치를 가져온다
-			GetCursorPos(&ptCursorPos);
-			// 마우스 버튼이 눌린 채로 이전 위치에서 현재 위치까지 움직인 양을 구한다
-			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-
-			if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
-			{
-				if (cxDelta)
-				{
-					if (cxDelta >= 0)
-						m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
-					else
-						m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());
-				}
-			}
-		}
-		if (GetFocus() == m_hWnd)
-		{
-
 		}
 	}
 	break;

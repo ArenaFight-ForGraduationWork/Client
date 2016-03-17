@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAMEFRAMEWORK_H_
+#define GAMEFRAMEWORK_H_
 
 #include "Timer.h"
 #include "Player.h"
@@ -12,6 +13,32 @@
 
 class CGameFramework
 {
+public:
+	CGameFramework();
+	~CGameFramework();
+
+	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
+	void OnDestroy();
+
+	//디바이스, 스왑 체인, 디바이스 컨텍스트, 디바이스와 관련된 뷰를 생성하는 함수이다. 
+	bool CreateRenderTargetDepthStencilView();
+	bool CreateRenderTargetView();
+	bool CreateDirect3DDisplay();
+
+	//렌더링할 메쉬, 객체를 생성하고 소멸하는 함수이다. 
+	void BuildObjects();
+	void ReleaseObjects();
+
+	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 
+	void ProcessInput();
+	void AnimateObjects();
+	void FrameAdvance();
+
+	//윈도우의 메시지(키보드, 마우스 입력)를 처리하는 함수이다. 
+	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+
 private:
 	HINSTANCE m_hInstance;
 	HWND m_hWnd;
@@ -47,32 +74,11 @@ private:
 	ID3D11DepthStencilView *m_pd3dDepthStencilView;
 
 	POINT	m_ptOldCursorPos;
+	POINT	m_ptNewCursorPos;
 
 	CObjectManager *m_pObjectManager;
-
-public:
-	CGameFramework();
-	~CGameFramework();
-
-	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
-	void OnDestroy();
-
-	//디바이스, 스왑 체인, 디바이스 컨텍스트, 디바이스와 관련된 뷰를 생성하는 함수이다. 
-	bool CreateRenderTargetDepthStencilView();
-	bool CreateRenderTargetView();
-	bool CreateDirect3DDisplay();
-
-	//렌더링할 메쉬, 객체를 생성하고 소멸하는 함수이다. 
-	void BuildObjects();
-	void ReleaseObjects();
-
-	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 
-	void ProcessInput();
-	void AnimateObjects();
-	void FrameAdvance();
-
-	//윈도우의 메시지(키보드, 마우스 입력)를 처리하는 함수이다. 
-	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 };
+
+
+
+#endif
