@@ -181,6 +181,9 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//마우스 캡쳐를 해제한다.
 		ReleaseCapture();
 		break;
+	case WM_MOUSEWHEEL:
+		SetFocus(hWnd);
+		break;
 	default:
 		break;
 	}
@@ -209,8 +212,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (m_pObjectManager->FindObject(1))
 				m_pObjectManager->DeleteObject(1);
 			else
-				m_pObjectManager->Insert(3, eResourceType::MonA, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
-				//m_pObjectManager->Insert(1, eResourceType::Cube, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(1, eResourceType::MonA, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F7:
 			if (m_pObjectManager->FindObject(2))
@@ -294,8 +296,6 @@ void CGameFramework::BuildObjects()
 	m_pPlayer = new CPlayer();
 	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
 
-	//m_pObjectManager->Insert(3, eResourceType::MonA, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
-
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);
@@ -331,34 +331,40 @@ void CGameFramework::ProcessInput()
 	{
 		if (GetKeyboardState(pKeyBuffer))
 		{
+			// 이동
 			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
 			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
 			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
 			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
 		}
-		float cxDelta = 0.0f, cyDelta = 0.0f;
-		POINT ptCursorPos;
 		if (GetCapture() == m_hWnd)
 		{
-			//마우스 커서를 화면에서 없앤다(보이지 않게 한다).
+			float cxDelta = 0.0f, cyDelta = 0.0f;
+			POINT ptCursorPos;
+
+			// 마우스 커서가 화면에 보이지 않게 한다
 			SetCursor(NULL);
-			//현재 마우스 커서의 위치를 가져온다.
+			// 현재 마우스 커서의 위치를 가져온다
 			GetCursorPos(&ptCursorPos);
-			//마우스 버튼이 눌린 채로 이전 위치에서 현재 마우스 커서의 위치까지 움직인 양을 구한다.
+			// 마우스 버튼이 눌린 채로 이전 위치에서 현재 위치까지 움직인 양을 구한다
 			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
 			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
 			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-		}
-		//플레이어를 이동하거나(dwDirection) 회전한다(cxDelta 또는 cyDelta).
-		if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
-		{
-			if (cxDelta)
+
+			if ((cxDelta != 0.0f) || (cyDelta != 0.0f))
 			{
-				if (cxDelta >= 0)
-					m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
-				else
-					m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());
+				if (cxDelta)
+				{
+					if (cxDelta >= 0)
+						m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
+					else
+						m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());
+				}
 			}
+		}
+		if (GetFocus() == m_hWnd)
+		{
+
 		}
 	}
 	break;
@@ -366,12 +372,17 @@ void CGameFramework::ProcessInput()
 	{
 		if (GetKeyboardState(pKeyBuffer))
 		{
+			// 이동
 			if (pKeyBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
 			if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
 			if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
 			if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
-			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());
-			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());
+			// 좌우회전
+			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());		// Q
+			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());		// E
+			// 줌
+			if (pKeyBuffer[0x5A] & 0xF0) m_pCamera->Zoom(-100 * m_GameTimer.GetTimeElapsed());				// Z
+			if (pKeyBuffer[0x58] & 0xF0) m_pCamera->Zoom(100 * m_GameTimer.GetTimeElapsed());				// X
 		}
 	}
 	break;

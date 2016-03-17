@@ -12,7 +12,8 @@ CCamera::CCamera()
 	m_pd3dxvLook = new D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
 	m_fTheta = 270.0f;
-	m_fDistanceFromObject = 50.0f;
+	m_fDistanceFromObject = 100.0f;
+	m_fHeight = 40.0f;
 
 	m_fTimeLag = 0.0f;
 
@@ -119,6 +120,20 @@ const float CCamera::GetYaw()
 	return fYaw;
 }
 
+void CCamera::Zoom(const float fZoom)
+{
+	if (m_fDistanceFromObject + fZoom < 10.0f)
+		return;
+	else if (m_fDistanceFromObject + fZoom > 200.f)
+		return;
+
+	float fGradient = m_fDistanceFromObject / m_fHeight;	// ±â¿ï±â
+
+	m_fHeight = (m_fHeight * (m_fDistanceFromObject + fZoom)) / m_fDistanceFromObject;
+	m_fDistanceFromObject += fZoom;
+}
+
+
 
 
 
@@ -131,7 +146,7 @@ void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
 {
 	double theta = D3DXToRadian(m_fTheta);
 	m_pd3dxvPosition->x = pd3dxvPosition->x + (m_fDistanceFromObject * cos(theta));
-	m_pd3dxvPosition->y = pd3dxvPosition->y + 20;
+	m_pd3dxvPosition->y = pd3dxvPosition->y + m_fHeight;
 	m_pd3dxvPosition->z = pd3dxvPosition->z + (m_fDistanceFromObject * sin(theta));
 
 	SetLookAtPosition(*pd3dxvPosition);
