@@ -6,8 +6,7 @@ CGameFramework::CGameFramework()
 	m_pPlayer = nullptr;
 	m_pCamera = nullptr;
 
-	//m_OperationMode = MODE_KEYBOARD;
-	m_OperationMode = MODE_MOUSE;
+	m_OperationMode = MODE_KEYBOARD;
 
 	m_ptOldCursorPos.x = 0;
 	m_ptOldCursorPos.y = 0;
