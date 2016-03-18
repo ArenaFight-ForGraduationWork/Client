@@ -69,6 +69,9 @@ public:
 
 	~CResourceManager();
 
+	//애니메이션 로드용도로 우선 만들어봤당.
+	void _LoadAnimationData(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext);
+
 private:
 	CResourceManager(ID3D11Device *pd3dDevice);
 
