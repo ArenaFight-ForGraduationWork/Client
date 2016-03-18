@@ -66,6 +66,15 @@ private:
 };
 
 
+class CAnimationData
+{
+public:
+	
+private:
+	long long m_AniMaxTime[ANIMATION_COUNT];				// 총 ANIMATION_COUNT 만큼의 재생 시간		, 5개
+	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];			// 총 ANIMATION_COUNT 만큼의 결과 매트릭스 , 5개
+	int m_AnimationIndexCount;										// indexCount는 어떤 애니메이션이던지 상관없이 1개만 가짐
+};
 
 
 
@@ -95,7 +104,7 @@ public:
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
-	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxmtxWorld; }
+	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
 
 	UINT GetId() { return m_id; }
 
@@ -128,7 +137,7 @@ public:
 	int m_AnimationIndexCount;
 
 private:
-	D3DXMATRIX *m_pd3dxmtxWorld;
+	D3DXMATRIX *m_pd3dxWorldMatrix;
 
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
