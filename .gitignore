@@ -1,2 +1,33 @@
+*.opensdf
+*.sdf
+*.ipch
 *.suo
-Client/GameClient.sdf
+*.exp
+*.ilk
+*.pdb
+*.iobj
+*.ipdb
+*.aps
+*.user
+*.tlog
+*.obj
+*.log
+*.res
+*.idb
+*.pch
+*.lastbuildstate
+
+
+# Directories
+ipch
+Debug
+Release
+
+# Executables
+*.exe
+*.dll
+*.lib
+*.lastbuildstate
+*.log
+Client/GameClient.v12.suo
+Client/GameClient.v12.suo
