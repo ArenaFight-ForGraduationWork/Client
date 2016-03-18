@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FBX_H_
+#define FBX_H_
 
 #include "Vertex.h"	//원래는 "Mesh.h"인데, CVertex가 필요해서 썼던걸로 기억함.
 
@@ -47,3 +48,6 @@ public:
 	int GetAnimationIndexCount(){ return m_uiAnimationNodeIndexCount; }
 };
 
+
+
+#endif

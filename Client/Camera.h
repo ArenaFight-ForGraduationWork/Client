@@ -70,6 +70,8 @@ public:
 	/*3인칭 카메라에서 카메라가 바라보는 지점을 설정하는 가상함수이다. 일반적으로 플레이어를 바라보도록 설정한다.*/
 	virtual void SetLookAt(const D3DXVECTOR3 *vLookAt) = 0;
 
+	void Zoom(const float fZoom);
+
 protected:
 	D3DXVECTOR3 *m_pd3dxvPosition;
 
@@ -79,6 +81,7 @@ protected:
 
 	float m_fTheta;
 	float m_fDistanceFromObject;
+	float m_fHeight;
 
 	eCameraMode m_eMode;
 

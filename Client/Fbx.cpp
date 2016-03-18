@@ -26,7 +26,7 @@ void CFbx::Fbx_ReadTextFile_Mesh(char* fileName, vector<CTexturedNormalVertex*> 
 
 	int Cnt = 0;
 	fscanf_s(fp, "%d\n", &Cnt);
-	
+
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 outNormal;
 	D3DXVECTOR3 outUV;
