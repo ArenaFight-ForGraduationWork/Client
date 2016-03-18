@@ -91,7 +91,7 @@ public:
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
-	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxmtxWorld; }
+	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
 
 	UINT GetId() { return m_id; }
 
@@ -106,7 +106,7 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 private:
-	D3DXMATRIX *m_pd3dxmtxWorld;
+	D3DXMATRIX *m_pd3dxWorldMatrix;
 
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
