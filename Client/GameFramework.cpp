@@ -238,8 +238,15 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F4:
-			if (m_pObjectManager->FindObject(30000))
-				m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
+			player_state = 1;
+			cout << "player_state : " << player_state<<endl;
+			//if (m_pObjectManager->FindObject(30000))
+			//	m_pObjectManager->FindObject(30000)->Animate(0, m_pd3dDeviceContext, 0);
+				//m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
+			break;
+		case VK_SPACE:
+			player_state = 2;
+			cout << "player_state : " << player_state << endl;
 			break;
 
 		case VK_ESCAPE:
@@ -317,7 +324,7 @@ void CGameFramework::BuildObjects()
 
 	m_pPlayer = new CPlayer();
 	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
-	m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
+	//m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
 	//m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonB, 0));
 	//m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
 
@@ -393,7 +400,7 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
+	if (m_pScene) m_pScene->AnimateObjects(0, m_pd3dDeviceContext,m_GameTimer.GetTimeElapsed());					
 }
 
 void CGameFramework::FrameAdvance()
