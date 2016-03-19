@@ -62,28 +62,28 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	return pObject;
 }
 
-//CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction, int a)
-//{
-//	//애니메이션 데이터 전용
-//	CObject *pObject = new CObject(id);
-//	pObject->SetMesh(pResourceManager->GetMesh(eType));
-//	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
-//	pObject->SetTexture(pResourceManager->GetTexture(eType));
-//	
-//	//pObject->SetTime();
-//	//pObject->SetConstantBuffer();
-//	//pObject->SetResult();
-//	//pObject->SetAniIndexCount();
-//	
-//	pObject->MoveAbsolute(&position);
-//	pObject->RotateAbsolute(&direction);
-//	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
-//
-//	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
-//	pShader->InsertObject(pObject);
-//
-//	return pObject;
-//}
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+{
+	//애니메이션 데이터 전용
+	CObject *pObject = new CObject(id);
+	pObject->SetMesh(pResourceManager->GetMesh(eType));
+	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
+	pObject->SetTexture(pResourceManager->GetTexture(eType));
+
+	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
+	pObject->SetTime();			//문제
+	pObject->SetAnimationIndexCount();
+	pObject->SetResult();
+
+	pObject->MoveAbsolute(&position);
+	pObject->RotateAbsolute(&direction);
+	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
+
+	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
+	pShader->InsertObject(pObject);
+
+	return pObject;
+}
 
 CObject* CObjectManager::FindObject(UINT id)
 {

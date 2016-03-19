@@ -44,6 +44,7 @@ public:
 
 	int GetSize(){ return size; }
 	XMFLOAT4X4** GetResult(int i){ return m_ppResult[i]; }
+	XMFLOAT4X4*** GetResult() { return m_ppResult; }
 	long long GetAnimationMaxTime(){ return m_llAnimationMaxTime; }
 	int GetAnimationIndexCount(){ return m_uiAnimationNodeIndexCount; }
 };

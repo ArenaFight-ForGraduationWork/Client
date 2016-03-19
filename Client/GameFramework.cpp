@@ -237,6 +237,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			else
 				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
+		case VK_F4:
+			if (m_pObjectManager->FindObject(30000))
+				m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
+			break;
 
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
@@ -312,7 +316,9 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonB, 0));
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
+	m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
+	//m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonB, 0));
 	//m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
 
 	// 1) Ä«¸Þ¶ó init
@@ -396,6 +402,12 @@ void CGameFramework::FrameAdvance()
 
 	ProcessInput();
 
+	//if (m_pObjectManager->FindObject(30000))
+	//{
+	//	const D3DXVECTOR3 *pos = m_pObjectManager->FindObject(30000)->GetPosition();
+	//	cout << pos->x << ", " << pos->y << "," << pos->z << endl;
+	//}
+
 	AnimateObjects();
 
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
@@ -407,6 +419,7 @@ void CGameFramework::FrameAdvance()
 
 	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
 
+	
 	m_pDXGISwapChain->Present(0, 0);
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 12, 37);

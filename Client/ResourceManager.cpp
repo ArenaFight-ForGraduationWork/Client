@@ -27,7 +27,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
 	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
 	m_vResources[(int)eResourceType::MonB]->SetIDs(2, 2, 0, 1);
-	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 1);
+	m_vResources[(int)eResourceType::MonA]->SetIDs(3, 1, 0, 2);
 }
 
 CResourceManager::~CResourceManager()

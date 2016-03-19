@@ -69,6 +69,30 @@ private:
 class CAnimationData
 {
 public:
+	void SetAnimationTime();
+	void SetResultMatrix();
+	void SetAnimationIndexCount();
+
+	XMFLOAT4X4** GetResult(int i)
+	{
+		return m_ppResult[i];
+	}
+	
+	XMFLOAT4X4*** GetResult()
+	{
+		return m_ppResult;
+	}
+
+	long long* GetTime()
+	{
+		return m_AniMaxTime;
+	}
+
+	int GetAnimationIndexCount() { return m_AnimationIndexCount; }
+	long long GetTime(int i)
+	{
+		return m_AniMaxTime[i];
+	}
 	
 private:
 	long long m_AniMaxTime[ANIMATION_COUNT];				// 총 ANIMATION_COUNT 만큼의 재생 시간		, 5개
@@ -125,9 +149,14 @@ public:
 
 	void SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext);
 	void PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext);
+	
 	void SetAniIndexCount(int);
 	void SetResult(XMFLOAT4X4***);
 	void SetTime(long long*);
+
+	void SetAnimationIndexCount();
+	void SetResult();
+	void SetTime();
 
 	XMFLOAT4X4 ***m_pppResult;
 	float m_fAnimationPlaytime = 0.0f;

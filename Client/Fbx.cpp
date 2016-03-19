@@ -121,8 +121,8 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	{
 	case 0:	// 유저
 		fopen_s(&fMonA[0], "Data\\MonA_Matrix_Idle.txt", "rt");
-		fopen_s(&fMonA[1], "Data\\MonA_Matrix_Run.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\MonA_Matrix_Attack.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\MonA_Matrix_Idle.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\MonA_Matrix_Idle.txt", "rt");
 		break;
 	case 1:	// 몬스터1
 		fopen_s(&fMonA[0], "Data\\Forest_Matrix_Idle.txt", "rt");

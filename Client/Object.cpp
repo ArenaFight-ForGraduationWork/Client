@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Object.h"
 
-
+#include "Fbx.h"		//지울수도 있음.
 
 CMaterial::CMaterial()
 {
@@ -76,8 +76,27 @@ void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, 
 }
 
 
+void CAnimationData::SetAnimationIndexCount()
+{
+	m_AnimationIndexCount = CFbx::GetInstance()->GetAnimationIndexCount();
+}
 
+void CAnimationData::SetResultMatrix()
+{
+	for (int i = 0; i < ANIMATION_COUNT; ++i)		//stateCnt만큼 돌려야함
+	{
+		m_ppResult[i] = CFbx::GetInstance()->GetResult(i);
+	}
+}
 
+void CAnimationData::SetAnimationTime()
+{
+	for (int i = 0; i < ANIMATION_COUNT; ++i)
+	{
+		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		cout << i << "번째 max time : " << m_AniMaxTime[i] << endl;
+	}
+}
 
 
 CObject::CObject(UINT id)
@@ -297,6 +316,26 @@ void CObject::SetAniIndexCount(int count)
 {
 	m_AnimationIndexCount = count;
 	cout << "애니메이션 인덱스 갯수 : " << m_AnimationIndexCount << endl;
+}
+
+void CObject::SetResult()
+{
+	m_pppResult = CFbx::GetInstance()->GetResult();
+}
+
+void CObject::SetTime()
+{
+	for (int i = 0; i < ANIMATION_COUNT; ++i)
+	{
+		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		cout << i << "번째 maxtime(불렀음):" << m_AniMaxTime[i] << endl;
+	}
+
+}
+
+void CObject::SetAnimationIndexCount()
+{
+	m_AnimationIndexCount = CFbx::GetInstance()->GetAnimationIndexCount();
 }
 
 void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext)
