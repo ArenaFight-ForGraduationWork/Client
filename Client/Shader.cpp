@@ -306,7 +306,7 @@ void CPlayerShader::AnimateObjects(float fTimeElapsed)
 
 void CPlayerShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	CShader::Render(pd3dDeviceContext);
+	CIlluminatedTexturedShader::Render(pd3dDeviceContext);
 }
 
 

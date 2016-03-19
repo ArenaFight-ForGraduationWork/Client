@@ -92,7 +92,7 @@ public:
 
 
 
-class CPlayerShader : public CShader
+class CPlayerShader : public CIlluminatedTexturedShader
 {
 public:
 	CPlayerShader();
