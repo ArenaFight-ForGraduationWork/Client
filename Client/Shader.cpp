@@ -49,10 +49,10 @@ void CShader::ReleaseAllObjects()
 	m_vObjects.clear();
 }
 
-void CShader::AnimateObjects(float fTimeElapsed)
+void CShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
 	for (auto obj : m_vObjects)
-		obj->Animate(fTimeElapsed);
+		obj->Animate(StateCnt,pd3dDeviceContext,fTimeElapsed);
 }
 
 void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout)
@@ -184,9 +184,9 @@ void CDiffusedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceConte
 	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
 }
 
-void CDiffusedShader::AnimateObjects(float fTimeElapsed)
+void CDiffusedShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed)
 {
-	CShader::AnimateObjects(fTimeElapsed);
+	CShader::AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
 }
 
 void CDiffusedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
@@ -248,9 +248,9 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
 
-void CIlluminatedTexturedShader::AnimateObjects(float fTimeElapsed)
+void CIlluminatedTexturedShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
-	CShader::AnimateObjects(fTimeElapsed);
+	CShader::AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
 }
 
 void CIlluminatedTexturedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
@@ -299,9 +299,9 @@ void CPlayerShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CPlayerShader::AnimateObjects(float fTimeElapsed)
+void CPlayerShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
-	CShader::AnimateObjects(fTimeElapsed);
+	CShader::AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
 }
 
 void CPlayerShader::Render(ID3D11DeviceContext *pd3dDeviceContext)

@@ -54,8 +54,8 @@ public:
 	void ReleaseObjects();
 
 	bool ProcessInput();
-	void AnimateObjects(float fTimeElapsed);
-	void Render(ID3D11DeviceContext*pd3dDeviceContext);
+	void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//¼öÁ¤
+	void Render(ID3D11DeviceContext*pd3dDeviceContext);			
 
 	LIGHTS *m_pLights;
 	ID3D11Buffer *m_pd3dcbLights;

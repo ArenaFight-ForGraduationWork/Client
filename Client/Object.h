@@ -139,7 +139,7 @@ public:
 	void SetTexture(CTexture *pTexture);
 	CTexture* GetTexture() { return m_pTexture; }
 
-	virtual void Animate(float fTimeElapsed);
+	virtual void Animate(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 	/*애니메이션을 위한*/

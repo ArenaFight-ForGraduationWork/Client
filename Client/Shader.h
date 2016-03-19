@@ -30,7 +30,7 @@ public:
 	bool ReleaseObject(UINT id);
 	void ReleaseAllObjects();
 
-	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 protected:
@@ -67,7 +67,7 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
 
-	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 
@@ -86,7 +86,7 @@ public:
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
 
-	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 
@@ -101,7 +101,7 @@ public:
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	
-	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 

@@ -137,8 +137,35 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 	if (m_pMaterial) m_pMaterial->AddRef();
 }
 
-void CObject::Animate(float fTimeElapsed)
+void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
+	if (PreState != StateNum)
+	{
+		PreState = StateNum;
+		m_fAnimationPlaytime = 0.0f;
+	}
+	m_fAnimationPlaytime += 0.01f;
+	NowTime = m_fAnimationPlaytime * 1000;
+
+	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
+	{
+		NowTime -= m_AniMaxTime[StateNum];
+		m_fAnimationPlaytime = 0;
+	}
+
+
+
+	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+	{
+		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
+		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+	}
+
+	if (g_pd3dcbBoneMatrix != nullptr)
+	{
+		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+	}
+
 }
 
 void CObject::Render(ID3D11DeviceContext *pd3dDeviceContext)

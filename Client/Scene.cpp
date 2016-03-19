@@ -43,11 +43,11 @@ bool CScene::ProcessInput()
 	return(false);
 }
 
-void CScene::AnimateObjects(float fTimeElapsed)
+void CScene::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
 	for (auto shader : m_vShaders)
 	{
-		shader->AnimateObjects(fTimeElapsed);
+		shader->AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
 	}
 }
 
