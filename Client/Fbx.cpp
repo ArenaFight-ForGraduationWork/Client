@@ -121,8 +121,8 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	{
 	case 0:	// 유저
 		fopen_s(&fMonA[0], "Data\\MonA_Matrix_Idle.txt", "rt");
-		fopen_s(&fMonA[1], "Data\\MonA_Matrix_Idle.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\MonA_Matrix_Idle.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\MonA_Matrix_Run.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\MonA_Matrix_Attack.txt", "rt");
 		break;
 	case 1:	// 몬스터1
 		fopen_s(&fMonA[0], "Data\\Forest_Matrix_Idle.txt", "rt");
@@ -132,16 +132,38 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	}
 
 
-	fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_llAnimationMaxTime, &m_uiAnimationNodeIndexCount);
+	//fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_llAnimationMaxTime, &m_uiAnimationNodeIndexCount);
 
-	m_ppResult[StateCnt] = new XMFLOAT4X4*[m_llAnimationMaxTime / 10];
+	//m_ppResult[StateCnt] = new XMFLOAT4X4*[m_llAnimationMaxTime / 10];
 
-	for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	//for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	//{
+	//	m_ppResult[StateCnt][i] = new XMFLOAT4X4[m_uiAnimationNodeIndexCount];
+	//}
+
+	//for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	//{
+	//	for (unsigned int j = 0; j < m_uiAnimationNodeIndexCount; ++j)
+	//	{
+	//		for (int m = 0; m < 4; ++m)
+	//		{
+	//			for (int n = 0; n < 4; ++n)
+	//			{
+	//				fscanf_s(fMonA[StateCnt], "%f\n", &m_ppResult[StateCnt][i][j](m, n));
+
+	//			}
+	//		}
+	//	}
+	//}
+
+	fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_AniTime[StateCnt], &m_uiAnimationNodeIndexCount);
+	m_ppResult[StateCnt] = new XMFLOAT4X4*[m_AniTime[StateCnt] / 10];
+	for (long long i = 0; i < m_AniTime[StateCnt] / 10; ++i)
 	{
 		m_ppResult[StateCnt][i] = new XMFLOAT4X4[m_uiAnimationNodeIndexCount];
 	}
 
-	for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	for (long long i = 0; i < m_AniTime[StateCnt] / 10; ++i)
 	{
 		for (unsigned int j = 0; j < m_uiAnimationNodeIndexCount; ++j)
 		{

@@ -354,7 +354,8 @@ void CObject::SetTime()
 {
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
-		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		//m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		m_AniMaxTime[i] = CFbx::GetInstance()->GetAniTime(i);
 		cout << i << "¹øÂ° maxtime(ºÒ·¶À½):" << m_AniMaxTime[i] << endl;
 	}
 
