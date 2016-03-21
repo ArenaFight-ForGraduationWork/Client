@@ -79,7 +79,7 @@ private:
 
 	CObjectManager *m_pObjectManager;
 
-	int player_state = ePLAYER_STATE::IDLE;			//IDLE, RUN, ATTACK ...
+	int player_state = 0;			//IDLE, RUN, ATTACK ...
 };
 
 

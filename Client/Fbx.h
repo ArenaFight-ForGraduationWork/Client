@@ -11,7 +11,6 @@ private:
 
 	/*애니메이션을 위한 변수들*/
 	XMFLOAT4X4** m_ppResult[5];
-	long long m_AniTime[ANIMATION_COUNT];
 	
 	long long m_llAnimationMaxTime;			//애니메이션 최대길이
 	unsigned int m_uiAnimationNodeIndexCount;	//애니메이션 노드 갯수
@@ -48,8 +47,6 @@ public:
 	XMFLOAT4X4*** GetResult() { return m_ppResult; }
 	long long GetAnimationMaxTime(){ return m_llAnimationMaxTime; }
 	int GetAnimationIndexCount(){ return m_uiAnimationNodeIndexCount; }
-
-	long long GetAniTime(int i)	{ return m_AniTime[i]; }
 };
 
 

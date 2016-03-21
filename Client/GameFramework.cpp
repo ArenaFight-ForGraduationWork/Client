@@ -26,8 +26,6 @@ CGameFramework::CGameFramework()
 
 	m_pd3dDepthStencilBuffer = NULL;
 	m_pd3dDepthStencilView = NULL;
-
-	
 }
 
 CGameFramework::~CGameFramework()
@@ -240,15 +238,15 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F4:
-			player_state = ePLAYER_STATE::RUN;
-			cout << "달리기를 눌렀다 , player_state : " << player_state<<endl;
+			player_state = 1;
+			cout << "player_state : " << player_state<<endl;
 			//if (m_pObjectManager->FindObject(30000))
 			//	m_pObjectManager->FindObject(30000)->Animate(0, m_pd3dDeviceContext, 0);
 				//m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
 			break;
 		case VK_SPACE:
-			player_state = ePLAYER_STATE::ATTACK;
-			cout << "공격을 눌렀다, player_state : " << player_state << endl;
+			player_state = 2;
+			cout << "player_state : " << player_state << endl;
 			break;
 
 		case VK_ESCAPE:
@@ -402,12 +400,12 @@ void CGameFramework::ProcessInput()
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(player_state, m_pd3dDeviceContext,m_GameTimer.GetTimeElapsed());					
+	if (m_pScene) m_pScene->AnimateObjects(0, m_pd3dDeviceContext,m_GameTimer.GetTimeElapsed());					
 }
 
 void CGameFramework::FrameAdvance()
 {
-	m_GameTimer.Tick(60.0f);
+	m_GameTimer.Tick(33.0f);
 
 	ProcessInput();
 

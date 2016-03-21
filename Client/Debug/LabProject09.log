@@ -1,28 +1,47 @@
-﻿빌드 시작: 2016-03-21 오전 11:02:33
-     1>2 노드의 "D:\Tortoise\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
+﻿빌드 시작: 2016-03-18 오후 10:54:51
+     1>2 노드의 "D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GameFramework.cpp
-         GameFramework.cpp
-     1>cl : 명령줄 warning D9028: 최소 다시 빌드에 실패했습니다. 정상 빌드로 되돌립니다.
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Tortoise\Client\Client\Debug\GameClient.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11d.lib d3dcompiler.lib d3dx9d.lib dxerr.lib dxguid.lib dinput8.lib winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Tortoise\Client\Client\Debug\GameClient.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Tortoise\Client\Client\Debug\GameClient.lib" /MACHINE:X86 Debug\GameClient.res
-         Debug\Camera.obj
-         Debug\Fbx.obj
-         Debug\GameFramework.obj
-         Debug\GameClient.obj
-         Debug\Mesh.obj
-         Debug\Object.obj
-         Debug\ObjectManager.obj
-         Debug\Player.obj
-         Debug\ResourceManager.obj
-         Debug\Scene.obj
-         Debug\Shader.obj
-         Debug\stdafx.obj
-         Debug\Timer.obj
-         Debug\Vertex.obj
-         LabProject09.vcxproj -> D:\Tortoise\Client\Client\Debug\GameClient.exe
-     1>"D:\Tortoise\Client\Client\LabProject09.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Mesh.cpp
+         Mesh.cpp
+     1>d:\arenafight\client\client\mesh.cpp(417): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(417): error C2227: '->Fbx_ReadTextFile_Mesh' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(417): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(424): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>d:\arenafight\client\client\mesh.cpp(573): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(573): error C2227: '->Fbx_ReadTextFile_Info' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(573): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(574): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(574): error C2227: '->GetSize' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(574): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(578): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(578): error C2227: '->Fbx_ReadTextFile_Mesh' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(578): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(582): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(582): error C2227: '->Fbx_ReadTextFile_Ani' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(582): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(583): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(583): error C2227: '->GetResult' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(583): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(584): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(584): error C2227: '->GetAnimationMaxTime' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(584): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(587): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(587): error C2227: '->GetAnimationIndexCount' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(587): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>d:\arenafight\client\client\mesh.cpp(588): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
+     1>d:\arenafight\client\client\mesh.cpp(588): error C2227: '->Fbx_ReadTextFile_Weight' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+                 'unknown-type' 형식입니다.
+     1>d:\arenafight\client\client\mesh.cpp(588): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
+     1>"D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트를 빌드했습니다(Build 대상). - 실패
 
-빌드했습니다.
+빌드하지 못했습니다.
 
-경과 시간: 00:00:02.62
+경과 시간: 00:00:00.15

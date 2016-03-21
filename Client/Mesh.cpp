@@ -583,7 +583,7 @@ CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3d
 		//m_ppResult[i] = CFbx::GetInstance()->GetResult(i);									//이부분은 현재 objcet.cpp로 빼준 상태임
 		//m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
 		//cout << i << "번째 maxtime*_*:" << m_AniMaxTime[i] << endl;
-	}
+		}
 	//SetAnimationMaxTime(CFbx::GetInstance()->GetAnimationIndexCount());		//함수가 잘못됬다!!!!!!!
 
 
