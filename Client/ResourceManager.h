@@ -43,7 +43,11 @@ enum class eResourceType : BYTE{
 	END
 };
 
-
+enum ePLAYER_STATE{
+	IDLE = 0,
+	RUN,
+	ATTACK,
+};
 
 class CResourceManager
 {

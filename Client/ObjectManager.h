@@ -57,6 +57,8 @@ public:
 		END
 	};
 
+
+
 private:
 	std::map<eObjectType, std::vector<CObject*>> m_mObjects;
 
