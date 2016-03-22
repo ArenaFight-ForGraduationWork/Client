@@ -120,8 +120,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Diffused.fx" />
-    <FxCompile Include="IlluminatedTextured.fx" />
+    <FxCompile Include="Diffused.hlsl" />
+    <FxCompile Include="IlluminatedTextured.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameClient.rc">
