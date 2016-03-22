@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Effect.fx" />
+    <FxCompile Include="Diffused.fx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameClient.rc">
