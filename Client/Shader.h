@@ -55,6 +55,20 @@ protected:
 
 
 
+// 조명을 사용하지 않고 렌더링하기 위한 CDiffusedShader 클래스
+class CDiffusedShader : public CShader
+{
+public:
+	CDiffusedShader();
+	~CDiffusedShader();
+
+	virtual void CreateShader(ID3D11Device *pd3dDevice);
+};
+
+
+
+
+
 // 텍스쳐 맵핑과 조명을 사용하여 렌더링하기 위한 CIlluminatedTexturedShader 클래스
 class CIlluminatedTexturedShader : public CShader
 {
@@ -64,34 +78,8 @@ public:
 
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
-
-	virtual void AnimateObjects(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
-
-
-
-
-
-// 조명을 사용하지 않고 렌더링하기 위한 CDiffusedShader 클래스
-class CDiffusedShader : public CShader
-{
-public:
-	CDiffusedShader();
-	~CDiffusedShader();
-
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld = nullptr);
-
-	virtual void AnimateObjects(float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
-
-
-
 
 
 

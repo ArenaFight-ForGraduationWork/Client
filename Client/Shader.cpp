@@ -128,7 +128,6 @@ void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CTex
 	pd3dDeviceContext->PSSetSamplers(PS_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
 }
 
-
 void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	//정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
@@ -174,25 +173,6 @@ void CDiffusedShader::CreateShader(ID3D11Device *pd3dDevice)
 	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PSDiffusedColor", "ps_4_0", &m_pd3dPixelShader);
 }
 
-void CDiffusedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
-{
-	CShader::CreateShaderVariables(pd3dDevice);
-}
-
-void CDiffusedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld)
-{
-	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
-}
-
-void CDiffusedShader::AnimateObjects(float fTimeElapsed)
-{
-	CShader::AnimateObjects(fTimeElapsed);
-}
-
-void CDiffusedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CShader::Render(pd3dDeviceContext);
-}
 
 
 
@@ -233,11 +213,6 @@ void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld)
-{
-	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
-}
-
 void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -247,17 +222,6 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 	pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
-
-void CIlluminatedTexturedShader::AnimateObjects(float fTimeElapsed)
-{
-	CShader::AnimateObjects(fTimeElapsed);
-}
-
-void CIlluminatedTexturedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CShader::Render(pd3dDeviceContext);
-}
-
 
 
 
