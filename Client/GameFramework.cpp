@@ -314,6 +314,8 @@ void CGameFramework::BuildObjects()
 	m_pPlayer = new CPlayer();
 	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
 
+	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
+
 	// 1) Ä«¸Þ¶ó init
 	m_pCamera = new CThirdPersonCamera();
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);

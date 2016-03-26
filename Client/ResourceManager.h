@@ -39,6 +39,7 @@ enum class eResourceType : BYTE{
 	Cube = 0,
 	Airplain,
 	MonA,
+	Floor,
 	END
 };
 

@@ -28,6 +28,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 1, 0, 1);
 	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
 	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 1);
+	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 1, 0, 1);
 }
 
 CResourceManager::~CResourceManager()
@@ -96,6 +97,9 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 
 	// 2: monA
 	m_mMesh[2] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(1, 1, 1));
+
+	// 3: ¹Ù´Ú
+	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
 }
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {

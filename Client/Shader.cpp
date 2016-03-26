@@ -128,7 +128,6 @@ void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CTex
 	pd3dDeviceContext->PSSetSamplers(PS_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
 }
 
-
 void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	//정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
@@ -170,29 +169,10 @@ void CDiffusedShader::CreateShader(ID3D11Device *pd3dDevice)
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Effect.fx", "VSDiffusedColor", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PSDiffusedColor", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"Diffused.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"Diffused.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
-void CDiffusedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
-{
-	CShader::CreateShaderVariables(pd3dDevice);
-}
-
-void CDiffusedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld)
-{
-	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
-}
-
-void CDiffusedShader::AnimateObjects(float fTimeElapsed)
-{
-	CShader::AnimateObjects(fTimeElapsed);
-}
-
-void CDiffusedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CShader::Render(pd3dDeviceContext);
-}
 
 
 
@@ -217,9 +197,10 @@ void CIlluminatedTexturedShader::CreateShader(ID3D11Device *pd3dDevice)
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Effect.fx", "VSTexturedLighting", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PSTexturedLighting", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
+
 void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 {
 	CShader::CreateShaderVariables(pd3dDevice);
@@ -233,11 +214,6 @@ void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld)
-{
-	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
-}
-
 void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -247,18 +223,6 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 	pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
-
-void CIlluminatedTexturedShader::AnimateObjects(float fTimeElapsed)
-{
-	CShader::AnimateObjects(fTimeElapsed);
-}
-
-void CIlluminatedTexturedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CShader::Render(pd3dDeviceContext);
-}
-
-
 
 
 

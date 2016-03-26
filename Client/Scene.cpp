@@ -78,6 +78,7 @@ void CScene::BuildLights(ID3D11Device *pd3dDevice)
 	m_pLights->m_pLights[0].m_d3dxvPosition = D3DXVECTOR3(0.0f, 100.0f, 0.0f);
 	m_pLights->m_pLights[0].m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_pLights->m_pLights[0].m_d3dxvAttenuation = D3DXVECTOR3(1.0f, 0.001f, 0.0001f);
+
 	m_pLights->m_pLights[1].m_bEnable = 1.0f;
 	m_pLights->m_pLights[1].m_nType = SPOT_LIGHT;
 	m_pLights->m_pLights[1].m_fRange = 100.0f;
@@ -90,6 +91,7 @@ void CScene::BuildLights(ID3D11Device *pd3dDevice)
 	m_pLights->m_pLights[1].m_fFalloff = 8.0f;
 	m_pLights->m_pLights[1].m_fPhi = (float)cos(D3DXToRadian(40.0f));
 	m_pLights->m_pLights[1].m_fTheta = (float)cos(D3DXToRadian(20.0f));
+
 	m_pLights->m_pLights[2].m_bEnable = 1.0f;
 	m_pLights->m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
 	m_pLights->m_pLights[2].m_d3dxcAmbient = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
@@ -119,7 +121,7 @@ void CScene::UpdateLights(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	LIGHTS *pcbLight = (LIGHTS *)d3dMappedResource.pData;
+	LIGHTS *pcbLight = (LIGHTS*)d3dMappedResource.pData;
 	memcpy(pcbLight, m_pLights, sizeof(LIGHTS));
 	pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_LIGHT, 1, &m_pd3dcbLights);
