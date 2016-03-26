@@ -25,10 +25,11 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
 	//m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 1, 0, 1);
-	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
+	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
+	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, -1, -1, 0);
 	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 1);
-	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 1, 0, 1);
+	//m_vResources[(int)eResourceType::Floor]->SetIDs(3, 1, 0, 1);
+	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 1, 0, 2);
 }
 
 CResourceManager::~CResourceManager()
@@ -166,6 +167,12 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[1] = pShader;
+
+	// 2 : Red
+	pShader = new CRedShader();
+	pShader->CreateShader(pd3dDevice);
+	pShader->CreateShaderVariables(pd3dDevice);
+	m_mShader[2] = pShader;
 }
 
 
