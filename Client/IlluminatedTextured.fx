@@ -39,13 +39,13 @@ struct LIGHTEDCOLOR
 };
 
 // 텍스처와 조명을 사용하는 경우의, 정점쉐이더 입력-출력을 위한 구조체
-struct VS_ILLUMINATED_TEXTURED_INPUT
+struct VS_INPUT
 {
 	float3 position : POSITION;
 	float3 normal : NORMAL;
 	float2 tex2dcoord : TEXCOORD0;
 };
-struct VS_ILLUMINATED_TEXTURED_OUPUT
+struct VS_OUTPUT
 {
 	float4 position : SV_POSITION;
 	float3 positionW : POSITION;
@@ -237,16 +237,19 @@ float4 Lighting(float3 vPosition, float3 vNormal)
 	return cColor;
 }
 
-VS_ILLUMINATED_TEXTURED_OUPUT VS_Illuminated_Textured(VS_ILLUMINATED_TEXTURED_INPUT input)
+VS_OUTPUT VS(VS_INPUT input)
 {
-	VS_ILLUMINATED_TEXTURED_OUPUT output = (VS_ILLUMINATED_TEXTURED_OUPUT)0;
+	VS_OUTPUT output = (VS_OUTPUT)0;
 
-	output.normalW = mul(input.normal, (float3x3)gmtxWorld);
-	output.positionW = mul(input.position, (float3x3)gmtxWorld);
-	output.positionW += float3(gmtxWorld._41, gmtxWorld._42, gmtxWorld._43);
 	output.position = mul(float4(input.position, 1.0f), gmtxWorld);
 	output.position = mul(output.position, gmtxView);
 	output.position = mul(output.position, gmtxProjection);
+
+	output.positionW = mul(input.position, (float3x3)gmtxWorld);
+	output.positionW += float3(gmtxWorld._41, gmtxWorld._42, gmtxWorld._43);
+
+	output.normalW = mul(input.normal, (float3x3)gmtxWorld);
+
 	output.tex2dcoord = input.tex2dcoord;
 
 	return output;
@@ -255,13 +258,14 @@ VS_ILLUMINATED_TEXTURED_OUPUT VS_Illuminated_Textured(VS_ILLUMINATED_TEXTURED_IN
 Texture2D gtxtTexture : register(t0);
 SamplerState gSamplerState : register(s0);
 
-
-float4 PS_Illuminated_Textured(VS_ILLUMINATED_TEXTURED_OUPUT input) : SV_Target
+float4 PS(VS_OUTPUT input) : SV_Target
 {
 	input.normalW = normalize(input.normalW);
-	float4 cIllumination = Lighting(input.positionW, input.normalW);
+	float4 cIllumination;
+	cIllumination = Lighting(input.positionW, input.normalW);
 
-		float4 cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord) * cIllumination;
+	float4 cColor;
+	cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord) * cIllumination;
 
-		return cColor;
+	return cColor;
 }

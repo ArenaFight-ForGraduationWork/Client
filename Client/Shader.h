@@ -84,16 +84,6 @@ public:
 
 
 
-class CShadowShader : public CShader
-{
-public:
-	CShadowShader();
-	~CShadowShader();
-
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-};
-
-
 
 
 #endif

@@ -169,8 +169,8 @@ void CDiffusedShader::CreateShader(ID3D11Device *pd3dDevice)
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Diffused.hlsl", "VS_Diffused", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Diffused.hlsl", "PS_Diffused", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"Diffused.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"Diffused.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
 
@@ -197,8 +197,8 @@ void CIlluminatedTexturedShader::CreateShader(ID3D11Device *pd3dDevice)
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"IlluminatedTextured.hlsl", "VS_Illuminated_Textured", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"IlluminatedTextured.hlsl", "PS_Illuminated_Textured", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
 void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -223,36 +223,6 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 	pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
-
-
-
-
-
-
-CShadowShader::CShadowShader()
-{
-}
-CShadowShader::~CShadowShader()
-{
-}
-
-void CShadowShader::CreateShader(ID3D11Device *pd3dDevice)
-{
-	//CShader::CreateShader(pd3dDevice);
-
-	//D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
-	//{
-	//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	//};
-	//UINT nElements = ARRAYSIZE(d3dInputLayout);
-	//CreateVertexShaderFromFile(pd3dDevice, L"Effect.fx", "VSTexturedLighting", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	//CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PSTexturedLighting", "ps_4_0", &m_pd3dPixelShader);
-}
-
-
-
 
 
 
