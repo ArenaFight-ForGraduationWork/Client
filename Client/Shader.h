@@ -86,4 +86,19 @@ public:
 
 
 
+class CRedShader : public CShader
+{
+public:
+	CRedShader();
+	~CRedShader();
+
+	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
+	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
+};
+
+
+
+
+
 #endif

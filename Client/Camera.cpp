@@ -108,7 +108,7 @@ void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
 	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxProjection, m_pd3dxmtxProjection);
 	pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
 
-	pd3dDeviceContext->VSSetConstantBuffers(NULL, 1, &m_pd3dcbCamera);
+	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
 }
 
 const float CCamera::GetYaw()
