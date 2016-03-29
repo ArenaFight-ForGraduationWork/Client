@@ -223,7 +223,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (m_pObjectManager->FindObject(0))
 				m_pObjectManager->DeleteObject(0);
 			else
-				m_pObjectManager->Insert(0, eResourceType::Airplain, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(0, eResourceType::Cube, D3DXVECTOR3(-120, 0, 0));
 			break;
 		case VK_F6:
 			if (m_pObjectManager->FindObject(1))
@@ -312,7 +312,7 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, 0));
 
 	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
 

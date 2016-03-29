@@ -37,7 +37,6 @@ private:
 enum class eResourceType : BYTE{
 	START = 0,
 	Cube = 0,
-	Airplain,
 	MonA,
 	Floor,
 	END
@@ -50,9 +49,7 @@ class CResourceManager
 public:
 	enum class eShaderType : BYTE{
 		START = 0,
-		Diffused = 0,
-		IlluminatedTextured,
-		Red,
+		IlluminatedTextured = 0,
 		END
 	};
 

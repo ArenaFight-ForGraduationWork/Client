@@ -24,12 +24,9 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
-	//m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, -1, -1, 0);
-	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 1);
-	//m_vResources[(int)eResourceType::Floor]->SetIDs(3, 1, 0, 1);
-	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 1, 0, 2);
+	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 0);
+	m_vResources[(int)eResourceType::MonA]->SetIDs(1, 1, 0, 0);
+	m_vResources[(int)eResourceType::Floor]->SetIDs(2, 1, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -93,14 +90,11 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	// 0 : 큐브
 	m_mMesh[0] = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
 
-	// 1 : 비행기
-	m_mMesh[1] = new CAirplaneMesh(pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
-
 	// 2: monA
-	m_mMesh[2] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(1, 1, 1));
+	m_mMesh[1] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(1, 1, 1));
 
 	// 3: 바닥
-	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
+	m_mMesh[2] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
 }
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {
@@ -156,23 +150,11 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 {
 	CShader *pShader;
 
-	// 0 : DiffusedShader
-	pShader = new CDiffusedShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[0] = pShader;
-
-	// 1 : IlluminatedTextured
+	// 0 : IlluminatedTextured
 	pShader = new CIlluminatedTexturedShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[1] = pShader;
-
-	// 2 : Red
-	pShader = new CRedShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[2] = pShader;
+	m_mShader[0] = pShader;
 }
 
 
