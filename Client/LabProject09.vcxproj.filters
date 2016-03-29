@@ -122,6 +122,7 @@
   <ItemGroup>
     <FxCompile Include="Diffused.fx" />
     <FxCompile Include="IlluminatedTextured.fx" />
+    <FxCompile Include="Red.fx" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameClient.rc">

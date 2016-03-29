@@ -52,6 +52,7 @@ public:
 		START = 0,
 		Diffused = 0,
 		IlluminatedTextured,
+		Red,
 		END
 	};
 
