@@ -16,6 +16,7 @@ struct PS_INPUT
 	float3 positionW : POSITION;
 	float3 normalW : NORMAL;
 	float2 tex2dcoord : TEXCOORD0;
+	float fogFactor : FOG;
 };
 
 cbuffer cbViewProjectionMatrix : register(b0)
@@ -26,6 +27,11 @@ cbuffer cbViewProjectionMatrix : register(b0)
 cbuffer cbWorldMatrix : register(b1)
 {
 	matrix gmtxWorld : packoffset(c0);
+};
+cbuffer cbFog : register(b2)
+{
+	float fogStart;
+	float fogEnd;
 };
 
 PS_INPUT VS(VS_INPUT input)
@@ -42,6 +48,11 @@ PS_INPUT VS(VS_INPUT input)
 	output.normalW = mul(input.normal, (float3x3)gmtxWorld);
 
 	output.tex2dcoord = input.tex2dcoord;
+
+	float4 cameraPosition;
+	cameraPosition = mul(float4(input.position, 1.0f), gmtxWorld);
+	cameraPosition = mul(cameraPosition, gmtxView);
+	output.fogFactor = saturate((fogEnd - cameraPosition.z) / (fogEnd - fogStart));
 
 	return output;
 }
@@ -278,6 +289,10 @@ float4 PS(PS_INPUT input) : SV_Target
 
 	float4 cColor;
 	cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord) * cIllumination;
+
+	float4 fogColor;
+	fogColor = float4(0.5f, 0.5f, 0.5f, 1.0f);
+	cColor = (input.fogFactor * cColor) + (1.0f - input.fogFactor) * fogColor;
 
 	return cColor;
 }
