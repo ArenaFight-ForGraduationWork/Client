@@ -76,28 +76,6 @@ void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, 
 }
 
 
-void CAnimationData::SetAnimationIndexCount()
-{
-	m_AnimationIndexCount = CFbx::GetInstance()->GetAnimationIndexCount();
-}
-
-void CAnimationData::SetResultMatrix()
-{
-	for (int i = 0; i < ANIMATION_COUNT; ++i)		//stateCnt만큼 돌려야함
-	{
-		m_ppResult[i] = CFbx::GetInstance()->GetResult(i);
-	}
-}
-
-void CAnimationData::SetAnimationTime()
-{
-	for (int i = 0; i < ANIMATION_COUNT; ++i)
-	{
-		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
-		cout << i << "번째 max time : " << m_AniMaxTime[i] << endl;
-	}
-}
-
 
 CObject::CObject(UINT id)
 {
@@ -139,6 +117,7 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 
 void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
+	
 	if (PreState != StateNum)
 	{
 		PreState = StateNum;
@@ -147,16 +126,19 @@ void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float
 	m_fAnimationPlaytime += 0.01f;
 	NowTime = m_fAnimationPlaytime * 1000;
 
+
 	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
-	{
+	{	
 		NowTime -= m_AniMaxTime[StateNum];
 		m_fAnimationPlaytime = 0;
 	}
 
 
 
-	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+	for (int i = 0; i < m_AnimationIndexCount; ++i)
 	{
+		/*pResult[i] = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
+		g_pcbBoneMatrix->m_XMmtxBone[i] = pResult[i];*/
 		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
 		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
 	}
@@ -334,7 +316,7 @@ void CObject::SetTime(long long *time)
 	for (int i = 0; i < 5; ++i)
 	{
 		m_AniMaxTime[i] = time[i];
-		cout << i << "번째 maxtime:" << m_AniMaxTime[i] << endl;
+		//cout << i << "번째 maxtime:" << m_AniMaxTime[i] << endl;
 	}
 
 }
@@ -342,7 +324,7 @@ void CObject::SetTime(long long *time)
 void CObject::SetAniIndexCount(int count)
 {
 	m_AnimationIndexCount = count;
-	cout << "애니메이션 인덱스 갯수 : " << m_AnimationIndexCount << endl;
+	//cout << "애니메이션 인덱스 갯수 : " << m_AnimationIndexCount << endl;
 }
 
 void CObject::SetResult()
@@ -356,14 +338,23 @@ void CObject::SetTime()
 	{
 		//m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
 		m_AniMaxTime[i] = CFbx::GetInstance()->GetAniTime(i);
-		cout << i << "번째 maxtime(불렀음):" << m_AniMaxTime[i] << endl;
+		//m_AniMaxTime[i] = *CFbx::GetInstance()->GetTime(i);
+		cout << i << "번째 maxtime(불렀음) : " << m_AniMaxTime[i] << endl;
 	}
 
 }
 
 void CObject::SetAnimationIndexCount()
 {
-	m_AnimationIndexCount = CFbx::GetInstance()->GetAnimationIndexCount();
+	//m_AnimationIndexCount = CFbx::GetInstance()->GetAnimationIndexCount();
+	m_AnimationIndexCount = *CFbx::GetInstance()->GetAniIndexCnt();
+	cout << "애니메이션 인덱스 갯수 : " << m_AnimationIndexCount << endl;
+}
+
+void CObject::ReadTextFile(int CharNum, int StateCount)
+{
+	for (int i = 0; i < StateCount; ++i)
+		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
 }
 
 void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext)

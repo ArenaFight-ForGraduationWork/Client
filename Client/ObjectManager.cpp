@@ -52,6 +52,19 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
+
+	cout << "insert 아이디 : " << id << endl;
+
+	if (id == 0)
+	{
+		cout << " id가 0일때 id : " << id << endl;
+	}
+	else
+	{
+		cout << "그 외 나머지 아이디일때 : " << id << endl;
+	}
+	cout << endl;
+
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
@@ -62,7 +75,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	return pObject;
 }
 
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, int CharNum, int StateCnt, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {
 	//애니메이션 데이터 전용
 	CObject *pObject = new CObject(id);
@@ -70,10 +83,14 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 
+	cout << "insert 아이디 : " << id << endl;
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
-	pObject->SetTime();			//문제
-	pObject->SetAnimationIndexCount();
-	pObject->SetResult();
+
+		pObject->ReadTextFile(CharNum, StateCnt);
+		pObject->SetResult();
+		pObject->SetTime();
+		pObject->SetAnimationIndexCount();		
+
 
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);

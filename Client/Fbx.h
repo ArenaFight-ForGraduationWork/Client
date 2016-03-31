@@ -23,6 +23,9 @@ private:
 
 	FILE *fp;
 	FILE *fMonA[3];		//안에 숫자는 바뀔 수 있음.
+	FILE *fMonB[3];
+	long long* m_pAniTime;
+	unsigned int* m_pAniIndexCount;
 
 public:
 	CFbx();
@@ -49,6 +52,9 @@ public:
 	long long GetAnimationMaxTime(){ return m_llAnimationMaxTime; }
 	int GetAnimationIndexCount(){ return m_uiAnimationNodeIndexCount; }
 	long long GetAniTime(int i)	{ return m_AniTime[i]; }
+
+	long long* GetTime(int i ){ return &m_pAniTime[i]; }
+	unsigned int* GetAniIndexCnt()	{ return m_pAniIndexCount; }
 };
 
 

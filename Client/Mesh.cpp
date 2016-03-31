@@ -572,18 +572,19 @@ CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3d
 {
 	CFbx::GetInstance()->Fbx_ReadTextFile_Info(CharNum);
 	m_nVertices = CFbx::GetInstance()->GetSize();
+	cout << "사이즈 : " << m_nVertices << endl;
 
 	ppVertices = new CAnimationVertex[m_nVertices];
 
 	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
 
-	for (int i = 0; i < StateCnt; ++i)
-	{
-		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
+	//for (int i = 0; i < StateCnt; ++i)
+	//{
+		//CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
 		//m_ppResult[i] = CFbx::GetInstance()->GetResult(i);									//이부분은 현재 objcet.cpp로 빼준 상태임
 		//m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
 		//cout << i << "번째 maxtime*_*:" << m_AniMaxTime[i] << endl;
-		}
+	//}
 	//SetAnimationMaxTime(CFbx::GetInstance()->GetAnimationIndexCount());		//함수가 잘못됬다!!!!!!!
 
 

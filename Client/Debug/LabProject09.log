@@ -1,47 +1,46 @@
-﻿빌드 시작: 2016-03-18 오후 10:54:51
-     1>2 노드의 "D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
+﻿빌드 시작: 2016-03-31 오후 7:35:57
+     1>2 노드의 "D:\Tortoise\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Mesh.cpp
-         Mesh.cpp
-     1>d:\arenafight\client\client\mesh.cpp(417): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(417): error C2227: '->Fbx_ReadTextFile_Mesh' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(417): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(424): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
-     1>d:\arenafight\client\client\mesh.cpp(573): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(573): error C2227: '->Fbx_ReadTextFile_Info' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(573): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(574): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(574): error C2227: '->GetSize' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(574): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(578): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(578): error C2227: '->Fbx_ReadTextFile_Mesh' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(578): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(582): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(582): error C2227: '->Fbx_ReadTextFile_Ani' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(582): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(583): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(583): error C2227: '->GetResult' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(583): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(584): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(584): error C2227: '->GetAnimationMaxTime' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(584): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(587): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(587): error C2227: '->GetAnimationIndexCount' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(587): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>d:\arenafight\client\client\mesh.cpp(588): error C2653: 'CFbx' : 클래스 또는 네임스페이스 이름이 아닙니다.
-     1>d:\arenafight\client\client\mesh.cpp(588): error C2227: '->Fbx_ReadTextFile_Weight' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
-                 'unknown-type' 형식입니다.
-     1>d:\arenafight\client\client\mesh.cpp(588): error C3861: 'GetInstance': 식별자를 찾을 수 없습니다.
-     1>"D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트를 빌드했습니다(Build 대상). - 실패
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Object.cpp ObjectManager.cpp
+         ObjectManager.cpp
+     1>d:\tortoise\client\client\objectmanager.cpp(39): warning C4244: '인수' : 'int'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>d:\tortoise\client\client\objectmanager.cpp(40): warning C4244: '인수' : 'int'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>d:\tortoise\client\client\objectmanager.cpp(121): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+     1>d:\tortoise\client\client\objectmanager.cpp(134): warning C4258: 'i' : for 루프의 정의가 무시되고 바깥쪽 범위의 정의가 사용됩니다.
+                 d:\tortoise\client\client\objectmanager.cpp(127) : 'i' 정의가 무시됩니다.
+                 d:\tortoise\client\client\objectmanager.cpp(121) : 'i' 정의가 사용됩니다.
+     1>d:\tortoise\client\client\objectmanager.cpp(135): warning C4258: 'i' : for 루프의 정의가 무시되고 바깥쪽 범위의 정의가 사용됩니다.
+                 d:\tortoise\client\client\objectmanager.cpp(127) : 'i' 정의가 무시됩니다.
+                 d:\tortoise\client\client\objectmanager.cpp(121) : 'i' 정의가 사용됩니다.
+         Object.cpp
+     1>d:\tortoise\client\client\object.cpp(92): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>d:\tortoise\client\client\object.cpp(127): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>d:\tortoise\client\client\object.cpp(264): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+     1>d:\tortoise\client\client\object.cpp(271): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+     1>d:\tortoise\client\client\object.cpp(278): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+     1>d:\tortoise\client\client\object.cpp(306): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+     1>d:\tortoise\client\client\object.cpp(390): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         코드를 생성하고 있습니다...
+     1>d:\tortoise\client\client\objectmanager.cpp(112): warning C4715: 'CObjectManager::FindObject' : 모든 제어 경로에서 값을 반환하지는 않습니다.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Tortoise\Client\Client\Debug\GameClient.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11d.lib d3dcompiler.lib d3dx9d.lib dxerr.lib dxguid.lib dinput8.lib winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Tortoise\Client\Client\Debug\GameClient.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Tortoise\Client\Client\Debug\GameClient.lib" /MACHINE:X86 Debug\GameClient.res
+         Debug\Camera.obj
+         Debug\Fbx.obj
+         Debug\GameFramework.obj
+         Debug\GameClient.obj
+         Debug\Mesh.obj
+         Debug\Object.obj
+         Debug\ObjectManager.obj
+         Debug\Player.obj
+         Debug\ResourceManager.obj
+         Debug\Scene.obj
+         Debug\Shader.obj
+         Debug\stdafx.obj
+         Debug\Timer.obj
+         Debug\Vertex.obj
+         LabProject09.vcxproj -> D:\Tortoise\Client\Client\Debug\GameClient.exe
+     1>"D:\Tortoise\Client\Client\LabProject09.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
 
-빌드하지 못했습니다.
+빌드했습니다.
 
-경과 시간: 00:00:00.15
+경과 시간: 00:00:01.37

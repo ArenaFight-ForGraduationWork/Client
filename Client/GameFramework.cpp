@@ -225,12 +225,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			else
 				m_pObjectManager->Insert(0, eResourceType::Airplain, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
-		case VK_F6:
+		/*case VK_F6:
 			if (m_pObjectManager->FindObject(1))
 				m_pObjectManager->DeleteObject(1);
 			else
 				m_pObjectManager->Insert(1, eResourceType::MonB, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, -180, 0));
-			break;
+			break;*/
 		case VK_F7:
 			if (m_pObjectManager->FindObject(2))
 				m_pObjectManager->DeleteObject(2);
@@ -323,10 +323,11 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
-	//m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
-	//m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonB, 0));
-	//m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, 0, 3,D3DXVECTOR3(0, -60, 0), D3DXVECTOR3(0, 0, 0)));
+
+	m_pObjectManager->Insert(20001, eResourceType::MonB, m_pd3dDevice, m_pd3dDeviceContext, 1, 3, D3DXVECTOR3(50, -60, 0), D3DXVECTOR3(0, 0, 0));
+
+
 
 	// 1) Ä«¸Þ¶ó init
 	m_pCamera = new CThirdPersonCamera();
@@ -408,12 +409,6 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.Tick(60.0f);
 
 	ProcessInput();
-
-	//if (m_pObjectManager->FindObject(30000))
-	//{
-	//	const D3DXVECTOR3 *pos = m_pObjectManager->FindObject(30000)->GetPosition();
-	//	cout << pos->x << ", " << pos->y << "," << pos->z << endl;
-	//}
 
 	AnimateObjects();
 

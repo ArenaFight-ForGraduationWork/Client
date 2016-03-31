@@ -38,8 +38,8 @@ enum class eResourceType : BYTE{
 	START = 0,
 	Cube = 0,
 	Airplain,
-	MonB,	//임시 object 용도
-	MonA,	//임시 animation 용도
+	MonA,	//임시 object 용도
+	MonB,	//임시 animation 용도
 	END
 };
 

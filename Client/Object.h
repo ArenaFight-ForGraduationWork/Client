@@ -157,14 +157,10 @@ public:
 	void SetAnimationIndexCount();
 	void SetResult();
 	void SetTime();
+	void ReadTextFile(int charNum, int State);
 
-	XMFLOAT4X4 ***m_pppResult;
-	float m_fAnimationPlaytime = 0.0f;
-	long long  NowTime;
-	int PreState;	//이전 상태
-	long long m_AniMaxTime[5];
-	int m_AnimationIndexCount;
-
+	
+	int abc = 0;
 private:
 	D3DXMATRIX *m_pd3dxWorldMatrix;
 
@@ -173,6 +169,16 @@ private:
 	CTexture *m_pTexture;
 
 	UINT m_id;
+
+	XMMATRIX *pResult;
+	XMFLOAT4X4 ***m_pppResult;
+	float m_fAnimationPlaytime = 0.0f;
+	long long  NowTime;
+	int PreState;	//이전 상태
+	long long m_AniMaxTime[5];
+	int m_AnimationIndexCount;
+
+	
 
 	const D3DXMATRIX* _GetRotationMatrix();
 };
