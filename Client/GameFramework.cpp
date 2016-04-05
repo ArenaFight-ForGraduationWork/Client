@@ -223,7 +223,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (m_pObjectManager->FindObject(0))
 				m_pObjectManager->DeleteObject(0);
 			else
-				m_pObjectManager->Insert(0, eResourceType::Airplain, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(0, eResourceType::Cube, D3DXVECTOR3(-120, 0, 0));
 			break;
 		case VK_F6:
 			if (m_pObjectManager->FindObject(1))
@@ -312,7 +312,7 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::Airplain, 0));
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, 0));
 
 	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
 
@@ -399,7 +399,8 @@ void CGameFramework::FrameAdvance()
 
 	AnimateObjects();
 
-	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	//float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	float fClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 

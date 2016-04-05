@@ -69,6 +69,7 @@ CObject* CObjectManager::FindObject(UINT id)
 		if (id == obj->GetId())
 			return obj;
 	}
+	return nullptr;
 }
 
 const std::vector<CObject*> CObjectManager::FindObjectInCategory(const UINT id)
