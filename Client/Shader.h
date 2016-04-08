@@ -10,12 +10,12 @@ struct VS_CB_WORLD_MATRIX
 	D3DXMATRIX m_d3dxmtxWorld;
 };
 
-struct VS_CB_FOG
-{
-	float fogStart;
-	float fogEnd;
-	float padding1, padding2;
-};
+//struct VS_CB_FOG
+//{
+//	float fogStart;
+//	float fogEnd;
+//	float padding1, padding2;
+//};
 
 
 
@@ -92,7 +92,7 @@ public:
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
 
 private:
-	ID3D11Buffer *m_pd3dcbFog;
+	//ID3D11Buffer *m_pd3dcbFog;
 };
 
 

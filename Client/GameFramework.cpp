@@ -328,6 +328,10 @@ void CGameFramework::BuildObjects()
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 	m_pCamera->GenerateViewMatrix();
+
+	/* temp */
+	m_pFog = new CFog();
+	m_pFog->Initialize(m_pd3dDevice);
 }
 
 
@@ -383,6 +387,9 @@ void CGameFramework::ProcessInput()
 
 	// 4) 플레이어 위치에 따라 카메라 update
 	m_pCamera->Update(m_pPlayer->GetPosition());
+
+	/* temp */
+	m_pFog->UpdateShaderVariables(m_pd3dDeviceContext);
 }
 
 
@@ -398,7 +405,7 @@ void CGameFramework::FrameAdvance()
 	ProcessInput();
 
 	AnimateObjects();
-
+	
 	//float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	float fClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);

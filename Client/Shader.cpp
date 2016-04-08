@@ -208,7 +208,7 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 
 CFogShader::CFogShader()
 {
-	m_pd3dcbFog = nullptr;
+	//m_pd3dcbFog = nullptr;
 }
 
 CFogShader::~CFogShader()
@@ -243,23 +243,23 @@ void CFogShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	d3dBufferDesc.ByteWidth = sizeof(MATERIAL);
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 
-	// FOG
-	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(VS_CB_FOG);
-	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFog);
+	//// FOG
+	//ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	//d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	//d3dBufferDesc.ByteWidth = sizeof(VS_CB_FOG);
+	//d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFog);
 
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	ID3D11DeviceContext *pDeviceContext;
-	pd3dDevice->GetImmediateContext(&pDeviceContext);
-	pDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	VS_CB_FOG *pcbFog = (VS_CB_FOG *)d3dMappedResource.pData;
-	pcbFog->fogStart = 300;
-	pcbFog->fogEnd = 500;
-	pDeviceContext->Unmap(m_pd3dcbFog, 0);
-	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
+	//D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	//ID3D11DeviceContext *pDeviceContext;
+	//pd3dDevice->GetImmediateContext(&pDeviceContext);
+	//pDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	//VS_CB_FOG *pcbFog = (VS_CB_FOG *)d3dMappedResource.pData;
+	//pcbFog->fogStart = 300;
+	//pcbFog->fogEnd = 500;
+	//pDeviceContext->Unmap(m_pd3dcbFog, 0);
+	//pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
 }
 
 void CFogShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial)

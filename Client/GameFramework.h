@@ -7,6 +7,9 @@
 #include "Camera.h"
 #include "ObjectManager.h"
 
+/* temp */
+#include "Fog.h"
+
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
@@ -77,6 +80,9 @@ private:
 	POINT	m_ptNewCursorPos;
 
 	CObjectManager *m_pObjectManager;
+
+	/* temp */
+	CFog *m_pFog;
 };
 
 
