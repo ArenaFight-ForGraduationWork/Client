@@ -5,9 +5,10 @@
 
 struct VS_CB_FOG
 {
-	float fogStart;
-	float fogEnd;
-	float padding1, padding2;
+	D3DXVECTOR3 m_d3dxvCenter;
+	float m_fStart;
+	float m_fEnd;
+	float padding1, padding2, padding3;
 };
 
 
@@ -18,10 +19,14 @@ public:
 	CFog();
 	~CFog();
 
-	void Initialize(ID3D11Device *pd3dDevice);
-	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
+	void Initialize(ID3D11Device *pd3dDevice, const D3DXVECTOR3 *pd3dxvCenter, const float fFogStart = 500, const float fFogEnd = 1000);
+	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 pd3dxvCenter);
+	void Destroy();
 
 private:
+	float m_fStart;
+	float m_fEnd;
+
 	ID3D11Buffer *m_pd3dcbFog;
 };
 

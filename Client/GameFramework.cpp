@@ -330,8 +330,20 @@ void CGameFramework::BuildObjects()
 	m_pCamera->GenerateViewMatrix();
 
 	/* temp */
+	{
+		for (short i = -2; i < 2; ++i)
+		{
+			for (short j = -2; j < 2; ++j)
+			{
+				m_pObjectManager->Insert(100 + i, eResourceType::Cube, D3DXVECTOR3(300 * i, 0, 300 * j), D3DXVECTOR3(0, 0, 0));
+			}
+		}
+	}
+
+
+	/* temp */
 	m_pFog = new CFog();
-	m_pFog->Initialize(m_pd3dDevice);
+	m_pFog->Initialize(m_pd3dDevice, m_pPlayer->GetPosition());
 }
 
 
@@ -389,7 +401,8 @@ void CGameFramework::ProcessInput()
 	m_pCamera->Update(m_pPlayer->GetPosition());
 
 	/* temp */
-	m_pFog->UpdateShaderVariables(m_pd3dDeviceContext);
+	//m_pFog->UpdateShaderVariables(m_pd3dDeviceContext, m_pPlayer->GetPosition());
+	m_pFog->UpdateShaderVariables(m_pd3dDeviceContext, *(m_pPlayer->GetPosition()));
 }
 
 

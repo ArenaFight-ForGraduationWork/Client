@@ -30,8 +30,9 @@ cbuffer cbWorldMatrix : register(b1)
 };
 cbuffer cbFog : register(b2)
 {
-	float fogStart;
-	float fogEnd;
+	float3 gf3FogCenter;
+	float gfFogStart;
+	float gfFogEnd;
 };
 
 PS_INPUT VS(VS_INPUT input)
@@ -49,10 +50,13 @@ PS_INPUT VS(VS_INPUT input)
 
 	output.tex2dcoord = input.tex2dcoord;
 
-	float4 cameraPosition;
-	cameraPosition = mul(float4(input.position, 1.0f), gmtxWorld);
-	cameraPosition = mul(cameraPosition, gmtxView);
-	output.fogFactor = saturate((fogEnd - cameraPosition.z) / (fogEnd - fogStart));
+	float4 inputVertex;
+	inputVertex = mul(float4(input.position, 1.0f), gmtxWorld);
+	float distance;
+	distance = sqrt(((gf3FogCenter.x - inputVertex.x)*(gf3FogCenter.x - inputVertex.x))
+		+ ((gf3FogCenter.z - inputVertex.z)*(gf3FogCenter.z - inputVertex.z))
+		);
+	output.fogFactor = saturate((gfFogEnd - distance) / (gfFogEnd - gfFogStart));
 
 	return output;
 }
