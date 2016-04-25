@@ -61,6 +61,15 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
 	}
 }
 
+void CScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
+{
+	UpdateLights(pd3dDeviceContext);
+	for (auto shader : m_vShaders)
+	{
+		shader->AnimateObjectAndRender(pd3dDeviceContext, time);
+	}
+}
+
 void CScene::BuildLights(ID3D11Device *pd3dDevice)
 {
 	m_pLights = new LIGHTS;

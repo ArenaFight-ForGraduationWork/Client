@@ -142,11 +142,21 @@ public:
 	virtual void Animate(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	/*애니메이션을 위한*/
+	//애니메이션 + 렌더
+	virtual void AnimateObjectAndRender(ID3D11DeviceContext*, float time);
+
+	//=================================================================
+	/* 애니메이션을 위한 변수 및 함수 */
 	ID3D11Buffer *g_pd3dcbBoneMatrix = nullptr;
 	D3D11_MAPPED_SUBRESOURCE g_d3dMappedResource;
 	VS_CB_BONE_MATRIX *g_pcbBoneMatrix = nullptr;
-
+	XMFLOAT4X4 ***m_pppResult;
+	float m_fAnimationPlaytime = 0.0f;
+	long long  NowTime;
+	int PreState;	//이전 상태
+	long long m_AniMaxTime[5];
+	int m_AnimationIndexCount;
+	int Animation_state = 0;		// IDLE, RUN, ATTACK...
 	void SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext);
 	void PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext);
 	
@@ -159,26 +169,34 @@ public:
 	void SetTime();
 	void ReadTextFile(int charNum, int State);
 
+	void SetPlayAnimationState(int stateNum);
+	//=================================================================
+
+	//=================================================================
+	/* 충돌체크를 위한 변수 및 함수 */
+	D3DXVECTOR3 m_MaxVer;			//충돌체크를 위한 최대값
+	D3DXVECTOR3 m_MinVer;			//충돌체크를 위한 최소값
+
+	D3DXVECTOR3 m_tempMaxVer;	// 바운딩박스를 움직이기 위한 임시 변수
+	D3DXVECTOR3 m_tempMinVer;
+
+	bool Collison(CObject *pObject);		//충돌체크 확인하는 함수
+	virtual void SetBoundingBox();	//오브젝트 충돌체크를 위해 씌우기(?)
+	virtual void MoveBoundingBox(const D3DXVECTOR3* d3dxvec);
 	
-	int abc = 0;
+	CBoundingBoxMesh* GetBoundingBox() { return m_pBoundingBox; }
+	D3DXVECTOR3 GetMaxVer(){ return m_MaxVer; }
+	D3DXVECTOR3 GetMinVer() { return m_MinVer; }
+	//=================================================================
+
 private:
 	D3DXMATRIX *m_pd3dxWorldMatrix;
 
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
-
+	CBoundingBoxMesh *m_pBoundingBox;
 	UINT m_id;
-
-	XMMATRIX *pResult;
-	XMFLOAT4X4 ***m_pppResult;
-	float m_fAnimationPlaytime = 0.0f;
-	long long  NowTime;
-	int PreState;	//이전 상태
-	long long m_AniMaxTime[5];
-	int m_AnimationIndexCount;
-
-	
 
 	const D3DXMATRIX* _GetRotationMatrix();
 };

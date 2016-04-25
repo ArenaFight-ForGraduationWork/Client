@@ -10,7 +10,7 @@ CCamera::CCamera()
 	m_pd3dxvLook = new D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
 	m_fTheta = 270.0f;
-	m_fDistanceFromObject =200.0f;
+	m_fDistanceFromObject =250.0f;
 	m_fHeight = 90.0f;
 
 	m_fTimeLag = 0.0f;
@@ -122,7 +122,7 @@ void CCamera::Zoom(const float fZoom)
 {
 	if (m_fDistanceFromObject + fZoom < 10.0f)
 		return;
-	else if (m_fDistanceFromObject + fZoom > 200.f)
+	else if (m_fDistanceFromObject + fZoom > 250.f)
 		return;
 
 	float fGradient = m_fDistanceFromObject / m_fHeight;	// ±â¿ï±â

@@ -219,34 +219,32 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F2:
 			m_OperationMode = MODE_KEYBOARD;
 			break;
-		case VK_F5:
-			if (m_pObjectManager->FindObject(0))
-				m_pObjectManager->DeleteObject(0);
+
+		case VK_F3:
+			if (m_pObjectManager->FindObject(4))
+				m_pObjectManager->DeleteObject(4);
 			else
-				m_pObjectManager->Insert(0, eResourceType::Airplain, D3DXVECTOR3(-120, 0, 0), D3DXVECTOR3(0, 0, 0));
+				m_pObjectManager->Insert(4, eResourceType::MonObjB, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
-		/*case VK_F6:
-			if (m_pObjectManager->FindObject(1))
-				m_pObjectManager->DeleteObject(1);
-			else
-				m_pObjectManager->Insert(1, eResourceType::MonB, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, -180, 0));
-			break;*/
-		case VK_F7:
+
+		case VK_F4:
+			if (m_pObjectManager->FindObject(20000))
+			{
+				m_pObjectManager->DeleteObject(20000);
+				m_pObjectManager->Insert(20000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, 0, 3, D3DXVECTOR3(200, 0, 0), D3DXVECTOR3(0, 0, 0));
+
+			}
+			break;
+		case VK_F5:
 			if (m_pObjectManager->FindObject(2))
 				m_pObjectManager->DeleteObject(2);
 			else
 				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
-		case VK_F4:
-			player_state = ePLAYER_STATE::RUN;
-			cout << " 달리기를 눌렀다, player_state : " << player_state<<endl;
-			//if (m_pObjectManager->FindObject(30000))
-			//	m_pObjectManager->FindObject(30000)->Animate(0, m_pd3dDeviceContext, 0);
-				//m_pObjectManager->FindObject(30000)->PlayAnimation(0, m_pd3dDeviceContext);
-			break;
+
 		case VK_SPACE:
-			player_state = ePLAYER_STATE::ATTACK;
-			cout << "공격을 눌렀다, player_state : " << player_state << endl;
+		//	m_pObjectManager->FindObject(20000)->SetPlayAnimationState(ePLAYER_STATE::ATTACK);
+			is_Attack = true;
 			break;
 
 		case VK_ESCAPE:
@@ -300,6 +298,91 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
+void CGameFramework::ProcessInput()
+{
+	static UCHAR pKeyBuffer[256];
+	DWORD dwDirection = 0;
+
+	switch (m_OperationMode)
+	{
+	case MODE_MOUSE:			// F1
+	{
+
+		if (GetKeyboardState(pKeyBuffer))
+		{
+
+			// 이동
+			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
+			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
+			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
+			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
+		
+		}	
+		
+		m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
+
+		if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObject(20000)))		//m_pPlayer->GetObject()->Collision( 플레이어 제외 아이템,몬스터), id로 확실히 구분시켜야할듯.
+		{
+			//m_pPlayer->GetObjects()->Collison(m_pPlayer->GetObjects()/*m_pPlayer[i]*/)
+			//지금 문제가 뭐냐면, (0,0,0) 기준으로 보면 바로 충돌임ㅇㅇ, 근데 insert할때 얘네 초기 위치를 내가 바꿔줬었음(몬스터를 x축으로 100만큼 옮겨줬음)
+			// 그러니까 몬스터 충돌체크의 m_MinVer,m_MaxVer.x의 값이 100만큼 증가해있어야했음. 그걸 안해줌ㅇㅇ 고치자  [完] moveAbsolute안에 moveBoundingbox를 추가해줬음.
+			cout << "충돌했다!" << endl;
+		}
+		/* player state 변경, 방향이 있을경우 달린다.*/
+		if (dwDirection != 0)
+		{
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::RUN);
+			//cout<< "움직일때 바운딩 움직이나? "<< m_pObjectManager->FindObject(30000)->GetMaxVer().x<< endl;
+		}
+		
+
+		if (is_Attack)
+		{
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::ATTACK);
+			
+			//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
+			if (m_pObjectManager->FindObject(30000)->m_fAnimationPlaytime == 0.0f)		
+				is_Attack = false;
+		}
+	}
+	break;
+
+	case MODE_KEYBOARD:
+	{
+		if (GetKeyboardState(pKeyBuffer))
+		{
+			// 이동
+			if (pKeyBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
+			if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
+			if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
+			if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
+			// 좌우회전
+			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());		// Q
+			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());		// E
+			// 줌
+			if (pKeyBuffer[0x5A] & 0xF0) m_pCamera->Zoom(-100 * m_GameTimer.GetTimeElapsed());				// Z
+			if (pKeyBuffer[0x58] & 0xF0) m_pCamera->Zoom(100 * m_GameTimer.GetTimeElapsed());				// X
+		}
+		m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
+		if (dwDirection != 0)
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::RUN);
+	}
+	break;
+
+	}
+
+	if (dwDirection) m_pPlayer->Move(m_pCamera->GetYaw(), dwDirection, m_GameTimer.GetTimeElapsed());
+	
+	//m_pplater -> movebounding
+
+	// 4) 플레이어 위치에 따라 카메라 update
+	m_pCamera->Update(m_pPlayer->GetPosition());
+
+	//서버_좌표 보내기 : 이동하고나서 좌표를 보내면 되지않을까해서 여기에 넣어둠.
+	//const D3DXVECTOR3 *pos = m_pPlayer->GetPosition();
+	//cout << "보내려는 좌표 : " << pos->x << "," << pos->y << "," << pos->z << endl;
+	//SendPosPacket(pos->x, pos->y, pos->z);
+}
 //다음 함수는 응용 프로그램이 종료될 때 호출된다는 것에 유의하라. 
 void CGameFramework::OnDestroy()
 {
@@ -323,11 +406,9 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, 0, 3,D3DXVECTOR3(0, -60, 0), D3DXVECTOR3(0, 0, 0)));
-
-	m_pObjectManager->Insert(20001, eResourceType::MonB, m_pd3dDevice, m_pd3dDeviceContext, 1, 3, D3DXVECTOR3(50, -60, 0), D3DXVECTOR3(0, 0, 0));
-
-
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, 0, 3,D3DXVECTOR3(0, -30, 0), D3DXVECTOR3(0, 0, 0)));
+	
+	m_pObjectManager->Insert(20000, eResourceType::MonB, m_pd3dDevice, m_pd3dDeviceContext, 1, 3, D3DXVECTOR3(100, 0, 0), D3DXVECTOR3(0, 0, 0));
 
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
@@ -353,55 +434,10 @@ void CGameFramework::ReleaseObjects()
 }
 
 
-void CGameFramework::ProcessInput()
-{
-	static UCHAR pKeyBuffer[256];
-	DWORD dwDirection = 0;
-
-	switch (m_OperationMode)
-	{
-	case MODE_MOUSE:
-	{
-		if (GetKeyboardState(pKeyBuffer))
-		{
-			// 이동
-			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
-			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
-			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
-			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
-		}
-	}
-	break;
-	case MODE_KEYBOARD:
-	{
-		if (GetKeyboardState(pKeyBuffer))
-		{
-			// 이동
-			if (pKeyBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
-			if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
-			if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
-			if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
-			// 좌우회전
-			if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());		// Q
-			if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());		// E
-			// 줌
-			if (pKeyBuffer[0x5A] & 0xF0) m_pCamera->Zoom(-100 * m_GameTimer.GetTimeElapsed());				// Z
-			if (pKeyBuffer[0x58] & 0xF0) m_pCamera->Zoom(100 * m_GameTimer.GetTimeElapsed());				// X
-		}
-	}
-	break;
-	}
-
-	if (dwDirection) m_pPlayer->Move(m_pCamera->GetYaw(), dwDirection, m_GameTimer.GetTimeElapsed());
-
-	// 4) 플레이어 위치에 따라 카메라 update
-	m_pCamera->Update(m_pPlayer->GetPosition());
-}
-
 
 void CGameFramework::AnimateObjects()
 {
-	if (m_pScene) m_pScene->AnimateObjects(player_state, m_pd3dDeviceContext,m_GameTimer.GetTimeElapsed());					
+	if (m_pScene) m_pScene->AnimateObjects(0, m_pd3dDeviceContext,m_GameTimer.GetTimeElapsed());					
 }
 
 void CGameFramework::FrameAdvance()
@@ -410,7 +446,13 @@ void CGameFramework::FrameAdvance()
 
 	ProcessInput();
 
-	AnimateObjects();
+	//if (m_pObjectManager->FindObject(30000))
+	//{
+	//	const D3DXVECTOR3 *pos = m_pObjectManager->FindObject(30000)->GetPosition();
+	//	cout << pos->x << ", " << pos->y << "," << pos->z << endl;
+	//}
+
+	//AnimateObjects();
 
 	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
@@ -419,8 +461,8 @@ void CGameFramework::FrameAdvance()
 	// 5) 카메라 쉐이더 update
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
-
+	//if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
+	if (m_pScene) m_pScene->AnimateObjectsAndRender(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
 	
 	m_pDXGISwapChain->Present(0, 0);
 

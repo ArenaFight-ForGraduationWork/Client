@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "GameClient.h"
 #include "GameFramework.h"
-
+#include "protocol.h"
 
 #define MAX_LOADSTRING 100
 
@@ -111,6 +111,9 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	ghInstance = hInstance;
+
+	//서버_접속
+	//ServerConnect();
 
 	DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
 	RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };

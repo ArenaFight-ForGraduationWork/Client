@@ -52,19 +52,6 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
-
-	cout << "insert 아이디 : " << id << endl;
-
-	if (id == 0)
-	{
-		cout << " id가 0일때 id : " << id << endl;
-	}
-	else
-	{
-		cout << "그 외 나머지 아이디일때 : " << id << endl;
-	}
-	cout << endl;
-
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
@@ -83,22 +70,28 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 
-	cout << "insert 아이디 : " << id << endl;
+	
+	pObject->SetTime(pResourceManager->GetMesh(eType)->m_AniMaxTime);
+	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);
+	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
+	
+	//pObject->ReadTextFile(CharNum, StateCnt); 	
+	//pObject->SetTime();			
+	//pObject->SetAnimationIndexCount();
+	//pObject->SetResult();
+	
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
-
-		pObject->ReadTextFile(CharNum, StateCnt);
-		pObject->SetResult();
-		pObject->SetTime();
-		pObject->SetAnimationIndexCount();		
-
+	pObject->SetBoundingBox();	//바운딩 박스를 입혀준다.
 
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
+
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
 
+	cout << "Insert 완료" << endl;
 	return pObject;
 }
 

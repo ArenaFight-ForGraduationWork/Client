@@ -38,8 +38,10 @@ enum class eResourceType : BYTE{
 	START = 0,
 	Cube = 0,
 	Airplain,
-	MonA,	//임시 object 용도
-	MonB,	//임시 animation 용도
+	MonB,	//
+	MonA,	//
+	MonObjB,
+	MonObjA,
 	END
 };
 
@@ -90,6 +92,7 @@ private:
 	void _LoadTextures(ID3D11Device *pd3dDevice);
 	void _LoadMaterials();
 	void _CreateShaders(ID3D11Device *pd3dDevice);
+	void _LoadBoundingBoxes(ID3D11Device *pd3dDevice, CMesh *pMesh);
 };
 
 

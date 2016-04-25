@@ -21,8 +21,7 @@ CFbx::~CFbx()
 {
 	/*for (int i = 0; i < 5; ++i)
 		m_ppResult[i] = nullptr;*/
-	//for (int i = 0; i < ANIMATION_COUNT; ++i)
-	//	m_ppResult[i] = nullptr;
+
 }
 
 CFbx* CFbx::m_instance;
@@ -48,6 +47,13 @@ void CFbx::Fbx_ReadTextFile_Mesh(char* fileName, vector<CTexturedNormalVertex*> 
 		CTexturedNormalVertex* m_pVer = new CTexturedNormalVertex(D3DXVECTOR3(m_pos.x, m_pos.z, -m_pos.y), D3DXVECTOR3(outNormal.x, outNormal.z, -outNormal.y), D3DXVECTOR2(outUV.x, outUV.y));
 		v.push_back(m_pVer);
 	}
+
+	fscanf_s(fp, "%f %f %f\n", &m_MaxVer.x, &m_MaxVer.y, &m_MaxVer.z);
+	fscanf_s(fp, "%f %f %f\n", &m_MinVer.x, &m_MinVer.y, &m_MinVer.z);
+
+	//printf("max x : %f, max y : %f, ,max z : %f\n", m_MaxVer.x, m_MaxVer.y, m_MaxVer.z);
+	//printf("min x : %f, min y : %f, ,min z : %f\n", m_MinVer.x, m_MinVer.y, m_MinVer.z);
+
 	fclose(fp);
 }
 
@@ -62,6 +68,12 @@ void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 		fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
 		break;
 	}
+
+
+	/*tsize = new int;
+
+	fscanf_s(fp, "%d\n", tsize);*/
+	
 	int Cnt = 0;		//size값을 가져올 임시 변수
 	fscanf_s(fp, "%d\n", &Cnt);
 	size = Cnt;
@@ -121,6 +133,9 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 		fscanf_s(fp, "%f %f\n", &v[i].m_d3dxvTexCoord.x, &v[i].m_d3dxvTexCoord.y);
 	}
 
+	fscanf_s(fp, "%f %f %f\n", &m_MaxVer.x, &m_MaxVer.y, &m_MaxVer.z);
+	fscanf_s(fp, "%f %f %f\n", &m_MinVer.x, &m_MinVer.y, &m_MinVer.z);
+
 	fclose(fp);
 }
 
@@ -141,31 +156,30 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 		break;
 	}
 
+	////1. 첫번째 방법, Mesh.cpp에서 모든걸 다 읽어오는 경우 사용. 할당이 따로 필요없음.
+	fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_llAnimationMaxTime, &m_uiAnimationNodeIndexCount);
 
-	//fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_llAnimationMaxTime, &m_uiAnimationNodeIndexCount);
+	m_ppResult[StateCnt] = new XMFLOAT4X4*[m_llAnimationMaxTime / 10];
 
-	//m_ppResult[StateCnt] = new XMFLOAT4X4*[m_llAnimationMaxTime / 10];
+	for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	{
+		m_ppResult[StateCnt][i] = new XMFLOAT4X4[m_uiAnimationNodeIndexCount];
+	}
 
-	//for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
-	//{
-	//	m_ppResult[StateCnt][i] = new XMFLOAT4X4[m_uiAnimationNodeIndexCount];
-	//}
+	for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	{
+		for (unsigned int j = 0; j < m_uiAnimationNodeIndexCount; ++j)
+		{
+			for (int m = 0; m < 4; ++m)
+			{
+				for (int n = 0; n < 4; ++n)
+				{
+					fscanf_s(fMonA[StateCnt], "%f\n", &m_ppResult[StateCnt][i][j](m, n));
 
-	//for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
-	//{
-	//	for (unsigned int j = 0; j < m_uiAnimationNodeIndexCount; ++j)
-	//	{
-	//		for (int m = 0; m < 4; ++m)
-	//		{
-	//			for (int n = 0; n < 4; ++n)
-	//			{
-	//				fscanf_s(fMonA[StateCnt], "%f\n", &m_ppResult[StateCnt][i][j](m, n));
-
-	//			}
-	//		}
-	//	}
-	//}
-
+				}
+			}
+		}
+	}
 
 	
 	//2번째 방법
@@ -192,73 +206,42 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	//}
 
 
-	//3번째 방법
+	//3번째 방법, mesh에서 readMesh,Weight만 읽어오는 경우 사용
+	/*m_pAniTime = new long long[StateCnt];
+	m_pAniIndexCount = new unsigned int;
+	fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_pAniTime[StateCnt], m_pAniIndexCount);
 
-		m_pAniTime = new long long[StateCnt];
-		m_pAniIndexCount = new unsigned int;
-		fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_pAniTime[StateCnt], m_pAniIndexCount);
+	unsigned int temp_cnt = *m_pAniIndexCount;
+	m_AniTime[StateCnt] = m_pAniTime[StateCnt];
 
-		//cout << "1.시간: "<<m_pAniTime[StateCnt]<<" ,인덱스: "<<*m_pAniIndexCount << endl;
-		unsigned int temp_cnt = *m_pAniIndexCount;
-		m_AniTime[StateCnt] = m_pAniTime[StateCnt];
+	m_ppResult[StateCnt] = new XMFLOAT4X4*[m_pAniTime[StateCnt] / 10];
+	for (long long i = 0; i < m_pAniTime[StateCnt] / 10; ++i)
+	{
+		m_ppResult[StateCnt][i] = new XMFLOAT4X4[temp_cnt];
+	}
 
-		m_ppResult[StateCnt] = new XMFLOAT4X4*[m_pAniTime[StateCnt] / 10];
-		for (long long i = 0; i < m_pAniTime[StateCnt] / 10; ++i)
+	for (long long i = 0; i < m_pAniTime[StateCnt] / 10; ++i)
+	{
+		for (unsigned int j = 0; j < temp_cnt; ++j)
 		{
-			m_ppResult[StateCnt][i] = new XMFLOAT4X4[temp_cnt];
-		}
-
-		for (long long i = 0; i < m_pAniTime[StateCnt] / 10; ++i)
-		{
-			for (unsigned int j = 0; j < temp_cnt; ++j)
+			for (int m = 0; m < 4; ++m)
 			{
-				for (int m = 0; m < 4; ++m)
+				for (int n = 0; n < 4; ++n)
 				{
-					for (int n = 0; n < 4; ++n)
-					{
-						fscanf_s(fMonA[StateCnt], "%f\n", &m_ppResult[StateCnt][i][j](m, n));
+					fscanf_s(fMonA[StateCnt], "%f\n", &m_ppResult[StateCnt][i][j](m, n));
 
-					}
 				}
 			}
 		}
+	}*/
 
-	//else
-	//{
-	//	m_pAniTime = new long long[StateCnt];
-	//	m_pAniIndexCount = new unsigned int;
-	//	fscanf_s(fMonB[StateCnt], "%lld %d\n", &m_pAniTime[StateCnt], m_pAniIndexCount);
 
-	//	//cout << "1.시간: "<<m_pAniTime[StateCnt]<<" ,인덱스: "<<*m_pAniIndexCount << endl;
-	//	unsigned int temp_cnt = *m_pAniIndexCount;
-	//	m_AniTime[StateCnt] = m_pAniTime[StateCnt];
-
-	//	m_ppResult[StateCnt] = new XMFLOAT4X4*[m_pAniTime[StateCnt] / 10];
-	//	for (long long i = 0; i < m_pAniTime[StateCnt] / 10; ++i)
-	//	{
-	//		m_ppResult[StateCnt][i] = new XMFLOAT4X4[temp_cnt];
-	//	}
-
-	//	for (long long i = 0; i < m_pAniTime[StateCnt] / 10; ++i)
-	//	{
-	//		for (unsigned int j = 0; j < temp_cnt; ++j)
-	//		{
-	//			for (int m = 0; m < 4; ++m)
-	//			{
-	//				for (int n = 0; n < 4; ++n)
-	//				{
-	//					fscanf_s(fMonB[StateCnt], "%f\n", &m_ppResult[StateCnt][i][j](m, n));
-
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 
 
 	for (int i = 0; i < StateCnt; ++i)
 	{
 		fclose(fMonA[i]);
-		//fclose(fMonB[i]);
 	}
+
+
 }

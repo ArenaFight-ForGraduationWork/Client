@@ -15,7 +15,7 @@ public:
 
 	XMFLOAT4X4** m_ppResult[5];
 	long long m_AniMaxTime[5];
-
+	unsigned int m_AnimationIndexCnt;
 	CMesh(ID3D11Device *pd3dDevice);
 	virtual ~CMesh();
 
@@ -28,7 +28,10 @@ public:
 	void SetAnimationMaxTime(long long time) { m_AnimationMaxTime = time; }
 	void SetAnimationIndexCnt(int cnt) { m_AnimationIndexCount = cnt; }
 
-
+	void SetMaxVer(D3DXVECTOR3 max)	{ m_MaxVer = max; }
+	void SetMinVer(D3DXVECTOR3 min)	{ m_MinVer = min; }
+	D3DXVECTOR3 GetMaxVer()	{ return m_MaxVer; }
+	D3DXVECTOR3 GetMinVer()		{ return m_MinVer; }
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
 	UINT m_nVertices;	/* 정점 버퍼의 정점 개수 */
@@ -47,6 +50,9 @@ private:
 	int m_nReferences;
 	long long m_AnimationMaxTime = 0;
 	int m_AnimationIndexCount = 0;
+
+	D3DXVECTOR3 m_MaxVer;
+	D3DXVECTOR3 m_MinVer;
 
 	
 };
@@ -135,6 +141,16 @@ private:
 	//수정시작합니다. 한줄
 	FILE *fp[2];	//일단 달리기, 어택 두개기 때문에 2를 써둔다.
 
+};
+
+class CBoundingBoxMesh : public CMesh
+{
+public:
+	CBoundingBoxMesh(ID3D11Device *pd3dDevice, CMesh *mesh);
+	virtual ~CBoundingBoxMesh();
+
+	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 
 class CSkyBoxMesh : public CCubeMeshIlluminatedTextured

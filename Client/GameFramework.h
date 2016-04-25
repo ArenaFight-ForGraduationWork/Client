@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "ObjectManager.h"
+#include "protocol.h"
 
 
 #define MODE_MOUSE		0x01
@@ -80,6 +81,7 @@ private:
 	CObjectManager *m_pObjectManager;
 
 	int player_state = 2;			//IDLE, RUN, ATTACK ...
+	bool is_Attack = false;
 };
 
 

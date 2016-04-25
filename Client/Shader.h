@@ -33,6 +33,9 @@ public:
 	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
+	//애니메이션+ 렌더
+	virtual void AnimateObjectAndRender(ID3D11DeviceContext*, float time);
+
 protected:
 	std::vector<CObject*> m_vObjects;
 

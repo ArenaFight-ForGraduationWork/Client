@@ -26,8 +26,12 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 		m_vResources.push_back(new CResource());
 	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
 	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
-	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 2);		// 1: object , 2: Animation
-	m_vResources[(int)eResourceType::MonB]->SetIDs(3, 2, 0, 2);
+	m_vResources[(int)eResourceType::MonB]->SetIDs(2, 2, 0, 2);		// 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonA]->SetIDs(3, 1, 0, 2);
+
+	m_vResources[(int)eResourceType::MonObjB]->SetIDs(4, 2, 0, 1);		// 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonObjA]->SetIDs(5, 1, 0, 1);
+
 }
 
 CResourceManager::~CResourceManager()
@@ -94,12 +98,24 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	// 1 : ∫Ò«‡±‚
 	m_mMesh[1] = new CAirplaneMesh(pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
 
-	// 2: monA
+	// 2: monB, animation
 	//m_mMesh[2] = new CMyModel(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
-	m_mMesh[2] = new CMyAni(pd3dDevice, 0, 3);
+	m_mMesh[2] = new CMyAni(pd3dDevice, 1, 3);
 
-	// 3: monB
-	m_mMesh[3] = new CMyAni(pd3dDevice, 1, 3);
+	// 3: monA, animation
+	m_mMesh[3] = new CMyAni(pd3dDevice, 0, 3);
+
+	// 4. monB, object
+	m_mMesh[4] = new CMyModel(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+
+	//5. monA, object
+	m_mMesh[5] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+}
+
+void CResourceManager::_LoadBoundingBoxes(ID3D11Device *pd3dDevice, CMesh *pMesh)
+{
+
+
 }
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)

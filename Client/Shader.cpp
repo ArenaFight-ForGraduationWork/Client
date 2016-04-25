@@ -150,6 +150,26 @@ void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 
 }
 
+void CShader::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time)
+{
+	//정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
+	if (m_pd3dVertexLayout) pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
+	//정점-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
+	if (m_pd3dVertexShader) pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, NULL, 0);
+	//픽셀-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
+	if (m_pd3dPixelShader) pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
+
+	for (auto obj : m_vObjects)
+	{
+		UpdateShaderVariables(pd3dDeviceContext, obj->GetWorldMatrix());
+		if (obj->GetMaterial())
+			UpdateShaderVariables(pd3dDeviceContext, obj->GetMaterial());
+		if (obj->GetTexture())
+			UpdateShaderVariables(pd3dDeviceContext, obj->GetTexture());
+		obj->AnimateObjectAndRender(pd3dDeviceContext, time);
+	}
+
+}
 
 
 
