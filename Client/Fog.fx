@@ -28,12 +28,15 @@ cbuffer cbWorldMatrix : register(b1)
 {
 	matrix gmtxWorld : packoffset(c0);
 };
-cbuffer cbFog : register(b2)
+cbuffer cbFogCenter : register(b2)
 {
 	float3 gf3FogCenter;
+}
+cbuffer cbFogRange : register(b3)
+{
 	float gfFogStart;
 	float gfFogEnd;
-};
+}
 
 PS_INPUT VS(VS_INPUT input)
 {

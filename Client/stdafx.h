@@ -55,7 +55,8 @@ using namespace std;
 
 #define VS_SLOT_VIEWPROJECTION_MATRIX	0x00
 #define VS_SLOT_WORLD_MATRIX			0x01		// 상수 버퍼를 연결할 슬롯 번호
-#define VS_SLOT_FOG						0x02
+#define VS_SLOT_FOG_CENTER				0x02
+#define VS_SLOT_FOG_RANGE				0x03
 
 #define PS_SLOT_COLOR			0x00
 #define PS_SLOT_LIGHT			0x00

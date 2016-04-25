@@ -3,12 +3,16 @@
 
 
 
-struct VS_CB_FOG
+struct VS_CB_FOG_CENTER
 {
 	D3DXVECTOR3 m_d3dxvCenter;
+	float padding;
+};
+struct VS_CB_FOG_RANGE
+{
 	float m_fStart;
 	float m_fEnd;
-	float padding1, padding2, padding3;
+	float padding1, padding2;
 };
 
 
@@ -28,7 +32,8 @@ private:
 	float m_fStart;
 	float m_fEnd;
 
-	ID3D11Buffer *m_pd3dcbFog;
+	ID3D11Buffer *m_pd3dcbFogCenter;
+	ID3D11Buffer *m_pd3dcbFogRange;
 };
 
 
