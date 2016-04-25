@@ -24,12 +24,9 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
-	//m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 0);
-	//m_vResources[(int)eResourceType::MonA]->SetIDs(1, 1, 0, 0);
-	//m_vResources[(int)eResourceType::Floor]->SetIDs(2, 1, 0, 0);
-	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::MonA]->SetIDs(1, 1, 0, 1);
-	m_vResources[(int)eResourceType::Floor]->SetIDs(2, 1, 0, 1);
+	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 0);
+	m_vResources[(int)eResourceType::MonA]->SetIDs(1, 1, 0, 0);
+	m_vResources[(int)eResourceType::Floor]->SetIDs(2, 1, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -153,17 +150,11 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 {
 	CShader *pShader;
 
-	// 0 : IlluminatedTextured
-	pShader = new CIlluminatedTexturedShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[0] = pShader;
-
-	// 1 : Fog
+	// 0 : Fog
 	pShader = new CFogShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[1] = pShader;
+	m_mShader[0] = pShader;
 }
 
 

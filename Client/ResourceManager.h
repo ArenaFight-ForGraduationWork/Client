@@ -49,8 +49,7 @@ class CResourceManager
 public:
 	enum class eShaderType : BYTE{
 		START = 0,
-		IlluminatedTextured = 0,
-		Fog,
+		Fog = 0,
 		END
 	};
 

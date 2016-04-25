@@ -4,8 +4,8 @@
 
 CFog::CFog()
 {
-	m_fStart = 500;
-	m_fEnd = 1000;
+	m_fStart = 0;
+	m_fEnd = 0;
 
 	m_pd3dcbFog = nullptr;
 }
