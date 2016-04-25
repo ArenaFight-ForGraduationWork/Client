@@ -220,13 +220,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			m_OperationMode = MODE_KEYBOARD;
 			break;
 
-		case VK_F3:
-			if (m_pObjectManager->FindObject(4))
-				m_pObjectManager->DeleteObject(4);
-			else
-				m_pObjectManager->Insert(4, eResourceType::MonObjB, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
-			break;
-
 		case VK_F4:
 			if (m_pObjectManager->FindObject(20000))
 			{
@@ -235,6 +228,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 			}
 			break;
+
 		case VK_F5:
 			if (m_pObjectManager->FindObject(2))
 				m_pObjectManager->DeleteObject(2);
@@ -406,9 +400,12 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
+
 	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, 0, 3,D3DXVECTOR3(0, -30, 0), D3DXVECTOR3(0, 0, 0)));
 	
 	m_pObjectManager->Insert(20000, eResourceType::MonB, m_pd3dDevice, m_pd3dDeviceContext, 1, 3, D3DXVECTOR3(100, 0, 0), D3DXVECTOR3(0, 0, 0));
+	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
+
 
 	// 1) Ä«¸Þ¶ó init
 	m_pCamera = new CThirdPersonCamera();
@@ -454,7 +451,8 @@ void CGameFramework::FrameAdvance()
 
 	//AnimateObjects();
 
-	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	//float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	float fClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 

@@ -25,12 +25,11 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
 	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::Airplain]->SetIDs(1, 0, 0, 0);
-	m_vResources[(int)eResourceType::MonB]->SetIDs(2, 2, 0, 2);		// 1: object , 2: Animation
-	m_vResources[(int)eResourceType::MonA]->SetIDs(3, 1, 0, 2);
-
-	m_vResources[(int)eResourceType::MonObjB]->SetIDs(4, 2, 0, 1);		// 1: object , 2: Animation
-	m_vResources[(int)eResourceType::MonObjA]->SetIDs(5, 1, 0, 1);
+	m_vResources[(int)eResourceType::MonB]->SetIDs(1, 2, 0, 2);		// ½¦ÀÌ´õ ID 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 2);
+	m_vResources[(int)eResourceType::MonObjB]->SetIDs(3, 2, 0, 1);		// 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonObjA]->SetIDs(4, 1, 0, 1);
+	m_vResources[(int)eResourceType::Floor]->SetIDs(5, 0, 0, 1);
 
 }
 
@@ -95,21 +94,21 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	// 0 : Å¥ºê
 	m_mMesh[0] = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
 
-	// 1 : ºñÇà±â
-	m_mMesh[1] = new CAirplaneMesh(pd3dDevice, 20.0f, 20.0f, 4.0f, D3DCOLOR_XRGB(0, 255, 0));
+	// 1: monB, animation, ¹ÚÁã
+	m_mMesh[1] = new CMyAni(pd3dDevice, 1, 3);
 
-	// 2: monB, animation
-	//m_mMesh[2] = new CMyModel(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
-	m_mMesh[2] = new CMyAni(pd3dDevice, 1, 3);
+	// 2: monA, animation, ¿ø¼þÀÌ
+	m_mMesh[2] = new CMyAni(pd3dDevice, 0, 3);
 
-	// 3: monA, animation
-	m_mMesh[3] = new CMyAni(pd3dDevice, 0, 3);
+	// 3. monB, object
+	m_mMesh[3] = new CMyModel(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
 
-	// 4. monB, object
-	m_mMesh[4] = new CMyModel(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+	// 4. monA, object
+	m_mMesh[4] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
 
-	//5. monA, object
-	m_mMesh[5] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+	// 5: ¹Ù´Ú
+	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
+
 }
 
 void CResourceManager::_LoadBoundingBoxes(ID3D11Device *pd3dDevice, CMesh *pMesh)
@@ -172,14 +171,14 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 {
 	CShader *pShader;
 
-	// 0 : DiffusedShader
-	pShader = new CDiffusedShader();
+	// 0 : IlluminatedTextured
+	pShader = new CIlluminatedTexturedShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[0] = pShader;
 
-	// 1 : IlluminatedTextured
-	pShader = new CIlluminatedTexturedShader();
+	// 1 : Fog
+	pShader = new CFogShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[1] = pShader;

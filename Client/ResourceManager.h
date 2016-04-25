@@ -37,11 +37,11 @@ private:
 enum class eResourceType : BYTE{
 	START = 0,
 	Cube = 0,
-	Airplain,
 	MonB,	//
 	MonA,	//
 	MonObjB,
 	MonObjA,
+	Floor,
 	END
 };
 
@@ -56,9 +56,9 @@ class CResourceManager
 public:
 	enum class eShaderType : BYTE{
 		START = 0,
-		Diffused = 0,
-		IlluminatedTextured,
+		IlluminatedTextured = 0,
 		Player,
+		Fog,
 		END
 	};
 

@@ -126,6 +126,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="IlluminatedTextured.fx" />
+    <FxCompile Include="Fog.fx" />
     <FxCompile Include="Effect.fx" />
   </ItemGroup>
   <ItemGroup>

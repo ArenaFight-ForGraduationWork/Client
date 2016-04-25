@@ -183,8 +183,7 @@ public:
 	bool Collison(CObject *pObject);		//충돌체크 확인하는 함수
 	virtual void SetBoundingBox();	//오브젝트 충돌체크를 위해 씌우기(?)
 	virtual void MoveBoundingBox(const D3DXVECTOR3* d3dxvec);
-	
-	CBoundingBoxMesh* GetBoundingBox() { return m_pBoundingBox; }
+
 	D3DXVECTOR3 GetMaxVer(){ return m_MaxVer; }
 	D3DXVECTOR3 GetMinVer() { return m_MinVer; }
 	//=================================================================
@@ -195,7 +194,6 @@ private:
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
-	CBoundingBoxMesh *m_pBoundingBox;
 	UINT m_id;
 
 	const D3DXMATRIX* _GetRotationMatrix();

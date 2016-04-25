@@ -75,11 +75,6 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);
 	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
 	
-	//pObject->ReadTextFile(CharNum, StateCnt); 	
-	//pObject->SetTime();			
-	//pObject->SetAnimationIndexCount();
-	//pObject->SetResult();
-	
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
 	pObject->SetBoundingBox();	//바운딩 박스를 입혀준다.
 
@@ -102,6 +97,7 @@ CObject* CObjectManager::FindObject(UINT id)
 		if (id == obj->GetId())
 			return obj;
 	}
+	return nullptr;
 }
 
 const std::vector<CObject*> CObjectManager::FindObjectInCategory(const UINT id)

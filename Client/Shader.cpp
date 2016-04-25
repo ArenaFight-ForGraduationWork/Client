@@ -128,7 +128,6 @@ void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CTex
 	pd3dDeviceContext->PSSetSamplers(PS_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
 }
 
-
 void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	//정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
@@ -174,48 +173,6 @@ void CShader::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 
 
 
-CDiffusedShader::CDiffusedShader()
-{
-}
-
-CDiffusedShader::~CDiffusedShader()
-{
-}
-
-void CDiffusedShader::CreateShader(ID3D11Device *pd3dDevice)
-{
-	D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
-	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Effect.fx", "VSDiffusedColor", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PSDiffusedColor", "ps_4_0", &m_pd3dPixelShader);
-}
-
-void CDiffusedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
-{
-	CShader::CreateShaderVariables(pd3dDevice);
-}
-
-void CDiffusedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld)
-{
-	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
-}
-
-void CDiffusedShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed)
-{
-	CShader::AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
-}
-
-void CDiffusedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CShader::Render(pd3dDeviceContext);
-}
-
-
-
 
 
 CIlluminatedTexturedShader::CIlluminatedTexturedShader()
@@ -237,9 +194,10 @@ void CIlluminatedTexturedShader::CreateShader(ID3D11Device *pd3dDevice)
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Effect.fx", "VSTexturedLighting", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PSTexturedLighting", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
+
 void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 {
 	CShader::CreateShaderVariables(pd3dDevice);
@@ -253,11 +211,6 @@ void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXMATRIX *pd3dxmtxWorld)
-{
-	CShader::UpdateShaderVariables(pd3dDeviceContext, pd3dxmtxWorld);
-}
-
 void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -266,7 +219,9 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 	memcpy(pcbMaterial, pMaterial->GetMaterial(), sizeof(MATERIAL));
 	pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
+
 }
+
 
 void CIlluminatedTexturedShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
@@ -277,6 +232,77 @@ void CIlluminatedTexturedShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CShader::Render(pd3dDeviceContext);
 }
+
+
+
+
+
+CFogShader::CFogShader()
+{
+	m_pd3dcbFog = nullptr;
+}
+
+CFogShader::~CFogShader()
+{
+}
+
+void CFogShader::CreateShader(ID3D11Device *pd3dDevice)
+{
+	CShader::CreateShader(pd3dDevice);
+
+	D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+	UINT nElements = ARRAYSIZE(d3dInputLayout);
+	CreateVertexShaderFromFile(pd3dDevice, L"Fog.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"Fog.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+}
+
+void CFogShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
+{
+	CShader::CreateShaderVariables(pd3dDevice);
+
+	// MATERIAL
+	D3D11_BUFFER_DESC d3dBufferDesc;
+	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	d3dBufferDesc.ByteWidth = sizeof(MATERIAL);
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
+
+	// FOG
+	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	d3dBufferDesc.ByteWidth = sizeof(VS_CB_FOG);
+	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFog);
+
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	ID3D11DeviceContext *pDeviceContext;
+	pd3dDevice->GetImmediateContext(&pDeviceContext);
+	pDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	VS_CB_FOG *pcbFog = (VS_CB_FOG *)d3dMappedResource.pData;
+	pcbFog->fogStart = 300;
+	pcbFog->fogEnd = 500;
+	pDeviceContext->Unmap(m_pd3dcbFog, 0);
+	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
+}
+
+void CFogShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	pd3dDeviceContext->Map(m_pd3dcbMaterial, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	MATERIAL *pcbMaterial = (MATERIAL *)d3dMappedResource.pData;
+	memcpy(pcbMaterial, pMaterial->GetMaterial(), sizeof(MATERIAL));
+	pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
+	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
+}
+
 
 
 CPlayerShader::CPlayerShader()
@@ -328,5 +354,3 @@ void CPlayerShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CIlluminatedTexturedShader::Render(pd3dDeviceContext);
 }
-
-

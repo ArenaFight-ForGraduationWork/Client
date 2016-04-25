@@ -61,19 +61,6 @@ private:
 
 
 
-class CAirplaneMesh : public CMesh
-{
-public:
-	CAirplaneMesh(ID3D11Device *pd3dDevice, float fWidth = 20.0f, float fHeight = 20.0f, float fDepth = 4.0f, D3DXCOLOR d3dxColor = D3DXCOLOR(1.0f, 1.0f, 0.0f, 0.0f));
-	virtual ~CAirplaneMesh();
-
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
-
-
-
-
 
 class CCubeMeshIlluminatedTextured : public CMesh
 {
@@ -141,28 +128,6 @@ private:
 	//수정시작합니다. 한줄
 	FILE *fp[2];	//일단 달리기, 어택 두개기 때문에 2를 써둔다.
 
-};
-
-class CBoundingBoxMesh : public CMesh
-{
-public:
-	CBoundingBoxMesh(ID3D11Device *pd3dDevice, CMesh *mesh);
-	virtual ~CBoundingBoxMesh();
-
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
-
-class CSkyBoxMesh : public CCubeMeshIlluminatedTextured
-{
-public:
-	CSkyBoxMesh(ID3D11Device *pd3dDevice, float fRadius, int nSlices, int nStacks);
-	virtual ~CSkyBoxMesh();
-
-	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-
-	ID3D11DepthStencilState* DSLessEqual;
 };
 
 #endif
