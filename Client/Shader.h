@@ -37,8 +37,11 @@ public:
 	bool ReleaseObject(UINT id);
 	void ReleaseAllObjects();
 
-	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
+	//애니메이션+ 렌더
+	virtual void AnimateObjectAndRender(ID3D11DeviceContext*, float time);
 
 protected:
 	std::vector<CObject*> m_vObjects;
@@ -74,6 +77,10 @@ public:
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
+
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed);	//수정
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
 };
 
 
@@ -91,12 +98,27 @@ public:
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
 
+	//virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed);	
+	//virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+
 private:
 	ID3D11Buffer *m_pd3dcbFog;
+
 };
 
 
 
+class CPlayerShader : public CIlluminatedTexturedShader
+{
+public:
+	CPlayerShader();
+	virtual ~CPlayerShader();
 
+	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
+	
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+};
 
 #endif

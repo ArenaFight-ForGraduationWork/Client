@@ -1,15 +1,16 @@
-﻿빌드 시작: 2016-03-30 오전 9:02:07
-     1>2 노드의 "D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
+﻿빌드 시작: 2016-04-25 오후 4:11:35
+     1>2 노드의 "D:\Tortoise\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GameFramework.cpp
-         GameFramework.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ResourceManager.cpp
+         ResourceManager.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\ArenaFight\Client\Client\Debug\GameClient.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11d.lib d3dcompiler.lib d3dx9d.lib dxerr.lib dxguid.lib dinput8.lib winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\ArenaFight\Client\Client\Debug\GameClient.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\ArenaFight\Client\Client\Debug\GameClient.lib" /MACHINE:X86 Debug\GameClient.res
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Tortoise\Client\Client\Debug\GameClient.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11d.lib d3dcompiler.lib d3dx9d.lib dxerr.lib dxguid.lib dinput8.lib winmm.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Tortoise\Client\Client\Debug\GameClient.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Tortoise\Client\Client\Debug\GameClient.lib" /MACHINE:X86 Debug\GameClient.res
          Debug\Camera.obj
          Debug\Fbx.obj
          Debug\GameFramework.obj
          Debug\GameClient.obj
          Debug\Mesh.obj
+         Debug\Network.obj
          Debug\Object.obj
          Debug\ObjectManager.obj
          Debug\Player.obj
@@ -19,9 +20,9 @@
          Debug\stdafx.obj
          Debug\Timer.obj
          Debug\Vertex.obj
-         LabProject09.vcxproj -> D:\ArenaFight\Client\Client\Debug\GameClient.exe
-     1>"D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+         LabProject09.vcxproj -> D:\Tortoise\Client\Client\Debug\GameClient.exe
+     1>"D:\Tortoise\Client\Client\LabProject09.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
 
 빌드했습니다.
 
-경과 시간: 00:00:00.47
+경과 시간: 00:00:01.64

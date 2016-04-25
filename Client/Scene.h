@@ -54,8 +54,11 @@ public:
 	void ReleaseObjects();
 
 	bool ProcessInput();
-	void AnimateObjects(float fTimeElapsed);
-	void Render(ID3D11DeviceContext*pd3dDeviceContext);
+	void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
+	void Render(ID3D11DeviceContext*pd3dDeviceContext);			
+
+	// 애니메이션 + 렌더 합치기
+	void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);		//추가
 
 	LIGHTS *m_pLights;
 	ID3D11Buffer *m_pd3dcbLights;

@@ -37,12 +37,19 @@ private:
 enum class eResourceType : BYTE{
 	START = 0,
 	Cube = 0,
-	MonA,
+	MonB,	//
+	MonA,	//
+	MonObjB,
+	MonObjA,
 	Floor,
 	END
 };
 
-
+enum ePLAYER_STATE{
+	IDLE = 0,
+	RUN,
+	ATTACK,
+};
 
 class CResourceManager
 {
@@ -50,6 +57,7 @@ public:
 	enum class eShaderType : BYTE{
 		START = 0,
 		IlluminatedTextured = 0,
+		Player,
 		Fog,
 		END
 	};
@@ -67,6 +75,9 @@ public:
 
 	~CResourceManager();
 
+	//애니메이션 로드용도로 우선 만들어봤당.
+	void _LoadAnimationData(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext);
+
 private:
 	CResourceManager(ID3D11Device *pd3dDevice);
 
@@ -81,6 +92,7 @@ private:
 	void _LoadTextures(ID3D11Device *pd3dDevice);
 	void _LoadMaterials();
 	void _CreateShaders(ID3D11Device *pd3dDevice);
+	void _LoadBoundingBoxes(ID3D11Device *pd3dDevice, CMesh *pMesh);
 };
 
 

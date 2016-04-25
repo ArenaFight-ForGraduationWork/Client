@@ -62,6 +62,34 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	return pObject;
 }
 
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, int CharNum, int StateCnt, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+{
+	//애니메이션 데이터 전용
+	CObject *pObject = new CObject(id);
+	pObject->SetMesh(pResourceManager->GetMesh(eType));
+	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
+	pObject->SetTexture(pResourceManager->GetTexture(eType));
+
+	
+	pObject->SetTime(pResourceManager->GetMesh(eType)->m_AniMaxTime);
+	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);
+	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
+	
+	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
+	pObject->SetBoundingBox();	//바운딩 박스를 입혀준다.
+
+	pObject->MoveAbsolute(&position);
+	pObject->RotateAbsolute(&direction);
+	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
+
+
+	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
+	pShader->InsertObject(pObject);
+
+	cout << "Insert 완료" << endl;
+	return pObject;
+}
+
 CObject* CObjectManager::FindObject(UINT id)
 {
 	for (auto obj : m_mObjects[(eObjectType)(id / ID_DIVIDE)])

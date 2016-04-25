@@ -43,11 +43,11 @@ bool CScene::ProcessInput()
 	return(false);
 }
 
-void CScene::AnimateObjects(float fTimeElapsed)
+void CScene::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
 	for (auto shader : m_vShaders)
 	{
-		shader->AnimateObjects(fTimeElapsed);
+		shader->AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
 	}
 }
 
@@ -58,6 +58,15 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
 	for (auto shader : m_vShaders)
 	{
 		shader->Render(pd3dDeviceContext);
+	}
+}
+
+void CScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
+{
+	UpdateLights(pd3dDeviceContext);
+	for (auto shader : m_vShaders)
+	{
+		shader->AnimateObjectAndRender(pd3dDeviceContext, time);
 	}
 }
 

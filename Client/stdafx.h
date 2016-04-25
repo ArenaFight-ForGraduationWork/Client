@@ -7,6 +7,7 @@
 
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define _CRT_SECURE_NO_WARNINGS
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
@@ -50,6 +51,10 @@
 #include <stdio.h>
 #include <assert.h>
 //#include <fbxsdk.h>
+
+#include <thread>
+#include <WinSock2.h>
+
 using namespace std;
 
 
@@ -78,3 +83,22 @@ using namespace std;
 #define DIR_DOWN		0x20
 
 #define ANIMATION_COUNT 5		//아직은 안씀, 최대한 5로 통일 시켜야 편리함... 
+
+
+/* 서버_ 재정의때문에 일단 여기로 옮겨둠*/
+#define MAX_BUFF_SIZE   4096
+#define MAX_PACKET_SIZE  4096
+#define MAX_CHAT_SIZE  100
+
+#define MAX_USER 1000
+#define SERVER_PORT  4000
+
+// 서버 -> 클라
+#define POS         1
+#define PUT_PLAYER   2
+#define LOGIN      3
+
+// 클라 -> 서버
+#define CREATE_ROOM      1
+#define JOIN_ROOM      2
+#define PLAYER_MOVE      3

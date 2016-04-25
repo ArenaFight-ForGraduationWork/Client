@@ -24,12 +24,13 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
-	//m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 0);
-	//m_vResources[(int)eResourceType::MonA]->SetIDs(1, 1, 0, 0);
-	//m_vResources[(int)eResourceType::Floor]->SetIDs(2, 1, 0, 0);
 	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::MonA]->SetIDs(1, 1, 0, 1);
-	m_vResources[(int)eResourceType::Floor]->SetIDs(2, 1, 0, 1);
+	m_vResources[(int)eResourceType::MonB]->SetIDs(1, 2, 0, 2);		// ½¦ÀÌ´õ ID 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 2);
+	m_vResources[(int)eResourceType::MonObjB]->SetIDs(3, 2, 0, 1);		// 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonObjA]->SetIDs(4, 1, 0, 1);
+	m_vResources[(int)eResourceType::Floor]->SetIDs(5, 0, 0, 1);
+
 }
 
 CResourceManager::~CResourceManager()
@@ -93,12 +94,29 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	// 0 : Å¥ºê
 	m_mMesh[0] = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
 
-	// 2: monA
-	m_mMesh[1] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(1, 1, 1));
+	// 1: monB, animation, ¹ÚÁã
+	m_mMesh[1] = new CMyAni(pd3dDevice, 1, 3);
 
-	// 3: ¹Ù´Ú
-	m_mMesh[2] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
+	// 2: monA, animation, ¿ø¼þÀÌ
+	m_mMesh[2] = new CMyAni(pd3dDevice, 0, 3);
+
+	// 3. monB, object
+	m_mMesh[3] = new CMyModel(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+
+	// 4. monA, object
+	m_mMesh[4] = new CMyModel(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+
+	// 5: ¹Ù´Ú
+	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
+
 }
+
+void CResourceManager::_LoadBoundingBoxes(ID3D11Device *pd3dDevice, CMesh *pMesh)
+{
+
+
+}
+
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {
 	ID3D11SamplerState *pd3dSamplerState = NULL;
@@ -164,6 +182,13 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[1] = pShader;
+
+	// 2 : PlayerShader
+	pShader = new CPlayerShader();
+	pShader->CreateShader(pd3dDevice);
+	pShader->CreateShaderVariables(pd3dDevice);
+	m_mShader[2] = pShader;
+
 }
 
 

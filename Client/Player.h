@@ -13,6 +13,7 @@ public:
 	~CPlayer();
 
 	void SetObject(CObject *pObject);
+	CObject* GetObjects() { return m_pObject; }
 	void ReleaseObject();
 
 	void Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed);
@@ -27,7 +28,10 @@ public:
 	void RotateAbsolute(const float x, const float y, const float z);
 	void RotateAbsolute(const D3DXVECTOR3 *vec);
 
+	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
 	const D3DXVECTOR3* GetPosition();
+
+	void MoveBoundingBox();
 
 protected:
 
@@ -38,6 +42,7 @@ private:
 	float m_fSpeed;
 
 	// atk, def, hp, mp...
+
 };
 
 
