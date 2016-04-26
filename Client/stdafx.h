@@ -1,9 +1,5 @@
-﻿// stdafx.h : 자주 사용하지만 자주 변경되지는 않는
-// 표준 시스템 포함 파일 및 프로젝트 관련 포함 파일이
-// 들어 있는 포함 파일입니다.
-//
-
-#pragma once
+﻿#ifndef STDAFX_H_
+#define STDAFX_H_
 
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define _CRT_SECURE_NO_WARNINGS
@@ -58,9 +54,9 @@ using namespace std;
 #define VS_SLOT_FOG_CENTER				0x02
 #define VS_SLOT_FOG_RANGE				0x03
 
-#define PS_SLOT_COLOR			0x00
 #define PS_SLOT_LIGHT			0x00
 #define PS_SLOT_MATERIAL		0x01
+#define PS_SLOT_FOG_COLOR		0x02
 
 #define PS_SLOT_TEXTURE			0x00
 #define PS_SLOT_SAMPLER_STATE	0x00
@@ -79,3 +75,9 @@ using namespace std;
 #define DIR_DOWN		0x20
 
 #define ANIMATION_COUNT 5		//아직은 안씀, 최대한 5로 통일 시켜야 편리함... 
+
+
+
+
+
+#endif

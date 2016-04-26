@@ -6,6 +6,8 @@ CFog::CFog()
 {
 	m_pd3dcbFogCenter = nullptr;
 	m_pd3dcbFogRange = nullptr;
+
+	m_pd3dcbFogColor = nullptr;
 }
 CFog::~CFog()
 {
@@ -45,6 +47,20 @@ void CFog::Initialize(ID3D11Device *pd3dDevice, const D3DXVECTOR3 *pd3dxvCenter,
 	pcbFogRange->m_fRange = fRange;
 	pDeviceContext->Unmap(m_pd3dcbFogRange, 0);
 	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_RANGE, 1, &m_pd3dcbFogRange);
+
+	/* PS_CB_FOG_COLOR */
+	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	d3dBufferDesc.ByteWidth = sizeof(PS_CB_FOG_COLOR);
+	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFogColor);
+
+	pDeviceContext->Map(m_pd3dcbFogColor, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	PS_CB_FOG_COLOR *pcbFogColor = (PS_CB_FOG_COLOR *)d3dMappedResource.pData;
+	pcbFogColor->m_d3dxvColor = D3DXVECTOR3(0.5, 0.5, 0.5);
+	pDeviceContext->Unmap(m_pd3dcbFogColor, 0);
+	pDeviceContext->PSSetConstantBuffers(PS_SLOT_FOG_COLOR, 1, &m_pd3dcbFogColor);
 }
 
 //void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const D3DXVECTOR3 *pd3dxvCenter)
@@ -69,6 +85,17 @@ void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const f
 	pcbFogRange->m_fRange = fRange;
 	pd3dDeviceContext->Unmap(m_pd3dcbFogRange, 0);
 	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_RANGE, 1, &m_pd3dcbFogRange);
+}
+
+void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const D3DXVECTOR3 *pd3dxvColor)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+
+	pd3dDeviceContext->Map(m_pd3dcbFogColor, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	PS_CB_FOG_COLOR *pcbFogColor = (PS_CB_FOG_COLOR *)d3dMappedResource.pData;
+	pcbFogColor->m_d3dxvColor = *pd3dxvColor;
+	pd3dDeviceContext->Unmap(m_pd3dcbFogColor, 0);
+	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_FOG_COLOR, 1, &m_pd3dcbFogColor);
 }
 
 void CFog::Destroy()

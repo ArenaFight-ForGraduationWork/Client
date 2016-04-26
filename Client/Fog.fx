@@ -123,6 +123,10 @@ cbuffer cbMaterial : register(b1)
 {
 	MATERIAL gMaterial;
 };
+cbuffer cbFogColor : register(b2)
+{
+	float3 gfFogColor;
+}
 
 
 /*방향성 조명의 효과를 계산하는 함수이다.
@@ -296,9 +300,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	float4 cColor;
 	cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord) * cIllumination;
 
-	float4 fogColor;
-	fogColor = float4(0.5f, 0.5f, 0.5f, 1.0f);
-	cColor = (input.fogFactor * cColor) + (1.0f - input.fogFactor) * fogColor;
+	cColor = (input.fogFactor * cColor) + (1.0f - input.fogFactor) * float4(gfFogColor, 1.0f);
 
 	return cColor;
 }
