@@ -124,6 +124,9 @@ void CObject::SetBoundingBox()
 	m_MaxVer = this->m_pMesh->GetMaxVer();
 	m_MinVer = this->m_pMesh->GetMinVer();
 
+	/*
+		이부분은.. 날개때문에 쓸데없이 커져서 일단 줄여봄. 없어도 되는 부분이긴함.
+	*/
 	m_MaxVer.x = m_MaxVer.x - 5;
 	m_MaxVer.y = m_MaxVer.y - 5;
 	m_MaxVer.z = m_MaxVer.z - 5;

@@ -11,10 +11,6 @@ void CResource::SetIDs(BYTE meshID, BYTE textureID, BYTE materialID, BYTE shader
 }
 
 
-
-
-
-
 CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 {
 	_LoadMesh(pd3dDevice);
