@@ -237,7 +237,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			else
 				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
 			break;
-
+		case VK_F8:
+			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(0,0,0));
+			break;
+		case VK_F9:
+			m_pFog->Contract(m_pd3dDevice);
+			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
@@ -342,7 +347,7 @@ void CGameFramework::BuildObjects()
 
 	/* temp */
 	m_pFog = new CFog();
-	m_pFog->Initialize(m_pd3dDevice, new D3DXVECTOR3(0,0,0), 500);
+	m_pFog->Initialize(m_pd3dDevice);
 }
 
 
@@ -398,10 +403,6 @@ void CGameFramework::ProcessInput()
 
 	// 4) 플레이어 위치에 따라 카메라 update
 	m_pCamera->Update(m_pPlayer->GetPosition());
-
-	/* temp */
-	//m_pFog->UpdateShaderVariables(m_pd3dDeviceContext, m_pPlayer->GetPosition());
-	//m_pFog->UpdateShaderVariables(m_pd3dDeviceContext, *(m_pPlayer->GetPosition()));
 }
 
 
@@ -420,6 +421,8 @@ void CGameFramework::FrameAdvance()
 	
 	//float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	float fClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	m_pFog->Update(m_pd3dDevice);
+
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
