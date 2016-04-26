@@ -76,7 +76,7 @@ using namespace std;
 
 #define ANIMATION_COUNT 5		//아직은 안씀, 최대한 5로 통일 시켜야 편리함... 
 
-
+#define COLORRGB(x) (x/255.0f)
 
 
 

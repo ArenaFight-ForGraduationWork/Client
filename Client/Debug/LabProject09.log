@@ -1,8 +1,9 @@
-﻿빌드 시작: 2016-04-27 오전 2:58:31
+﻿빌드 시작: 2016-04-27 오전 4:01:37
      1>2 노드의 "D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Fog.cpp
-         Fog.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GameFramework.cpp
+         GameFramework.cpp
+     1>d:\arenafight\client\client\gameframework.cpp(334): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\ArenaFight\Client\Client\Debug\GameClient.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11d.lib d3dcompiler.lib d3dx9d.lib dxerr.lib dxguid.lib dinput8.lib winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\ArenaFight\Client\Client\Debug\GameClient.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\ArenaFight\Client\Client\Debug\GameClient.lib" /MACHINE:X86 Debug\GameClient.res
          Debug\Camera.obj
@@ -25,4 +26,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:00.39
+경과 시간: 00:00:00.95

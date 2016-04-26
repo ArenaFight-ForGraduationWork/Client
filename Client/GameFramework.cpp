@@ -220,25 +220,16 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			m_OperationMode = MODE_KEYBOARD;
 			break;
 		case VK_F5:
-			if (m_pObjectManager->FindObject(0))
-				m_pObjectManager->DeleteObject(0);
-			else
-				m_pObjectManager->Insert(0, eResourceType::Cube, D3DXVECTOR3(-120, 0, 0));
+			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(0, 0, 0));
 			break;
 		case VK_F6:
-			if (m_pObjectManager->FindObject(1))
-				m_pObjectManager->DeleteObject(1);
-			else
-				m_pObjectManager->Insert(1, eResourceType::MonA, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(-500, 0, 0));
 			break;
 		case VK_F7:
-			if (m_pObjectManager->FindObject(2))
-				m_pObjectManager->DeleteObject(2);
-			else
-				m_pObjectManager->Insert(2, eResourceType::Cube, D3DXVECTOR3(120, 0, 0), D3DXVECTOR3(0, 0, 0));
+			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(500, 0, 0));
 			break;
 		case VK_F8:
-			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(0,0,0));
+			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(0, 0, 500));
 			break;
 		case VK_F9:
 			m_pFog->Contract(m_pd3dDevice);
@@ -419,8 +410,8 @@ void CGameFramework::FrameAdvance()
 
 	AnimateObjects();
 	
-	//float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	float fClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	//float fClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float fClearColor[4] = { COLORRGB(69), COLORRGB(28), COLORRGB(163), 1.0f };
 	m_pFog->Update(m_pd3dDevice);
 
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
