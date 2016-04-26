@@ -4,9 +4,6 @@
 
 CFog::CFog()
 {
-	m_fStart = 0;
-	m_fEnd = 0;
-
 	m_pd3dcbFogCenter = nullptr;
 	m_pd3dcbFogRange = nullptr;
 }
@@ -14,11 +11,8 @@ CFog::~CFog()
 {
 }
 
-void CFog::Initialize(ID3D11Device *pd3dDevice, const D3DXVECTOR3 *pd3dxvCenter, const float fFogStart, const float fFogEnd)
+void CFog::Initialize(ID3D11Device *pd3dDevice, const D3DXVECTOR3 *pd3dxvCenter, const float fRange)
 {
-	m_fStart = fFogStart;
-	m_fEnd = fFogEnd;
-
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	ID3D11DeviceContext *pDeviceContext;
@@ -48,8 +42,7 @@ void CFog::Initialize(ID3D11Device *pd3dDevice, const D3DXVECTOR3 *pd3dxvCenter,
 
 	pDeviceContext->Map(m_pd3dcbFogRange, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_FOG_RANGE *pcbFogRange = (VS_CB_FOG_RANGE *)d3dMappedResource.pData;
-	pcbFogRange->m_fStart = m_fStart;
-	pcbFogRange->m_fEnd = m_fEnd;
+	pcbFogRange->m_fRange = fRange;
 	pDeviceContext->Unmap(m_pd3dcbFogRange, 0);
 	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_RANGE, 1, &m_pd3dcbFogRange);
 }
@@ -65,6 +58,17 @@ void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXVEC
 	pcbFogCenter->m_d3dxvCenter = pd3dxvCenter;
 	pd3dDeviceContext->Unmap(m_pd3dcbFogCenter, 0);
 	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_CENTER, 1, &m_pd3dcbFogCenter);
+}
+
+void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const float fRange)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+
+	pd3dDeviceContext->Map(m_pd3dcbFogRange, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	VS_CB_FOG_RANGE *pcbFogRange = (VS_CB_FOG_RANGE *)d3dMappedResource.pData;
+	pcbFogRange->m_fRange = fRange;
+	pd3dDeviceContext->Unmap(m_pd3dcbFogRange, 0);
+	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_RANGE, 1, &m_pd3dcbFogRange);
 }
 
 void CFog::Destroy()

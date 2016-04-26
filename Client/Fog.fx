@@ -34,8 +34,7 @@ cbuffer cbFogCenter : register(b2)
 }
 cbuffer cbFogRange : register(b3)
 {
-	float gfFogStart;
-	float gfFogEnd;
+	float gfFogRange;
 }
 
 PS_INPUT VS(VS_INPUT input)
@@ -59,7 +58,7 @@ PS_INPUT VS(VS_INPUT input)
 	distance = sqrt(((gf3FogCenter.x - inputVertex.x)*(gf3FogCenter.x - inputVertex.x))
 		+ ((gf3FogCenter.z - inputVertex.z)*(gf3FogCenter.z - inputVertex.z))
 		);
-	output.fogFactor = saturate((gfFogEnd - distance) / (gfFogEnd - gfFogStart));
+	output.fogFactor = saturate(distance / gfFogRange);
 
 	return output;
 }

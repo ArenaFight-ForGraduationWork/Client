@@ -340,10 +340,9 @@ void CGameFramework::BuildObjects()
 		}
 	}
 
-
 	/* temp */
 	m_pFog = new CFog();
-	m_pFog->Initialize(m_pd3dDevice, m_pPlayer->GetPosition());
+	m_pFog->Initialize(m_pd3dDevice, new D3DXVECTOR3(0,0,0), 500);
 }
 
 
@@ -402,7 +401,7 @@ void CGameFramework::ProcessInput()
 
 	/* temp */
 	//m_pFog->UpdateShaderVariables(m_pd3dDeviceContext, m_pPlayer->GetPosition());
-	m_pFog->UpdateShaderVariables(m_pd3dDeviceContext, *(m_pPlayer->GetPosition()));
+	//m_pFog->UpdateShaderVariables(m_pd3dDeviceContext, *(m_pPlayer->GetPosition()));
 }
 
 

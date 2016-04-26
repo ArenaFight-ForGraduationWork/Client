@@ -1,10 +1,9 @@
-﻿빌드 시작: 2016-04-26 오전 1:35:24
+﻿빌드 시작: 2016-04-27 오전 1:19:04
      1>2 노드의 "D:\ArenaFight\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
-     1>FxCompile:
-         C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Utilities\bin\x86\fxc.exe /nologo /E"main" /T fx_4_0 /Fo "D:\ArenaFight\Client\Client\Debug\Fog.cso" /Od /Zi Fog.fx 
-         compilation succeeded; see D:\ArenaFight\Client\Client\Debug\Fog.cso
-       ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Fog.cpp GameClient.cpp GameFramework.cpp
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Fog.cpp GameClient.cpp GameFramework.cpp Mesh.cpp
+         Mesh.cpp
+     1>d:\arenafight\client\client\mesh.cpp(268): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
          Fog.cpp
          코드를 생성하고 있습니다...
          건너뛰고 있습니다... (관련된 변경 내용 없음)
@@ -32,4 +31,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:00.50
+경과 시간: 00:00:00.90
