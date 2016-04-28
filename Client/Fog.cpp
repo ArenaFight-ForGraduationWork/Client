@@ -178,10 +178,6 @@ void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const D
 
 	pd3dDeviceContext->Map(m_pd3dcbFogColor, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	PS_CB_FOG_COLOR *pcbFogColor = (PS_CB_FOG_COLOR *)d3dMappedResource.pData;
-	if (m_eState != eState::DISABLE)
-		pcbFogColor->m_fEnable = true;
-	else
-		pcbFogColor->m_fEnable = false;
 	pcbFogColor->m_d3dxvColor = *pd3dxvColor;
 	pd3dDeviceContext->Unmap(m_pd3dcbFogColor, 0);
 	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_FOG_COLOR, 1, &m_pd3dcbFogColor);

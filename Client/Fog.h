@@ -15,8 +15,8 @@ struct VS_CB_FOG_RANGE
 };
 struct PS_CB_FOG_COLOR
 {
-	float m_fEnable;
 	D3DXVECTOR3 m_d3dxvColor;
+	float padding;
 };
 
 

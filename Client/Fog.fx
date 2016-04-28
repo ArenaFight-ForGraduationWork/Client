@@ -30,7 +30,7 @@ cbuffer cbWorldMatrix : register(b1)
 };
 cbuffer cbFogCenter : register(b2)
 {
-	float gfFogEnable1;
+	float gfFogEnable;
 	float3 gf3FogCenter;
 }
 cbuffer cbFogRange : register(b3)
@@ -53,7 +53,7 @@ PS_INPUT VS(VS_INPUT input)
 
 	output.tex2dcoord = input.tex2dcoord;
 
-	if (gfFogEnable1)
+	if (gfFogEnable)
 	{
 		float4 inputVertex;
 		inputVertex = mul(float4(input.position, 1.0f), gmtxWorld);
@@ -64,7 +64,7 @@ PS_INPUT VS(VS_INPUT input)
 		output.fogFactor = saturate(distance / gfFogRange);
 	}
 	else
-		output.fogFactor = 0.0f;
+		output.fogFactor = -1.0f;
 
 	return output;
 }
@@ -131,7 +131,6 @@ cbuffer cbMaterial : register(b1)
 };
 cbuffer cbFogColor : register(b2)
 {
-	float gfFogEnable2;
 	float3 gfFogColor;
 }
 
@@ -307,7 +306,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	float4 cColor;
 	cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord) * cIllumination;
 
-	if (gfFogEnable2)
+	if (input.fogFactor >= 0)
 		cColor = (input.fogFactor * cColor) + (1.0f - input.fogFactor) * float4(gfFogColor, 1.0f);
 
 	return cColor;
