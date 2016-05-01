@@ -56,7 +56,6 @@ using namespace std;
 
 #define PS_SLOT_LIGHT			0x00
 #define PS_SLOT_MATERIAL		0x01
-#define PS_SLOT_FOG_COLOR		0x02
 
 #define PS_SLOT_TEXTURE			0x00
 #define PS_SLOT_SAMPLER_STATE	0x00

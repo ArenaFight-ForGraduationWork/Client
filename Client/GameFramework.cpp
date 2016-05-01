@@ -410,7 +410,6 @@ void CGameFramework::FrameAdvance()
 
 	AnimateObjects();
 	
-	//float fClearColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 	float fClearColor[4] = { COLORRGB(69), COLORRGB(28), COLORRGB(163), 1.0f };
 	m_pFog->Update(m_pd3dDevice);
 

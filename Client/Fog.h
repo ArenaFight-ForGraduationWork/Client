@@ -13,11 +13,6 @@ struct VS_CB_FOG_RANGE
 	float m_fRange;
 	float padding1, padding2, padding3;
 };
-struct PS_CB_FOG_COLOR
-{
-	D3DXVECTOR3 m_d3dxvColor;
-	float padding;
-};
 
 
 
@@ -37,7 +32,6 @@ public:
 	//void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const D3DXVECTOR3 *pd3dxvCenter);
 	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 pd3dxvCenter);
 	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const float fRange);
-	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const D3DXVECTOR3 *pd3dxvColor);
 
 private:
 	enum class eState : BYTE{
@@ -58,8 +52,6 @@ private:
 
 	ID3D11Buffer *m_pd3dcbFogCenter;
 	ID3D11Buffer *m_pd3dcbFogRange;
-
-	ID3D11Buffer *m_pd3dcbFogColor;
 };
 
 
