@@ -42,6 +42,8 @@ enum class eResourceType : BYTE{
 	MonObjB,
 	MonObjA,
 	Floor,
+	User,
+	ITME_HP,
 	END
 };
 
@@ -92,7 +94,7 @@ private:
 	void _LoadTextures(ID3D11Device *pd3dDevice);
 	void _LoadMaterials();
 	void _CreateShaders(ID3D11Device *pd3dDevice);
-	void _LoadBoundingBoxes(ID3D11Device *pd3dDevice, CMesh *pMesh);
+
 };
 
 

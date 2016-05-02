@@ -13,9 +13,13 @@ class CMesh
 {
 public:
 
-	XMFLOAT4X4** m_ppResult[5];
-	long long m_AniMaxTime[5];
+	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
+	long long m_AniMaxTime[ANIMATION_COUNT];
 	unsigned int m_AnimationIndexCnt;
+
+	D3DXVECTOR3 m_HitMaxVer[ATTACK_COUNT];
+	D3DXVECTOR3 m_HitMinVer[ATTACK_COUNT];
+
 	CMesh(ID3D11Device *pd3dDevice);
 	virtual ~CMesh();
 
@@ -32,6 +36,9 @@ public:
 	void SetMinVer(D3DXVECTOR3 min)	{ m_MinVer = min; }
 	D3DXVECTOR3 GetMaxVer()	{ return m_MaxVer; }
 	D3DXVECTOR3 GetMinVer()		{ return m_MinVer; }
+
+	
+
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
 	UINT m_nVertices;	/* 정점 버퍼의 정점 개수 */
@@ -58,7 +65,16 @@ private:
 };
 
 
+class CCubeMesh : public CMesh
+{
+public:
+	CCubeMesh(ID3D11Device *pd3dDevice, D3DXVECTOR3 max, D3DXVECTOR3 min);
+	virtual ~CCubeMesh();
 
+
+	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+};
 
 
 
@@ -81,11 +97,11 @@ private:
 
 
 
-class CMyModel : public CMesh
+class CImportedMesh : public CMesh
 {
 public:
-	CMyModel(ID3D11Device *pd3dDevice, char* pTxtName, D3DXVECTOR3 d3dxvScale = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
-	virtual ~CMyModel();
+	CImportedMesh(ID3D11Device *pd3dDevice, char* pTxtName, D3DXVECTOR3 d3dxvScale = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	virtual ~CImportedMesh();
 
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
@@ -102,15 +118,12 @@ private:
 };
 
 
-class CMyAni : public CMesh
+class CImportedAnimatingMesh : public CMesh
 {
 public:
-	CMyAni(ID3D11Device *pd3dDevice, char* pFbxName, char* pTxtName);
 
-	//수정시작합니다. 한줄
-	CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt);
-
-	virtual ~CMyAni();
+	CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int CharNum, int StateCnt);
+	virtual ~CImportedAnimatingMesh();
 
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
@@ -125,9 +138,8 @@ private:
 	vector<CAnimationVertex*> pVertices;
 	CAnimationVertex* ppVertices;
 
-	//수정시작합니다. 한줄
-	FILE *fp[2];	//일단 달리기, 어택 두개기 때문에 2를 써둔다.
-
+	D3DXVECTOR3* pHitMaxVer;
+	D3DXVECTOR3* pHitMinVer;
 };
 
 #endif

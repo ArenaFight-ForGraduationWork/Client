@@ -28,10 +28,9 @@ public:
 	void RotateAbsolute(const float x, const float y, const float z);
 	void RotateAbsolute(const D3DXVECTOR3 *vec);
 
-	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
+	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);		//필요없음. 지울꺼야!
 	const D3DXVECTOR3* GetPosition();
 
-	void MoveBoundingBox();
 
 protected:
 

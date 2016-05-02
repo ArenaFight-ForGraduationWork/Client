@@ -30,7 +30,7 @@ void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float f
 	D3DXVECTOR3 inputAngle = D3DXVECTOR3(0, 0, 0);
 	if (dwDirection)
 	{
-		if (dwDirection & DIR_FORWARD)  inputAngle.z += 1;	//boundingbox의 m_MinVer, m_MaxVer+=1;을 해주던지 해야함.
+		if (dwDirection & DIR_FORWARD)  inputAngle.z += 1;	
 		if (dwDirection & DIR_BACKWARD)	inputAngle.z -= 1;
 		if (dwDirection & DIR_LEFT)	inputAngle.x += 1;
 		if (dwDirection & DIR_RIGHT) inputAngle.x -= 1;
@@ -39,6 +39,7 @@ void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float f
 	float fAngle = acosf(D3DXVec3Dot(&defaultAngle, &inputAngle) / (D3DXVec3Length(&defaultAngle) * D3DXVec3Length(&inputAngle)));
 	fAngle = D3DXToDegree(fAngle);
 	fAngle = ((defaultAngle.x* inputAngle.z - defaultAngle.z*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
+
 
 	m_pObject->RotateAbsolute(&D3DXVECTOR3(0, cameraYaw + fAngle, 0));
 
@@ -99,7 +100,7 @@ const D3DXVECTOR3* CPlayer::GetPosition()
 	return &D3DXVECTOR3(0, 0, 0);
 }
 
-void CPlayer::AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+void CPlayer::AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)		//이거 지금 부르는곳 없음!! 삭제할수도??
 {
 	m_pObject->SetPlayAnimationState(StateNum);
 	m_pObject->Animate(StateNum, pd3dDeviceContext, fTimeElapsed);

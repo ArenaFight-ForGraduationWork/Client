@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "ObjectManager.h"
+#include "Monster.h"
 #include "protocol.h"
 
 
@@ -49,6 +50,8 @@ private:
 	int m_nWndClientHeight;
 
 	CPlayer *m_pPlayer;
+	CMonster *m_pMonster;
+	CMonster** m_ppMonster;		//**인 이유는 Monster[N] 이기 때문에! 몬스터 여러마리 띄울땐 이걸 사용..
 	CCamera *m_pCamera;
 
 	DWORD m_OperationMode;
@@ -81,7 +84,9 @@ private:
 	CObjectManager *m_pObjectManager;
 
 	int player_state = 2;			//IDLE, RUN, ATTACK ...
-	bool is_Attack = false;
+	int Press_SkillNum = 0;		// 몇번째 스킬을 눌렀는가 
+	bool is_Attack = false;		// 공격버튼을 눌렀는가
+	bool is_Coll = false;			// 충돌했는가
 };
 
 

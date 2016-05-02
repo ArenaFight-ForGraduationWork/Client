@@ -54,6 +54,9 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
+
+	pObject->SetBoundingBox();
+
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
@@ -76,10 +79,15 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
 	
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
-	pObject->SetBoundingBox();	//바운딩 박스를 입혀준다.
+	
 
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
+
+	pObject->SetBoundingBox();	//위에서 일단 이동한만큼 월드변환이 바껴있음'ㅅ'
+	pObject->SetHitBox();			//히트박스 설정
+
+
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
 
@@ -100,7 +108,7 @@ CObject* CObjectManager::FindObject(UINT id)
 	return nullptr;
 }
 
-const std::vector<CObject*> CObjectManager::FindObjectInCategory(const UINT id)
+std::vector<CObject*> CObjectManager::FindObjectInCategory(const UINT id)
 {
 	return m_mObjects[(eObjectType)(id / ID_DIVIDE)];
 }

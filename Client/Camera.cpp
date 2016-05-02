@@ -9,9 +9,9 @@ CCamera::CCamera()
 	m_pd3dxvUp = new D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_pd3dxvLook = new D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
-	m_fTheta = 270.0f;
+	m_fTheta = 200.0f;
 	m_fDistanceFromObject =250.0f;
-	m_fHeight = 90.0f;
+	m_fHeight = 120.0f;
 
 	m_fTimeLag = 0.0f;
 

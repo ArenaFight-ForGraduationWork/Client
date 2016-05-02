@@ -93,6 +93,7 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameClient.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Monster.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Player.h" />
@@ -112,6 +113,7 @@
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />

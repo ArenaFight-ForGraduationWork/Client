@@ -70,8 +70,8 @@ using namespace std;
 #define PS_SLOT_SAMPLER_STATE	0x00
 
 //프레임 버퍼의 크기와 종횡비(Aspect Ratio)를 나타내는 상수를 다음과 같이 선언한다.
-#define FRAME_BUFFER_WIDTH	1600	//640
-#define FRAME_BUFFER_HEIGHT	900	//480
+#define FRAME_BUFFER_WIDTH	800	//640
+#define FRAME_BUFFER_HEIGHT	600	//480
 #define ASPECT_RATIO	(float(FRAME_BUFFER_WIDTH)/float(FRAME_BUFFER_HEIGHT))
 
 // messeage input
@@ -83,6 +83,7 @@ using namespace std;
 #define DIR_DOWN		0x20
 
 #define ANIMATION_COUNT 5		//아직은 안씀, 최대한 5로 통일 시켜야 편리함... 
+#define ATTACK_COUNT 2			// 공격모션 개수, 히트박스를 위해서 만듦.  근데 이것도.. 고정적인 개수여야함 ㅠㅠㅠ 내 바램일뿐
 
 
 /* 서버_ 재정의때문에 일단 여기로 옮겨둠*/

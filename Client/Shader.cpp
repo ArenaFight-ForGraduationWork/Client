@@ -305,15 +305,15 @@ void CFogShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, C
 
 
 
-CPlayerShader::CPlayerShader()
+CAnimatingShader::CAnimatingShader()
 {
 }
 
-CPlayerShader::~CPlayerShader()
+CAnimatingShader::~CAnimatingShader()
 {
 }
 
-void CPlayerShader::CreateShader(ID3D11Device *pd3dDevice)
+void CAnimatingShader::CreateShader(ID3D11Device *pd3dDevice)
 {
 	CShader::CreateShader(pd3dDevice);
 
@@ -332,7 +332,7 @@ void CPlayerShader::CreateShader(ID3D11Device *pd3dDevice)
 	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PS_ANIMATION", "ps_4_0", &m_pd3dPixelShader);
 }
 
-void CPlayerShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
+void CAnimatingShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 {
 	CShader::CreateShaderVariables(pd3dDevice);
 
@@ -345,12 +345,12 @@ void CPlayerShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CPlayerShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+void CAnimatingShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
 	CShader::AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
 }
 
-void CPlayerShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
+void CAnimatingShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CIlluminatedTexturedShader::Render(pd3dDeviceContext);
 }

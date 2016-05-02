@@ -60,10 +60,109 @@ void CMesh::CreateRasterizerState(ID3D11Device *pd3dDevice)
 {
 }
 
+CCubeMesh::CCubeMesh(ID3D11Device *pd3dDevice, D3DXVECTOR3 max, D3DXVECTOR3 min) : CMesh(pd3dDevice)
+{
+	m_nVertices = 36;
+	m_nStride = sizeof(CTexturedNormalVertex);
+	m_nOffset = 0;
+	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	CTexturedNormalVertex pVertices[36];
+	int i = 0;
+	//직육면체의 한 면에 텍스쳐 전체가 맵핑되도록 텍스쳐 좌표를 설정한다.
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(min.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, max.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, max.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(max.x, min.y, min.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
 
 
+	D3D11_BUFFER_DESC d3dBufferDesc;
+	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	d3dBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	d3dBufferDesc.ByteWidth = m_nStride * m_nVertices;
+	d3dBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	d3dBufferDesc.CPUAccessFlags = 0;
+	D3D11_SUBRESOURCE_DATA d3dBufferData;
+	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
+	d3dBufferData.pSysMem = pVertices;
+	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
 
+	SetRasterizerState(pd3dDevice);
+}
 
+CCubeMesh::~CCubeMesh()
+{
+
+}
+
+void CCubeMesh::SetRasterizerState(ID3D11Device *pd3dDevice)
+{
+	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
+	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+	d3dRasterizerDesc.CullMode = D3D11_CULL_BACK;
+	d3dRasterizerDesc.FillMode = D3D11_FILL_WIREFRAME;
+	pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
+}
+
+void CCubeMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	if (m_pd3dVertexBuffer) pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dVertexBuffer, &m_nStride, &m_nOffset);
+	//인덱스 버퍼가 있으면 인덱스 버퍼를 디바이스 컨텍스트에 연결한다.
+	if (m_pd3dIndexBuffer) pd3dDeviceContext->IASetIndexBuffer(m_pd3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	pd3dDeviceContext->IASetPrimitiveTopology(
+		m_d3dPrimitiveTopology);
+	if (m_pd3dRasterizerState) pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
+
+	// 인덱스 버퍼가 있으면 인덱스 버퍼를 사용하여 메쉬를 렌더링하고
+	// 없으면 정점 버퍼만을 사용하여 메쉬를 렌더링한다.
+	if (m_pd3dIndexBuffer)
+		pd3dDeviceContext->DrawIndexed(m_nIndices, m_nStartIndex, m_nBaseVertex);
+	else
+		pd3dDeviceContext->Draw(m_nVertices, m_nOffset);
+}
 
 CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMesh(pd3dDevice)
 {
@@ -255,10 +354,10 @@ D3DXVECTOR3 CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertice
 //
 //===============================================================
 
-CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
+CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
 {
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(ptxtName, pVertices);
+	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(ptxtName, pVertices, d3dxvScale);
 
 	m_nVertices = pVertices.size();
 
@@ -272,6 +371,9 @@ CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvSc
 		ppVertices[i].SetUV(pVertices.at(i)->GetUV());
 	}
 	
+	SetMaxVer(CFbx::GetInstance()->GetMaxVer());
+	SetMinVer(CFbx::GetInstance()->GetMinVer());	
+
 	m_nStride = sizeof(CTexturedNormalVertex);
 	m_nOffset = 0;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -296,12 +398,12 @@ CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvSc
 	delete[] ppVertices;
 }
 
-CMyModel::~CMyModel()
+CImportedMesh::~CImportedMesh()
 {
 	CMesh::~CMesh();
 }
 
-void CMyModel::CreateRasterizerState(ID3D11Device *pd3dDevice)
+void CImportedMesh::CreateRasterizerState(ID3D11Device *pd3dDevice)
 {
 	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
@@ -310,12 +412,12 @@ void CMyModel::CreateRasterizerState(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
-void CMyModel::Render(ID3D11DeviceContext *pd3dDeviceContext)
+void CImportedMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CMesh::Render(pd3dDeviceContext);
 }
 
-void CMyModel::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
+void CImportedMesh::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
 {
 	switch (m_d3dPrimitiveTopology)
 	{
@@ -338,7 +440,7 @@ void CMyModel::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
 }
 
 //인덱스 버퍼를 사용하지 않는 삼각형 리스트에 대하여 정점의 법선 벡터를 계산한다.
-void CMyModel::SetTriAngleListVertexNormal(BYTE *pVertices)
+void CImportedMesh::SetTriAngleListVertexNormal(BYTE *pVertices)
 {
 	D3DXVECTOR3 d3dxvNormal;
 	CTexturedNormalVertex *pVertex = NULL;
@@ -357,7 +459,7 @@ void CMyModel::SetTriAngleListVertexNormal(BYTE *pVertices)
 }
 
 //삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산한다.
-D3DXVECTOR3 CMyModel::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
+D3DXVECTOR3 CImportedMesh::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
 {
 	D3DXVECTOR3 d3dxvNormal(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 d3dxvP0 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex0)));
@@ -371,7 +473,7 @@ D3DXVECTOR3 CMyModel::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, U
 }
 
 /*프리미티브가 인덱스 버퍼를 사용하는 삼각형 리스트 또는 삼각형 스트립인 경우 정점의 법선 벡터는 그 정점을 포함하는 삼각형의 법선 벡터들의 평균으로 계산한다.*/
-void CMyModel::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
+void CImportedMesh::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
 {
 	D3DXVECTOR3 d3dxvSumOfNormal(0.0f, 0.0f, 0.0f);
 	CTexturedNormalVertex *pVertex = NULL;
@@ -402,12 +504,11 @@ void CMyModel::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrim
 //=========================================
 
 
-CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3dDevice)
+CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3dDevice)
 {
 	CFbx::GetInstance()->Fbx_ReadTextFile_Info(CharNum);
 	m_nVertices = CFbx::GetInstance()->GetSize();
-	cout << " 애니메이션 obj 사이즈 : " << m_nVertices << endl;
-	
+
 	ppVertices = new CAnimationVertex[m_nVertices];
 
 	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
@@ -420,7 +521,18 @@ CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3d
 		cout << i << "번째 maxtime*_*:" << m_AniMaxTime[i] << endl;
 		SetAnimationMaxTime(m_AniMaxTime[i]);
 	}
-	
+
+	pHitMaxVer = new D3DXVECTOR3[ATTACK_COUNT];
+	pHitMinVer = new D3DXVECTOR3[ATTACK_COUNT];
+	CFbx::GetInstance()->ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
+
+	for (int i = 0; i < ATTACK_COUNT; ++i)
+	{
+		m_HitMaxVer[i] = pHitMaxVer[i];
+		m_HitMinVer[i] = pHitMinVer[i];
+		//printf("%f %f %f\n", m_HitMaxVer[i].x, m_HitMaxVer[i].y, m_HitMaxVer[i].z);
+	}
+
 	m_AnimationIndexCnt = CFbx::GetInstance()->GetAnimationIndexCount();		
 	SetAnimationIndexCnt(m_AnimationIndexCnt);		// Cmesh의 AnimationIndex에 넣어줌. object에서 가져갈 수 있도록
 	SetMaxVer(CFbx::GetInstance()->GetMaxVer());	// 값을 가져와서 CMesh의 m_MaxVer에 넣어줌. object에서 가져갈 수 있도록
@@ -446,12 +558,12 @@ CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3d
 
 }
 
-CMyAni::~CMyAni()
+CImportedAnimatingMesh::~CImportedAnimatingMesh()
 {
 	CMesh::~CMesh();
 }
 
-void CMyAni::CreateRasterizerState(ID3D11Device *pd3dDevice)
+void CImportedAnimatingMesh::CreateRasterizerState(ID3D11Device *pd3dDevice)
 {
 	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
@@ -460,12 +572,12 @@ void CMyAni::CreateRasterizerState(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
-void CMyAni::Render(ID3D11DeviceContext *pd3dDeviceContext)
+void CImportedAnimatingMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CMesh::Render(pd3dDeviceContext);
 }
 
-void CMyAni::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
+void CImportedAnimatingMesh::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
 {
 	switch (m_d3dPrimitiveTopology)
 	{
@@ -484,7 +596,7 @@ void CMyAni::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
 	}
 }
 
-void CMyAni::SetTriAngleListVertexNormal(BYTE *pVertices)
+void CImportedAnimatingMesh::SetTriAngleListVertexNormal(BYTE *pVertices)
 {
 	D3DXVECTOR3 d3dxvNormal;
 	CTexturedNormalVertex *pVertex = NULL;
@@ -502,7 +614,7 @@ void CMyAni::SetTriAngleListVertexNormal(BYTE *pVertices)
 	}
 }
 
-D3DXVECTOR3 CMyAni::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
+D3DXVECTOR3 CImportedAnimatingMesh::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
 {
 	D3DXVECTOR3 d3dxvNormal(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 d3dxvP0 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex0)));
@@ -515,7 +627,7 @@ D3DXVECTOR3 CMyAni::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USH
 	return(d3dxvNormal);
 }
 
-void CMyAni::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
+void CImportedAnimatingMesh::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
 {
 	D3DXVECTOR3 d3dxvSumOfNormal(0.0f, 0.0f, 0.0f);
 	CTexturedNormalVertex *pVertex = NULL;

@@ -108,11 +108,11 @@ private:
 
 
 
-class CPlayerShader : public CIlluminatedTexturedShader
+class CAnimatingShader : public CIlluminatedTexturedShader
 {
 public:
-	CPlayerShader();
-	virtual ~CPlayerShader();
+	CAnimatingShader();
+	virtual ~CAnimatingShader();
 
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
