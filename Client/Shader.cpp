@@ -332,5 +332,5 @@ void CPlayerShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceC
 
 void CPlayerShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
-	CIlluminatedTexturedShader::Render(pd3dDeviceContext);
+	CShader::Render(pd3dDeviceContext);
 }
