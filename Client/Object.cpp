@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Object.h"
 
-
+#include "Fbx.h"		//지울수도 있음.
 
 CMaterial::CMaterial()
 {
@@ -77,9 +77,6 @@ void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, 
 
 
 
-
-
-
 CObject::CObject(UINT id)
 {
 	m_pd3dxWorldMatrix = new D3DXMATRIX();
@@ -90,6 +87,13 @@ CObject::CObject(UINT id)
 	m_pTexture = nullptr;
 
 	m_id = id;
+
+	for (int i = 0; i < 5; ++i)
+		m_AniMaxTime[i] = 0.0f;
+	g_pd3dcbBoneMatrix = nullptr;
+	g_pcbBoneMatrix = nullptr;
+
+
 }
 
 CObject::~CObject()
@@ -97,6 +101,7 @@ CObject::~CObject()
 	if (m_pMesh) m_pMesh->Release();
 	if (m_pMaterial) m_pMaterial->Release();
 	if (m_pTexture) m_pTexture->Release();
+
 }
 
 void CObject::SetMesh(CMesh *pMesh)
@@ -113,12 +118,134 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 	if (m_pMaterial) m_pMaterial->AddRef();
 }
 
-void CObject::Animate(float fTimeElapsed)
+void CObject::SetBoundingBox()
 {
+
+	m_MaxVer = this->m_pMesh->GetMaxVer();
+	m_MinVer = this->m_pMesh->GetMinVer();
+
+	m_MaxVer.x = m_MaxVer.x - 5;
+	m_MaxVer.y = m_MaxVer.y - 5;
+	m_MaxVer.z = m_MaxVer.z - 5;
+	m_MinVer.x = m_MinVer.x + 5;
+	m_MinVer.y = m_MinVer.y + 5;
+	m_MinVer.z = m_MinVer.z + 5;
+
+	//위치값 변환
+	D3DXVec3TransformCoord(&m_MaxVer, &m_MaxVer, GetWorldMatrix());		// 연산의 결과가 저장될 벡터의 주소값, 연산을 수행할 3차원 벡터값, 연산을 수행할 4X4행렬의 주소값
+	D3DXVec3TransformCoord(&m_MinVer, &m_MinVer, GetWorldMatrix());
+
+	if (m_MaxVer.x < m_MinVer.x)
+	{
+		float temp;
+		temp = m_MaxVer.x;
+		m_MaxVer.x = m_MinVer.x;
+		m_MinVer.x = temp;
+	}
+	if (m_MaxVer.y < m_MinVer.y)
+	{
+		float temp;
+		temp = m_MaxVer.y;
+		m_MaxVer.y = m_MinVer.y;
+		m_MinVer.y = temp;
+	}
+	if (m_MaxVer.z < m_MinVer.z)
+	{
+		float temp;
+		temp = m_MaxVer.z;
+		m_MaxVer.z = m_MinVer.z;
+		m_MinVer.z = temp;
+	}
+
+	printf("ID : %d, max : %f, %f, %f\n", this->GetId(), m_MaxVer.x, m_MaxVer.y, m_MaxVer.z);
+	printf("ID : %d, min : %f, %f, %f\n", this->GetId(), m_MinVer.x, m_MinVer.y, m_MinVer.z);
+
+}
+
+
+
+bool CObject::Collison(CObject *pObject)
+{
+	// 현재 메쉬 최대 < 타겟 메쉬 최소 , 현재 메쉬 최소 > 타겟 메쉬 최대면 충돌이 아님
+	if (m_MinVer.x > pObject->m_MaxVer.x || m_MaxVer.x < pObject->m_MinVer.x)  ///여기에 nowMinver.를 쓰셈
+	{
+		return false;	
+	}
+
+	if (m_MinVer.z > pObject->m_MaxVer.z || m_MaxVer.z < pObject->m_MinVer.z)
+	{
+		return false;
+	}
+
+	return true;		//y축은 할 필요가 없다.
+}
+
+void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+{
+	if (PreState != StateNum)
+	{
+		PreState = StateNum;
+		m_fAnimationPlaytime = 0.0f;
+	}
+	m_fAnimationPlaytime += 0.01f;
+	NowTime = m_fAnimationPlaytime * 1000;
+
+	
+	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
+	{
+		
+		NowTime -= m_AniMaxTime[StateNum];
+		m_fAnimationPlaytime = 0;
+	}
+
+
+	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+	{
+		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
+		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+	}
+
+	if (g_pd3dcbBoneMatrix != nullptr)
+	{
+		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+	}
 }
 
 void CObject::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
+	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
+}
+
+void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time)
+{
+	if (PreState != Animation_state)
+	{
+		PreState = Animation_state;
+		m_fAnimationPlaytime = 0.0f;
+	}
+	m_fAnimationPlaytime += 0.01f;
+	NowTime = m_fAnimationPlaytime * 1000;
+
+
+	if ((NowTime / 10) >= (m_AniMaxTime[Animation_state] / 10))
+	{
+
+		NowTime -= m_AniMaxTime[Animation_state];
+		m_fAnimationPlaytime = 0;
+	}
+
+
+	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+	{
+		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[Animation_state][NowTime / 10][i]);
+		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+	}
+
+	if (g_pd3dcbBoneMatrix != nullptr)
+	{
+		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+	}
+
 	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
 }
 
@@ -158,10 +285,39 @@ void CObject::MoveAbsolute(const float fx, const float fy, const float fz)
 }
 void CObject::MoveAbsolute(const D3DXVECTOR3 *d3dxVec)
 {
+	D3DXVECTOR3 temp;	
+	temp.x = m_pd3dxWorldMatrix->_41;
+	temp.y = m_pd3dxWorldMatrix->_42;
+	temp.z = m_pd3dxWorldMatrix->_43;
+
 	m_pd3dxWorldMatrix->_41 = d3dxVec->x;
 	m_pd3dxWorldMatrix->_42 = d3dxVec->y;
 	m_pd3dxWorldMatrix->_43 = d3dxVec->z;
+
+	//실제 이동량 = 움직인 후 - 움직이기 전
+	temp.x = m_pd3dxWorldMatrix->_41 - temp.x;
+	temp.y = m_pd3dxWorldMatrix->_42 - temp.y;
+	temp.z = m_pd3dxWorldMatrix->_43 - temp.z;
+	
+	//실제 이동량 전달
+	MoveBoundingBox(&temp);
+	
 }
+
+void CObject::MoveBoundingBox(const D3DXVECTOR3* d3dxvec)
+{
+	// 실제 이동량을 전달 받음 d3dxvec에
+	//m_tempMaxVer = m_MaxVer;		//임시 변수에 현재 max 위치 값을 넣어줌.
+	//m_tempMinVer = m_MinVer;
+
+	//m_MaxVer = m_tempMaxVer + *d3dxvec;		// max값에 움직인것만큼 더해줌
+	//m_MinVer = m_tempMinVer + *d3dxvec;
+
+	m_MaxVer += *d3dxvec;
+	m_MinVer += *d3dxvec;
+	printf("움직인 후 : %f, 이동량 :  %f \n", m_MinVer.x, d3dxvec->x);
+}
+
 void CObject::MoveForward(const float fDistance)
 {
 	D3DXVECTOR3 d3dxvPosition = *GetPosition();
@@ -273,3 +429,114 @@ const D3DXMATRIX* CObject::_GetRotationMatrix()
 	return &mtxRotate;
 }
 
+void CObject::SetResult(XMFLOAT4X4*** result)
+{
+	m_pppResult = result;
+}
+
+void CObject::SetAniIndexCount(int count)
+{
+	m_AnimationIndexCount = count;
+	cout << "애니메이션 인덱스 갯수 : " << m_AnimationIndexCount << endl;
+}
+
+void CObject::SetResult()
+{
+	m_pppResult = CFbx::GetInstance()->GetResult();
+}
+
+void CObject::SetTime(long long* time)
+{
+	for (int i = 0; i < ANIMATION_COUNT; ++i)
+	{
+		m_AniMaxTime[i] = time[i];
+		//cout << " set2 time : " << m_AniMaxTime[i] << endl;
+	//	m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		//m_AniMaxTime[i] = CFbx::GetInstance()->GetAniTime(i);
+		//m_AniMaxTime[i] = *CFbx::GetInstance()->GetTime(i);
+		cout << i << "번째 maxtime(불렀음):" << m_AniMaxTime[i] << endl;
+	}
+}
+
+void CObject::SetTime()
+{
+	for (int i = 0; i < ANIMATION_COUNT; ++i)
+	{
+		
+		//cout << " set2 time : " << m_AniMaxTime[i] << endl;
+		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		//m_AniMaxTime[i] = CFbx::GetInstance()->GetAniTime(i);
+		//m_AniMaxTime[i] = *CFbx::GetInstance()->GetTime(i);
+		cout << i << "번째 maxtime(불렀음):" << m_AniMaxTime[i] << endl;
+	}
+}
+
+void CObject::SetAnimationIndexCount()
+{
+	m_AnimationIndexCount = CFbx::GetInstance()->GetAnimationIndexCount();
+	//m_AnimationIndexCount = *CFbx::GetInstance()->GetAniIndexCnt();
+	cout << "애니메이션 인덱스 갯수 : " << m_AnimationIndexCount << endl;
+}
+
+void CObject::ReadTextFile(int CharNum, int StateCount)
+{
+	for (int i = 0; i < StateCount; ++i)
+		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
+}
+
+void CObject::SetPlayAnimationState(int state)
+{
+	Animation_state = state;
+}
+
+void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext)
+{
+	//애니메이션을 위한 본 매트릭스 상수버퍼 생성
+	D3D11_BUFFER_DESC BD;
+	::ZeroMemory(&BD, sizeof(D3D11_BUFFER_DESC));
+	BD.Usage = D3D11_USAGE::D3D11_USAGE_DYNAMIC;
+	BD.ByteWidth = sizeof(VS_CB_BONE_MATRIX);
+	BD.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	BD.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
+
+	pd3dDevice->CreateBuffer(&BD, NULL, &g_pd3dcbBoneMatrix);
+
+	pd3dDeviceContext->Map(g_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &g_d3dMappedResource);
+
+	g_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)g_d3dMappedResource.pData;
+
+	for (int i = 0; i < 128; i++)
+		g_pcbBoneMatrix->m_XMmtxBone[i] = XMMatrixIdentity();
+
+	pd3dDeviceContext->Unmap(g_pd3dcbBoneMatrix, NULL);
+}
+
+void CObject::PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext)
+{
+	if (PreState != StateNum)
+	{
+		PreState = StateNum;
+		m_fAnimationPlaytime = 0.0f;
+	}
+	m_fAnimationPlaytime += 0.01f;
+	NowTime = m_fAnimationPlaytime * 1000;
+
+	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
+	{
+		NowTime -= m_AniMaxTime[StateNum];
+		m_fAnimationPlaytime = 0;
+	}
+
+
+
+	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+	{
+		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
+		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+	}
+
+	if (g_pd3dcbBoneMatrix != nullptr)
+	{
+		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+	}
+}

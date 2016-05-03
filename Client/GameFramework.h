@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "ObjectManager.h"
+#include "protocol.h"
 
 /* temp */
 #include "Fog.h"
@@ -35,6 +36,7 @@ public:
 	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 
 	void ProcessInput();
 	void AnimateObjects();
+	//void AnimateObjects(ID3D11DeviceContext* pd3dDeviceContext);
 	void FrameAdvance();
 
 	//윈도우의 메시지(키보드, 마우스 입력)를 처리하는 함수이다. 
@@ -80,6 +82,9 @@ private:
 	POINT	m_ptNewCursorPos;
 
 	CObjectManager *m_pObjectManager;
+
+	int player_state = 2;			//IDLE, RUN, ATTACK ...
+	bool is_Attack = false;
 };
 
 
