@@ -85,8 +85,6 @@ private:
 
 	int player_state = 2;			//IDLE, RUN, ATTACK ...
 	bool is_Attack = false;
-
-	CFog *m_pFog;
 };
 
 

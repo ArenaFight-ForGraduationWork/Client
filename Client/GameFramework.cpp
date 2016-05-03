@@ -26,8 +26,6 @@ CGameFramework::CGameFramework()
 
 	m_pd3dDepthStencilBuffer = NULL;
 	m_pd3dDepthStencilView = NULL;
-
-	m_pFog = nullptr;
 }
 
 CGameFramework::~CGameFramework()
@@ -222,16 +220,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			m_OperationMode = MODE_KEYBOARD;
 			break;
 
-		case VK_F5:
-			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(-600, 0, 0));
-			break;
-		case VK_F6:
-			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(600, 0, 0));
-			break;
-		case VK_F7:
-			m_pFog->Contract(m_pd3dDevice);
-			break;
-
 		case VK_SPACE:
 			//	m_pObjectManager->FindObject(20000)->SetPlayAnimationState(ePLAYER_STATE::ATTACK);
 			is_Attack = true;
@@ -397,20 +385,6 @@ void CGameFramework::BuildObjects()
 	m_pObjectManager->Insert(20000, eResourceType::MonB, m_pd3dDevice, m_pd3dDeviceContext, 1, 3, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
 	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
 
-	m_pFog = new CFog();
-	m_pFog->Initialize(m_pd3dDevice);
-
-	/* temp */
-	{
-		for (short i = -2; i < 2; ++i)
-		{
-			for (short j = -2; j < 2; ++j)
-			{
-				m_pObjectManager->Insert(100 + i*10 +j, eResourceType::Cube, D3DXVECTOR3(300 * i, 0, 300 * j), D3DXVECTOR3(0, 0, 0));
-			}
-		}
-	}
-
 	// 1) Ä«¸Þ¶ó init
 	m_pCamera = new CThirdPersonCamera();
 	m_pCamera->CreateShaderVariables(m_pd3dDevice);
@@ -447,9 +421,6 @@ void CGameFramework::FrameAdvance()
 
 	ProcessInput();
 	AnimateObjects();
-
-	if (m_pFog->IsInUse())
-		m_pFog->Update(m_pd3dDevice);
 
 	float fClearColor[4] = { COLORRGB(69), COLORRGB(28), COLORRGB(163), 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
