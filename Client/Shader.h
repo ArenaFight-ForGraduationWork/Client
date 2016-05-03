@@ -69,10 +69,6 @@ public:
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
-
-	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//¼öÁ¤
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-
 };
 
 
@@ -94,19 +90,6 @@ public:
 };
 
 
-
-
-
-class CFogShader : public CShader
-{
-public:
-	CFogShader();
-	~CFogShader();
-
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
-};
 
 
 

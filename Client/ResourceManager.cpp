@@ -181,12 +181,6 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[1] = pShader;
-
-	// 2 : FogShader
-	pShader = new CFogShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[2] = pShader;
 }
 
 

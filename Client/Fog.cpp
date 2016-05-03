@@ -6,8 +6,6 @@ CFog::CFog()
 {
 	m_eState = eState::DISABLE;
 
-	m_pd3dxvCenter = new D3DXVECTOR3(0, 0, 0);
-
 	m_fNowRange = 0;
 
 	m_fMinRange = 100;
@@ -41,7 +39,6 @@ void CFog::Initialize(ID3D11Device *pd3dDevice)
 	{
 		VS_CB_FOG_CENTER *pcbFogCenter = (VS_CB_FOG_CENTER *)d3dMappedResource.pData;
 		pcbFogCenter->m_fEnable = false;
-		pcbFogCenter->m_d3dxvCenter = *m_pd3dxvCenter;
 	}
 	pDeviceContext->Unmap(m_pd3dcbFogCenter, 0);
 	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_CENTER, 1, &m_pd3dcbFogCenter);
@@ -121,13 +118,15 @@ void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXVEC
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 
 	pd3dDeviceContext->Map(m_pd3dcbFogCenter, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	VS_CB_FOG_CENTER *pcbFogCenter = (VS_CB_FOG_CENTER *)d3dMappedResource.pData;
-	//pcbFogCenter->m_d3dxvCenter = *pd3dxvCenter;
-	pcbFogCenter->m_d3dxvCenter = pd3dxvCenter;
-	if (m_eState != eState::DISABLE)
-		pcbFogCenter->m_fEnable = true;
-	else
-		pcbFogCenter->m_fEnable = false;
+	{
+		VS_CB_FOG_CENTER *pcbFogCenter = (VS_CB_FOG_CENTER *)d3dMappedResource.pData;
+		//pcbFogCenter->m_d3dxvCenter = *pd3dxvCenter;
+		pcbFogCenter->m_d3dxvCenter = pd3dxvCenter;
+		if (m_eState != eState::DISABLE)
+			pcbFogCenter->m_fEnable = true;
+		else
+			pcbFogCenter->m_fEnable = false;
+	}
 	pd3dDeviceContext->Unmap(m_pd3dcbFogCenter, 0);
 	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_CENTER, 1, &m_pd3dcbFogCenter);
 }
@@ -137,8 +136,10 @@ void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const f
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 
 	pd3dDeviceContext->Map(m_pd3dcbFogRange, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	VS_CB_FOG_RANGE *pcbFogRange = (VS_CB_FOG_RANGE *)d3dMappedResource.pData;
-	pcbFogRange->m_fRange = fRange;
+	{
+		VS_CB_FOG_RANGE *pcbFogRange = (VS_CB_FOG_RANGE *)d3dMappedResource.pData;
+		pcbFogRange->m_fRange = fRange;
+	}
 	pd3dDeviceContext->Unmap(m_pd3dcbFogRange, 0);
 	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_RANGE, 1, &m_pd3dcbFogRange);
 }
