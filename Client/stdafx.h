@@ -41,6 +41,7 @@ using namespace std;
 #define VS_SLOT_WORLD_MATRIX			0x01
 #define VS_SLOT_FOG_CENTER				0x02
 #define VS_SLOT_FOG_RANGE				0x03
+#define VS_SLOT_BONE_MATRIX				0x04
 
 #define PS_SLOT_LIGHT					0x00
 #define PS_SLOT_MATERIAL				0x01

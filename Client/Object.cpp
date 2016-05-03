@@ -207,7 +207,7 @@ void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float
 
 	if (g_pd3dcbBoneMatrix != nullptr)
 	{
-		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
 	}
 }
 
@@ -243,7 +243,7 @@ void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 
 	if (g_pd3dcbBoneMatrix != nullptr)
 	{
-		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
 	}
 
 	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
@@ -537,6 +537,6 @@ void CObject::PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext
 
 	if (g_pd3dcbBoneMatrix != nullptr)
 	{
-		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
 	}
 }
