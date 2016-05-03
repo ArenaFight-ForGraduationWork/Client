@@ -99,10 +99,17 @@ CObject* CObjectManager::FindObject(UINT id)
 	}
 	return nullptr;
 }
-
-const std::vector<CObject*> CObjectManager::FindObjectInCategory(const UINT id)
+UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iNum)
 {
-	return m_mObjects[(eObjectType)(id / ID_DIVIDE)];
+	iNum = m_mObjects[eType].size();
+
+	UINT *puiObjects = new UINT[iNum];
+	for (int i = 0; i < iNum; ++i)
+	{
+		puiObjects[i] = m_mObjects[eType][i]->GetId();
+	}
+
+	return puiObjects;
 }
 
 void CObjectManager::DeleteObject(UINT id)

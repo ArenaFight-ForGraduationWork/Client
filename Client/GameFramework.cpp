@@ -446,7 +446,6 @@ void CGameFramework::FrameAdvance()
 	// 5) Ä«¸Ş¶ó ½¦ÀÌ´õ update
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	//if (m_pScene) m_pScene->Render(m_pd3dDeviceContext);
 	if (m_pScene) m_pScene->AnimateObjectsAndRender(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
 	
 	m_pDXGISwapChain->Present(0, 0);
