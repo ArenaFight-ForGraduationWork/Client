@@ -219,21 +219,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F2:
 			m_OperationMode = MODE_KEYBOARD;
 			break;
-		case VK_F5:
-			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(0, 0, 0));
-			break;
-		case VK_F6:
-			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(-500, 0, 0));
-			break;
-		case VK_F7:
-			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(500, 0, 0));
-			break;
-		case VK_F8:
-			m_pFog->Expand(m_pd3dDevice, new D3DXVECTOR3(0, 0, 500));
-			break;
-		case VK_F9:
-			m_pFog->Contract(m_pd3dDevice);
-			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
@@ -324,21 +309,6 @@ void CGameFramework::BuildObjects()
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 	m_pCamera->GenerateViewMatrix();
-
-	/* temp */
-	{
-		for (short i = -2; i < 2; ++i)
-		{
-			for (short j = -2; j < 2; ++j)
-			{
-				m_pObjectManager->Insert(100 + i, eResourceType::Cube, D3DXVECTOR3(300 * i, 0, 300 * j), D3DXVECTOR3(0, 0, 0));
-			}
-		}
-	}
-
-	/* temp */
-	m_pFog = new CFog();
-	m_pFog->Initialize(m_pd3dDevice);
 }
 
 
@@ -411,7 +381,6 @@ void CGameFramework::FrameAdvance()
 	AnimateObjects();
 	
 	float fClearColor[4] = { COLORRGB(69), COLORRGB(28), COLORRGB(163), 1.0f };
-	m_pFog->Update(m_pd3dDevice);
 
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);

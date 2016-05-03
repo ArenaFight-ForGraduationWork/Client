@@ -22,6 +22,8 @@ CFog::~CFog()
 
 void CFog::Initialize(ID3D11Device *pd3dDevice)
 {
+	this->Destroy();
+
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	ID3D11DeviceContext *pDeviceContext;
@@ -51,15 +53,6 @@ void CFog::Initialize(ID3D11Device *pd3dDevice)
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFogRange);
-
-	pDeviceContext->Map(m_pd3dcbFogRange, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	{
-		VS_CB_FOG_RANGE *pcbFogRange = (VS_CB_FOG_RANGE *)d3dMappedResource.pData;
-		pcbFogRange->m_fRange = m_fMinRange;
-		m_fNowRange = m_fMinRange;
-	}
-	pDeviceContext->Unmap(m_pd3dcbFogRange, 0);
-	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG_RANGE, 1, &m_pd3dcbFogRange);
 }
 
 void CFog::Update(ID3D11Device *pd3dDevice)
@@ -152,6 +145,16 @@ void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const f
 
 void CFog::Destroy()
 {
-	m_pd3dcbFogCenter->Release();
-	m_pd3dcbFogRange->Release();
+	if (m_pd3dcbFogCenter)
+		m_pd3dcbFogCenter->Release();
+	if (m_pd3dcbFogRange)
+		m_pd3dcbFogRange->Release();
+}
+
+bool CFog::IsInUse()
+{
+	if (eState::DISABLE == m_eState)
+		return false;
+	else
+		return true;
 }

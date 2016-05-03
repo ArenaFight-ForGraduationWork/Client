@@ -80,9 +80,6 @@ private:
 	POINT	m_ptNewCursorPos;
 
 	CObjectManager *m_pObjectManager;
-
-	/* temp */
-	CFog *m_pFog;
 };
 
 
