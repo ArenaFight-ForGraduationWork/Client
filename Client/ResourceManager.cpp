@@ -24,13 +24,12 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
-	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::MonB]->SetIDs(1, 2, 0, 2);		// ½¦ÀÌ´õ ID 1: object , 2: Animation
-	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 2);
-	m_vResources[(int)eResourceType::MonObjB]->SetIDs(3, 2, 0, 1);		// 1: object , 2: Animation
-	m_vResources[(int)eResourceType::MonObjA]->SetIDs(4, 1, 0, 1);
-	m_vResources[(int)eResourceType::Floor]->SetIDs(5, 0, 0, 1);
-
+	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 0);
+	m_vResources[(int)eResourceType::MonB]->SetIDs(1, 2, 0, 1);		// ½¦ÀÌ´õ ID 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 1);
+	m_vResources[(int)eResourceType::MonObjB]->SetIDs(3, 2, 0, 0);		// 1: object , 2: Animation
+	m_vResources[(int)eResourceType::MonObjA]->SetIDs(4, 1, 0, 0);
+	m_vResources[(int)eResourceType::Floor]->SetIDs(5, 0, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -171,24 +170,23 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 {
 	CShader *pShader;
 
-	// 0 : IlluminatedTextured
+	// 0 : CIlluminatedTexturedShader
 	pShader = new CIlluminatedTexturedShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[0] = pShader;
 
-	// 1 : Fog
-	pShader = new CFogShader();
+	// 1 : PlayerShader
+	pShader = new CPlayerShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[1] = pShader;
 
-	// 2 : PlayerShader
-	pShader = new CPlayerShader();
+	// 2 : FogShader
+	pShader = new CFogShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[2] = pShader;
-
 }
 
 

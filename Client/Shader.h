@@ -10,13 +10,6 @@ struct VS_CB_WORLD_MATRIX
 	D3DXMATRIX m_d3dxmtxWorld;
 };
 
-struct VS_CB_FOG
-{
-	float fogStart;
-	float fogEnd;
-	float padding1, padding2;
-};
-
 
 
 
@@ -65,9 +58,8 @@ protected:
 
 
 
-
-
-// 텍스쳐 맵핑과 조명을 사용하여 렌더링하기 위한 CIlluminatedTexturedShader 클래스
+/* 애니메이션이 없는 물체를 위한 셰이더.
+	텍스처 매핑, 빛 사용						*/
 class CIlluminatedTexturedShader : public CShader
 {
 public:
@@ -78,11 +70,28 @@ public:
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
 
-	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed);	//수정
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 };
 
+
+
+
+/* 애니메이션이 있는 물체를 위한 셰이더.
+	텍스처 매핑, 빛, 애니메이션 사용			*/
+class CPlayerShader : public CShader
+{
+public:
+	CPlayerShader();
+	virtual ~CPlayerShader();
+
+	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
+
+	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
+	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+};
 
 
 
@@ -97,28 +106,12 @@ public:
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	virtual void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CMaterial *pMaterial = nullptr);
-
-	//virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext,float fTimeElapsed);	
-	//virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-
-private:
-	ID3D11Buffer *m_pd3dcbFog;
-
 };
 
 
 
-class CPlayerShader : public CIlluminatedTexturedShader
-{
-public:
-	CPlayerShader();
-	virtual ~CPlayerShader();
 
-	virtual void CreateShader(ID3D11Device *pd3dDevice);
-	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	
-	virtual void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
+
+
 
 #endif
