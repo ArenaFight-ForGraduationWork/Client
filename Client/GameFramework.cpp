@@ -301,7 +301,6 @@ void CGameFramework::ProcessInput()
 
 		if (GetKeyboardState(pKeyBuffer))
 		{
-
 			// 이동
 			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
 			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
@@ -402,7 +401,6 @@ void CGameFramework::BuildObjects()
 	
 	m_pObjectManager->Insert(20000, eResourceType::MonB, m_pd3dDevice, m_pd3dDeviceContext, 1, 3, D3DXVECTOR3(100, 0, 0), D3DXVECTOR3(0, 0, 0));
 	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
-
 
 	// 1) 카메라 init
 	m_pCamera = new CThirdPersonCamera();
