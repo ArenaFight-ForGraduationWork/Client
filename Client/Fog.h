@@ -47,8 +47,6 @@ private:
 	};
 	eState m_eState;
 
-	D3DXVECTOR3 *m_pd3dxvCenter;
-
 	float m_fNowRange;
 	float m_fMinRange;
 	float m_fMaxRange;
