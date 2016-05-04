@@ -8,12 +8,7 @@
 #include "ObjectManager.h"
 #include "protocol.h"
 
-/* temp */
-#include "Fog.h"
 
-
-#define MODE_MOUSE		0x01
-#define MODE_KEYBOARD	0x02
 
 class CGameFramework
 {
