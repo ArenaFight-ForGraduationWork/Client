@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Shader.h"
 #include "Light.h"
+#include "ObjectManager.h"
 
 
 #define MODE_MOUSE		0x01
@@ -34,6 +35,8 @@ protected:
 
 	POINT	m_ptOldCursorPos;
 	POINT	m_ptNewCursorPos;
+
+	CObjectManager *m_pObjectManager;
 
 private:
 	std::vector<CShader*> m_vShaders;

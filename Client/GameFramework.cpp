@@ -38,13 +38,14 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
 
-	//Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다. 
+	// Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다
 	if (!CreateDirect3DDisplay()) return false;
 
 	// 오브젝트 매니저를 초기화한다
-	m_pObjectManager = CObjectManager::GetSingleton(m_pd3dDevice);
+	m_pObjectManager = CObjectManager::GetSingleton();
+	m_pObjectManager->Initialize(m_pd3dDevice);
 
-	//렌더링할 객체(게임 월드 객체)를 생성한다. 
+	// 렌더링할 객체(게임 월드 객체)를 생성한다
 	BuildObjects();
 
 	return true;
