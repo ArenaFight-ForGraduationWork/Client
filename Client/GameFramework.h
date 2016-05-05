@@ -30,8 +30,6 @@ public:
 
 	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 
 	void ProcessInput();
-	void AnimateObjects();
-	//void AnimateObjects(ID3D11DeviceContext* pd3dDeviceContext);
 	void FrameAdvance();
 
 	//윈도우의 메시지(키보드, 마우스 입력)를 처리하는 함수이다. 
@@ -63,8 +61,7 @@ private:
 	//다음은 게임 프레임워크에서 사용할 타이머이다.
 	CGameTimer m_GameTimer;
 
-	//다음은 게임의 장면(Scene)을 관리하는 객체에 대한 포인터를 나타낸다.
-	CScene *m_pScene;
+	CSceneManager *m_pSceneManager;
 
 	//다음은 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열이다.
 	_TCHAR m_pszBuffer[50];

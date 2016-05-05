@@ -84,7 +84,7 @@ public:
 
 	enum class eSceneType : BYTE{
 		START = 0,
-		FISRT = 0,
+		FIRST = 0,
 		SECOND,
 		END
 	};
@@ -93,6 +93,7 @@ public:
 	void Destroy();
 
 	void Change(eSceneType eType);
+	CScene* GetNowScene();
 
 private:
 	std::map<eSceneType, CScene*> m_mScenes;

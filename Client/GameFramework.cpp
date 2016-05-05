@@ -21,7 +21,7 @@ CGameFramework::CGameFramework()
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
-	m_pScene = NULL;
+	m_pSceneManager = nullptr;
 	_tcscpy_s(m_pszBuffer, _T("LapProject ("));
 
 	m_pd3dDepthStencilBuffer = NULL;
@@ -44,6 +44,10 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	// 오브젝트 매니저를 초기화한다
 	m_pObjectManager = CObjectManager::GetSingleton();
 	m_pObjectManager->Initialize(m_pd3dDevice);
+
+	// 씬 매니저를 초기화한다
+	m_pSceneManager = CSceneManager::GetSingleton();
+	m_pSceneManager->Initialize();
 
 	// 렌더링할 객체(게임 월드 객체)를 생성한다
 	BuildObjects();
@@ -379,8 +383,10 @@ void CGameFramework::BuildObjects()
 {
 	//m_pScene = new CScene();
 	//if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
-	m_pScene = new CFirstScene();
-	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
+	//m_pScene = new CFirstScene();
+	//if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice);
+	m_pSceneManager->Change(CSceneManager::eSceneType::FIRST);
+	m_pSceneManager->GetNowScene()->BuildObjects(m_pd3dDevice);
 
 	m_pPlayer = new CPlayer();
 	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, m_pd3dDevice, m_pd3dDeviceContext, 0, 3, D3DXVECTOR3(0, -30, 0), D3DXVECTOR3(0, 0, 0)));
@@ -405,17 +411,10 @@ void CGameFramework::BuildObjects()
 
 void CGameFramework::ReleaseObjects()
 {
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	//if (m_pScene) m_pScene->ReleaseObjects();
+	//if (m_pScene) delete m_pScene;
 
 	if (m_pPlayer)	delete m_pPlayer;
-}
-
-
-
-void CGameFramework::AnimateObjects()
-{
-	if (m_pScene) m_pScene->AnimateObjects(0, m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::FrameAdvance()
@@ -423,7 +422,6 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.Tick(60.0f);
 
 	ProcessInput();
-	AnimateObjects();
 
 	float fClearColor[4] = { COLORRGB(69), COLORRGB(28), COLORRGB(163), 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
@@ -432,7 +430,9 @@ void CGameFramework::FrameAdvance()
 	// 5) 카메라 쉐이더 update
 	if (m_pCamera) m_pCamera->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	if (m_pScene) m_pScene->AnimateObjectsAndRender(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+	//if (m_pScene) m_pScene->AnimateObjectsAndRender(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+	if (m_pSceneManager)
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
 
 	m_pDXGISwapChain->Present(0, 0);
 

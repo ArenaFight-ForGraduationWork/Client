@@ -225,6 +225,7 @@ void CFirstScene::ProcessInput()
 
 CSceneManager::CSceneManager()
 {
+	m_eNow = eSceneType::FIRST;
 }
 CSceneManager::~CSceneManager()
 {
@@ -237,7 +238,7 @@ CSceneManager* CSceneManager::GetSingleton()
 
 void CSceneManager::Initialize()
 {
-	m_mScenes[eSceneType::FISRT] = new CFirstScene();
+	m_mScenes[eSceneType::FIRST] = new CFirstScene();
 	m_mScenes[eSceneType::SECOND] = new CFirstScene();
 }
 
@@ -250,5 +251,9 @@ void CSceneManager::Change(eSceneType eType)
 	m_eNow = eType;
 }
 
+CScene* CSceneManager::GetNowScene()
+{
+	return m_mScenes[m_eNow];
+}
 
 
