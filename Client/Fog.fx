@@ -28,11 +28,15 @@ cbuffer cbWorldMatrix : register(b1)
 {
 	matrix gmtxWorld : packoffset(c0);
 };
-cbuffer cbFog : register(b2)
+cbuffer cbFogCenter : register(b2)
 {
-	float fogStart;
-	float fogEnd;
-};
+	float gfFogEnable;
+	float3 gf3FogCenter;
+}
+cbuffer cbFogRange : register(b3)
+{
+	float gfFogRange;
+}
 
 PS_INPUT VS(VS_INPUT input)
 {
@@ -49,10 +53,18 @@ PS_INPUT VS(VS_INPUT input)
 
 	output.tex2dcoord = input.tex2dcoord;
 
-	float4 cameraPosition;
-	cameraPosition = mul(float4(input.position, 1.0f), gmtxWorld);
-	cameraPosition = mul(cameraPosition, gmtxView);
-	output.fogFactor = saturate((fogEnd - cameraPosition.z) / (fogEnd - fogStart));
+	if (gfFogEnable)
+	{
+		float4 inputVertex;
+		inputVertex = mul(float4(input.position, 1.0f), gmtxWorld);
+		float distance;
+		distance = sqrt(((gf3FogCenter.x - inputVertex.x)*(gf3FogCenter.x - inputVertex.x))
+			+ ((gf3FogCenter.z - inputVertex.z)*(gf3FogCenter.z - inputVertex.z))
+			);
+		output.fogFactor = saturate(distance / gfFogRange);
+	}
+	else
+		output.fogFactor = -1.0f;
 
 	return output;
 }
@@ -67,7 +79,7 @@ PS_INPUT VS(VS_INPUT input)
 ////////////////////////////////////////////////////////
 
 
-#define MAX_LIGHTS			4 
+#define MAX_LIGHTS			4
 #define POINT_LIGHT			1.0f
 #define SPOT_LIGHT			2.0f
 #define DIRECTIONAL_LIGHT	3.0f
@@ -290,9 +302,13 @@ float4 PS(PS_INPUT input) : SV_Target
 	float4 cColor;
 	cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord) * cIllumination;
 
-	float4 fogColor;
-	fogColor = float4(0.5f, 0.5f, 0.5f, 1.0f);
-	cColor = (input.fogFactor * cColor) + (1.0f - input.fogFactor) * fogColor;
+	if (input.fogFactor >= 0)
+	{
+		float4 cfogColor;
+		cfogColor = float4(0.2706, 0.1098, 0.6392, 1.0);	// purple = RGB(69, 28, 163)
+
+		cColor = (input.fogFactor * cColor) + (1.0f - input.fogFactor) * cfogColor;
+	}
 
 	return cColor;
 }

@@ -10,6 +10,11 @@ struct VS_CB_VIEWPROJECTION_MATRIX
 };
 
 
+enum class eCameraType : BYTE{
+	START = 0,
+	THIRD_PERSON_CAMERA = 0,
+	END
+};
 
 
 
@@ -19,14 +24,7 @@ public:
 	CCamera();
 	~CCamera();
 
-	enum class eCameraMode : BYTE{
-		START = 0,
-		THIRD_PERSON_CAMERA = 0,
-		END
-	};
-
-
-	eCameraMode GetMode() { return m_eMode; }
+	eCameraType GetMode() { return m_eMode; }
 
 	void GenerateViewMatrix();
 	void GenerateViewMatrix(const D3DXVECTOR3 *pd3dxvEyePosition, const D3DXVECTOR3 *pd3dxvLookAt, const D3DXVECTOR3 *pd3dxvUp);
@@ -59,11 +57,6 @@ public:
 	void SetTimeLag(float fTimeLag) { m_fTimeLag = fTimeLag; }
 	float GetTimeLag() { return(m_fTimeLag); }
 
-	//카메라를 d3dxvShift 만큼 이동하는 가상함수이다.
-	virtual void Move(const D3DXVECTOR3* d3dxvShift) { *m_pd3dxvPosition += *d3dxvShift; }
-	//카메라를 x-축, y-축, z-축으로 회전하는 가상함수이다.
-	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) {}
-
 	virtual void RotatebyYaw(const float fYaw = 0.0f) = 0;
 	//카메라의 이동, 회전에 따라 카메라의 정보를 갱신하는 가상함수이다.
 	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition) = 0;
@@ -83,7 +76,7 @@ protected:
 	float m_fDistanceFromObject;
 	float m_fHeight;
 
-	eCameraMode m_eMode;
+	eCameraType m_eMode;
 
 	/* 월드좌표계에서 카메라가 바라보는 점 */
 	D3DXVECTOR3 *m_pd3dxvLookAtWorld;
@@ -96,7 +89,7 @@ protected:
 	/* 투영 변환행렬 */
 	D3DXMATRIX *m_pd3dxmtxProjection;
 
-	//뷰-포트를 나타내는 멤버 변수를 선언한다.
+	// 뷰-포트를 나타내는 멤버 변수를 선언한다.
 	D3D11_VIEWPORT *m_pd3dViewport;
 
 	/* 카메라 변환행렬을 위한 상수버퍼 인터페이스 포인터 */
@@ -114,7 +107,30 @@ public:
 	virtual void RotatebyYaw(const float fYaw = 0.0f);
 	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition);
 	virtual void SetLookAt(const D3DXVECTOR3 *vLookAt);
+};
 
+
+
+
+
+class CCameraManager
+{
+public:
+	static CCameraManager* GetSingleton();
+	~CCameraManager();
+
+	void Initialize(ID3D11Device *pd3dDevice);
+	void Destroy();
+
+	CCamera* GetNowCamera();
+	void ChangeCamera(eCameraType eType);
+
+private:
+	std::map<eCameraType, CCamera*> m_mCameras;
+
+	eCameraType m_eNow;
+
+	CCameraManager();
 };
 
 

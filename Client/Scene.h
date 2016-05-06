@@ -5,41 +5,13 @@
 
 #include "Object.h"
 #include "Shader.h"
+#include "Light.h"
+#include "ObjectManager.h"
+#include "Player.h"
+#include "Camera.h"
 
-#define MAX_LIGHTS		3
-#define POINT_LIGHT		1.0f
-#define SPOT_LIGHT		2.0f
-#define DIRECTIONAL_LIGHT	3.0f
-
-
-
-
-
-struct LIGHT
-{
-	D3DXCOLOR m_d3dxcAmbient;
-	D3DXCOLOR m_d3dxcDiffuse;
-	D3DXCOLOR m_d3dxcSpecular;
-	D3DXVECTOR3 m_d3dxvPosition;
-	float m_fRange;
-	D3DXVECTOR3 m_d3dxvDirection;
-	float m_nType;
-	D3DXVECTOR3 m_d3dxvAttenuation;
-	float m_fFalloff;
-	float m_fTheta; //cos(m_fTheta)
-	float m_fPhi; //cos(m_fPhi)
-	float m_bEnable;
-	float padding;
-};
-
-struct LIGHTS
-{
-	//상수 버퍼는 크기가 16의 배수가 되어야 한다. 
-	LIGHT m_pLights[MAX_LIGHTS];
-	D3DXCOLOR m_d3dxcGlobalAmbient;
-	D3DXVECTOR4 m_d3dxvCameraPosition;
-};
-
+#define MODE_MOUSE		0x01
+#define MODE_KEYBOARD	0x02
 
 class CScene
 {
@@ -47,28 +19,91 @@ public:
 	CScene();
 	~CScene();
 
-	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
+	virtual void ProcessInput(float fTimeElapsed) = 0;
 
-	void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
-	bool ProcessInput();
 	void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	void Render(ID3D11DeviceContext*pd3dDeviceContext);			
 
-	// 애니메이션 + 렌더 합치기
-	void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);		//추가
+	void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);	//추가
 
-	LIGHTS *m_pLights;
-	ID3D11Buffer *m_pd3dcbLights;
+protected:
+	DWORD m_OperationMode;
 
-	void BuildLights(ID3D11Device *pd3dDevice);
-	void UpdateLights(ID3D11DeviceContext *pd3dDeviceContext);
-	void ReleaseLights();
+	POINT	m_ptOldCursorPos;
+	POINT	m_ptNewCursorPos;
+
+	CPlayer *m_pPlayer;
+	CObjectManager *m_pObjectManager;
+	CCameraManager *m_pCameraManager;
 
 private:
 	std::vector<CShader*> m_vShaders;
+
+	CLight *m_pLight;
+};
+
+
+
+
+
+
+
+class CFirstScene : public CScene
+{
+public:
+	CFirstScene();
+	~CFirstScene();
+
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	virtual void ProcessInput(float fTimeElapsed);
+
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	//void ReleaseObjects();
+
+	//void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
+	//void Render(ID3D11DeviceContext*pd3dDeviceContext);
+
+	//void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+
+private:
+};
+
+
+
+
+
+
+class CSceneManager
+{
+public:
+	static CSceneManager* GetSingleton();
+	~CSceneManager();
+
+	enum class eSceneType : BYTE{
+		START = 0,
+		FIRST = 0,
+		SECOND,
+		END
+	};
+
+	void Initialize();
+	void Destroy();
+
+	void Change(eSceneType eType);
+	CScene* GetNowScene();
+
+private:
+	std::map<eSceneType, CScene*> m_mScenes;
+
+	eSceneType m_eNow;
+
+	CSceneManager();
 };
 
 

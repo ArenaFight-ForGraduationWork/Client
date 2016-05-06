@@ -2,12 +2,24 @@
 #include "Scene.h"
 #include "ResourceManager.h"
 
+
+
 CScene::CScene()
 {
-	m_pLights = nullptr;
-	m_pd3dcbLights = nullptr;
-}
+	m_pLight = new CLight();
 
+	m_OperationMode = MODE_KEYBOARD;
+
+	m_pPlayer = nullptr;
+	m_pCameraManager = nullptr;
+
+	m_ptOldCursorPos.x = 0;
+	m_ptOldCursorPos.y = 0;
+	m_ptNewCursorPos.x = 0;
+	m_ptNewCursorPos.y = 0;
+
+	m_pObjectManager = CObjectManager::GetSingleton();
+}
 CScene::~CScene()
 {
 }
@@ -20,27 +32,12 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		m_vShaders.push_back(pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i));
 	}
 
-	BuildLights(pd3dDevice);
+	m_pLight->BuildLights(pd3dDevice);
 }
 
 void CScene::ReleaseObjects()
 {
 	m_vShaders.clear();
-}
-
-bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
-{
-	return(false);
-}
-
-bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
-{
-	return(false);
-}
-
-bool CScene::ProcessInput()
-{
-	return(false);
 }
 
 void CScene::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
@@ -53,7 +50,7 @@ void CScene::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext,
 
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
 {
-	UpdateLights(pd3dDeviceContext);
+	m_pLight->UpdateLights(pd3dDeviceContext);
 
 	for (auto shader : m_vShaders)
 	{
@@ -63,76 +60,199 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
 
 void CScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
 {
-	UpdateLights(pd3dDeviceContext);
+	m_pLight->UpdateLights(pd3dDeviceContext);
+
 	for (auto shader : m_vShaders)
 	{
 		shader->AnimateObjectAndRender(pd3dDeviceContext, time);
 	}
 }
 
-void CScene::BuildLights(ID3D11Device *pd3dDevice)
+
+
+
+
+
+
+
+
+CFirstScene::CFirstScene()
 {
-	m_pLights = new LIGHTS;
-	::ZeroMemory(m_pLights, sizeof(LIGHTS));
-	//게임 월드 전체를 비추는 주변조명을 설정한다.
-	m_pLights->m_d3dxcGlobalAmbient = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
-
-	//3개의 조명(점 광원, 스팟 광원, 방향성 광원)을 설정한다.
-	m_pLights->m_pLights[0].m_bEnable = 1.0f;
-	m_pLights->m_pLights[0].m_nType = POINT_LIGHT;
-	m_pLights->m_pLights[0].m_fRange = 40.0f;
-	m_pLights->m_pLights[0].m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcDiffuse = D3DXCOLOR(0.3f, 0.3f, 0.0f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcSpecular = D3DXCOLOR(0.1f, 0.1f, 0.1f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvPosition = D3DXVECTOR3(0.0f, 100.0f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvAttenuation = D3DXVECTOR3(1.0f, 0.001f, 0.0001f);
-
-	m_pLights->m_pLights[1].m_bEnable = 1.0f;
-	m_pLights->m_pLights[1].m_nType = SPOT_LIGHT;
-	m_pLights->m_pLights[1].m_fRange = 100.0f;
-	m_pLights->m_pLights[1].m_d3dxcAmbient = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxcDiffuse = D3DXCOLOR(0.3f, 0.3f, 0.0f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxcSpecular = D3DXCOLOR(0.1f, 0.1f, 0.1f, 0.0f);
-	m_pLights->m_pLights[1].m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[1].m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxvAttenuation = D3DXVECTOR3(1.0f, 0.01f, 0.0001f);
-	m_pLights->m_pLights[1].m_fFalloff = 8.0f;
-	m_pLights->m_pLights[1].m_fPhi = (float)cos(D3DXToRadian(40.0f));
-	m_pLights->m_pLights[1].m_fTheta = (float)cos(D3DXToRadian(20.0f));
-
-	m_pLights->m_pLights[2].m_bEnable = 1.0f;
-	m_pLights->m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
-	m_pLights->m_pLights[2].m_d3dxcAmbient = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcDiffuse = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcSpecular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[2].m_d3dxvDirection = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
-
-	D3D11_BUFFER_DESC d3dBufferDesc;
-	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
-	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(LIGHTS);
-	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	D3D11_SUBRESOURCE_DATA d3dBufferData;
-	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
-	d3dBufferData.pSysMem = m_pLights;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
+}
+CFirstScene::~CFirstScene()
+{
 }
 
-void CScene::ReleaseLights()
+void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
-	if (m_pLights) delete m_pLights;
-	if (m_pd3dcbLights) m_pd3dcbLights->Release();
+	switch (nMessageID)
+	{
+	case WM_KEYUP:
+		switch (wParam)
+		{
+		case VK_F1:
+			m_OperationMode = MODE_MOUSE;
+			break;
+		case VK_F2:
+			m_OperationMode = MODE_KEYBOARD;
+			break;
+		case VK_ESCAPE:
+			::PostQuitMessage(0);
+			break;
+			//case VK_SPACE:
+			//	m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::ATTACK);
+			//	break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+}
+void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+{
+	switch (m_OperationMode)
+	{
+	case MODE_MOUSE:
+	{
+		switch (nMessageID)
+		{
+		case WM_MOUSEMOVE:
+			m_ptOldCursorPos.x = m_ptNewCursorPos.x;
+			m_ptOldCursorPos.y = m_ptNewCursorPos.y;
+			m_ptNewCursorPos.x = LOWORD(lParam);
+			m_ptNewCursorPos.y = HIWORD(lParam);
+
+			if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
+				m_pCameraManager->GetNowCamera()->RotatebyYaw(-150 * fTimeElapsed);
+			else
+				m_pCameraManager->GetNowCamera()->RotatebyYaw(150 * fTimeElapsed);
+			break;
+		case WM_MOUSEWHEEL:
+			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+				m_pCameraManager->GetNowCamera()->Zoom(200 * fTimeElapsed);
+			else
+				m_pCameraManager->GetNowCamera()->Zoom(-200 * fTimeElapsed);
+			break;
+		default: break;
+		}
+	}	break;
+	case MODE_KEYBOARD:
+	{
+	}	break;
+	default: break;
+	}
+}
+void CFirstScene::ProcessInput(float fTimeElapsed)
+{
+	static UCHAR pKeyBuffer[256];
+	DWORD dwDirection = 0;
+
+	switch (m_OperationMode)
+	{
+	case MODE_MOUSE:			// F1
+	{
+		if (GetKeyboardState(pKeyBuffer))
+		{
+			// 이동
+			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
+			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
+			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
+			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
+		}
+
+		/* player state 변경, 방향이 있을경우 달린다.*/
+		if (dwDirection != 0)
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::RUN);
+		else
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
+	}
+	break;
+
+	case MODE_KEYBOARD:
+	{
+		if (GetKeyboardState(pKeyBuffer))
+		{
+			// 이동
+			if (pKeyBuffer[VK_UP] & 0xF0)		dwDirection |= DIR_FORWARD;
+			if (pKeyBuffer[VK_DOWN] & 0xF0)		dwDirection |= DIR_BACKWARD;
+			if (pKeyBuffer[VK_LEFT] & 0xF0)		dwDirection |= DIR_LEFT;
+			if (pKeyBuffer[VK_RIGHT] & 0xF0)	dwDirection |= DIR_RIGHT;
+			// 좌우회전
+			if (pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);			// Q
+			if (pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);		// E
+			// 줌
+			if (pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);				// Z
+			if (pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);				// X
+		}
+		if (dwDirection != 0)
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::RUN);
+		else
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
+	}
+	break;
+	}
+
+	if (dwDirection) m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);
+
+	m_pCameraManager->GetNowCamera()->Update(m_pPlayer->GetPosition());
 }
 
-void CScene::UpdateLights(ID3D11DeviceContext *pd3dDeviceContext)
+void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 {
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	LIGHTS *pcbLight = (LIGHTS*)d3dMappedResource.pData;
-	memcpy(pcbLight, m_pLights, sizeof(LIGHTS));
-	pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
-	pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_LIGHT, 1, &m_pd3dcbLights);
+	CScene::BuildObjects(pd3dDevice);
+
+	ID3D11DeviceContext *pd3dDeviceContext;
+	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
+
+	m_pPlayer = new CPlayer();
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, pd3dDevice, pd3dDeviceContext, 0, 3, D3DXVECTOR3(0, -30, 0), D3DXVECTOR3(0, 0, 0)));
+	m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
+
+	m_pCameraManager = CCameraManager::GetSingleton();
+	m_pCameraManager->GetNowCamera()->SetLookAt(m_pPlayer->GetPosition());
+
+	m_pObjectManager->Insert(20000, eResourceType::MonB, pd3dDevice, pd3dDeviceContext, 1, 3, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
 }
+
+
+
+
+
+
+CSceneManager::CSceneManager()
+{
+	m_eNow = eSceneType::FIRST;
+}
+CSceneManager::~CSceneManager()
+{
+}
+CSceneManager* CSceneManager::GetSingleton()
+{
+	static CSceneManager instance;
+	return &instance;
+}
+
+void CSceneManager::Initialize()
+{
+	m_mScenes[eSceneType::FIRST] = new CFirstScene();
+	m_mScenes[eSceneType::SECOND] = new CFirstScene();
+}
+
+void CSceneManager::Destroy()
+{
+}
+
+void CSceneManager::Change(eSceneType eType)
+{
+	m_eNow = eType;
+}
+
+CScene* CSceneManager::GetNowScene()
+{
+	return m_mScenes[m_eNow];
+}
+
 

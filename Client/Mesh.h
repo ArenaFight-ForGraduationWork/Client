@@ -106,12 +106,6 @@ public:
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	//정점이 포함된 삼각형의 법선벡터를 계산하는 함수.
-	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);
-	void SetTriAngleListVertexNormal(BYTE *pVertices);
-	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);
-	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
-
 private:
 	std::vector<CTexturedNormalVertex*> pVertices;
 	CTexturedNormalVertex* ppVertices;
@@ -127,12 +121,6 @@ public:
 
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-
-	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);
-	void SetTriAngleListVertexNormal(BYTE *pVertices);
-	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);
-	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
-
 
 private:
 	vector<CAnimationVertex*> pVertices;

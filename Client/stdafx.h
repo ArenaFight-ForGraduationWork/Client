@@ -1,9 +1,5 @@
-﻿// stdafx.h : 자주 사용하지만 자주 변경되지는 않는
-// 표준 시스템 포함 파일 및 프로젝트 관련 포함 파일이
-// 들어 있는 포함 파일입니다.
-//
-
-#pragma once
+﻿#ifndef STDAFX_H_
+#define STDAFX_H_
 
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define _CRT_SECURE_NO_WARNINGS
@@ -14,32 +10,17 @@
 // Windows 헤더 파일:
 #include <windows.h>
 
-// C 런타임 헤더 파일입니다.
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
 #include <d3d11.h>
 #include <d3dx11.h>
-// PCH(Precompiled Header)를 통하여 자주 변경되지 않는 헤더 파일에 대한
-// 컴파일을 매번 하지 않아도 되도록 하는 기능을 제공
-
-// d3d11.lib - Direct3D 라이브러리
-// d3dx11d.lib - D3DX 유틸리티 확장 라이브러리
-// winmm.lib - Windows 멀티미디어 라이브러리(타이머 처리에 유용)
-// dxguid.lib - DirectX COM 객체를 위한 GUID를 포함
-// dinput8.lib – DirectInput 라이브러리(DirectX 입력 처리)
-// effects11.lib, effects11d.lib – 이펙트 라이브러리
-
 
 #include <Mmsystem.h>
 #include <math.h>
-// 시간과 관련된 멀티미디어 라이브러리 함수를 사용하기 위하여 다음 헤더 파일을 추가한다.
-// 수학 라이브러리 함수를 사용하기 위하여 다음 헤더 파일을 추가한다.
-
 #include <d3dcompiler.h>  	//쉐이더 컴파일 함수를 사용하기 위한 헤더 파일
-#include <D3DX10Math.h>	//Direct3D 수학 함수를 사용하기 위한 헤더 파일
-
+#include <D3DX10Math.h>		//Direct3D 수학 함수를 사용하기 위한 헤더 파일
 #include <D3D9Types.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
@@ -50,29 +31,29 @@
 #include <iostream>
 #include <stdio.h>
 #include <assert.h>
-//#include <fbxsdk.h>
 
 #include <thread>
 #include <WinSock2.h>
 
 using namespace std;
 
-
 #define VS_SLOT_VIEWPROJECTION_MATRIX	0x00
-#define VS_SLOT_WORLD_MATRIX			0x01		// 상수 버퍼를 연결할 슬롯 번호
-#define VS_SLOT_FOG						0x02
+#define VS_SLOT_WORLD_MATRIX			0x01
+#define VS_SLOT_FOG_CENTER				0x02
+#define VS_SLOT_FOG_RANGE				0x03
+#define VS_SLOT_BONE_MATRIX				0x04
 
-#define PS_SLOT_COLOR			0x00
-#define PS_SLOT_LIGHT			0x00
-#define PS_SLOT_MATERIAL		0x01
+#define PS_SLOT_LIGHT					0x00
+#define PS_SLOT_MATERIAL				0x01
 
-#define PS_SLOT_TEXTURE			0x00
-#define PS_SLOT_SAMPLER_STATE	0x00
+#define PS_SHADERRESOURCE_SLOT_TEXTURE	0x00
+#define PS_SAMPLER_SLOT_SAMPLER_STATE	0x00
 
-//프레임 버퍼의 크기와 종횡비(Aspect Ratio)를 나타내는 상수를 다음과 같이 선언한다.
-#define FRAME_BUFFER_WIDTH	800	//640
-#define FRAME_BUFFER_HEIGHT	600	//480
-#define ASPECT_RATIO	(float(FRAME_BUFFER_WIDTH)/float(FRAME_BUFFER_HEIGHT))
+#define FRAME_BUFFER_WIDTH	640	/* 프레임 버퍼의 너비 */
+#define FRAME_BUFFER_HEIGHT	480	/* 프레임 버퍼의 높이 */
+#define ASPECT_RATIO	(float(FRAME_BUFFER_WIDTH)/float(FRAME_BUFFER_HEIGHT))	/* 프레임 버퍼의 종횡비 */
+
+#define COLORRGB(x) (x/255.0f)
 
 // messeage input
 #define DIR_FORWARD		0x01
@@ -86,20 +67,30 @@ using namespace std;
 #define ATTACK_COUNT 2			// 공격모션 개수, 히트박스를 위해서 만듦.  근데 이것도.. 고정적인 개수여야함 ㅠㅠㅠ 내 바램일뿐
 
 
-/* 서버_ 재정의때문에 일단 여기로 옮겨둠*/
-#define MAX_BUFF_SIZE   4096
-#define MAX_PACKET_SIZE  4096
-#define MAX_CHAT_SIZE  100
 
-#define MAX_USER 1000
-#define SERVER_PORT  4000
+
+
+/* 서버_ 재정의때문에 일단 여기로 옮겨둠*/
+#define MAX_BUFF_SIZE	4096
+#define MAX_PACKET_SIZE	4096
+#define MAX_CHAT_SIZE	100
+
+#define MAX_USER	1000
+#define SERVER_PORT	4000
 
 // 서버 -> 클라
-#define POS         1
-#define PUT_PLAYER   2
-#define LOGIN      3
+#define POS			1
+#define PUT_PLAYER	2
+#define LOGIN		3
 
 // 클라 -> 서버
-#define CREATE_ROOM      1
-#define JOIN_ROOM      2
-#define PLAYER_MOVE      3
+#define CREATE_ROOM	1
+#define JOIN_ROOM	2
+#define PLAYER_MOVE	3
+
+
+
+
+
+
+#endif

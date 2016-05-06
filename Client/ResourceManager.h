@@ -60,7 +60,6 @@ public:
 		START = 0,
 		IlluminatedTextured = 0,
 		Player,
-		Fog,
 		END
 	};
 
