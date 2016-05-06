@@ -17,7 +17,7 @@ CCamera::CCamera()
 
 	m_pd3dxvLookAtWorld = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	m_eMode = eCameraMode::THIRD_PERSON_CAMERA;
+	m_eMode = eCameraType::THIRD_PERSON_CAMERA;
 
 	m_pd3dxmtxView = new D3DXMATRIX();
 	D3DXMatrixIdentity(m_pd3dxmtxView);
@@ -137,7 +137,7 @@ void CCamera::Zoom(const float fZoom)
 
 CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 {
-	m_eMode = eCameraMode::THIRD_PERSON_CAMERA;
+	m_eMode = eCameraType::THIRD_PERSON_CAMERA;
 }
 
 void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
@@ -173,4 +173,51 @@ void CThirdPersonCamera::RotatebyYaw(const float fYaw)
 }
 
 
+
+
+
+
+
+
+
+CCameraManager::CCameraManager()
+{
+}
+CCameraManager::~CCameraManager()
+{
+}
+CCameraManager* CCameraManager::GetSingleton()
+{
+	static CCameraManager instance;
+	return &instance;
+}
+
+void CCameraManager::Initialize(ID3D11Device *pd3dDevice)
+{
+	CCamera *pCamera;
+
+	pCamera = new CThirdPersonCamera();
+	pCamera->CreateShaderVariables(pd3dDevice);
+	pCamera->SetLookAt(new D3DXVECTOR3(0,0,0));
+	ID3D11DeviceContext *pd3dDeviceContext;
+	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
+	pCamera->SetViewport(pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+	pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+	pCamera->GenerateViewMatrix();
+	m_mCameras[eCameraType::THIRD_PERSON_CAMERA] = pCamera;
+
+	m_eNow = eCameraType::THIRD_PERSON_CAMERA;
+}
+void CCameraManager::Destroy()
+{
+}
+
+CCamera* CCameraManager::GetNowCamera()
+{
+	return m_mCameras[m_eNow];
+}
+void CCameraManager::ChangeCamera(eCameraType eType)
+{
+	m_eNow = eType;
+}
 

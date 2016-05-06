@@ -7,7 +7,8 @@
 #include "Shader.h"
 #include "Light.h"
 #include "ObjectManager.h"
-
+#include "Player.h"
+#include "Camera.h"
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
@@ -18,9 +19,9 @@ public:
 	CScene();
 	~CScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) = 0;
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) = 0;
-	virtual void ProcessInput() = 0;
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
+	virtual void ProcessInput(float fTimeElapsed) = 0;
 
 	void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
@@ -36,7 +37,9 @@ protected:
 	POINT	m_ptOldCursorPos;
 	POINT	m_ptNewCursorPos;
 
+	CPlayer *m_pPlayer;
 	CObjectManager *m_pObjectManager;
+	CCameraManager *m_pCameraManager;
 
 private:
 	std::vector<CShader*> m_vShaders;
@@ -56,9 +59,9 @@ public:
 	CFirstScene();
 	~CFirstScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	virtual void ProcessInput();
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	virtual void ProcessInput(float fTimeElapsed);
 
 	//void BuildObjects(ID3D11Device *pd3dDevice);
 	//void ReleaseObjects();

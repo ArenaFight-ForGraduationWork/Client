@@ -10,6 +10,9 @@ CScene::CScene()
 
 	m_OperationMode = MODE_KEYBOARD;
 
+	m_pPlayer = nullptr;
+	m_pCameraManager = nullptr;
+
 	m_ptOldCursorPos.x = 0;
 	m_ptOldCursorPos.y = 0;
 	m_ptNewCursorPos.x = 0;
@@ -30,6 +33,16 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	}
 
 	m_pLight->BuildLights(pd3dDevice);
+
+	ID3D11DeviceContext *pd3dDeviceContext;
+	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
+
+	m_pPlayer = new CPlayer();
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, pd3dDevice, pd3dDeviceContext, 0, 3, D3DXVECTOR3(0, -30, 0), D3DXVECTOR3(0, 0, 0)));
+	m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
+
+	m_pCameraManager = CCameraManager::GetSingleton();
+	m_pCameraManager->GetNowCamera()->SetLookAt(m_pPlayer->GetPosition());
 }
 
 void CScene::ReleaseObjects()
@@ -80,7 +93,7 @@ CFirstScene::~CFirstScene()
 {
 }
 
-void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
 	switch (nMessageID)
 	{
@@ -93,6 +106,12 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case VK_F2:
 			m_OperationMode = MODE_KEYBOARD;
 			break;
+		case VK_ESCAPE:
+			::PostQuitMessage(0);
+			break;
+			//case VK_SPACE:
+			//	m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::ATTACK);
+			//	break;
 		default:
 			break;
 		}
@@ -101,7 +120,7 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		break;
 	}
 }
-void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
 	switch (m_OperationMode)
 	{
@@ -115,17 +134,17 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 			m_ptNewCursorPos.x = LOWORD(lParam);
 			m_ptNewCursorPos.y = HIWORD(lParam);
 
-			//if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
-			//	m_pCamera->RotatebyYaw(-150 * m_GameTimer.GetTimeElapsed());
-			//else
-			//	m_pCamera->RotatebyYaw(150 * m_GameTimer.GetTimeElapsed());
-			//break;
+			if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
+				m_pCameraManager->GetNowCamera()->RotatebyYaw(-150 * fTimeElapsed);
+			else
+				m_pCameraManager->GetNowCamera()->RotatebyYaw(150 * fTimeElapsed);
+			break;
 		case WM_MOUSEWHEEL:
-			//if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-			//	m_pCamera->Zoom(200 * m_GameTimer.GetTimeElapsed());
-			//else
-			//	m_pCamera->Zoom(-200 * m_GameTimer.GetTimeElapsed());
-			//break;
+			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+				m_pCameraManager->GetNowCamera()->Zoom(200 * fTimeElapsed);
+			else
+				m_pCameraManager->GetNowCamera()->Zoom(-200 * fTimeElapsed);
+			break;
 		default: break;
 		}
 	}	break;
@@ -135,7 +154,7 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 	default: break;
 	}
 }
-void CFirstScene::ProcessInput()
+void CFirstScene::ProcessInput(float fTimeElapsed)
 {
 	static UCHAR pKeyBuffer[256];
 	DWORD dwDirection = 0;
@@ -153,30 +172,11 @@ void CFirstScene::ProcessInput()
 			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
 		}
 
-		m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
-
-		//if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObject(20000)))		//m_pPlayer->GetObject()->Collision( 플레이어 제외 아이템,몬스터), id로 확실히 구분시켜야할듯.
-		//{
-		//	//m_pPlayer->GetObjects()->Collison(m_pPlayer->GetObjects()/*m_pPlayer[i]*/)
-		//	//지금 문제가 뭐냐면, (0,0,0) 기준으로 보면 바로 충돌임ㅇㅇ, 근데 insert할때 얘네 초기 위치를 내가 바꿔줬었음(몬스터를 x축으로 100만큼 옮겨줬음)
-		//	// 그러니까 몬스터 충돌체크의 m_MinVer,m_MaxVer.x의 값이 100만큼 증가해있어야했음. 그걸 안해줌ㅇㅇ 고치자  [完] moveAbsolute안에 moveBoundingbox를 추가해줬음.
-		//	cout << "충돌했다!" << endl;
-		//}
-		///* player state 변경, 방향이 있을경우 달린다.*/
-		//if (dwDirection != 0)
-		//{
-		//	m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::RUN);
-		//	//cout<< "움직일때 바운딩 움직이나? "<< m_pObjectManager->FindObject(30000)->GetMaxVer().x<< endl;
-		//}
-
-		//if (is_Attack)
-		//{
-		//	m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::ATTACK);
-
-		//	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
-		//	if (m_pObjectManager->FindObject(30000)->m_fAnimationPlaytime == 0.0f)
-		//		is_Attack = false;
-		//}
+		/* player state 변경, 방향이 있을경우 달린다.*/
+		if (dwDirection != 0)
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::RUN);
+		else
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
 	}
 	break;
 
@@ -185,36 +185,28 @@ void CFirstScene::ProcessInput()
 		if (GetKeyboardState(pKeyBuffer))
 		{
 			// 이동
-			if (pKeyBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
-			if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
-			if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
-			if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
-			//// 좌우회전
-			//if (pKeyBuffer[0x51] & 0xF0) m_pCamera->RotatebyYaw(100 * m_GameTimer.GetTimeElapsed());		// Q
-			//if (pKeyBuffer[0x45] & 0xF0) m_pCamera->RotatebyYaw(-100 * m_GameTimer.GetTimeElapsed());		// E
-			//// 줌
-			//if (pKeyBuffer[0x5A] & 0xF0) m_pCamera->Zoom(-100 * m_GameTimer.GetTimeElapsed());				// Z
-			//if (pKeyBuffer[0x58] & 0xF0) m_pCamera->Zoom(100 * m_GameTimer.GetTimeElapsed());				// X
+			if (pKeyBuffer[VK_UP] & 0xF0)		dwDirection |= DIR_FORWARD;
+			if (pKeyBuffer[VK_DOWN] & 0xF0)		dwDirection |= DIR_BACKWARD;
+			if (pKeyBuffer[VK_LEFT] & 0xF0)		dwDirection |= DIR_LEFT;
+			if (pKeyBuffer[VK_RIGHT] & 0xF0)	dwDirection |= DIR_RIGHT;
+			// 좌우회전
+			if (pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);			// Q
+			if (pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);		// E
+			// 줌
+			if (pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);				// Z
+			if (pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);				// X
 		}
-		m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
 		if (dwDirection != 0)
 			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::RUN);
+		else
+			m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
 	}
 	break;
-
 	}
 
-	//if (dwDirection) m_pPlayer->Move(m_pCamera->GetYaw(), dwDirection, m_GameTimer.GetTimeElapsed());
+	if (dwDirection) m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);
 
-	////m_pplater -> movebounding
-
-	//// 4) 플레이어 위치에 따라 카메라 update
-	//m_pCamera->Update(m_pPlayer->GetPosition());
-
-	////서버_좌표 보내기 : 이동하고나서 좌표를 보내면 되지않을까해서 여기에 넣어둠.
-	////const D3DXVECTOR3 *pos = m_pPlayer->GetPosition();
-	////cout << "보내려는 좌표 : " << pos->x << "," << pos->y << "," << pos->z << endl;
-	////SendPosPacket(pos->x, pos->y, pos->z);
+	m_pCameraManager->GetNowCamera()->Update(m_pPlayer->GetPosition());
 }
 
 
