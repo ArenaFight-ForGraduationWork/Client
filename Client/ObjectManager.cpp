@@ -8,25 +8,26 @@
 
 
 
-CObjectManager::CObjectManager(ID3D11Device *pd3dDevice)
+CObjectManager::CObjectManager()
 {
 	for (BYTE i = (BYTE)eObjectType::START; i < (BYTE)eObjectType::END; ++i)
 	{
 		m_mObjects[(eObjectType)i] = std::vector<CObject*>();
 	}
-
-	pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
 }
-
 CObjectManager::~CObjectManager()
 {
-	DeleteObjectAll();
 }
 
-CObjectManager* CObjectManager::GetSingleton(ID3D11Device *pd3dDevice)
+CObjectManager* CObjectManager::GetSingleton()
 {
-	static CObjectManager instance(pd3dDevice);
+	static CObjectManager instance;
 	return &instance;
+}
+
+void CObjectManager::Initialize(ID3D11Device *pd3dDevice)
+{
+	pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
 }
 
 CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int z, int dx, int dy, int dz)

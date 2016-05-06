@@ -40,8 +40,9 @@ public:
 		END
 	};
 
-	static CObjectManager* GetSingleton(ID3D11Device *pd3dDevice);
+	static CObjectManager* GetSingleton();
 	~CObjectManager();
+	void Initialize(ID3D11Device *pd3dDevice);
 
 	/* ~데이터를 가진 오브젝트를 추가 */
 	CObject* Insert(UINT id, eResourceType eType, int x = 0, int y = 0, int z = 0, int dx = 0, int dy = 0, int dz = 0);
@@ -73,7 +74,7 @@ private:
 
 	CResourceManager *pResourceManager;
 
-	CObjectManager(ID3D11Device *pd3dDevice);
+	CObjectManager();
 };
 
 
