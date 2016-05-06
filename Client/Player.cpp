@@ -7,6 +7,7 @@ CPlayer::CPlayer()
 	m_pObject = nullptr;
 
 	m_fSpeed = 100;
+	m_HP = 100;
 }
 
 CPlayer::~CPlayer()
@@ -45,6 +46,11 @@ void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float f
 
 	// 2) 로컬 z축으로 속도 * 시간만큼 이동
 	m_pObject->MoveForward(m_fSpeed * fTimeElapsed);
+
+	// 히트박스&바운딩 박스도 맞춰서 이동
+	m_pObject->MoveAndRotatingHitBox();
+	m_pObject->MoveAndRotatingBoundingBox();
+
 }
 
 void CPlayer::MoveRelative(const float x, const float y, const float z)

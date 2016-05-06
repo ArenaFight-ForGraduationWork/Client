@@ -31,6 +31,11 @@ public:
 	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);		//필요없음. 지울꺼야!
 	const D3DXVECTOR3* GetPosition();
 
+	void SetCoolTime();
+	void SetHP()	{ m_HP -= 1; }
+	void SetSpeed()	{ m_fSpeed += 100; }
+	int GetHP()	{ return m_HP; }
+	float GetSpeed()	{ return m_fSpeed; }
 
 protected:
 
@@ -39,7 +44,9 @@ private:
 
 	/* m/s */
 	float m_fSpeed;
+	int m_HP;
 
+	static float cooldown;
 	// atk, def, hp, mp...
 
 };

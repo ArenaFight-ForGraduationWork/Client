@@ -158,7 +158,7 @@ public:
 	//=================================================================
 	void SetHP() { HP = HP - 1; }
 	int GetHP()	{ return HP; }
-
+	void SetIsAnimation()	{ isAnimating = true; }		//애니메이션이 있으니 재생부분을 통과할수 있게끔 해주는 변수
 private:
 	D3DXMATRIX *m_pd3dxWorldMatrix;
 
@@ -169,6 +169,7 @@ private:
 
 	int HP = 100;
 
+	bool isAnimating = false;
 	const D3DXMATRIX* _GetRotationMatrix();
 };
 

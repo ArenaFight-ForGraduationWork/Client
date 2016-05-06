@@ -639,33 +639,34 @@ void CObject::Render(ID3D11DeviceContext *pd3dDeviceContext)
 
 void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time)
 {
-	if (PreState != Animation_state)	//다른 애니메이션으로 바꼈을때
+	if (isAnimating)		//애니메이션이 있을 경우 이 부분을 거쳐감. 아이템같은경우는 애니메이션이 없으므로 이부분이 필요 없음.
 	{
-		PreState = Animation_state;
-		m_fAnimationPlaytime = 0.0f;
+		if (PreState != Animation_state)	//다른 애니메이션으로 바꼈을때
+		{
+			PreState = Animation_state;
+			m_fAnimationPlaytime = 0.0f;
+		}
+		m_fAnimationPlaytime += 0.01f;				// 공격속도 제어 가능. 파닥파닥
+		NowTime = m_fAnimationPlaytime * 1000;
+
+		if ((NowTime / 10) >= (m_AniMaxTime[Animation_state] / 10))		//애니메이션 초기화되는 부분.
+		{
+
+			NowTime -= m_AniMaxTime[Animation_state];
+			m_fAnimationPlaytime = 0;
+		}
+
+		for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+		{
+			XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[Animation_state][NowTime / 10][i]);
+			g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+		}
+
+		if (g_pd3dcbBoneMatrix != nullptr)
+		{
+			pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+		}
 	}
-	m_fAnimationPlaytime += 0.01f;
-	NowTime = m_fAnimationPlaytime * 1000;
-
-
-	if ((NowTime / 10) >= (m_AniMaxTime[Animation_state] / 10))
-	{
-
-		NowTime -= m_AniMaxTime[Animation_state];
-		m_fAnimationPlaytime = 0;
-	}
-
-
-	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
-	{
-		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[Animation_state][NowTime / 10][i]);
-		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
-	}
-
-	if (g_pd3dcbBoneMatrix != nullptr)
-	{
-		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
-	}
-
-	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
+	
+	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);				//애니메이션이 없는 그냥 오브젝트는 이 Render에만 들어감
 }

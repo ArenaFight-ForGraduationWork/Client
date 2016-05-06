@@ -86,7 +86,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 
 	pObject->SetBoundingBox();	//위에서 일단 이동한만큼 월드변환이 바껴있음'ㅅ'
 	pObject->SetHitBox();			//히트박스 설정
-
+	pObject->SetIsAnimation();	//애니메이션 렌더를 쓰기 위해 isAnimating = true; 해줌
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 

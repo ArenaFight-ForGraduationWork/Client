@@ -72,10 +72,11 @@ void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 		fopen_s(&fp, "Data\\MonA_Data_Info.txt", "rt");
 		break;
 	case 1:	// 박쥐
-		fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
+		//fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
+		fopen_s(&fp, "Data\\monster1_info.txt", "rt");
 		break;
 	case 2:	// 인간
-		fopen_s(&fp, "Data\\MainCharacter_Info.txt", "rt");
+		fopen_s(&fp, "Data\\_Info.txt", "rt");
 		break;
 	}
 
@@ -98,10 +99,11 @@ void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 		fopen_s(&fp, "Data\\MonA_Weight.txt", "rt");
 		break;
 	case 1:	// 박쥐
-		fopen_s(&fp, "Data\\Forest_Weight.txt", "rt");
+		//fopen_s(&fp, "Data\\Forest_Weight.txt", "rt");
+		fopen_s(&fp, "Data\\monster1_weight.txt", "rt");
 		break;
 	case 2:	// 인간
-		fopen_s(&fp, "Data\\MainCharacter_Weight.txt", "rt");
+		fopen_s(&fp, "Data\\_Weight.txt", "rt");
 		break;
 	}
 
@@ -131,10 +133,11 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 		fopen_s(&fp, "Data\\MonA_Data_Info.txt", "rt");
 		break;
 	case 1:	// 박쥐
-		fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
+		//fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
+		fopen_s(&fp, "Data\\monster1_info.txt", "rt");
 		break;
 	case 2:	// 인간
-		fopen_s(&fp, "Data\\MainCharacter_Info.txt", "rt");
+		fopen_s(&fp, "Data\\_Info.txt", "rt");
 		break;
 	}
 
@@ -142,10 +145,23 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 	fscanf_s(fp, "%d\n", &Cnt);
 	tempcnt = Cnt;	//tempCnt는 weight에서 포문돌릴때 사용함.
 
+	CAnimationVertex temp;
 	for (int i = 0; i < Cnt; ++i)
 	{
 		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvPosition.x, &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
 		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvNormal.x, &v[i].m_d3dxvNormal.y, &v[i].m_d3dxvNormal.z);
+		
+		//fscanf_s(fp, "%f %f %f\n", &temp.m_d3dxvPosition.x, &temp.m_d3dxvPosition.y, &temp.m_d3dxvPosition.z);
+		//fscanf_s(fp, "%f %f %f\n", &temp.m_d3dxvNormal.x, &temp.m_d3dxvNormal.y, &temp.m_d3dxvNormal.z);
+		//
+		//v[i].m_d3dxvPosition.x = temp.m_d3dxvPosition.x;
+		//v[i].m_d3dxvPosition.y = temp.m_d3dxvPosition.y;
+		//v[i].m_d3dxvPosition.z = -temp.m_d3dxvPosition.z;
+
+		//v[i].m_d3dxvNormal.x = temp.m_d3dxvNormal.x;
+		//v[i].m_d3dxvNormal.y = temp.m_d3dxvNormal.y;
+		//v[i].m_d3dxvNormal.z = -temp.m_d3dxvNormal.z;
+
 		fscanf_s(fp, "%f %f\n", &v[i].m_d3dxvTexCoord.x, &v[i].m_d3dxvTexCoord.y);
 	}
 
@@ -166,14 +182,17 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 		fopen_s(&fMonA[2], "Data\\MonA_Matrix_Attack.txt", "rt");
 		break;
 	case 1:	// 박쥐
-		fopen_s(&fMonA[0], "Data\\Forest_Matrix_Idle.txt", "rt");
+	/*	fopen_s(&fMonA[0], "Data\\Forest_Matrix_Idle.txt", "rt");
 		fopen_s(&fMonA[1], "Data\\Forest_Matrix_Idle.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\Forest_Matrix_Attack.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\Forest_Matrix_Attack.txt", "rt");*/
+		fopen_s(&fMonA[0], "Data\\monster1_matrix_idle.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\monster1_matrix_idle.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\monster1_matrix_idle.txt", "rt");
 		break;
 	case 2:	// 인간
-		fopen_s(&fMonA[0], "Data\\MainCharacter_Matrix_Run.txt", "rt");
-		fopen_s(&fMonA[1], "Data\\MainCharacter_Matrix_Run.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\MainCharacter_Matrix_Run.txt", "rt");
+		fopen_s(&fMonA[0], "Data\\CIdle_matrix.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\CRun_matrix.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\CAttack_matrix.txt", "rt");
 		break;
 	}
 
