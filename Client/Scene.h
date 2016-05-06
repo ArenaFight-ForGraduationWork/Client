@@ -23,7 +23,7 @@ public:
 	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
 	virtual void ProcessInput(float fTimeElapsed) = 0;
 
-	void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
 	void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//¼öÁ¤
@@ -63,7 +63,7 @@ public:
 	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
 	virtual void ProcessInput(float fTimeElapsed);
 
-	//void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	//void ReleaseObjects();
 
 	//void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);

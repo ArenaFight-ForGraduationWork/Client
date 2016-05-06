@@ -35,16 +35,15 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_pObjectManager = CObjectManager::GetSingleton();
 	m_pObjectManager->Initialize(m_pd3dDevice);
 
-	// 씬 매니저를 초기화한다
-	m_pSceneManager = CSceneManager::GetSingleton();
-	m_pSceneManager->Initialize();
-
 	// 카메라 매니저를 초기화한다
 	m_pCameraManager = CCameraManager::GetSingleton();
 	m_pCameraManager->Initialize(m_pd3dDevice);
 
-	// 렌더링할 객체(게임 월드 객체)를 생성한다
-	BuildObjects();
+	// 씬 매니저를 초기화한다
+	m_pSceneManager = CSceneManager::GetSingleton();
+	m_pSceneManager->Initialize();
+	m_pSceneManager->Change(CSceneManager::eSceneType::FIRST);
+	m_pSceneManager->GetNowScene()->BuildObjects(m_pd3dDevice);
 
 	return true;
 }
@@ -225,20 +224,8 @@ void CGameFramework::OnDestroy()
 	if (m_pd3dDevice) m_pd3dDevice->Release();
 }
 
-
-void CGameFramework::BuildObjects()
-{
-	m_pSceneManager->Change(CSceneManager::eSceneType::FIRST);
-	m_pSceneManager->GetNowScene()->BuildObjects(m_pd3dDevice);
-
-	m_pObjectManager->Insert(20000, eResourceType::MonB, m_pd3dDevice, m_pd3dDeviceContext, 1, 3, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
-	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
-}
-
-
 void CGameFramework::ReleaseObjects()
 {
-	//if (m_pPlayer)	delete m_pPlayer;
 }
 
 void CGameFramework::FrameAdvance()
