@@ -37,7 +37,7 @@ protected:
 	POINT	m_ptOldCursorPos;
 	POINT	m_ptNewCursorPos;
 
-	CPlayer *m_pPlayer;
+	CUnit *m_pPlayer;
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
 
