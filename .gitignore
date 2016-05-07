@@ -1,4 +1,4 @@
 # Ignore all the files in these Directories
-Client/Debug/
-Client/Release/
-Client/ipch/
+Debug/
+Release/
+ipch/
