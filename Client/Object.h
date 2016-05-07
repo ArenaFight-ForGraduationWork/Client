@@ -145,6 +145,8 @@ public:
 	bool Collison(vector<CObject*> &vObject);	//카테고리별로 충돌체크
 	int CollOtherID;	//나랑 부딪힌 것의 아이디
 
+
+
 	virtual void SetBoundingBox();	// 모든 오브젝트에 다 있음
 	virtual void SetHitBox();			// 공격모션이 있는 것만 히트박스가 있음
 

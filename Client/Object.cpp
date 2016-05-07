@@ -116,6 +116,7 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 
 bool CObject::Collison(CObject *pObject)
 {
+	
 	// 현재 메쉬 최대 < 타겟 메쉬 최소 , 현재 메쉬 최소 > 타겟 메쉬 최대면 충돌이 아님
 	if (m_MinVer.x > pObject->m_MaxVer.x || m_MaxVer.x < pObject->m_MinVer.x)  ///여기에 nowMinver.를 쓰셈
 	{
@@ -129,6 +130,8 @@ bool CObject::Collison(CObject *pObject)
 
 	return true;		//y축은 할 필요가 없다.
 }
+
+
 
 void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {

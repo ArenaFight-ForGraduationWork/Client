@@ -37,6 +37,8 @@ public:
 	int GetHP()	{ return m_HP; }
 	float GetSpeed()	{ return m_fSpeed; }
 
+	bool GetIsAttack()	{ return isAttack; }
+	void SetIsAttack(bool mode)	{ isAttack = mode; }
 protected:
 
 private:
@@ -47,6 +49,7 @@ private:
 	int m_HP;
 
 	static float cooldown;
+	bool isAttack = false;
 	// atk, def, hp, mp...
 
 };
