@@ -1,5 +1,5 @@
-#ifndef PLAYER_H_
-#define PLAYER_H_
+#ifndef UNIT_H_
+#define UNIT_H_
 
 #include "stdafx.h"
 #include "Object.h"

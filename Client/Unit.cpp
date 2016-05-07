@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Player.h"
+#include "Unit.h"
 
 
 CUnit::CUnit()
@@ -119,7 +119,7 @@ CPlayer::CPlayer()
 {}
 CPlayer::CPlayer(CPlayer& copy)
 {}
-CPlayer::CPlayer()
+CPlayer::~CPlayer()
 {}
 
 
