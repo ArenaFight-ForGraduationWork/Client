@@ -24,14 +24,15 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	*/
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
-	m_vResources[(int)eResourceType::Cube]->SetIDs(0, 0, 0, 1);
-	m_vResources[(int)eResourceType::MonB]->SetIDs(1, 2, 0, 2);	
-	m_vResources[(int)eResourceType::MonA]->SetIDs(2, 1, 0, 2);
-	m_vResources[(int)eResourceType::MonObjB]->SetIDs(3, 2, 0, 1);		
-	m_vResources[(int)eResourceType::MonObjA]->SetIDs(4, 1, 0, 1);
-	m_vResources[(int)eResourceType::Floor]->SetIDs(5, 0, 0, 0);
-	m_vResources[(int)eResourceType::User]->SetIDs(6, 4, 0, 2);
-	m_vResources[(int)eResourceType::ITME_HP]->SetIDs(7, 3, 0, 0);
+
+	m_vResources[(int)eResourceType::User]->SetIDs(0, 4, 0, 1);
+	m_vResources[(int)eResourceType::Monster1]->SetIDs(1, 0, 0, 1);
+	m_vResources[(int)eResourceType::Item_HP]->SetIDs(2, 3, 0, 0);
+	m_vResources[(int)eResourceType::Item_Buff]->SetIDs(2, 3, 0, 0);		//텍스쳐 번호만 바꿔주면됨
+	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 0, 0, 0);
+	m_vResources[(int)eResourceType::Monkey]->SetIDs(4, 1, 0, 1);
+	m_vResources[(int)eResourceType::Bird]->SetIDs(5, 2, 0, 1);
+	m_vResources[(int)eResourceType::Tree]->SetIDs(6, 5, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -92,30 +93,26 @@ CResourceManager* CResourceManager::GetSingleton(ID3D11Device *pd3dDevice)
 
 void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 {
-	// 0 : 큐브
-	m_mMesh[0] = new CCubeMeshIlluminatedTextured(pd3dDevice, 100.0f, 100.0f, 100.0f);
+	// 0. 메인 캐릭터
+	m_mMesh[0] = new CImportedAnimatingMesh(pd3dDevice, 0, 7);
 
-	// 1: monB, animation, 박쥐
+	// 1. 몬스터 - 슬라임
 	m_mMesh[1] = new CImportedAnimatingMesh(pd3dDevice, 1, 3);
 
-	// 2: monA, animation, 원숭이
-	m_mMesh[2] = new CImportedAnimatingMesh(pd3dDevice, 0, 3);
+	// 2. 아이템 오브젝트
+	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\ItemObject_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
 
-	// 3. monB, object
-	m_mMesh[3] = new CImportedMesh(pd3dDevice, "Data\\Forest_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+	// 3. 바닥
+	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
 
-	// 4. monA, object
-	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\MonA_Data_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+	// 4. 원숭이
+	m_mMesh[4] = new CImportedAnimatingMesh(pd3dDevice, 2, 3);
 
-	// 5: 바닥
-	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2000.0f, 1.0f, 2000.0f);
+	// 5. 박쥐
+	m_mMesh[5] = new CImportedAnimatingMesh(pd3dDevice, 3, 3);
 
-	// 6. 유저캐릭터
-	m_mMesh[6] = new CImportedAnimatingMesh(pd3dDevice, 2, 3);
-
-	// 7. 아이템 RED_ HP
-	m_mMesh[7] = new CImportedMesh(pd3dDevice, "Data\\ItemObject_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
-
+	// 6. 나무
+	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\tree_info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
 }
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
@@ -164,11 +161,19 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[3] = tempTexture;
 
+	// 4 : 인간
 	tempTexture = new CTexture(1);
 	tempTextureAddress = L"./Data/또또.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[4] = tempTexture;
+
+	// 5 : 돌
+	tempTexture = new CTexture(1);
+	tempTextureAddress = L"./Data/rock.jpg";
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
+	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	m_mTexture[5] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
 {
@@ -185,24 +190,17 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 {
 	CShader *pShader;
 
-	// 0 : IlluminatedTextured
+	// 0 : CIlluminatedTexturedShader
 	pShader = new CIlluminatedTexturedShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[0] = pShader;
 
-	// 1 : Fog
-	pShader = new CFogShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[1] = pShader;
-
-	// 2 : PlayerShader
+	// 1 : PlayerShader
 	pShader = new CAnimatingShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
-	m_mShader[2] = pShader;
-
+	m_mShader[1] = pShader;
 }
 
 

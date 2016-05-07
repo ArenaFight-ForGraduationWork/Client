@@ -89,7 +89,7 @@ CObject::CObject(UINT id)
 		m_HitMaxVer[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_HitMinVer[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	}
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < ANIMATION_COUNT; ++i)
 		m_AniMaxTime[i] = 0.0f;
 }
 
@@ -112,6 +112,58 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 	if (m_pMaterial) m_pMaterial->Release();
 	m_pMaterial = pMaterial;
 	if (m_pMaterial) m_pMaterial->AddRef();
+}
+
+bool CObject::Collison(CObject *pObject)
+{
+	// 현재 메쉬 최대 < 타겟 메쉬 최소 , 현재 메쉬 최소 > 타겟 메쉬 최대면 충돌이 아님
+	if (m_MinVer.x > pObject->m_MaxVer.x || m_MaxVer.x < pObject->m_MinVer.x)  ///여기에 nowMinver.를 쓰셈
+	{
+		return false;	
+	}
+
+	if (m_MinVer.z > pObject->m_MaxVer.z || m_MaxVer.z < pObject->m_MinVer.z)
+	{
+		return false;
+	}
+
+	return true;		//y축은 할 필요가 없다.
+}
+
+void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+{
+	if (PreState != StateNum)
+	{
+		PreState = StateNum;
+		m_fAnimationPlaytime = 0.0f;
+	}
+	m_fAnimationPlaytime += 0.01f;
+	NowTime = m_fAnimationPlaytime * 1000;
+
+	
+	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
+	{
+		
+		NowTime -= m_AniMaxTime[StateNum];
+		m_fAnimationPlaytime = 0;
+	}
+
+
+	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+	{
+		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
+		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+	}
+
+	if (g_pd3dcbBoneMatrix != nullptr)
+	{
+		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
+	}
+}
+
+void CObject::Render(ID3D11DeviceContext *pd3dDeviceContext)
+{
+	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
 }
 
 void CObject::MoveRelative(const float fx, const float fy, const float fz)
@@ -352,21 +404,6 @@ void CObject::SetHitBox()
 	//printf(" Set() min X : %f   Y: %f   Z: %f\n", m_HitMinVer[0].x, m_HitMinVer[0].y, m_HitMinVer[0].z);
 }
 
-bool CObject::Collison(CObject *pObject)
-{
-	// 현재 메쉬 최대 < 타겟 메쉬 최소 , 현재 메쉬 최소 > 타겟 메쉬 최대면 충돌이 아님
-	if (m_MinVer.x > pObject->m_MaxVer.x || m_MaxVer.x < pObject->m_MinVer.x)
-	{
-		return false;
-	}
-
-	if (m_MinVer.z > pObject->m_MaxVer.z || m_MaxVer.z < pObject->m_MinVer.z)
-	{
-		return false;
-	}
-	return true;
-}
-
 bool CObject::MyHitAndEnemyBound(CObject *pObject)
 {
 	/*
@@ -597,44 +634,8 @@ void CObject::PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext
 
 	if (g_pd3dcbBoneMatrix != nullptr)
 	{
-		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
 	}
-}
-
-void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
-{
-	if (PreState != StateNum)
-	{
-		PreState = StateNum;
-		m_fAnimationPlaytime = 0.0f;
-	}
-	m_fAnimationPlaytime += 0.01f;
-	NowTime = m_fAnimationPlaytime * 1000;
-
-
-	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
-	{
-
-		NowTime -= m_AniMaxTime[StateNum];
-		m_fAnimationPlaytime = 0;
-	}
-
-
-	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
-	{
-		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
-		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
-	}
-
-	if (g_pd3dcbBoneMatrix != nullptr)
-	{
-		pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
-	}
-}
-
-void CObject::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
 }
 
 void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time)

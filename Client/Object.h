@@ -115,7 +115,7 @@ public:
 	float m_fAnimationPlaytime = 0.0f;
 	long long  NowTime;
 	int PreState;	//이전 상태
-	long long m_AniMaxTime[5];
+	long long m_AniMaxTime[ANIMATION_COUNT];
 	int m_AnimationIndexCount;
 	int Animation_state = 0;		// IDLE, RUN, ATTACK...
 	
@@ -156,9 +156,9 @@ public:
 
 	void SetPressSkill(int num) { PressSkillNum = num; }		//어느 스킬을 눌렀는가~~
 	//=================================================================
-	void SetHP() { HP = HP - 1; }
-	int GetHP()	{ return HP; }
+
 	void SetIsAnimation()	{ isAnimating = true; }		//애니메이션이 있으니 재생부분을 통과할수 있게끔 해주는 변수
+
 private:
 	D3DXMATRIX *m_pd3dxWorldMatrix;
 
@@ -167,9 +167,7 @@ private:
 	CTexture *m_pTexture;
 	UINT m_id;
 
-	int HP = 100;
-
-	bool isAnimating = false;
+	bool isAnimating = true;
 	const D3DXMATRIX* _GetRotationMatrix();
 };
 

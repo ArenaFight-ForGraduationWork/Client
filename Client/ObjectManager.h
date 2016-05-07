@@ -23,23 +23,6 @@
 class CObjectManager
 {
 public:
-	static CObjectManager* GetSingleton(ID3D11Device *pd3dDevice);
-	~CObjectManager();
-
-	/* ~데이터를 가진 오브젝트를 추가 */
-	CObject* Insert(UINT id, eResourceType eType, int x = 0, int y = 0, int z = 0, int dx = 0, int dy = 0, int dz = 0);
-	CObject* Insert(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
-
-	//애니메이션 전용
-	CObject* Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, int a, int b, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
-
-	CObject* FindObject(UINT id);
-	std::vector<CObject*> FindObjectInCategory(const UINT id);
-
-	void DeleteObject(UINT id);
-
-	void DeleteObjectAll();
-
 	/* ObjectList의 카테고리
 	* LAND : 지형. 바닥, 벽
 	* NATURAL_FEATURE : 나무, 돌 같은 잡동사니. 충돌체크O 존재O
@@ -57,12 +40,41 @@ public:
 		END
 	};
 
+	static CObjectManager* GetSingleton();
+	~CObjectManager();
+	void Initialize(ID3D11Device *pd3dDevice);
+
+	/* ~데이터를 가진 오브젝트를 추가 */
+	CObject* Insert(UINT id, eResourceType eType, int x = 0, int y = 0, int z = 0, int dx = 0, int dy = 0, int dz = 0);
+	CObject* Insert(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
+
+	//애니메이션 전용
+	CObject* Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, int a, int b, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
+
+	CObject* FindObject(UINT id);
+	/*
+	해당 eObjectType카테고리에 속해있는 모든 오브젝트들의 개수와 id를 반환한다.
+	eType에 CObjectManager::eObjectType::(필요한 카테고리)를 입력하고,
+	piNum에 int변수를 하나 생성해서 인자로 넘겨주면,
+	piNum으로 오브젝트들의 개수를 반환하고,
+	반환값인 UINT*에 해당 카테고리에 속한 오브젝트들의 id 배열을 넘겨준다.
+
+	ex)
+	int iTempSize;
+	UINT *puiTempArray = pObjectManager->FindObjectsInCategory(CObjectManager::eObjectType::MONSTER, iTempSize);
+	이렇게 호출한 뒤, puiTempArray[idx( 0 ~ iTempSize-1 )]로 사용하면 된다.
+	*/
+	UINT* FindObjectsInCategory(eObjectType eType, int& piNum);
+
+	void DeleteObject(UINT id);
+	void DeleteObjectAll();
+
 private:
 	std::map<eObjectType, std::vector<CObject*>> m_mObjects;
 
 	CResourceManager *pResourceManager;
 
-	CObjectManager(ID3D11Device *pd3dDevice);
+	CObjectManager();
 };
 
 

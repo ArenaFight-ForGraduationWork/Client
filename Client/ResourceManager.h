@@ -36,21 +36,25 @@ private:
 
 enum class eResourceType : BYTE{
 	START = 0,
-	Cube = 0,
-	MonB,	//
-	MonA,	//
-	MonObjB,
-	MonObjA,
+	User = 0,
+	Monster1,
+	Item_HP,
+	Item_Buff,
 	Floor,
-	User,
-	ITME_HP,
+	Monkey,
+	Bird,
+	Tree,
 	END
 };
 
 enum ePLAYER_STATE{
 	IDLE = 0,
 	RUN,
+	DEAD,
 	ATTACK,
+	SKILL1,
+	SKILL2,
+	SKILL3
 };
 
 class CResourceManager
@@ -60,7 +64,6 @@ public:
 		START = 0,
 		IlluminatedTextured = 0,
 		Player,
-		Fog,
 		END
 	};
 

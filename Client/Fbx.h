@@ -10,7 +10,7 @@ private:
 	static CFbx* m_instance;
 
 	/*애니메이션을 위한 변수들*/
-	XMFLOAT4X4** m_ppResult[5];
+	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
 	long long m_AniTime[ANIMATION_COUNT];
 
 	long long m_llAnimationMaxTime;			//애니메이션 최대길이

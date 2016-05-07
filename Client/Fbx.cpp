@@ -7,10 +7,11 @@ CFbx::CFbx()
 	m_fAnimationPlayTime = 0.0f;
 	m_llAnimationMaxTime = 0;
 
-	for (int i = 0; i < 5; ++i)
-		m_ppResult[i] = nullptr;
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
+	{
+		m_ppResult[i] = nullptr;
 		m_AniTime[i] = 0;
+	}
 
 	m_pAniIndexCount = nullptr;
 	m_pAniTime = nullptr;
@@ -68,23 +69,20 @@ void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 {
 	switch (CharNum)
 	{
-	case 0:	// 원숭이
+	case 0:	// 인간
+		fopen_s(&fp, "Data\\C_info.txt", "rt");
+		break;
+	case 1:   //슬라임
+		fopen_s(&fp, "Data\\C_info.txt", "rt");
+		break;
+	case 2:	// 원숭이
 		fopen_s(&fp, "Data\\MonA_Data_Info.txt", "rt");
 		break;
-	case 1:	// 박쥐
-		//fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
-		fopen_s(&fp, "Data\\monster1_info.txt", "rt");
-		break;
-	case 2:	// 인간
-		fopen_s(&fp, "Data\\_Info.txt", "rt");
+	case 3:	// 박쥐
+		fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
 		break;
 	}
 
-
-	/*tsize = new int;
-
-	fscanf_s(fp, "%d\n", tsize);*/
-	
 	int Cnt = 0;		//size값을 가져올 임시 변수
 	fscanf_s(fp, "%d\n", &Cnt);
 	size = Cnt;
@@ -95,15 +93,17 @@ void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 {
 	switch (CharNum)
 	{
-	case 0:	// 원숭이
+	case 0:	// 인간
+		fopen_s(&fp, "Data\\C_weight.txt", "rt");
+		break;
+	case 1:  //슬라임
+		fopen_s(&fp, "Data\\C_weight.txt", "rt");
+		break;
+	case 2:	// 원숭이
 		fopen_s(&fp, "Data\\MonA_Weight.txt", "rt");
 		break;
-	case 1:	// 박쥐
-		//fopen_s(&fp, "Data\\Forest_Weight.txt", "rt");
-		fopen_s(&fp, "Data\\monster1_weight.txt", "rt");
-		break;
-	case 2:	// 인간
-		fopen_s(&fp, "Data\\_Weight.txt", "rt");
+	case 3:	// 박쥐
+		fopen_s(&fp, "Data\\Forest_Weight.txt", "rt");
 		break;
 	}
 
@@ -120,8 +120,6 @@ void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 		}
 	}
 
-	//cout << "Weight 몇개? :" << tempcnt << endl;
-
 	fclose(fp);
 }
 
@@ -129,15 +127,17 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 {
 	switch (CharNum)
 	{
-	case 0:	// 원숭이
+	case 0:	// 인간
+		fopen_s(&fp, "Data\\C_info.txt", "rt");
+		break;
+	case 1:   //슬라임
+		fopen_s(&fp, "Data\\C_info.txt", "rt");
+		break;
+	case 2:	// 원숭이
 		fopen_s(&fp, "Data\\MonA_Data_Info.txt", "rt");
 		break;
-	case 1:	// 박쥐
-		//fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
-		fopen_s(&fp, "Data\\monster1_info.txt", "rt");
-		break;
-	case 2:	// 인간
-		fopen_s(&fp, "Data\\_Info.txt", "rt");
+	case 3:	// 박쥐
+		fopen_s(&fp, "Data\\Forest_Data_Info.txt", "rt");
 		break;
 	}
 
@@ -145,23 +145,10 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 	fscanf_s(fp, "%d\n", &Cnt);
 	tempcnt = Cnt;	//tempCnt는 weight에서 포문돌릴때 사용함.
 
-	CAnimationVertex temp;
 	for (int i = 0; i < Cnt; ++i)
 	{
 		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvPosition.x, &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
 		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvNormal.x, &v[i].m_d3dxvNormal.y, &v[i].m_d3dxvNormal.z);
-		
-		//fscanf_s(fp, "%f %f %f\n", &temp.m_d3dxvPosition.x, &temp.m_d3dxvPosition.y, &temp.m_d3dxvPosition.z);
-		//fscanf_s(fp, "%f %f %f\n", &temp.m_d3dxvNormal.x, &temp.m_d3dxvNormal.y, &temp.m_d3dxvNormal.z);
-		//
-		//v[i].m_d3dxvPosition.x = temp.m_d3dxvPosition.x;
-		//v[i].m_d3dxvPosition.y = temp.m_d3dxvPosition.y;
-		//v[i].m_d3dxvPosition.z = -temp.m_d3dxvPosition.z;
-
-		//v[i].m_d3dxvNormal.x = temp.m_d3dxvNormal.x;
-		//v[i].m_d3dxvNormal.y = temp.m_d3dxvNormal.y;
-		//v[i].m_d3dxvNormal.z = -temp.m_d3dxvNormal.z;
-
 		fscanf_s(fp, "%f %f\n", &v[i].m_d3dxvTexCoord.x, &v[i].m_d3dxvTexCoord.y);
 	}
 
@@ -176,27 +163,32 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 
 	switch (CharNum)
 	{
-	case 0:	// 원숭이
+	case 0:	// 인간
+		fopen_s(&fMonA[0], "Data\\C_matrix_idle.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\C_matrix_run.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\C_matrix_dead.txt", "rt");
+		fopen_s(&fMonA[3], "Data\\C_matrix_attack.txt", "rt");
+		fopen_s(&fMonA[4], "Data\\C_matrix_skill1.txt", "rt");
+		fopen_s(&fMonA[5], "Data\\C_matrix_skill2.txt", "rt");
+		fopen_s(&fMonA[6], "Data\\C_matrix_skill3.txt", "rt");
+		break;
+	case 1:  //슬라임
+		fopen_s(&fMonA[0], "Data\\MonA_Matrix_Idle.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\MonA_Matrix_Idle.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\MonA_Matrix_Idle.txt", "rt");
+		break;
+	case 2:	// 원숭이
 		fopen_s(&fMonA[0], "Data\\MonA_Matrix_Idle.txt", "rt");
 		fopen_s(&fMonA[1], "Data\\MonA_Matrix_Run.txt", "rt");
 		fopen_s(&fMonA[2], "Data\\MonA_Matrix_Attack.txt", "rt");
 		break;
-	case 1:	// 박쥐
-	/*	fopen_s(&fMonA[0], "Data\\Forest_Matrix_Idle.txt", "rt");
+	case 3:	// 박쥐
+		fopen_s(&fMonA[0], "Data\\Forest_Matrix_Idle.txt", "rt");
 		fopen_s(&fMonA[1], "Data\\Forest_Matrix_Idle.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\Forest_Matrix_Attack.txt", "rt");*/
-		fopen_s(&fMonA[0], "Data\\monster1_matrix_idle.txt", "rt");
-		fopen_s(&fMonA[1], "Data\\monster1_matrix_idle.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\monster1_matrix_idle.txt", "rt");
-		break;
-	case 2:	// 인간
-		fopen_s(&fMonA[0], "Data\\CIdle_matrix.txt", "rt");
-		fopen_s(&fMonA[1], "Data\\CRun_matrix.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\CAttack_matrix.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\Forest_Matrix_Attack.txt", "rt");
 		break;
 	}
 
-	////1. 첫번째 방법, Mesh.cpp에서 모든걸 다 읽어오는 경우 사용. 할당이 따로 필요없음.
 	fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_llAnimationMaxTime, &m_uiAnimationNodeIndexCount);
 
 	m_ppResult[StateCnt] = new XMFLOAT4X4*[m_llAnimationMaxTime / 10];
@@ -232,17 +224,19 @@ void CFbx::ReadTextFile_HitBox(int CharNum)
 {
 	switch (CharNum)
 	{
-	case 0:	// 원숭이
-		fopen_s(&fp, "Data\\MonA_Hitbox.txt", "rt");
+	case 0:	// 인간
+		fopen_s(&fp, "Data\\C_hitbox.txt", "rt");
 		break;
-	case 1:	// 박쥐
+	case 1:	// 슬라임
 		fopen_s(&fp, "Data\\MonB_Hitbox.txt", "rt");
 		break;
-	case 2:	// 인간
+	case 2:	// 원숭이
+		fopen_s(&fp, "Data\\MonA_Hitbox.txt", "rt");
+		break;
+	case 3:   //박쥐
 		fopen_s(&fp, "Data\\MonA_Hitbox.txt", "rt");
 		break;
 	}
-
 	int Cnt = 0;
 	fscanf_s(fp, "%d\n", &Cnt);
 	tempsize = Cnt;
@@ -260,13 +254,16 @@ void CFbx::ReadTextFile_HitBox(int CharNum, D3DXVECTOR3* &max, D3DXVECTOR3* &min
 {
 	switch (CharNum)
 	{
-	case 0:	// 원숭이
-		fopen_s(&fp, "Data\\MonA_Hitbox.txt", "rt");
+	case 0:	// 인간
+		fopen_s(&fp, "Data\\C_hitbox.txt", "rt");
 		break;
-	case 1:	// 박쥐
+	case 1:	// 슬라임
 		fopen_s(&fp, "Data\\MonB_Hitbox.txt", "rt");
 		break;
-	case 2:	// 인간
+	case 2:	// 원숭이
+		fopen_s(&fp, "Data\\MonA_Hitbox.txt", "rt");
+		break;
+	case 3:   //박쥐
 		fopen_s(&fp, "Data\\MonA_Hitbox.txt", "rt");
 		break;
 	}

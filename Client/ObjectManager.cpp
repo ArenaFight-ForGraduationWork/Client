@@ -8,25 +8,26 @@
 
 
 
-CObjectManager::CObjectManager(ID3D11Device *pd3dDevice)
+CObjectManager::CObjectManager()
 {
 	for (BYTE i = (BYTE)eObjectType::START; i < (BYTE)eObjectType::END; ++i)
 	{
 		m_mObjects[(eObjectType)i] = std::vector<CObject*>();
 	}
-
-	pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
 }
-
 CObjectManager::~CObjectManager()
 {
-	DeleteObjectAll();
 }
 
-CObjectManager* CObjectManager::GetSingleton(ID3D11Device *pd3dDevice)
+CObjectManager* CObjectManager::GetSingleton()
 {
-	static CObjectManager instance(pd3dDevice);
+	static CObjectManager instance;
 	return &instance;
+}
+
+void CObjectManager::Initialize(ID3D11Device *pd3dDevice)
+{
+	pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
 }
 
 CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int z, int dx, int dy, int dz)
@@ -108,9 +109,17 @@ CObject* CObjectManager::FindObject(UINT id)
 	return nullptr;
 }
 
-std::vector<CObject*> CObjectManager::FindObjectInCategory(const UINT id)
+UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iNum)
 {
-	return m_mObjects[(eObjectType)(id / ID_DIVIDE)];
+	iNum = m_mObjects[eType].size();
+
+	UINT *puiObjects = new UINT[iNum];
+	for (int i = 0; i < iNum; ++i)
+	{
+		puiObjects[i] = m_mObjects[eType][i]->GetId();
+	}
+
+	return puiObjects;
 }
 
 void CObjectManager::DeleteObject(UINT id)
