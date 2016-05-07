@@ -2,28 +2,35 @@
 #include "Player.h"
 
 
-CPlayer::CPlayer()
+CUnit::CUnit()
 {
 	m_pObject = nullptr;
 
-	m_fSpeed = 100;
-}
+	m_fStrikingPower = 10;
+	m_fDefensivePower = 10;
 
-CPlayer::~CPlayer()
+	m_fMovingSpeed = 100;
+
+	m_fHp = 100;
+}
+CUnit::CUnit(CUnit& copy)
+{
+}
+CUnit::~CUnit()
 {
 	m_pObject = nullptr;
 }
 
-void CPlayer::SetObject(CObject *pObject)
+void CUnit::SetObject(CObject *pObject)
 {
 	m_pObject = pObject;
 }
-void CPlayer::ReleaseObject()
+void CUnit::ReleaseObject()
 {
 	m_pObject = nullptr;
 }
 
-void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
+void CUnit::Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
 {
 	// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
 	D3DXVECTOR3 defaultAngle = D3DXVECTOR3(0, 0, 1);
@@ -43,52 +50,52 @@ void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float f
 	m_pObject->RotateAbsolute(&D3DXVECTOR3(0, cameraYaw + fAngle, 0));
 
 	// 2) 로컬 z축으로 속도 * 시간만큼 이동
-	m_pObject->MoveForward(m_fSpeed * fTimeElapsed);
+	m_pObject->MoveForward(m_fMovingSpeed * fTimeElapsed);
 }
 
-void CPlayer::MoveRelative(const float x, const float y, const float z)
+void CUnit::MoveRelative(const float x, const float y, const float z)
 {
 	if (m_pObject)
 		m_pObject->MoveRelative(x, y, z);
 }
-void CPlayer::MoveRelative(const D3DXVECTOR3 *vec)
+void CUnit::MoveRelative(const D3DXVECTOR3 *vec)
 {
 	if (m_pObject)
 		m_pObject->MoveRelative(vec);
 }
-void CPlayer::MoveAbsolute(const float x, const float y, const float z)
+void CUnit::MoveAbsolute(const float x, const float y, const float z)
 {
 	if (m_pObject)
 		m_pObject->MoveAbsolute(x, y, z);
 }
-void CPlayer::MoveAbsolute(const D3DXVECTOR3 *vec)
+void CUnit::MoveAbsolute(const D3DXVECTOR3 *vec)
 {
 	if (m_pObject)
 		m_pObject->MoveAbsolute(vec);
 }
 
-void CPlayer::RotateRelative(const float x, const float y, const float z)
+void CUnit::RotateRelative(const float x, const float y, const float z)
 {
 	if (m_pObject)
 		m_pObject->RotateRelative(x, y, z);
 }
-void CPlayer::RotateRelative(const D3DXVECTOR3 *vec)
+void CUnit::RotateRelative(const D3DXVECTOR3 *vec)
 {
 	if (m_pObject)
 		m_pObject->RotateRelative(vec);
 }
-void CPlayer::RotateAbsolute(const float x, const float y, const float z)
+void CUnit::RotateAbsolute(const float x, const float y, const float z)
 {
 	if (m_pObject)
 		m_pObject->RotateAbsolute(x, y, z);
 }
-void CPlayer::RotateAbsolute(const D3DXVECTOR3 *vec)
+void CUnit::RotateAbsolute(const D3DXVECTOR3 *vec)
 {
 	if (m_pObject)
 		m_pObject->RotateAbsolute(vec);
 }
 
-const D3DXVECTOR3* CPlayer::GetPosition()
+const D3DXVECTOR3* CUnit::GetPosition()
 {
 	// 오브젝트가 있으면 해당 오브젝트의 위치를 반환하고, 없으면 원점을 반환한다
 	if (m_pObject)
@@ -99,10 +106,36 @@ const D3DXVECTOR3* CPlayer::GetPosition()
 	return &D3DXVECTOR3(0, 0, 0);
 }
 
-void CPlayer::AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+void CUnit::AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
 	m_pObject->SetPlayAnimationState(StateNum);
 	m_pObject->Animate(StateNum, pd3dDeviceContext, fTimeElapsed);
 }
+
+
+
+
+CPlayer::CPlayer()
+{}
+CPlayer::CPlayer(CPlayer& copy)
+{}
+CPlayer::CPlayer()
+{}
+
+
+
+
+
+
+
+
+CMonster::CMonster()
+{}
+CMonster::CMonster(CMonster& copy)
+{}
+CMonster::~CMonster()
+{}
+
+
 
 
