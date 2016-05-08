@@ -10,6 +10,8 @@
 #include "Unit.h"
 #include "Camera.h"
 
+
+
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
 
@@ -26,10 +28,7 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
-	void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
-	void Render(ID3D11DeviceContext*pd3dDeviceContext);			
-
-	void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);	//추가
+	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);	//추가
 
 protected:
 	DWORD m_OperationMode;
@@ -64,12 +63,7 @@ public:
 	virtual void ProcessInput(float fTimeElapsed);
 
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	//void ReleaseObjects();
-
-	//void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
-	//void Render(ID3D11DeviceContext*pd3dDeviceContext);
-
-	//void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
 };

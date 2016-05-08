@@ -40,24 +40,6 @@ void CScene::ReleaseObjects()
 	m_vShaders.clear();
 }
 
-void CScene::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
-{
-	for (auto shader : m_vShaders)
-	{
-		shader->AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
-	}
-}
-
-void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
-{
-	m_pLight->UpdateLights(pd3dDeviceContext);
-
-	for (auto shader : m_vShaders)
-	{
-		shader->Render(pd3dDeviceContext);
-	}
-}
-
 void CScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
 {
 	m_pLight->UpdateLights(pd3dDeviceContext);
@@ -217,7 +199,10 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
 }
 
-
+void CFirstScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
+{
+	CScene::AnimateObjectsAndRender(pd3dDeviceContext, time);
+}
 
 
 

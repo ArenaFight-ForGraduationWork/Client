@@ -35,16 +35,12 @@ cbuffer cbWorldMatrix : register(b1)
 {
 	matrix gmtxWorld : packoffset(c0);
 };
-cbuffer cbFogCenter : register(b2)
+cbuffer cbFog : register(b2)
 {
-	float gfFogEnable;
 	float3 gf3FogCenter;
+	float gfFogRange;	// if Range < 0, fog is Enable.
 }
-cbuffer cbFogRange : register(b3)
-{
-	float gfFogRange;
-}
-cbuffer cbBoneMatrix : register(b4)
+cbuffer cbBoneMatrix : register(b3)
 {
 	row_major matrix gmtxBone[MAX_MATRIX] : packoffset(c0);
 };
@@ -102,7 +98,9 @@ PS_INPUT VS(VS_INPUT input)
 
 	output.tex2dcoord = input.tex2dcoord;
 
-	if (gfFogEnable)
+	if (gfFogRange < 0)
+		output.fogFactor = -1.0f;
+	else
 	{
 		float4 inputVertex;
 		inputVertex = mul(float4(input.position, 1.0f), gmtxWorld);
@@ -112,8 +110,6 @@ PS_INPUT VS(VS_INPUT input)
 			);
 		output.fogFactor = saturate(distance / gfFogRange);
 	}
-	else
-		output.fogFactor = -1.0f;
 
 	return output;
 }
