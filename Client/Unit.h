@@ -39,7 +39,7 @@ private:
 	CObject *m_pObject;
 
 	float m_fStrikingPower;		/* 공격력 */
-	float m_fDefensivePower;	/* 방어력*/
+	float m_fDefensivePower;	/* 방어력 */
 
 	float m_fMovingSpeed;		/* 이동속도. m/s */
 
