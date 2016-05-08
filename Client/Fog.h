@@ -3,10 +3,15 @@
 
 
 
-struct VS_CB_FOG
+struct VS_CB_FOG_CENTER
 {
+	float m_fEnable;
 	D3DXVECTOR3 m_d3dxvCenter;
-	float m_fRange;					// if m_fRange < 0, fog is enable.
+};
+struct VS_CB_FOG_RANGE
+{
+	float m_fRange;
+	float padding1, padding2, padding3;
 };
 
 
@@ -21,12 +26,13 @@ public:
 	void Initialize(ID3D11Device *pd3dDevice);
 	void Destroy();
 
-	/* 반드시 IsInUse()함수로 현재 사용중인지 체크하고 사용할 것. 자세한 것은 Fog.h 헤더파일 아래에. */
-	void Update(ID3D11DeviceContext *pd3dDeviceContext);
-	void Expand(D3DXVECTOR3 *pd3dvCenter);
-	void Contract();
+	void Update(ID3D11Device *pd3dDevice);
+	void Expand(ID3D11Device *pd3dDevice, const D3DXVECTOR3 *pd3dvCenter);
+	void Contract(ID3D11Device *pd3dDeivce);
 
-	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
+	//void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const D3DXVECTOR3 *pd3dxvCenter);
+	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 pd3dxvCenter);
+	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, const float fRange);
 
 	bool IsInUse();
 
@@ -41,13 +47,12 @@ private:
 	};
 	eState m_eState;
 
-	D3DXVECTOR3 *m_pd3dxvCenter;
-
 	float m_fNowRange;
 	float m_fMinRange;
 	float m_fMaxRange;
 
-	ID3D11Buffer *m_pd3dcbFog;
+	ID3D11Buffer *m_pd3dcbFogCenter;
+	ID3D11Buffer *m_pd3dcbFogRange;
 };
 
 
