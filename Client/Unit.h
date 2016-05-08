@@ -1,16 +1,17 @@
-#ifndef PLAYER_H_
-#define PLAYER_H_
+#ifndef UNIT_H_
+#define UNIT_H_
 
 #include "stdafx.h"
 #include "Object.h"
 
 
 
-class CPlayer
+class CUnit
 {
 public:
-	CPlayer();
-	~CPlayer();
+	CUnit();
+	CUnit(CUnit&);
+	~CUnit();
 
 	void SetObject(CObject *pObject);
 	CObject* GetObjects() { return m_pObject; }
@@ -28,21 +29,50 @@ public:
 	void RotateAbsolute(const float x, const float y, const float z);
 	void RotateAbsolute(const D3DXVECTOR3 *vec);
 
-	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
 	const D3DXVECTOR3* GetPosition();
 
-	void MoveBoundingBox();
+	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
 
 protected:
 
 private:
 	CObject *m_pObject;
 
-	/* m/s */
-	float m_fSpeed;
+	float m_fStrikingPower;		/* 공격력 */
+	float m_fDefensivePower;	/* 방어력 */
 
-	// atk, def, hp, mp...
+	float m_fMovingSpeed;		/* 이동속도. m/s */
 
+	float m_fHp;				/* 체력 */
+};
+
+
+
+
+
+
+class CPlayer : public CUnit
+{
+public:
+	CPlayer();
+	CPlayer(CPlayer&);
+	~CPlayer();
+
+protected:
+private:
+};
+
+
+
+class CMonster : public CUnit
+{
+public:
+	CMonster();
+	CMonster(CMonster&);
+	~CMonster();
+
+protected:
+private:
 };
 
 

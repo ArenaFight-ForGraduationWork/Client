@@ -7,7 +7,7 @@
 #include "Shader.h"
 #include "Light.h"
 #include "ObjectManager.h"
-#include "Player.h"
+#include "Unit.h"
 #include "Camera.h"
 
 #define MODE_MOUSE		0x01
@@ -37,7 +37,7 @@ protected:
 	POINT	m_ptOldCursorPos;
 	POINT	m_ptNewCursorPos;
 
-	CPlayer *m_pPlayer;
+	CUnit *m_pPlayer;
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
 
