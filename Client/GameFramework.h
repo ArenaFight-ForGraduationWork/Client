@@ -5,7 +5,6 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "ObjectManager.h"
-#include "Monster.h"
 #include "protocol.h"
 
 

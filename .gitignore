@@ -1,33 +1,7 @@
-*.opensdf
-*.sdf
-*.ipch
-*.suo
-*.exp
-*.ilk
-*.pdb
-*.iobj
-*.ipdb
-*.aps
-*.user
-*.tlog
-*.obj
-*.log
-*.res
-*.idb
-*.pch
-*.lastbuildstate
+# Ignore all the files in these Directories
+Debug/
+Release/
+ipch/
 
-
-# Directories
-ipch
-Debug
-Release
-
-# Executables
-*.exe
-*.dll
-*.lib
-*.lastbuildstate
-*.log
-Client/GameClient.v12.suo
-Client/GameClient.v12.suo
+GameClient.sdf
+GameClient.v12.suo

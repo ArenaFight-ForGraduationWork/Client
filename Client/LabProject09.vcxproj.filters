@@ -13,11 +13,10 @@
     <ClCompile Include="GameClient.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -33,10 +32,9 @@
     <ClInclude Include="GameClient.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Monster.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Unit.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceManager.h" />

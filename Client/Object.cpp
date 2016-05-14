@@ -116,37 +116,6 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 	if (m_pMaterial) m_pMaterial->AddRef();
 }
 
-//void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
-//{
-//	if (PreState != StateNum)
-//	{
-//		PreState = StateNum;
-//		m_fAnimationPlaytime = 0.0f;
-//	}
-//	m_fAnimationPlaytime += 0.01f;
-//	NowTime = m_fAnimationPlaytime * 1000;
-//
-//	
-//	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
-//	{
-//		
-//		NowTime -= m_AniMaxTime[StateNum];
-//		m_fAnimationPlaytime = 0;
-//	}
-//
-//
-//	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
-//	{
-//		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
-//		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
-//	}
-//
-//	if (g_pd3dcbBoneMatrix != nullptr)
-//	{
-//		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
-//	}
-//}
-
 void CObject::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
@@ -204,29 +173,27 @@ void CObject::MoveForward(const float fDistance)
 
 
 
+void CObject::BoundingMoveForward(const float fDistance)
+{
+	D3DXVECTOR3 d3dxvTempPosition = *GetPosition();
+	D3DXVECTOR3 d3dxvTempLookAt = *GetLookAt();
+	d3dxvTempPosition += fDistance * d3dxvTempLookAt;
+	//cout << d3dxvTempPosition.x << ", " << d3dxvTempPosition.z << endl;
+	BoundingMoveAbsolute(&d3dxvTempPosition);
+}
 
 void CObject::BoundingMoveAbsolute(const D3DXVECTOR3 *d3dxVec)
 {
 	m_boundingWorldMatrix->_41 = d3dxVec->x;
 	m_boundingWorldMatrix->_42 = d3dxVec->y;
 	m_boundingWorldMatrix->_43 = d3dxVec->z;
-	printf(" 바운딩 : %f, %f\n", m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_43);
+	//printf(" 바운딩 : %f, %f\n", m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_43);
 }
 
-void CObject::BoundingMoveForward(const float fDistance)
-{
-	D3DXVECTOR3 d3dxvTempPosition = *GetPosition();
-	D3DXVECTOR3 d3dxvTempLookAt = *GetLookAt();
-
-	printf(" 월드 : %f, %f\n", m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_43);
-	
-	d3dxvTempPosition += fDistance * d3dxvTempLookAt;
-	BoundingMoveAbsolute(&d3dxvTempPosition);
-}
 void CObject::BoundingRotateAbsolute(const D3DXVECTOR3 *d3dxVec)
 {
 	// 1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
-	D3DXMATRIX mtxPresentRotation = (*GetWorldMatrix());
+	D3DXMATRIX mtxPresentRotation = (*_GetBoundingRotationMatrix());
 	D3DXMatrixInverse(&mtxPresentRotation, 0, &mtxPresentRotation);
 	(*m_boundingWorldMatrix) = mtxPresentRotation * (*m_boundingWorldMatrix);
 
@@ -420,6 +387,7 @@ void CObject::SetBoundingBox()
 }
 void CObject::SetBoundingBoxMatrix()
 {
+	//printf(" 설정 전 월드변환 : %f, %f\n", m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_43);
 	m_boundingWorldMatrix->_11 = m_pd3dxWorldMatrix->_11;
 	m_boundingWorldMatrix->_12 = m_pd3dxWorldMatrix->_12;
 	m_boundingWorldMatrix->_13 = m_pd3dxWorldMatrix->_13;
@@ -432,6 +400,7 @@ void CObject::SetBoundingBoxMatrix()
 	m_boundingWorldMatrix->_41 = m_pd3dxWorldMatrix->_41;
 	m_boundingWorldMatrix->_42 = m_pd3dxWorldMatrix->_42;
 	m_boundingWorldMatrix->_43 = m_pd3dxWorldMatrix->_43;
+	//printf(" 설정 후 바운딩 월드변환 : %f, %f\n", m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_43);
 }
 void CObject::SetHitBox()
 {

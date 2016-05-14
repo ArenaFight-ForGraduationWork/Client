@@ -107,7 +107,7 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 5000.0f, 1.0f, 5000.0f);
 
 	// 4. 나무
-	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\tree_info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\tree_info.txt", D3DXVECTOR3(0.8, 0.8, 0.8));
 
 	// 5. 만든 벽
 	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2500.0f, 1500.0f, 200.0f);
