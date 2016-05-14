@@ -75,6 +75,15 @@ public:
 	/* 로컬 Z축 방향으로 이동한다 */
 	virtual void MoveForward(float fDistance = 1.0f);
 
+	virtual void BoundingMoveForward(float fDistance = 1.0f);
+	void BoundingMoveAbsolute(const D3DXVECTOR3 *d3dxVec);
+	void BoundingRotateAbsolute(const D3DXVECTOR3 *d3dxVec);
+	void BoundingRotateRelative(const D3DXVECTOR3 *d3dxVec);
+	void SetBoundingBoxMatrix();
+	D3DXMATRIX* GetBoundingWorldMatrix() { return m_boundingWorldMatrix; }
+	const D3DXVECTOR3* GetBoundingPosition();
+	const D3DXVECTOR3* GetBoundingLookAt();
+
 	void RotateRelative(const float fPitch, const float fYaw, const float fRoll);
 	void RotateRelative(const D3DXVECTOR3 *d3dxVec);
 	void RotateRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
@@ -89,6 +98,8 @@ public:
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
+	void SetPosition();
+
 	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
 
 	UINT GetId() { return m_id; }
@@ -100,7 +111,7 @@ public:
 	void SetTexture(CTexture *pTexture);
 	CTexture* GetTexture() { return m_pTexture; }
 
-	virtual void Animate(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
+	//virtual void Animate(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 	//애니메이션 + 렌더
@@ -117,52 +128,52 @@ public:
 	int PreState;	//이전 상태
 	long long m_AniMaxTime[ANIMATION_COUNT];
 	int m_AnimationIndexCount;
-	int Animation_state = 0;		// IDLE, RUN, ATTACK...
+	int Animation_state = 0;		//어느 애니메이션을 재생할 것인가.  IDLE, RUN, ATTACK, SKILL1, SKILL2, SKILL3
 	
 	void SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext);
-	void PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext);
-	
 	void SetAniIndexCount(int);
 	void SetResult(XMFLOAT4X4***);
 	void SetTime(long long*);
 
-	void SetPlayAnimationState(int animation_state);	
+	void SetPlayAnimationState(int animation_state);			//지금 재생해야할 애니메이션이 몇번째것인가. 
+																				// idle, move, dead, attack, skill1, skill2, skill3
 	//=================================================================
 
 	//=================================================================
 	/* 충돌체크를 위한 변수 및 함수 */
-	int PressSkillNum;		// 변수이름 바꿀거임, 지금 누른 스킬이 몇번째 스킬인가. SkillNumber; 이런걸로..
+	int PressSkillNum;						// 지금 누른 스킬이 몇번째 공격스킬인가. 1. attack, 2. skill1, 3. skill2, 4.skill3
 	D3DXVECTOR3 m_MaxVer;			//충돌체크를 위한 최대값
 	D3DXVECTOR3 m_MinVer;			//충돌체크를 위한 최소값
 
 	D3DXVECTOR3 m_HitMaxVer[ATTACK_COUNT];		//히트박스를 위한 최대값
 	D3DXVECTOR3 m_HitMinVer[ATTACK_COUNT];		//히트박스를 위한 최소값
 
-	bool Collison(CObject *pObject);		//충돌체크 확인하는 함수
+
 	bool MyHitAndEnemyBound(CObject* pObject);		// 내 히트박스 + 몬스터 충돌박스 = 몬스터 체력 감소
 	bool EnemyHitAndMyBound(CObject* pObject);		// 몬스터 히트박스 + 내 충돌박스 = 내 체력 감소
-	
-	bool Collison(vector<CObject*> &vObject);	//카테고리별로 충돌체크
-	int CollOtherID;	//나랑 부딪힌 것의 아이디
+	bool Collison(CObject *pObject);							//충돌체크
+	bool Collison(vector<CObject*> &vObject);			//카테고리별로 충돌체크
+	int CollOtherID;												//나랑 부딪힌 것의 아이디
+	bool isColl = false;											//충돌했는가 안했는가 확인용도
 
-
-
-	virtual void SetBoundingBox();	// 모든 오브젝트에 다 있음
-	virtual void SetHitBox();			// 공격모션이 있는 것만 히트박스가 있음
-
-	virtual void MoveAndRotatingHitBox();				//애니메이션 있는것만 사용
-	virtual void MoveAndRotatingBoundingBox();		//애니메이션 있는것만 사용
+	virtual void SetBoundingBox();							// 모든 오브젝트에 다 있음
+	virtual void SetHitBox();									// 공격모션이 있는 것만 히트박스가 있음
+		
+	virtual void MoveAndRotatingHitBox();					//애니메이션 있는것만 사용
+	virtual void MoveAndRotatingBoundingBox();			//애니메이션 있는것만 사용
 
 	D3DXVECTOR3 GetMaxVer(){ return m_MaxVer; }
 	D3DXVECTOR3 GetMinVer() { return m_MinVer; }
 
-	void SetPressSkill(int num) { PressSkillNum = num; }		//어느 스킬을 눌렀는가~~
+	void SetPressSkill(int num) { PressSkillNum = num; }		//어느 공격스킬을 눌렀는가
 	//=================================================================
 
 	void SetIsAnimation()	{ isAnimating = true; }		//애니메이션이 있으니 재생부분을 통과할수 있게끔 해주는 변수
 
 private:
 	D3DXMATRIX *m_pd3dxWorldMatrix;
+
+	D3DXMATRIX *m_boundingWorldMatrix;
 
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
@@ -171,6 +182,7 @@ private:
 
 	bool isAnimating = true;
 	const D3DXMATRIX* _GetRotationMatrix();
+	const D3DXMATRIX* _GetBoundingRotationMatrix();
 };
 
 

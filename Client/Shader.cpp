@@ -49,11 +49,11 @@ void CShader::ReleaseAllObjects()
 	m_vObjects.clear();
 }
 
-void CShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
-{
-	for (auto obj : m_vObjects)
-		obj->Animate(StateCnt,pd3dDeviceContext,fTimeElapsed);
-}
+//void CShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+//{
+//	for (auto obj : m_vObjects)
+//		obj->Animate(StateCnt,pd3dDeviceContext,fTimeElapsed);
+//}
 
 void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout)
 {
@@ -271,9 +271,9 @@ void CAnimatingShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CAnimatingShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+void CAnimatingShader::AnimateObjectAndRender(ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
 {
-	CShader::AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
+	CShader::AnimateObjectAndRender(pd3dDeviceContext, fTimeElapsed);
 }
 
 void CAnimatingShader::Render(ID3D11DeviceContext *pd3dDeviceContext)

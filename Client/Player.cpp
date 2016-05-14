@@ -6,8 +6,8 @@ CPlayer::CPlayer()
 {
 	m_pObject = nullptr;
 
-	m_fSpeed = 100;
-	m_HP = 100;
+	m_fSpeed = 300;
+	m_fHP = 100;
 }
 
 CPlayer::~CPlayer()
@@ -26,6 +26,12 @@ void CPlayer::ReleaseObject()
 
 void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
 {
+	//m_pObject->MoveAndRotatingHitBox();
+	//m_pObject->MoveAndRotatingBoundingBox();
+
+	//여기서 boundingboxMatrix를 worldmatrix로 바꿔서 다시 boudingbox를 원래 위치에 맞춰 놔야함
+	//m_pObject->SetBoundingBox();
+
 	// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
 	D3DXVECTOR3 defaultAngle = D3DXVECTOR3(0, 0, 1);
 	D3DXVECTOR3 inputAngle = D3DXVECTOR3(0, 0, 0);
@@ -47,10 +53,33 @@ void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float f
 	// 2) 로컬 z축으로 속도 * 시간만큼 이동
 	m_pObject->MoveForward(m_fSpeed * fTimeElapsed);
 
-	// 히트박스&바운딩 박스도 맞춰서 이동
+	//m_pObject->SetBoundingBoxMatrix();
 	m_pObject->MoveAndRotatingHitBox();
-	m_pObject->MoveAndRotatingBoundingBox();
 
+}
+
+void CPlayer::boundingBoxMove(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
+{
+	// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
+	D3DXVECTOR3 defaultAngle = D3DXVECTOR3(0, 0, 1);
+	D3DXVECTOR3 inputAngle = D3DXVECTOR3(0, 0, 0);
+	if (dwDirection)
+	{
+		if (dwDirection & DIR_FORWARD)  inputAngle.z += 1;
+		if (dwDirection & DIR_BACKWARD)	inputAngle.z -= 1;
+		if (dwDirection & DIR_LEFT)	inputAngle.x += 1;
+		if (dwDirection & DIR_RIGHT) inputAngle.x -= 1;
+	}
+	if (D3DXVECTOR3(0, 0, 0) == inputAngle) return;	// inputAngle==(0,0,0)이면 어느 방향으로든 움직이지 않는다 => 함수 종료
+	float fAngle = acosf(D3DXVec3Dot(&defaultAngle, &inputAngle) / (D3DXVec3Length(&defaultAngle) * D3DXVec3Length(&inputAngle)));
+	fAngle = D3DXToDegree(fAngle);
+	fAngle = ((defaultAngle.x* inputAngle.z - defaultAngle.z*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
+
+	m_pObject->BoundingRotateAbsolute(&D3DXVECTOR3(0, cameraYaw + fAngle, 0));
+	m_pObject->BoundingMoveForward(m_fSpeed * fTimeElapsed);
+
+
+	m_pObject->MoveAndRotatingBoundingBox();
 }
 
 void CPlayer::MoveRelative(const float x, const float y, const float z)
@@ -105,11 +134,3 @@ const D3DXVECTOR3* CPlayer::GetPosition()
 
 	return &D3DXVECTOR3(0, 0, 0);
 }
-
-void CPlayer::AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)		//이거 지금 부르는곳 없음!! 삭제할수도??
-{
-	m_pObject->SetPlayAnimationState(StateNum);
-	m_pObject->Animate(StateNum, pd3dDeviceContext, fTimeElapsed);
-}
-
-

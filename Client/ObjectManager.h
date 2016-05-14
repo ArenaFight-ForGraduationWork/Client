@@ -24,17 +24,19 @@ class CObjectManager
 {
 public:
 	/* ObjectList의 카테고리
-	* LAND : 지형. 바닥, 벽, 나무, 돌 등등	=>  충돌체크o, 삭제x, 이동 못하게 함.		0~999
-	* BUFF_CRYSTAL :							충돌체크o, 삭제o,							1000~1999
-	* MONSTER : 몬스터 = 보스					 충돌체크o, 히트박스o,					2000~2999
-	* PLAYER :										충돌체크o, 히트박스o,						3000~399
+	* NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		0~999
+	* BUFF_CRYSTAL :								충돌체크o, 삭제o,							1000~1999
+	* MONSTER : 몬스터 = 보스						충돌체크o, 히트박스o,					2000~2999
+	* PLAYER :											충돌체크o, 히트박스o,						3000~3999
+	* LAND : 바닥.										충돌체크x, 삭제x                            4000~
 	*/
 	enum class eObjectType :BYTE{
 		START = 0,
-		LAND = 0,
+		NATURAL_FEATURE = 0,
 		BUFF_CRYSTAL,
 		MONSTER,
 		PLAYER,
+		LAND,
 		END
 	};
 

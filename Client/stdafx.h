@@ -65,7 +65,7 @@ using namespace std;
 
 
 #define ANIMATION_COUNT 7		// 오브젝트가 행동하는 애니메이션의 개수 :: idle, run, dead, attack, skill1, skill2 , skill3
-#define ATTACK_COUNT 4			// 공격모션 개수 :: attack, skill1, skill2, skill3
+#define ATTACK_COUNT 4			// 공격모션 개수 :: attack, skill1, skill2, skill3 , 히트박스 읽어올때 개수좀 쓸라고!!
 
 
 

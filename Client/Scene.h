@@ -27,7 +27,6 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
-	void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);	//수정
 	void Render(ID3D11DeviceContext*pd3dDeviceContext);			
 
 	void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);	//추가
@@ -66,22 +65,13 @@ public:
 	virtual void ProcessInput(float fTimeElapsed);
 
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	//void ReleaseObjects();
-
-	//void AnimateObjects(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
-	//void Render(ID3D11DeviceContext*pd3dDeviceContext);
-
-	//void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
 
 	int PressSkillNum;		//누른 스킬 번호
 	int Player_Attack_number = 3;		//3: 평타, 4,5,6 : 1~3 스킬		타입을 보내는 용도.. 
+	bool iscoll = false;
 };
-
-
-
-
 
 
 class CSceneManager

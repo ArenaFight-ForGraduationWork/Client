@@ -41,15 +41,15 @@ enum class eResourceType : BYTE{
 	Item_HP,
 	Item_Buff,
 	Floor,
-	Monkey,
-	Bird,
 	Tree,
+	Wall1,
+	MakeWall,
 	END
 };
 
-enum ePLAYER_STATE{
+enum eUNIT_STATE{
 	IDLE = 0,
-	RUN,
+	MOVE,
 	DEAD,
 	ATTACK,
 	SKILL1,

@@ -65,19 +65,6 @@ private:
 };
 
 
-class CCubeMesh : public CMesh
-{
-public:
-	CCubeMesh(ID3D11Device *pd3dDevice, D3DXVECTOR3 max, D3DXVECTOR3 min);
-	virtual ~CCubeMesh();
-
-
-	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-};
-
-
-
 class CCubeMeshIlluminatedTextured : public CMesh
 {
 public:

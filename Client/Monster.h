@@ -28,9 +28,15 @@ public:
 
 	const D3DXVECTOR3* GetPosition();
 
+	void SetHP()	{ m_fHP -= 1; }
+	void SetSpeed()	{ m_fSpeed += 100; }
+	int GetHP()	{ return m_fHP; }
+	float GetSpeed()	{ return m_fSpeed; }
+
 private:
 	CObject *m_pObject;
 	float m_fSpeed;
+	float m_fHP;
 };
 
 

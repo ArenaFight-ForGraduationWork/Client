@@ -17,6 +17,7 @@ public:
 	void ReleaseObject();
 
 	void Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed);
+	void boundingBoxMove(const float, const DWORD, const float);
 
 	void MoveRelative(const float x, const float y, const float z);
 	void MoveRelative(const D3DXVECTOR3 *vec);
@@ -27,30 +28,25 @@ public:
 	void RotateRelative(const D3DXVECTOR3 *vec);
 	void RotateAbsolute(const float x, const float y, const float z);
 	void RotateAbsolute(const D3DXVECTOR3 *vec);
-
-	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);		//필요없음. 지울꺼야!
+\
 	const D3DXVECTOR3* GetPosition();
 
-	void SetCoolTime();
-	void SetHP()	{ m_HP -= 1; }
+void SetHP()	{ m_fHP -= 1; }
 	void SetSpeed()	{ m_fSpeed += 100; }
-	int GetHP()	{ return m_HP; }
+	int GetHP()	{ return m_fHP; }
 	float GetSpeed()	{ return m_fSpeed; }
 
-	bool GetIsAttack()	{ return isAttack; }
+	bool GetIsAttack()	{ return isAttack; }						//공격중인가 아닌가를 판단함
 	void SetIsAttack(bool mode)	{ isAttack = mode; }
 protected:
 
 private:
 	CObject *m_pObject;
 
-	/* m/s */
 	float m_fSpeed;
-	int m_HP;
+	int m_fHP;
 
-	static float cooldown;
 	bool isAttack = false;
-	// atk, def, hp, mp...
 
 };
 

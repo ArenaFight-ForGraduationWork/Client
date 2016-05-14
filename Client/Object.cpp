@@ -75,13 +75,15 @@ CObject::CObject(UINT id)
 	m_pd3dxWorldMatrix = new D3DXMATRIX();
 	D3DXMatrixIdentity(m_pd3dxWorldMatrix);
 
+	m_boundingWorldMatrix = new D3DXMATRIX();
+	D3DXMatrixIdentity(m_boundingWorldMatrix);
+
 	m_pMesh = nullptr;
 	m_pMaterial = nullptr;
 	m_pTexture = nullptr;
 
 	m_id = id;
 
-	
 	g_pd3dcbBoneMatrix = nullptr;
 	g_pcbBoneMatrix = nullptr;
 
@@ -114,55 +116,36 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 	if (m_pMaterial) m_pMaterial->AddRef();
 }
 
-bool CObject::Collison(CObject *pObject)
-{
-	
-	// 현재 메쉬 최대 < 타겟 메쉬 최소 , 현재 메쉬 최소 > 타겟 메쉬 최대면 충돌이 아님
-	if (m_MinVer.x > pObject->m_MaxVer.x || m_MaxVer.x < pObject->m_MinVer.x)  ///여기에 nowMinver.를 쓰셈
-	{
-		return false;	
-	}
-
-	if (m_MinVer.z > pObject->m_MaxVer.z || m_MaxVer.z < pObject->m_MinVer.z)
-	{
-		return false;
-	}
-
-	return true;		//y축은 할 필요가 없다.
-}
-
-
-
-void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
-{
-	if (PreState != StateNum)
-	{
-		PreState = StateNum;
-		m_fAnimationPlaytime = 0.0f;
-	}
-	m_fAnimationPlaytime += 0.01f;
-	NowTime = m_fAnimationPlaytime * 1000;
-
-	
-	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
-	{
-		
-		NowTime -= m_AniMaxTime[StateNum];
-		m_fAnimationPlaytime = 0;
-	}
-
-
-	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
-	{
-		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
-		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
-	}
-
-	if (g_pd3dcbBoneMatrix != nullptr)
-	{
-		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
-	}
-}
+//void CObject::Animate(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
+//{
+//	if (PreState != StateNum)
+//	{
+//		PreState = StateNum;
+//		m_fAnimationPlaytime = 0.0f;
+//	}
+//	m_fAnimationPlaytime += 0.01f;
+//	NowTime = m_fAnimationPlaytime * 1000;
+//
+//	
+//	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
+//	{
+//		
+//		NowTime -= m_AniMaxTime[StateNum];
+//		m_fAnimationPlaytime = 0;
+//	}
+//
+//
+//	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
+//	{
+//		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
+//		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+//	}
+//
+//	if (g_pd3dcbBoneMatrix != nullptr)
+//	{
+//		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
+//	}
+//}
 
 void CObject::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
@@ -208,7 +191,9 @@ void CObject::MoveAbsolute(const D3DXVECTOR3 *d3dxVec)
 	m_pd3dxWorldMatrix->_41 = d3dxVec->x;
 	m_pd3dxWorldMatrix->_42 = d3dxVec->y;
 	m_pd3dxWorldMatrix->_43 = d3dxVec->z;
+
 }
+
 void CObject::MoveForward(const float fDistance)
 {
 	D3DXVECTOR3 d3dxvPosition = *GetPosition();
@@ -216,6 +201,75 @@ void CObject::MoveForward(const float fDistance)
 	d3dxvPosition += fDistance * d3dxvLookAt;
 	MoveAbsolute(&d3dxvPosition);
 }
+
+
+
+
+void CObject::BoundingMoveAbsolute(const D3DXVECTOR3 *d3dxVec)
+{
+	m_boundingWorldMatrix->_41 = d3dxVec->x;
+	m_boundingWorldMatrix->_42 = d3dxVec->y;
+	m_boundingWorldMatrix->_43 = d3dxVec->z;
+	printf(" 바운딩 : %f, %f\n", m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_43);
+}
+
+void CObject::BoundingMoveForward(const float fDistance)
+{
+	D3DXVECTOR3 d3dxvTempPosition = *GetPosition();
+	D3DXVECTOR3 d3dxvTempLookAt = *GetLookAt();
+
+	printf(" 월드 : %f, %f\n", m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_43);
+	
+	d3dxvTempPosition += fDistance * d3dxvTempLookAt;
+	BoundingMoveAbsolute(&d3dxvTempPosition);
+}
+void CObject::BoundingRotateAbsolute(const D3DXVECTOR3 *d3dxVec)
+{
+	// 1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
+	D3DXMATRIX mtxPresentRotation = (*GetWorldMatrix());
+	D3DXMatrixInverse(&mtxPresentRotation, 0, &mtxPresentRotation);
+	(*m_boundingWorldMatrix) = mtxPresentRotation * (*m_boundingWorldMatrix);
+
+	// 2) d3dxVec만큼 회전하기
+	BoundingRotateRelative(d3dxVec);
+}
+void CObject::BoundingRotateRelative(const D3DXVECTOR3 *d3dxVec)
+{
+	D3DXMATRIX mtxRotate;
+	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(d3dxVec->y), (float)D3DXToRadian(d3dxVec->x), (float)D3DXToRadian(d3dxVec->z));
+	(*m_boundingWorldMatrix) = mtxRotate * (*m_boundingWorldMatrix);
+}
+
+const D3DXMATRIX* CObject::_GetBoundingRotationMatrix()
+{
+	D3DXMATRIX mtxRotate;
+	D3DXMatrixIdentity(&mtxRotate);
+
+	m_boundingWorldMatrix->_11 = mtxRotate._11;
+	m_boundingWorldMatrix->_12 = mtxRotate._12;
+	m_boundingWorldMatrix->_13 = mtxRotate._13;
+	m_boundingWorldMatrix->_21 = mtxRotate._21;
+	m_boundingWorldMatrix->_22 = mtxRotate._22;
+	m_boundingWorldMatrix->_23 = mtxRotate._23;
+	m_boundingWorldMatrix->_31 = mtxRotate._31;
+	m_boundingWorldMatrix->_32 = mtxRotate._32;
+	m_boundingWorldMatrix->_33 = mtxRotate._33;
+
+	return &mtxRotate;
+}
+
+const D3DXVECTOR3* CObject::GetBoundingPosition()
+{
+	return &D3DXVECTOR3(m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_42, m_boundingWorldMatrix->_43);
+}
+const D3DXVECTOR3* CObject::GetBoundingLookAt()
+{
+	D3DXVECTOR3 d3dxvLookAt(m_boundingWorldMatrix->_31, m_boundingWorldMatrix->_32, m_boundingWorldMatrix->_33);
+	D3DXVec3Normalize(&d3dxvLookAt, &d3dxvLookAt);
+	return &d3dxvLookAt;
+}
+
+
 void CObject::RotateRelative(const float fPitch, const float fYaw, const float fRoll)
 {
 	D3DXMATRIX mtxRotate;
@@ -227,7 +281,7 @@ void CObject::RotateRelative(const D3DXVECTOR3 *d3dxVec)
 	D3DXMATRIX mtxRotate;
 	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(d3dxVec->y), (float)D3DXToRadian(d3dxVec->x), (float)D3DXToRadian(d3dxVec->z));
 	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
-	}
+}
 void CObject::RotateRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
 {
 	D3DXMATRIX mtxRotate;
@@ -364,7 +418,21 @@ void CObject::SetBoundingBox()
 	//printf("ID : %d, min : %f, %f, %f\n", this->GetId(), m_MinVer.x, m_MinVer.y, m_MinVer.z);
 
 }
-
+void CObject::SetBoundingBoxMatrix()
+{
+	m_boundingWorldMatrix->_11 = m_pd3dxWorldMatrix->_11;
+	m_boundingWorldMatrix->_12 = m_pd3dxWorldMatrix->_12;
+	m_boundingWorldMatrix->_13 = m_pd3dxWorldMatrix->_13;
+	m_boundingWorldMatrix->_21 = m_pd3dxWorldMatrix->_21;
+	m_boundingWorldMatrix->_22 = m_pd3dxWorldMatrix->_22;
+	m_boundingWorldMatrix->_23 = m_pd3dxWorldMatrix->_23;
+	m_boundingWorldMatrix->_31 = m_pd3dxWorldMatrix->_31;
+	m_boundingWorldMatrix->_32 = m_pd3dxWorldMatrix->_32;
+	m_boundingWorldMatrix->_33 = m_pd3dxWorldMatrix->_33;
+	m_boundingWorldMatrix->_41 = m_pd3dxWorldMatrix->_41;
+	m_boundingWorldMatrix->_42 = m_pd3dxWorldMatrix->_42;
+	m_boundingWorldMatrix->_43 = m_pd3dxWorldMatrix->_43;
+}
 void CObject::SetHitBox()
 {
 	/*
@@ -410,8 +478,8 @@ void CObject::SetHitBox()
 bool CObject::MyHitAndEnemyBound(CObject *pObject)
 {
 	/*
-	내가 공격시에만 확인하면 됨. 공격 스킬일때만...
-	PressSkillNum = 내가 누른 스킬 번호
+	내가 공격시에만 확인하면 됨. 공격 스킬일때만(attack, skill1, skill2, skill3)
+	PressSkillNum = 내가 누른 스킬 번호 (≠ animation_state와는 다름)
 	0부터 ATTACK1 .. etc
 	*/
 	if (m_HitMinVer[PressSkillNum].x > pObject->m_MaxVer.x || m_HitMaxVer[PressSkillNum].x < pObject->m_MinVer.x)
@@ -490,14 +558,14 @@ void CObject::MoveAndRotatingHitBox()
 
 void CObject::MoveAndRotatingBoundingBox()
 {
-	D3DXMATRIX NowMatrix = *GetWorldMatrix();
+	D3DXMATRIX NowMatrix = *GetBoundingWorldMatrix();
 
 	m_MaxVer = this->m_pMesh->GetMaxVer();
 	m_MinVer = this->m_pMesh->GetMinVer();
 
 	//위치값 변환
-	D3DXVec3TransformCoord(&m_MaxVer, &m_MaxVer, GetWorldMatrix());		// 연산의 결과가 저장될 벡터의 주소값, 연산을 수행할 3차원 벡터값, 연산을 수행할 4X4행렬의 주소값
-	D3DXVec3TransformCoord(&m_MinVer, &m_MinVer, GetWorldMatrix());
+	D3DXVec3TransformCoord(&m_MaxVer, &m_MaxVer, &NowMatrix);		// 연산의 결과가 저장될 벡터의 주소값, 연산을 수행할 3차원 벡터값, 연산을 수행할 4X4행렬의 주소값
+	D3DXVec3TransformCoord(&m_MinVer, &m_MinVer, &NowMatrix);
 
 	if (m_MaxVer.x < m_MinVer.x)
 	{
@@ -525,6 +593,24 @@ void CObject::MoveAndRotatingBoundingBox()
 	//printf("ID : %d, min : %f, %f, %f\n", this->GetId(), m_MinVer.x, m_MinVer.y, m_MinVer.z);
 
 }
+
+bool CObject::Collison(CObject *pObject)
+{
+
+	// 현재 메쉬 최대 < 타겟 메쉬 최소 , 현재 메쉬 최소 > 타겟 메쉬 최대면 충돌이 아님
+	if (m_MinVer.x > pObject->m_MaxVer.x || m_MaxVer.x < pObject->m_MinVer.x)  ///여기에 nowMinver.를 쓰셈
+	{
+		return false;
+	}
+
+	if (m_MinVer.z > pObject->m_MaxVer.z || m_MaxVer.z < pObject->m_MinVer.z)
+	{
+		return false;
+	}
+
+	return true;		//y축은 할 필요가 없다.
+}
+
 
 bool CObject::Collison(vector<CObject*> &vObject)
 {
@@ -572,7 +658,6 @@ void CObject::SetResult(XMFLOAT4X4*** result)
 void CObject::SetAniIndexCount(int count)
 {
 	m_AnimationIndexCount = count;
-	cout << "애니메이션 인덱스 갯수 불렀vv: " << m_AnimationIndexCount << endl;
 }
 
 void CObject::SetTime(long long* time)
@@ -580,7 +665,7 @@ void CObject::SetTime(long long* time)
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
 		m_AniMaxTime[i] = time[i];
-		cout << i << "번째 maxtime(불렀vv):" << m_AniMaxTime[i] << endl;
+		cout << i << "번째 maxtime:" << m_AniMaxTime[i] << endl;
 	}
 }
 
@@ -611,35 +696,6 @@ void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *p
 	pd3dDeviceContext->Unmap(g_pd3dcbBoneMatrix, NULL);
 }
 
-void CObject::PlayAnimation(int StateNum, ID3D11DeviceContext* pd3dDeviceContext)
-{
-	if (PreState != StateNum)
-	{
-		PreState = StateNum;
-		m_fAnimationPlaytime = 0.0f;
-	}
-	m_fAnimationPlaytime += 0.01f;
-	NowTime = m_fAnimationPlaytime * 1000;
-
-	if ((NowTime / 10) >= (m_AniMaxTime[StateNum] / 10))
-	{
-		NowTime -= m_AniMaxTime[StateNum];
-		m_fAnimationPlaytime = 0;
-	}
-
-
-
-	for (int i = 0; i < m_AnimationIndexCount; ++i)	//128
-	{
-		XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[StateNum][NowTime / 10][i]);
-		g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
-	}
-
-	if (g_pd3dcbBoneMatrix != nullptr)
-	{
-		pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
-	}
-}
 
 void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time)
 {
