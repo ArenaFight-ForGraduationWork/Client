@@ -7,10 +7,13 @@
 #include "Shader.h"
 #include "Light.h"
 #include "ObjectManager.h"
+<<<<<<< HEAD
 
 //#include "Player.h"
 //#include "Monster.h"
 
+=======
+>>>>>>> master
 #include "Unit.h"
 #include "Camera.h"
 
@@ -41,8 +44,11 @@ protected:
 	POINT	m_ptNewCursorPos;
 
 	CUnit *m_pPlayer;
+<<<<<<< HEAD
 	CUnit *m_pMonster;
 
+=======
+>>>>>>> master
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
 
