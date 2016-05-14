@@ -247,8 +247,6 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 	}
 
 	m_pPlayer->boundingBoxMove(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);
-	//cout << "바운딩 x: " << m_pPlayer->GetObjects()->m_MaxVer.x << "   z: " << m_pPlayer->GetObjects()->m_MaxVer.z<<endl;
-	//cout << "좌표 x: " << m_pPlayer->GetPosition()->x << "   z: " << m_pPlayer->GetPosition()->x << endl;
 
 	if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::NATURAL_FEATURE)))
 	{
@@ -262,6 +260,7 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 		m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);	
 		cout << "이동이동::" << endl;
 	}*/
+
 	if (!iscoll)
 	{
 		m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);
@@ -319,16 +318,10 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 		m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i-1], D3DXVECTOR3(0,90,0));  // ㅣ
 	}
 
-	//m_pObjectManager->Insert(1, eResourceType::MakeWall, D3DXVECTOR3(0, 0, 1500));
-
 	for (int i = 0; i < 6; ++i)
 		m_pObjectManager->Insert(i+1000, eResourceType::Item_HP, D3DXVECTOR3(120 * i, 0, 100));
 	
-	
 }
-
-
-
 
 
 

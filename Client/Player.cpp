@@ -26,11 +26,7 @@ void CPlayer::ReleaseObject()
 
 void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
 {
-	//m_pObject->MoveAndRotatingHitBox();
-	//m_pObject->MoveAndRotatingBoundingBox();
 
-	//여기서 boundingboxMatrix를 worldmatrix로 바꿔서 다시 boudingbox를 원래 위치에 맞춰 놔야함
-	//m_pObject->SetBoundingBox();
 
 	// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
 	D3DXVECTOR3 defaultAngle = D3DXVECTOR3(0, 0, 1);
@@ -53,7 +49,11 @@ void CPlayer::Move(const float cameraYaw, const DWORD dwDirection, const float f
 	// 2) 로컬 z축으로 속도 * 시간만큼 이동
 	m_pObject->MoveForward(m_fSpeed * fTimeElapsed);
 
-	//m_pObject->SetBoundingBoxMatrix();
+
+	// 충돌이 아닐경우 Move를 하게 해뒀으니 캐릭터행렬은 바뀐다. 그 바뀐행렬을 적용시켜준다.
+	// 기존 바운딩행렬로 돌릴 필요가 없는게, setBoundingBox()는 Text의 그 읽어온 자체 값에 계속 곱해주는거다!
+	// 미리 충돌체크를 위해 움직여뒀던 바운딩박스용 월드변환행렬을 캐릭터의 월드변환행렬로 바꿔준다.....라고 생각함 근데 안됨ㅎ
+	m_pObject->SetBoundingBox();		//만약 위에 내 생각대로 하게 되거든, setboundingbox를 해두면 캐릭터월드변환행렬을 적용해줄 수 있다.
 	m_pObject->MoveAndRotatingHitBox();
 
 }

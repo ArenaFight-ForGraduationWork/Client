@@ -157,7 +157,7 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	case 1:  //슬라임
 		fopen_s(&fMonA[0], "Data\\M_matrix_idle.txt", "rt");
 		fopen_s(&fMonA[1], "Data\\M_matrix_move.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\M_matrix_attack.txt", "rt");		//아직 dead가 없음
+		fopen_s(&fMonA[2], "Data\\M_matrix_dead.txt", "rt");		//아직 dead가 없음
 		fopen_s(&fMonA[3], "Data\\M_matrix_attack.txt", "rt");		//평타 : 물기
 		fopen_s(&fMonA[4], "Data\\M_matrix_dash.txt", "rt");			//스킬 1 : 돌진
 		fopen_s(&fMonA[5], "Data\\M_matrix_jump.txt", "rt");			//스킬 2 : 충격파
