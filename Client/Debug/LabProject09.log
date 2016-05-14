@@ -1,17 +1,13 @@
-<<<<<<< HEAD
-﻿빌드 시작: 2016-05-15 오전 1:14:36
+﻿빌드 시작: 2016-05-15 오전 4:13:47
      1>2 노드의 "D:\Tortoise\Client\Client\LabProject09.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Object.cpp
-         Object.cpp
-     1>d:\tortoise\client\client\object.cpp(95): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>d:\tortoise\client\client\object.cpp(258): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
-     1>d:\tortoise\client\client\object.cpp(269): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
-     1>d:\tortoise\client\client\object.cpp(331): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
-     1>d:\tortoise\client\client\object.cpp(338): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
-     1>d:\tortoise\client\client\object.cpp(345): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
-     1>d:\tortoise\client\client\object.cpp(370): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
-     1>d:\tortoise\client\client\object.cpp(710): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\GameClient.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Scene.cpp Unit.cpp
+         Unit.cpp
+     1>d:\tortoise\client\client\unit.cpp(50): warning C4244: '=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+     1>d:\tortoise\client\client\unit.cpp(83): warning C4244: '=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         Scene.cpp
+     1>d:\tortoise\client\client\scene.cpp(304): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+         코드를 생성하고 있습니다...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Tortoise\Client\Client\Debug\GameClient.exe" /INCREMENTAL /NOLOGO d3d11.lib d3dx11d.lib d3dcompiler.lib d3dx9d.lib dxerr.lib dxguid.lib dinput8.lib winmm.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Tortoise\Client\Client\Debug\GameClient.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Tortoise\Client\Client\Debug\GameClient.lib" /MACHINE:X86 Debug\GameClient.res
          Debug\Camera.obj
@@ -21,11 +17,10 @@
          Debug\GameClient.obj
          Debug\Light.obj
          Debug\Mesh.obj
-         Debug\Monster.obj
          Debug\Network.obj
          Debug\Object.obj
          Debug\ObjectManager.obj
-         Debug\Player.obj
+         Debug\Unit.obj
          Debug\ResourceManager.obj
          Debug\Scene.obj
          Debug\Shader.obj
@@ -37,17 +32,4 @@
 
 빌드했습니다.
 
-경과 시간: 00:00:00.63
-=======
-﻿  Scene.cpp
-  GameFramework.cpp
-  GameClient.cpp
-d:\arenafight\client\client\gameclient.cpp(146): warning C4101: 'ps' :참조되지 않은 지역 변수입니다.
-d:\arenafight\client\client\gameclient.cpp(145): warning C4101: 'wmId' :참조되지 않은 지역 변수입니다.
-d:\arenafight\client\client\gameclient.cpp(145): warning C4101: 'wmEvent' :참조되지 않은 지역 변수입니다.
-d:\arenafight\client\client\gameclient.cpp(147): warning C4101: 'hdc' :참조되지 않은 지역 변수입니다.
-  코드를 생성하고 있습니다...
-  건너뛰고 있습니다... (관련된 변경 내용 없음)
-  Camera.cpp
-  LabProject09.vcxproj -> D:\ArenaFight\Client\Client\Debug\GameClient.exe
->>>>>>> master
+경과 시간: 00:00:00.97

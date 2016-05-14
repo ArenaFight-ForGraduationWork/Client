@@ -29,21 +29,14 @@ public:
 	void RotateRelative(const D3DXVECTOR3 *vec);
 	void RotateAbsolute(const float x, const float y, const float z);
 	void RotateAbsolute(const D3DXVECTOR3 *vec);
-<<<<<<< HEAD:Client/Player.h
-\
+	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
+
 	const D3DXVECTOR3* GetPosition();
 
-void SetHP()	{ m_fHP -= 1; }
+	void SetHP()	{ m_fHP -= 1; }
 	void SetSpeed()	{ m_fSpeed += 100; }
 	int GetHP()	{ return m_fHP; }
 	float GetSpeed()	{ return m_fSpeed; }
-=======
-
-	const D3DXVECTOR3* GetPosition();
-
-	void AnimateRender(int StateNum, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
->>>>>>> master:Client/Unit.h
-
 	bool GetIsAttack()	{ return isAttack; }						//공격중인가 아닌가를 판단함
 	void SetIsAttack(bool mode)	{ isAttack = mode; }
 protected:
@@ -51,12 +44,11 @@ protected:
 private:
 	CObject *m_pObject;
 
-<<<<<<< HEAD:Client/Player.h
 	float m_fSpeed;
 	int m_fHP;
 
 	bool isAttack = false;
-=======
+
 	float m_fStrikingPower;		/* 공격력 */
 	float m_fDefensivePower;	/* 방어력 */
 
@@ -65,11 +57,6 @@ private:
 	float m_fHp;				/* 체력 */
 };
 
-
-
-
-
->>>>>>> master:Client/Unit.h
 
 class CPlayer : public CUnit
 {
