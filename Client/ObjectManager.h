@@ -18,25 +18,25 @@
 *		나중에 바뀌는대로 바꿔라....
 */
 
-#define ID_DIVIDE 10000
+#define ID_DIVIDE 1000
 
 class CObjectManager
 {
 public:
 	/* ObjectList의 카테고리
-	* LAND : 지형. 바닥, 벽
-	* NATURAL_FEATURE : 나무, 돌 같은 잡동사니. 충돌체크O 존재O
-	* MONSTER : 몬스터 = 보스
-	* PLAYER : 나와 다른 유저들을 구분해야 할까? 고민 좀 해봐야겠음
-	* BUFF_CRYSTAL : 일단 이렇게 써놨는데. 충돌체크X 존재O인 오브젝트
+	* NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		0~999
+	* BUFF_CRYSTAL :								충돌체크o, 삭제o,							1000~1999
+	* MONSTER : 몬스터 = 보스						충돌체크o, 히트박스o,					2000~2999
+	* PLAYER :											충돌체크o, 히트박스o,						3000~3999
+	* LAND : 바닥.										충돌체크x, 삭제x                            4000~
 	*/
 	enum class eObjectType :BYTE{
 		START = 0,
-		LAND = 0,
-		NATURAL_FEATURE,
+		NATURAL_FEATURE = 0,
+		BUFF_CRYSTAL,
 		MONSTER,
 		PLAYER,
-		BUFF_CRYSTAL,
+		LAND,
 		END
 	};
 
@@ -64,7 +64,7 @@ public:
 	UINT *puiTempArray = pObjectManager->FindObjectsInCategory(CObjectManager::eObjectType::MONSTER, iTempSize);
 	이렇게 호출한 뒤, puiTempArray[idx( 0 ~ iTempSize-1 )]로 사용하면 된다.
 	*/
-	UINT* FindObjectsInCategory(eObjectType eType, int& piNum);
+	std::vector<CObject*> FindObjectInCategory(eObjectType eType);
 
 	void DeleteObject(UINT id);
 	void DeleteObjectAll();

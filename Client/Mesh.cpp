@@ -17,8 +17,13 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	m_nStartIndex = 0;
 	m_nBaseVertex = 0;
 
-	for (int i = 0; i < 5; ++i)
+
+	for (int i = 0; i < ANIMATION_COUNT; ++i)
+	{
 		m_ppResult[i] = nullptr;
+		m_AniMaxTime[i] = 0.0f;
+	}
+
 }
 
 CMesh::~CMesh()
@@ -60,11 +65,6 @@ void CMesh::CreateRasterizerState(ID3D11Device *pd3dDevice)
 {
 }
 
-
-
-
-
-
 CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(ID3D11Device *pd3dDevice, float fWidth, float fHeight, float fDepth) : CMesh(pd3dDevice)
 {
 	m_nVertices = 36;
@@ -73,6 +73,9 @@ CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(ID3D11Device *pd3dDev
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
+
+	SetMaxVer(D3DXVECTOR3(fx, fy, fz));
+	SetMinVer(D3DXVECTOR3(-fx, -fy, -fz));
 
 	CTexturedNormalVertex pVertices[36];
 	int i = 0;
@@ -255,10 +258,10 @@ D3DXVECTOR3 CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertice
 //
 //===============================================================
 
-CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
+CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
 {
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(ptxtName, pVertices);
+	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(ptxtName, pVertices, d3dxvScale);
 
 	m_nVertices = pVertices.size();
 
@@ -272,6 +275,9 @@ CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvSc
 		ppVertices[i].SetUV(pVertices.at(i)->GetUV());
 	}
 	
+	SetMaxVer(CFbx::GetInstance()->GetMaxVer());
+	SetMinVer(CFbx::GetInstance()->GetMinVer());	
+
 	m_nStride = sizeof(CTexturedNormalVertex);
 	m_nOffset = 0;
 	m_d3dPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -293,26 +299,24 @@ CMyModel::CMyModel(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvSc
 	delete[] ppVertices;
 }
 
-CMyModel::~CMyModel()
+CImportedMesh::~CImportedMesh()
 {
 	CMesh::~CMesh();
 }
 
-void CMyModel::CreateRasterizerState(ID3D11Device *pd3dDevice)
+void CImportedMesh::CreateRasterizerState(ID3D11Device *pd3dDevice)
 {
 	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-	d3dRasterizerDesc.CullMode = D3D11_CULL_BACK;
+	d3dRasterizerDesc.CullMode = D3D11_CULL_NONE;
 	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
-void CMyModel::Render(ID3D11DeviceContext *pd3dDeviceContext)
+void CImportedMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CMesh::Render(pd3dDeviceContext);
 }
-
-
 
 
 
@@ -323,12 +327,11 @@ void CMyModel::Render(ID3D11DeviceContext *pd3dDeviceContext)
 // 애니메이션을 가진 메쉬 클래스
 //
 //=========================================
-CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3dDevice)
+CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3dDevice)
 {
 	CFbx::GetInstance()->Fbx_ReadTextFile_Info(CharNum);
 	m_nVertices = CFbx::GetInstance()->GetSize();
-	cout << " 애니메이션 obj 사이즈 : " << m_nVertices << endl;
-	
+
 	ppVertices = new CAnimationVertex[m_nVertices];
 
 	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
@@ -338,10 +341,21 @@ CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3d
 		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
 		m_ppResult[i] = CFbx::GetInstance()->GetResult(i);								
 		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
-		cout << i << "번째 maxtime*_*:" << m_AniMaxTime[i] << endl;
+		cout << i << "번째 time:" << m_AniMaxTime[i] << endl;
 		SetAnimationMaxTime(m_AniMaxTime[i]);
 	}
-	
+	cout <<"=========="<< CharNum << "번째 캐릭터 Import Complete========" << endl;
+	pHitMaxVer = new D3DXVECTOR3[ATTACK_COUNT];
+	pHitMinVer = new D3DXVECTOR3[ATTACK_COUNT];
+	CFbx::GetInstance()->ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
+
+	for (int i = 0; i < ATTACK_COUNT; ++i)
+	{
+		m_HitMaxVer[i] = pHitMaxVer[i];
+		m_HitMinVer[i] = pHitMinVer[i];
+		//printf("%f %f %f\n", m_HitMaxVer[i].x, m_HitMaxVer[i].y, m_HitMaxVer[i].z);
+	}
+
 	m_AnimationIndexCnt = CFbx::GetInstance()->GetAnimationIndexCount();		
 	SetAnimationIndexCnt(m_AnimationIndexCnt);		// Cmesh의 AnimationIndex에 넣어줌. object에서 가져갈 수 있도록
 	SetMaxVer(CFbx::GetInstance()->GetMaxVer());	// 값을 가져와서 CMesh의 m_MaxVer에 넣어줌. object에서 가져갈 수 있도록
@@ -368,24 +382,25 @@ CMyAni::CMyAni(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3d
 	CreateRasterizerState(pd3dDevice);
 }
 
-CMyAni::~CMyAni()
+CImportedAnimatingMesh::~CImportedAnimatingMesh()
 {
 	CMesh::~CMesh();
 }
 
-void CMyAni::CreateRasterizerState(ID3D11Device *pd3dDevice)
+void CImportedAnimatingMesh::CreateRasterizerState(ID3D11Device *pd3dDevice)
 {
 	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-	d3dRasterizerDesc.CullMode = D3D11_CULL_BACK;
+	d3dRasterizerDesc.CullMode = D3D11_CULL_NONE;
 	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
-void CMyAni::Render(ID3D11DeviceContext *pd3dDeviceContext)
+void CImportedAnimatingMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 {
 	CMesh::Render(pd3dDeviceContext);
 }
+
 
 
 
