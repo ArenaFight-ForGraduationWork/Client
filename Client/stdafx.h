@@ -48,8 +48,8 @@ using namespace std;
 #define PS_SHADERRESOURCE_SLOT_TEXTURE	0x00
 #define PS_SAMPLER_SLOT_SAMPLER_STATE	0x00
 
-#define FRAME_BUFFER_WIDTH	640	/* 프레임 버퍼의 너비 */
-#define FRAME_BUFFER_HEIGHT	480	/* 프레임 버퍼의 높이 */
+#define FRAME_BUFFER_WIDTH	800	/* 프레임 버퍼의 너비 */
+#define FRAME_BUFFER_HEIGHT	600	/* 프레임 버퍼의 높이 */
 #define ASPECT_RATIO	(float(FRAME_BUFFER_WIDTH)/float(FRAME_BUFFER_HEIGHT))	/* 프레임 버퍼의 종횡비 */
 
 #define COLORRGB(x) (x/255.0f)
@@ -62,8 +62,9 @@ using namespace std;
 #define DIR_UP			0x10
 #define DIR_DOWN		0x20
 
-#define ANIMATION_COUNT 5		//아직은 안씀, 최대한 5로 통일 시켜야 편리함... 
 
+#define ANIMATION_COUNT 7		// 오브젝트가 행동하는 애니메이션의 개수 :: idle, run, dead, attack, skill1, skill2 , skill3
+#define ATTACK_COUNT 4			// 공격모션 개수 :: attack, skill1, skill2, skill3 , 히트박스 읽어올때 개수좀 쓸라고!!
 
 
 

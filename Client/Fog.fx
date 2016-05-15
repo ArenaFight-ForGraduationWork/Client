@@ -75,7 +75,6 @@ PS_INPUT VS(VS_INPUT input)
 //													  //
 ////////////////////////////////////////////////////////
 
-
 #define MAX_LIGHTS			4
 #define POINT_LIGHT			1.0f
 #define SPOT_LIGHT			2.0f

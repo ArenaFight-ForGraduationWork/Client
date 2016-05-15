@@ -37,6 +37,8 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int 
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
+	pObject->SetResourceType((int)eType);
+
 	pObject->MoveAbsolute(x, y, z);
 	pObject->RotateAbsolute(x, y, z);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
@@ -53,8 +55,13 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
+	pObject->SetResourceType((int)eType);
+
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
+
+	pObject->SetBoundingBox();
+
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
@@ -70,17 +77,23 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
-
+	pObject->SetResourceType((int)eType);
 	
 	pObject->SetTime(pResourceManager->GetMesh(eType)->m_AniMaxTime);
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);
 	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
 	
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
-	pObject->SetBoundingBox();	//바운딩 박스를 입혀준다.
+	
 
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
+
+	pObject->SetBoundingBox();	//위에서 일단 이동한만큼 월드변환이 바껴있음'ㅅ'
+	pObject->SetBoundingBoxMatrix();
+	pObject->SetHitBox();			//히트박스 설정
+	pObject->SetIsAnimation();	//애니메이션 렌더를 쓰기 위해 isAnimating = true; 해줌
+
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
 
@@ -100,17 +113,11 @@ CObject* CObjectManager::FindObject(UINT id)
 	}
 	return nullptr;
 }
-UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iNum)
+
+std::vector<CObject*> CObjectManager::FindObjectInCategory(eObjectType eType)
 {
-	iNum = m_mObjects[eType].size();
-
-	UINT *puiObjects = new UINT[iNum];
-	for (int i = 0; i < iNum; ++i)
-	{
-		puiObjects[i] = m_mObjects[eType][i]->GetId();
-	}
-
-	return puiObjects;
+	return m_mObjects[eType];
+	//return m_mObjects[(eObjectType)(id / ID_DIVIDE)];
 }
 
 void CObjectManager::DeleteObject(UINT id)

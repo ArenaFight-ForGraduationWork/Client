@@ -60,6 +60,7 @@ void CGameTimer::Tick(float fLockFPS)
 
 	//현재 시간을 m_nLastTime에 저장한다.
 	m_nLastTime = m_nCurrentTime;
+	
 
 	/* 마지막 프레임 처리 시간과 현재 프레임 처리 시간의 차이가 1초보다 작으면 현재 프레임 처리 시간을 m_fFrameTime[0]에 저장한다. */
 	if (fabsf(fTimeElapsed - m_fTimeElapsed) < 1.0f)
@@ -72,13 +73,17 @@ void CGameTimer::Tick(float fLockFPS)
 	//초당 프레임 수를 1 증가시키고 현재 프레임 처리 시간을 누적하여 저장한다.
 	m_FramePerSecond++;
 	m_fFPSTimeElapsed += fTimeElapsed;
-	if (m_fFPSTimeElapsed > 1.0f)
+	if (m_fFPSTimeElapsed > 1.0f)	//1초가 됬을때
 	{
+		ProgressTime++;
+		go1second = true;
 		m_nCurrentFrameRate = m_FramePerSecond;
 		m_FramePerSecond = 0;
 		m_fFPSTimeElapsed = 0.0f;
 	}
+	else if (m_fFPSTimeElapsed <= 1.0f) go1second = false;
 
+	//if(m_fFPSTimeElapsed == 0.0f) second1 = false;
 	//누적된 프레임 처리 시간의 평균을 구하여 프레임 처리 시간을 구한다.
 	m_fTimeElapsed = 0.0f;
 	for (ULONG i = 0; i < m_nSampleCount; i++) m_fTimeElapsed += m_fFrameTime[i];

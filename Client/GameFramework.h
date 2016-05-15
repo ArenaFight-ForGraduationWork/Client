@@ -64,7 +64,9 @@ private:
 	CCameraManager *m_pCameraManager;
 
 	int player_state = 2;			//IDLE, RUN, ATTACK ...
-	bool is_Attack = false;
+	int Press_SkillNum = 0;		// 몇번째 스킬을 눌렀는가 
+	bool is_Attack = false;		// 공격버튼을 눌렀는가
+	bool is_Coll = false;			// 충돌했는가
 };
 
 

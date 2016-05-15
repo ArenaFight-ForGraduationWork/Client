@@ -9,9 +9,9 @@ CCamera::CCamera()
 	m_pd3dxvUp = new D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_pd3dxvLook = new D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
-	m_fTheta = 270.0f;
-	m_fDistanceFromObject =250.0f;
-	m_fHeight = 90.0f;
+	m_fTheta = 200.0f;
+	m_fDistanceFromObject =600.0f;
+	m_fHeight = 300.0f;
 
 	m_fTimeLag = 0.0f;
 
@@ -122,7 +122,7 @@ void CCamera::Zoom(const float fZoom)
 {
 	if (m_fDistanceFromObject + fZoom < 10.0f)
 		return;
-	else if (m_fDistanceFromObject + fZoom > 250.f)
+	else if (m_fDistanceFromObject + fZoom > 2000)
 		return;
 
 	float fGradient = m_fDistanceFromObject / m_fHeight;	// ±â¿ï±â
@@ -147,7 +147,8 @@ void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
 	m_pd3dxvPosition->y = pd3dxvPosition->y + m_fHeight;
 	m_pd3dxvPosition->z = pd3dxvPosition->z + (m_fDistanceFromObject * sin(theta));
 
-	SetLookAtPosition(*pd3dxvPosition);
+	D3DXVECTOR3 d3dxvLookAtPosition = D3DXVECTOR3(pd3dxvPosition->x, pd3dxvPosition->y + 170, pd3dxvPosition->z);
+	SetLookAtPosition(d3dxvLookAtPosition);
 	SetLookAt(GetLookAtPosition());
 
 	RegenerateViewMatrix();

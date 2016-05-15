@@ -36,19 +36,25 @@ private:
 
 enum class eResourceType : BYTE{
 	START = 0,
-	Cube = 0,
-	MonB,	//
-	MonA,	//
-	MonObjB,
-	MonObjA,
+	User = 0,
+	Monster1,
+	Item_HP,
+	Item_Buff,
 	Floor,
+	Tree,
+	Wall1,
+	MakeWall,
 	END
 };
 
-enum ePLAYER_STATE{
+enum eUNIT_STATE{
 	IDLE = 0,
-	RUN,
+	MOVE,
+	DEAD,
 	ATTACK,
+	SKILL1,
+	SKILL2,
+	SKILL3
 };
 
 class CResourceManager
@@ -91,7 +97,7 @@ private:
 	void _LoadTextures(ID3D11Device *pd3dDevice);
 	void _LoadMaterials();
 	void _CreateShaders(ID3D11Device *pd3dDevice);
-	void _LoadBoundingBoxes(ID3D11Device *pd3dDevice, CMesh *pMesh);
+
 };
 
 
