@@ -189,13 +189,13 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
 
 	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(0, -30, 0), D3DXVECTOR3(0, 0, 0)));
+	m_pPlayer->SetObject(m_pObjectManager->Insert(30000, eResourceType::MonA, pd3dDevice, pd3dDeviceContext, 0, 3, D3DXVECTOR3(0, -30, 0), D3DXVECTOR3(0, 0, 0)));
 	m_pObjectManager->FindObject(30000)->SetPlayAnimationState(ePLAYER_STATE::IDLE);
 
 	m_pCameraManager = CCameraManager::GetSingleton();
 	m_pCameraManager->GetNowCamera()->SetLookAt(m_pPlayer->GetPosition());
 
-	m_pObjectManager->Insert(20000, eResourceType::MonB, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+	m_pObjectManager->Insert(20000, eResourceType::MonB, pd3dDevice, pd3dDeviceContext, 1, 3, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
 	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
 }
 
