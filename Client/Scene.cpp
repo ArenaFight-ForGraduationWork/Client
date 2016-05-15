@@ -87,7 +87,7 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			printf(" 캐릭터 : %.2f, %.2f\n", m_pPlayer->GetObjects()->m_MaxVer.x, m_pPlayer->GetObjects()->m_MaxVer.z);
 			printf(" 몬스터 : %.2f, %.2f\n", m_pMonster->GetObjects()->m_MaxVer.x, m_pMonster->GetObjects()->m_MaxVer.z);
 			break;
-
+		
 		case VK_SPACE:	//평타
 			PressSkillNum = 0;
 			Player_Attack_number = 3;
@@ -264,25 +264,22 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 	if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::NATURAL_FEATURE)))		//충돌체크를 한 다음
 	{
 		iscoll = true;
-		cout << "벽에 닿음" << endl;
+		//cout << "벽에 닿음" << endl;
 		m_pPlayer->GetObjects()->SetBoundingBox();
 		m_pPlayer->GetObjects()->SetBoundingBoxMatrix();
 	
 	}
 
-	//if (dwDirection && false == m_pPlayer->GetIsAttack()&& !iscoll)
-	//{
-	//	m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);	
-	//	cout << "이동이동::" << endl;
-	//}
-
-	if (!iscoll)		// 충돌이 아니면 움직인다!.
+	if (dwDirection && false == m_pPlayer->GetIsAttack()&& !iscoll)
 	{
-		m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);
+		m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);	
 	}
-		
-	//printf("현재 바운딩 좌표 : %f %f\n", m_pPlayer->GetObjects()->m_MaxVer.x, m_pPlayer->GetObjects()->m_MaxVer.z);
-	//printf("현재 캐릭터 좌표 : %f %f\n", m_pPlayer->GetObjects()->GetPosition()->x, m_pPlayer->GetObjects()->GetPosition()->z);
+
+	//if (!iscoll)		// 충돌이 아니면 움직인다!.
+	//{
+	//	m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);
+	//}
+	//	
 	m_pCameraManager->GetNowCamera()->Update(m_pPlayer->GetPosition());
 }
 
@@ -314,7 +311,9 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 	/* 아이템 설정 */
 	for (int i = 0; i < 6; ++i)
-		m_pObjectManager->Insert(i + 1000, eResourceType::Item_HP, D3DXVECTOR3(120 * i, 0,100));
+		m_pObjectManager->Insert(i + 1000, eResourceType::Item_HP, D3DXVECTOR3(rand()%400 * i, 50,(rand()%500 + 10)*i));
+	for (int i = 6; i < 11; ++i)
+		m_pObjectManager->Insert(i + 1000, eResourceType::Item_Buff, D3DXVECTOR3((rand() % 400 - 300) * i, 50, (rand() % 200 - 150)*i));
 
 
 	/*================ 꾸미기 =========================*/
@@ -344,6 +343,7 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	m_pObjectManager->Insert(11, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
 	m_pObjectManager->Insert(12, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
 
+	
 }
 
 

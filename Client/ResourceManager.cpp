@@ -28,7 +28,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	m_vResources[(int)eResourceType::User]->SetIDs(0, 0, 0, 1);
 	m_vResources[(int)eResourceType::Monster1]->SetIDs(1, 1, 0, 1);
 	m_vResources[(int)eResourceType::Item_HP]->SetIDs(2, 2, 0, 0);
-	m_vResources[(int)eResourceType::Item_Buff]->SetIDs(2, 2, 0, 0);		//텍스쳐 번호만 바꿔주면됨
+	m_vResources[(int)eResourceType::Item_Buff]->SetIDs(2, 7, 0, 0);		//텍스쳐 번호만 바꿔주면됨
 	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 3, 0, 0);
 	m_vResources[(int)eResourceType::Tree]->SetIDs(4, 4, 0, 0);
 	m_vResources[(int)eResourceType::Wall1]->SetIDs(5, 5, 0, 0);
@@ -101,7 +101,7 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	m_mMesh[1] = new CImportedAnimatingMesh(pd3dDevice, 1, 7);
 
 	// 2. 아이템 오브젝트
-	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\ItemObject_Info.txt", D3DXVECTOR3(0.5, 0.5, 0.5));
+	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\ItemObject_Info.txt", D3DXVECTOR3(1, 1, 1));
 
 	// 3. 바닥
 	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 5000.0f, 1.0f, 5000.0f);
@@ -159,7 +159,7 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 
 	// 3 : 바닥
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/floor.jpg";
+	tempTextureAddress = L"./Data/ground.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[3] = tempTexture;
@@ -186,6 +186,18 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[6] = tempTexture;
 
+	// 7. Item_buff
+	tempTexture = new CTexture(1);
+	tempTextureAddress = L"./Data/파란보석.png";
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
+	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	m_mTexture[7] = tempTexture;
+
+	tempTexture = new CTexture(1);
+	tempTextureAddress = L"./Data/흰보석.png";
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
+	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	m_mTexture[8] = tempTexture;
 
 
 }
