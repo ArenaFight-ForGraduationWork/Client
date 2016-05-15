@@ -40,7 +40,7 @@ cbuffer cbFog : register(b2)
 	float3 gf3FogCenter;
 	float gfFogRange;	// if Range < 0, fog is Enable.
 }
-cbuffer cbBoneMatrix : register(b3)
+cbuffer cbBoneWorldMatrix : register(b3)
 {
 	row_major matrix gmtxBone[MAX_MATRIX] : packoffset(c0);
 };
@@ -49,10 +49,9 @@ PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output = (PS_INPUT)0;
 
-	float4 Pos;
-	Pos = float4(input.position, 1);
+	float4 Pos = float4(input.position, 1);
 
-	uint iBone0 = input.Bones1.r;
+		uint iBone0 = input.Bones1.r;
 	uint iBone1 = input.Bones1.g;
 	uint iBone2 = input.Bones1.b;
 	uint iBone3 = input.Bones1.a;
@@ -91,11 +90,9 @@ PS_INPUT VS(VS_INPUT input)
 	output.normalW = mul(input.normal, (float3x3)gmtxWorld);
 	output.positionW = mul(Pos, (float3x3)gmtxWorld);
 	output.positionW += float3(gmtxWorld._41, gmtxWorld._42, gmtxWorld._43);
-
 	matrix mtxWorldViewProjection = mul(gmtxWorld, gmtxView);
 	mtxWorldViewProjection = mul(mtxWorldViewProjection, gmtxProjection);
 	output.position = mul(output.position, mtxWorldViewProjection);
-
 	output.tex2dcoord = input.tex2dcoord;
 
 	if (gfFogRange < 0)
@@ -116,17 +113,15 @@ PS_INPUT VS(VS_INPUT input)
 
 
 
-
-
 ////////////////////////////////////////////////////////
 //													  //
 //					Pixel Buffer					  //
 //													  //
 ////////////////////////////////////////////////////////
 
-#define MAX_LIGHTS			4
-#define POINT_LIGHT			1.0f
-#define SPOT_LIGHT			2.0f
+#define MAX_LIGHTS		4 
+#define POINT_LIGHT		1.0f
+#define SPOT_LIGHT		2.0f
 #define DIRECTIONAL_LIGHT	3.0f
 
 #define _WITH_LOCAL_VIEWER_HIGHLIGHTING
@@ -156,6 +151,7 @@ struct LIGHT
 	float m_bEnable;
 	float padding;
 };
+
 struct LIGHTEDCOLOR
 {
 	float4 m_cAmbient;
@@ -173,8 +169,7 @@ cbuffer cbMaterial : register(b1)
 {
 	MATERIAL gMaterial;
 };
-Texture2D gtxtTexture : register(t0);
-SamplerState gSamplerState : register(s0);
+
 
 /*방향성 조명의 효과를 계산하는 함수이다.
 방향성 조명은 조명까지의 거리에 따라 조명의 양이 변하지 않는다.*/
@@ -335,6 +330,9 @@ float4 Lighting(float3 vPosition, float3 vNormal)
 	return(cColor);
 }
 
+Texture2D gtxtTexture : register(t0);
+SamplerState gSamplerState : register(s0);
+
 float4 PS(PS_INPUT input) : SV_Target
 {
 	input.normalW = normalize(input.normalW);
@@ -342,7 +340,7 @@ float4 PS(PS_INPUT input) : SV_Target
 	cIllumination = Lighting(input.positionW, input.normalW);
 
 	float4 cColor;
-	cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord)* cIllumination;
+	cColor = gtxtTexture.Sample(gSamplerState, input.tex2dcoord) * cIllumination;
 
 	if (input.fogFactor >= 0)
 	{
@@ -352,5 +350,5 @@ float4 PS(PS_INPUT input) : SV_Target
 		cColor = (input.fogFactor * cColor) + (1.0f - input.fogFactor) * cfogColor;
 	}
 
-	return(cColor);
+	return cColor;
 }

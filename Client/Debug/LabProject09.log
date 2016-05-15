@@ -1,2 +1,6 @@
-﻿  Scene.cpp
+﻿D:\ArenaFight\Client\Client\Effect.fx(91,21): warning X3206: 'mul': implicit truncation of vector type
+  
+  compilation succeeded; see D:\ArenaFight\Client\Client\Debug\Effect.cso
+  compilation succeeded; see D:\ArenaFight\Client\Client\Debug\Fog.cso
+  Shader.cpp
   LabProject09.vcxproj -> D:\ArenaFight\Client\Client\Debug\GameClient.exe

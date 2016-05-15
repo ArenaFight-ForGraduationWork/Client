@@ -72,18 +72,15 @@ public:
 
 /* 애니메이션이 있는 물체를 위한 셰이더.
 	텍스처 매핑, 빛, 애니메이션 사용			*/
-class CPlayerShader : public CShader
+class CAnimatingShader : public CShader
 {
 public:
-	CPlayerShader();
-	virtual ~CPlayerShader();
+	CAnimatingShader();
+	virtual ~CAnimatingShader();
 
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 };
-
-
-
 
 
 

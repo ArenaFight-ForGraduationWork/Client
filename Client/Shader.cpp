@@ -168,6 +168,9 @@ void CIlluminatedTexturedShader::CreateShader(ID3D11Device *pd3dDevice)
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
 	CreateVertexShaderFromFile(pd3dDevice, L"Fog.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
 	CreatePixelShaderFromFile(pd3dDevice, L"Fog.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+	//CreateVertexShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	//CreatePixelShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+
 }
 
 void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -201,15 +204,15 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(ID3D11DeviceContext *pd3d
 
 
 
-CPlayerShader::CPlayerShader()
+CAnimatingShader::CAnimatingShader()
 {
 }
 
-CPlayerShader::~CPlayerShader()
+CAnimatingShader::~CAnimatingShader()
 {
 }
 
-void CPlayerShader::CreateShader(ID3D11Device *pd3dDevice)
+void CAnimatingShader::CreateShader(ID3D11Device *pd3dDevice)
 {
 	CShader::CreateShader(pd3dDevice);
 
@@ -228,7 +231,7 @@ void CPlayerShader::CreateShader(ID3D11Device *pd3dDevice)
 	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
-void CPlayerShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
+void CAnimatingShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 {
 	CShader::CreateShaderVariables(pd3dDevice);
 
@@ -240,7 +243,6 @@ void CPlayerShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	d3dBufferDesc.ByteWidth = sizeof(MATERIAL);
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
-
 
 
 
