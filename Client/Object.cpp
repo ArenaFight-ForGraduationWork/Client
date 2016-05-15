@@ -685,7 +685,6 @@ void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 
 		if ((NowTime / 10) >= (m_AniMaxTime[Animation_state] / 10))		//애니메이션 초기화되는 부분.
 		{
-
 			NowTime -= m_AniMaxTime[Animation_state];
 			m_fAnimationPlaytime = 0;
 		}
