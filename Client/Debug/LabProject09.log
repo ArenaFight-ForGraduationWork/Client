@@ -1,6 +1,44 @@
-﻿D:\ArenaFight\Client\Client\Effect.fx(91,21): warning X3206: 'mul': implicit truncation of vector type
-  
-  compilation succeeded; see D:\ArenaFight\Client\Client\Debug\Effect.cso
-  compilation succeeded; see D:\ArenaFight\Client\Client\Debug\Fog.cso
+﻿  Mesh.cpp
+d:\arenafight\client\client\mesh.cpp(24): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\arenafight\client\client\mesh.cpp(270): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+  Fbx.cpp
+d:\arenafight\client\client\fbx.cpp(170): warning C4244: '초기화 중' : '__int64'에서 'unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  Unit.cpp
+d:\arenafight\client\client\unit.cpp(50): warning C4244: '=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\arenafight\client\client\unit.cpp(83): warning C4244: '=' : 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Shader.cpp
+  Scene.cpp
+d:\arenafight\client\client\scene.cpp(310): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\arenafight\client\client\scene.cpp(312): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  ResourceManager.cpp
+d:\arenafight\client\client\resourcemanager.cpp(110): warning C4305: '인수' : 'double'에서 'FLOAT'(으)로 잘립니다.
+  ObjectManager.cpp
+d:\arenafight\client\client\objectmanager.cpp(42): warning C4244: '인수' : 'int'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\arenafight\client\client\objectmanager.cpp(43): warning C4244: '인수' : 'int'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\arenafight\client\client\objectmanager.cpp(125): warning C4018: '<' : signed 또는 unsigned가 일치하지 않습니다.
+d:\arenafight\client\client\objectmanager.cpp(138): warning C4258: 'i' : for 루프의 정의가 무시되고 바깥쪽 범위의 정의가 사용됩니다.
+          d:\arenafight\client\client\objectmanager.cpp(131) : 'i' 정의가 무시됩니다.
+          d:\arenafight\client\client\objectmanager.cpp(125) : 'i' 정의가 사용됩니다.
+d:\arenafight\client\client\objectmanager.cpp(139): warning C4258: 'i' : for 루프의 정의가 무시되고 바깥쪽 범위의 정의가 사용됩니다.
+          d:\arenafight\client\client\objectmanager.cpp(131) : 'i' 정의가 무시됩니다.
+          d:\arenafight\client\client\objectmanager.cpp(125) : 'i' 정의가 사용됩니다.
+  Object.cpp
+d:\arenafight\client\client\object.cpp(95): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\arenafight\client\client\object.cpp(230): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+d:\arenafight\client\client\object.cpp(241): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+d:\arenafight\client\client\object.cpp(303): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+d:\arenafight\client\client\object.cpp(310): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+d:\arenafight\client\client\object.cpp(317): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+d:\arenafight\client\client\object.cpp(342): warning C4172: 지역 변수 또는 임시 변수의 주소를 반환하고 있습니다.
+d:\arenafight\client\client\object.cpp(684): warning C4244: '=' : 'float'에서 '__int64'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Network.cpp
+  GameFramework.cpp
+  GameClient.cpp
+d:\arenafight\client\client\gameclient.cpp(146): warning C4101: 'ps' :참조되지 않은 지역 변수입니다.
+d:\arenafight\client\client\gameclient.cpp(145): warning C4101: 'wmId' :참조되지 않은 지역 변수입니다.
+d:\arenafight\client\client\gameclient.cpp(145): warning C4101: 'wmEvent' :참조되지 않은 지역 변수입니다.
+d:\arenafight\client\client\gameclient.cpp(147): warning C4101: 'hdc' :참조되지 않은 지역 변수입니다.
+  코드를 생성하고 있습니다...
   LabProject09.vcxproj -> D:\ArenaFight\Client\Client\Debug\GameClient.exe

@@ -3,8 +3,6 @@
 
 #include "Vertex.h"
 
-#define RANDOM_COLOR D3DXCOLOR((rand() * 0xFFFFFF) / RAND_MAX)
-
 
 
 
@@ -12,7 +10,6 @@
 class CMesh
 {
 public:
-
 	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
 	long long m_AniMaxTime[ANIMATION_COUNT];
 	unsigned int m_AnimationIndexCnt;
@@ -37,8 +34,6 @@ public:
 	D3DXVECTOR3 GetMaxVer()	{ return m_MaxVer; }
 	D3DXVECTOR3 GetMinVer()		{ return m_MinVer; }
 
-	
-
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
 	UINT m_nVertices;	/* 정점 버퍼의 정점 개수 */
@@ -60,8 +55,6 @@ private:
 
 	D3DXVECTOR3 m_MaxVer;
 	D3DXVECTOR3 m_MinVer;
-
-	
 };
 
 
@@ -99,6 +92,10 @@ private:
 };
 
 
+
+
+
+
 class CImportedAnimatingMesh : public CMesh
 {
 public:
@@ -110,7 +107,6 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 private:
-	vector<CAnimationVertex*> pVertices;
 	CAnimationVertex* ppVertices;
 
 	D3DXVECTOR3* pHitMaxVer;

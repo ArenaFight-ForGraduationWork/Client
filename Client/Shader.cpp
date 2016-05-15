@@ -166,11 +166,8 @@ void CIlluminatedTexturedShader::CreateShader(ID3D11Device *pd3dDevice)
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Fog.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Fog.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
-	//CreateVertexShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	//CreatePixelShaderFromFile(pd3dDevice, L"IlluminatedTextured.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
-
+	CreateVertexShaderFromFile(pd3dDevice, L"NonAnimating.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"NonAnimating.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
 void CIlluminatedTexturedShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -227,8 +224,8 @@ void CAnimatingShader::CreateShader(ID3D11Device *pd3dDevice)
 		{ "WEIGHTS", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 72, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(pd3dDevice, L"Effect.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"Effect.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"Animating.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"Animating.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
 void CAnimatingShader::CreateShaderVariables(ID3D11Device *pd3dDevice)

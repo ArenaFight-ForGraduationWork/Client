@@ -269,7 +269,6 @@ CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTO
 
 	for (int i = 0; i < pVertices.size(); ++i)
 	{
-
 		ppVertices[i].SetPosition(pVertices.at(i)->GetPosition());
 		ppVertices[i].SetNormal(pVertices.at(i)->GetNormal());
 		ppVertices[i].SetUV(pVertices.at(i)->GetUV());
@@ -356,7 +355,7 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 		//printf("%f %f %f\n", m_HitMaxVer[i].x, m_HitMaxVer[i].y, m_HitMaxVer[i].z);
 	}
 
-	m_AnimationIndexCnt = CFbx::GetInstance()->GetAnimationIndexCount();		
+	m_AnimationIndexCnt = CFbx::GetInstance()->GetAnimationIndexCount();
 	SetAnimationIndexCnt(m_AnimationIndexCnt);		// Cmesh의 AnimationIndex에 넣어줌. object에서 가져갈 수 있도록
 	SetMaxVer(CFbx::GetInstance()->GetMaxVer());	// 값을 가져와서 CMesh의 m_MaxVer에 넣어줌. object에서 가져갈 수 있도록
 	SetMinVer(CFbx::GetInstance()->GetMinVer());		// 값을 가져와서 CMesh의 m_MinVer에 넣어줌. object에서 가져갈 수 있도록
