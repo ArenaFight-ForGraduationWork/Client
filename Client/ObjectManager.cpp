@@ -37,6 +37,8 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int 
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
+	pObject->SetResourceType((int)eType);
+
 	pObject->MoveAbsolute(x, y, z);
 	pObject->RotateAbsolute(x, y, z);
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
@@ -53,6 +55,8 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
+	pObject->SetResourceType((int)eType);
+
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 
@@ -73,7 +77,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
-
+	pObject->SetResourceType((int)eType);
 	
 	pObject->SetTime(pResourceManager->GetMesh(eType)->m_AniMaxTime);
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);

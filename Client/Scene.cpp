@@ -195,15 +195,25 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 		else
 			m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
 
-		if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::BUFF_CRYSTAL)))		//아이템 충돌체크
+		if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::BUFF_CRYSTAL)))		//아이템 HP 충돌체크
 		{
-			cout << "나랑 부딪힌 오브젝트 번호 : " << m_pPlayer->GetObjects()->CollOtherID << endl;
+			//cout << "나랑 부딪힌 오브젝트 번호 : " << m_pPlayer->GetObjects()->CollOtherID << endl;
+			int tempId = m_pPlayer->GetObjects()->CollOtherID;
+			if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_HP)
+			{
+				m_pPlayer->SetHP();
+			}
+
+			else if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_Buff)
+			{
+				m_pPlayer->SetSpeed();
+			}
 			m_pObjectManager->DeleteObject(m_pPlayer->GetObjects()->CollOtherID);
-			m_pPlayer->SetHP();
-			m_pPlayer->SetSpeed();
+			
 			cout << "현재 체력 : " << m_pPlayer->GetHP() << endl;
 			cout << "현재 스피드 : " << m_pPlayer->GetSpeed() << endl;
 		}
+
 
 		if (m_pPlayer->GetIsAttack())		//공격 했을 때 
 		{

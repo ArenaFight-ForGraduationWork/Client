@@ -68,6 +68,7 @@ public:
 	CObject(UINT id);
 	virtual ~CObject();
 
+	
 	void MoveRelative(const float fx, const float fy, const float fz);
 	void MoveRelative(const D3DXVECTOR3 *d3dxVec);
 	void MoveAbsolute(const float fx, const float fy, const float fz);
@@ -110,6 +111,9 @@ public:
 	CMaterial* GetMaterial() { return m_pMaterial; }
 	void SetTexture(CTexture *pTexture);
 	CTexture* GetTexture() { return m_pTexture; }
+
+	virtual void SetResourceType(int eType);
+	int GetResourceType() { return eSourceType; }
 
 	//virtual void Animate(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
@@ -180,6 +184,7 @@ private:
 	CTexture *m_pTexture;
 	UINT m_id;
 
+	int  eSourceType;
 	bool isAnimating = true;
 	const D3DXMATRIX* _GetRotationMatrix();
 	const D3DXMATRIX* _GetBoundingRotationMatrix();

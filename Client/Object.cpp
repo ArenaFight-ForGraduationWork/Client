@@ -95,6 +95,11 @@ CObject::CObject(UINT id)
 		m_AniMaxTime[i] = 0.0f;
 }
 
+void CObject::SetResourceType(int type)
+{
+	eSourceType = type;
+}
+
 CObject::~CObject()
 {
 	if (m_pMesh) m_pMesh->Release();
