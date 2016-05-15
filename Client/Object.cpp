@@ -698,7 +698,7 @@ void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 
 		if (g_pd3dcbBoneMatrix != nullptr)
 		{
-			pd3dDeviceContext->VSSetConstantBuffers(0x02, 1, &g_pd3dcbBoneMatrix);
+			pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
 		}
 	}
 	

@@ -40,17 +40,6 @@ void CScene::ReleaseObjects()
 	m_vShaders.clear();
 }
 
-
-void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext)
-{
-	m_pLight->UpdateLights(pd3dDeviceContext);
-
-	for (auto shader : m_vShaders)
-	{
-		shader->Render(pd3dDeviceContext);
-	}
-}
-
 void CScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
 {
 	m_pLight->UpdateLights(pd3dDeviceContext);
@@ -119,7 +108,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			m_pMonster->SetIsAttack(true);
 			m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL3);
 			break;
-		
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
@@ -172,14 +160,12 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 	DWORD dwDirection = 0;
 	DWORD tempDirection = 0;
 
-
 	iscoll = false;
 
 	switch (m_OperationMode)
 	{
 	case MODE_MOUSE:			// F1
 	{
-	
 		if (GetKeyboardState(pKeyBuffer))
 		{
 			// 이동
@@ -307,21 +293,21 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	//	* LAND : 바닥.										충돌체크x, 삭제x                            4000~
 
 	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(3000, eResourceType::User, pd3dDevice, pd3dDeviceContext, 1, 3, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
+	m_pPlayer->SetObject(m_pObjectManager->Insert(3000, eResourceType::User, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
 	m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
 
 	m_pMonster = new CMonster();
-	m_pMonster->SetObject(m_pObjectManager->Insert(2000, eResourceType::Monster1, pd3dDevice, pd3dDeviceContext, 1, 3, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
+	m_pMonster->SetObject(m_pObjectManager->Insert(2000, eResourceType::Monster1, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(-400, 0, 0), D3DXVECTOR3(0, 0, 0)));
 	m_pMonster->GetObjects()->SetPlayAnimationState(0);
 
 	m_pCameraManager = CCameraManager::GetSingleton();
 	m_pCameraManager->GetNowCamera()->SetLookAt(m_pPlayer->GetPosition());
 
-
+	m_pObjectManager->Insert(10, eResourceType::Floor, D3DXVECTOR3(0, -100, 0));
 
 	/* 아이템 설정 */
 	for (int i = 0; i < 6; ++i)
-		m_pObjectManager->Insert(i + 1000, eResourceType::Item_HP, D3DXVECTOR3(rand()%400 * i, 50,(rand()%500 + 10)*i));
+		m_pObjectManager->Insert(i + 1000, eResourceType::Item_HP, D3DXVECTOR3(rand() % 400 * i, 50, (rand() % 500 + 10)*i));
 	for (int i = 6; i < 11; ++i)
 		m_pObjectManager->Insert(i + 1000, eResourceType::Item_Buff, D3DXVECTOR3((rand() % 400 - 300) * i, 50, (rand() % 200 - 150)*i));
 
@@ -343,18 +329,24 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 	for (int i = 0; i < 9; ++i)		//벽
 	{
-		if (i<5)
-		m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i-1]);	// ㅡ
+		if (i < 5)
+			m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i - 1]);	// ㅡ
 		else
-		m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i-1], D3DXVECTOR3(0,90,0));  // ㅣ
+			m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i - 1], D3DXVECTOR3(0, 90, 0));  // ㅣ
 	}
 	m_pObjectManager->Insert(9, eResourceType::Tree, D3DXVECTOR3(-2000, 0, 1900), D3DXVECTOR3(0, 90, 0));
 	m_pObjectManager->Insert(10, eResourceType::Tree, D3DXVECTOR3(-1800, 0, -1900));
 	m_pObjectManager->Insert(11, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
 	m_pObjectManager->Insert(12, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
-
-	
 }
+
+void CFirstScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
+{
+	CScene::AnimateObjectsAndRender(pd3dDeviceContext, time);
+}
+
+
+
 
 
 

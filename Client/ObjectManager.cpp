@@ -70,7 +70,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	return pObject;
 }
 
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, int CharNum, int StateCnt, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {
 	//애니메이션 데이터 전용
 	CObject *pObject = new CObject(id);

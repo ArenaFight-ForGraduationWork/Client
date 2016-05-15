@@ -14,6 +14,8 @@
 #include "Unit.h"
 #include "Camera.h"
 
+
+
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
 
@@ -30,9 +32,7 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
-	void Render(ID3D11DeviceContext*pd3dDeviceContext);			
-
-	void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);	//추가
+	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);	//추가
 
 protected:
 	DWORD m_OperationMode;
@@ -69,9 +69,9 @@ public:
 	virtual void ProcessInput(float fTimeElapsed);
 
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
-
 	int PressSkillNum;							//누른 스킬 번호
 	int Player_Attack_number = 3;		//3: 평타, 4,5,6 : 1~3 스킬		타입을 보내는 용도.. 
 	bool iscoll = false;

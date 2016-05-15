@@ -30,9 +30,6 @@ public:
 	bool ReleaseObject(UINT id);
 	void ReleaseAllObjects();
 
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
-
-	//애니메이션+ 렌더
 	virtual void AnimateObjectAndRender(ID3D11DeviceContext*, float time);
 
 protected:
@@ -83,9 +80,6 @@ public:
 
 	virtual void CreateShader(ID3D11Device *pd3dDevice);
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
-
-	virtual void AnimateObjectAndRender(ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 };
 
 
