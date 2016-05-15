@@ -3,5 +3,5 @@ Debug/
 Release/
 ipch/
 
-GameClient.sdf
-GameClient.v12.suo
+*.sdf
+*.suo
