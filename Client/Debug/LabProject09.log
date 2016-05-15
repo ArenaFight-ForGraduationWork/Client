@@ -1,10 +1,2 @@
-﻿  Fog.cpp
-  코드를 생성하고 있습니다...
-  컴파일하고 있습니다...
-  Scene.cpp
-d:\arenafight\client\client\scene.cpp(219): warning C4244: '인수' : 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
-  건너뛰고 있습니다... (관련된 변경 내용 없음)
-  GameFramework.cpp
-  GameClient.cpp
+﻿  Scene.cpp
   LabProject09.vcxproj -> D:\ArenaFight\Client\Client\Debug\GameClient.exe

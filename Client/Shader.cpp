@@ -49,12 +49,6 @@ void CShader::ReleaseAllObjects()
 	m_vObjects.clear();
 }
 
-void CShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
-{
-	for (auto obj : m_vObjects)
-		obj->Animate(StateCnt,pd3dDeviceContext,fTimeElapsed);
-}
-
 void CShader::CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout)
 {
 	HRESULT hResult;
@@ -126,27 +120,6 @@ void CShader::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext, CTex
 {
 	pd3dDeviceContext->PSSetShaderResources(PS_SHADERRESOURCE_SLOT_TEXTURE, pTexture->GetNumOfTextures(), pTexture->GetShaderResourceViewTextures());
 	pd3dDeviceContext->PSSetSamplers(PS_SAMPLER_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
-}
-
-void CShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	//정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
-	if (m_pd3dVertexLayout) pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
-	//정점-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
-	if (m_pd3dVertexShader) pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, NULL, 0);
-	//픽셀-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
-	if (m_pd3dPixelShader) pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
-
-	for (auto obj : m_vObjects)
-	{
-		UpdateShaderVariables(pd3dDeviceContext, obj->GetWorldMatrix());
-		if (obj->GetMaterial())
-			UpdateShaderVariables(pd3dDeviceContext, obj->GetMaterial());
-		if (obj->GetTexture())
-			UpdateShaderVariables(pd3dDeviceContext, obj->GetTexture());
-		obj->Render(pd3dDeviceContext);
-	}
-
 }
 
 void CShader::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time)
@@ -268,12 +241,7 @@ void CPlayerShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CPlayerShader::AnimateObjects(int StateCnt, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed)
-{
-	CShader::AnimateObjects(StateCnt, pd3dDeviceContext, fTimeElapsed);
-}
 
-void CPlayerShader::Render(ID3D11DeviceContext *pd3dDeviceContext)
-{
-	CShader::Render(pd3dDeviceContext);
-}
+
+
+
