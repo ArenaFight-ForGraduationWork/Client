@@ -6,7 +6,7 @@ CUnit::CUnit()
 {
 	m_pObject = nullptr;
 
-	m_fSpeed = 300;
+	m_fSpeed = 500;
 	m_fHP = 100;
 	m_fStrikingPower = 10;
 	m_fDefensivePower = 10;

@@ -33,7 +33,7 @@ public:
 
 	const D3DXVECTOR3* GetPosition();
 
-	void SetHP()	{ m_fHP -= 1; }
+	void SetHP(int health_releative)	{ m_fHP += health_releative; }
 	void SetSpeed()	{ m_fSpeed += 100; }
 	int GetHP()	{ return m_fHP; }
 	float GetSpeed()	{ return m_fSpeed; }

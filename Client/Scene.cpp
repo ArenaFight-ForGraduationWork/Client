@@ -54,6 +54,7 @@ void CScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, flo
 
 CFirstScene::CFirstScene()
 {
+	m_pFog = nullptr;
 }
 CFirstScene::~CFirstScene()
 {
@@ -107,6 +108,13 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			m_pPlayer->SetIsAttack(true);
 			//m_pMonster->SetIsAttack(true);
 			//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL3);
+			break;
+		case VK_F5:
+			m_pFog->Expand(&D3DXVECTOR3(0, 0, 0));
+			break;
+		case VK_F6:
+			m_pFog->Contract();
+			break;
 			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
@@ -187,7 +195,7 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 			int tempId = m_pPlayer->GetObjects()->CollOtherID;
 			if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_HP)
 			{
-				m_pPlayer->SetHP();
+				m_pPlayer->SetHP(1);
 			}
 
 			else if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_Buff)
@@ -206,12 +214,11 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 			m_pPlayer->GetObjects()->SetPressSkill(PressSkillNum);	//몇번 스킬 눌렀는지 알려주고
 			m_pPlayer->GetObjects()->SetPlayAnimationState((eUNIT_STATE)Player_Attack_number);
 
-			if (m_pPlayer->GetObjects()->MyHitAndEnemyBound(m_pMonster->GetObjects()))		//내 히트박스 + 상대 충돌체크박스 확인
-			{
-				//cout << "적에게 적중했다!!  체력 : "<<m_pObjectManager->FindObject(20000)->GetHP() << endl;
-				cout << "적을 때렸다!" << endl;
-				//is_Coll = true;	//일단 충돌했다는 것만 알려주기 위해서
-			}
+			if (m_pMonster->GetObjects())
+				if (m_pPlayer->GetObjects()->MyHitAndEnemyBound(m_pMonster->GetObjects()))		//내 히트박스 + 상대 충돌체크박스 확인
+				{
+					m_pMonster->SetHP(-1);
+				}
 
 			if (m_pPlayer->GetObjects()->m_fAnimationPlaytime == 0.0f)	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
 			{
@@ -220,14 +227,15 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 			}
 		}
 
-		if (m_pMonster->GetIsAttack())
-		{
-			if (m_pMonster->GetObjects()->m_fAnimationPlaytime == 0.0f)	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
+		if (m_pMonster->GetObjects())
+			if (m_pMonster->GetIsAttack())
 			{
-				//is_Coll = false;			//다음 충돌체크를 위해서 false
-				m_pMonster->SetIsAttack(false);		//한바퀴 돌아서 공격끝났으니, 공격모션을 끝내주기 위해 false
+				if (m_pMonster->GetObjects()->m_fAnimationPlaytime == 0.0f)	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
+				{
+					//is_Coll = false;			//다음 충돌체크를 위해서 false
+					m_pMonster->SetIsAttack(false);		//한바퀴 돌아서 공격끝났으니, 공격모션을 끝내주기 위해 false
+				}
 			}
-		}
 	}
 	break;
 
@@ -333,14 +341,66 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 		m_pObjectManager->Insert(10, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
 		m_pObjectManager->Insert(11, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
 	}
+
+	m_pFog = new CFog();
+	m_pFog->Initialize(pd3dDevice);
 }
 
 void CFirstScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, float time)
 {
+	if (m_pFog->IsInUse())
+		m_pFog->Update(pd3dDeviceContext);
+
+	if (m_pMonster->GetObjects())
+	{
+		_MonsterFSM(time);
+		if (m_pMonster->GetHP() < 0)
+		{
+			CObjectManager::GetSingleton()->DeleteObject(m_pMonster->GetObjects()->GetId());
+			m_pMonster->SetObject(nullptr);
+		}
+	}
+
 	CScene::AnimateObjectsAndRender(pd3dDeviceContext, time);
 }
 
+void CFirstScene::_MonsterFSM(float fTimeElapsed)
+{
+	static float time;
+	time += fTimeElapsed;
+	static int monsterState;	// 0 = idle, 3=attack, 4=skill1, 5=skill2, 6=skill3
+	float distance = 0;
 
+	float dx = m_pPlayer->GetPosition()->x;
+	dx -= m_pMonster->GetPosition()->x;
+	float dz = m_pPlayer->GetPosition()->z;
+	dz -= m_pMonster->GetPosition()->z;
+	distance = sqrt((dx*dx) + (dz*dz));
+
+	if (distance > 500)
+	{
+		D3DXVECTOR3 move = *(m_pPlayer->GetPosition());
+		move -= *(m_pMonster->GetPosition());
+		D3DXVec3Normalize(&move, &move);
+		move.x *= 100 * fTimeElapsed;
+		move.z *= 100 * fTimeElapsed;
+		m_pMonster->MoveRelative(&move);
+		m_pMonster->GetObjects()->MoveAndRotatingBoundingBox();
+		m_pMonster->GetObjects()->MoveAndRotatingHitBox();
+		m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::MOVE);
+	}
+
+	//int IsFog = rand() % 100;
+	//if (IsFog < 40)
+	//{
+	//	D3DXVECTOR3 pos = *(m_pMonster->GetPosition());
+	//	m_pFog->Expand(&pos);
+	//}
+	//else if (IsFog > 60)
+	//{
+	//	m_pFog->Contract();
+	//}
+}
 
 
 

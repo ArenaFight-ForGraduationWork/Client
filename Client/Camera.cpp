@@ -134,7 +134,6 @@ void CCamera::Zoom(const float fZoom)
 
 
 
-
 CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 {
 	m_eMode = eCameraType::THIRD_PERSON_CAMERA;
