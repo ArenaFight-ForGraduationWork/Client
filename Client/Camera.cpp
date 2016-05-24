@@ -10,8 +10,8 @@ CCamera::CCamera()
 	m_pd3dxvLook = new D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 
 	m_fTheta = 200.0f;
-	m_fDistanceFromObject =600.0f;
-	m_fHeight = 300.0f;
+	m_fDistanceFromObject = 800.0f;
+	m_fHeight = 400.0f;
 
 	m_fTimeLag = 0.0f;
 
@@ -134,7 +134,6 @@ void CCamera::Zoom(const float fZoom)
 
 
 
-
 CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 {
 	m_eMode = eCameraType::THIRD_PERSON_CAMERA;
@@ -203,7 +202,7 @@ void CCameraManager::Initialize(ID3D11Device *pd3dDevice)
 	ID3D11DeviceContext *pd3dDeviceContext;
 	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
 	pCamera->SetViewport(pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
-	pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+	pCamera->GenerateProjectionMatrix(1.01f, 10000.0f, ASPECT_RATIO, 60.0f);
 	pCamera->GenerateViewMatrix();
 	m_mCameras[eCameraType::THIRD_PERSON_CAMERA] = pCamera;
 

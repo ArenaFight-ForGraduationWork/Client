@@ -4,31 +4,19 @@
 #include "stdafx.h"
 #include "ResourceManager.h"
 
-/*
-*		고민 : ObjectCategory
-*		1) LAND와 NATURAL_FEATURE를 나눠야 하는 이유가 무엇인가
-*			일단 둘 다 충돌체크O, 존재O, 움직임X
-*		2) BUFF_CRYSTAL
-*			이름이 맘에 안 든다. 포괄적인 이름이 필요하다.
-*			충돌체크X, 존재O인 물체
-*
-*		id 형식 아직 미정이라 내 맘대로 UINT 하나로 쓰는거 함
-*			UINT = 0~4G 정도
-*		몬스터 2xx00, 사람 3xx00으로 그냥 해놓음 id 하나로 타입까지 한방에.
-*		나중에 바뀌는대로 바꿔라....
-*/
-
 #define ID_DIVIDE 1000
+
+
 
 class CObjectManager
 {
 public:
 	/* ObjectList의 카테고리
 	* NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		0~999
-	* BUFF_CRYSTAL :								충돌체크o, 삭제o,							1000~1999
-	* MONSTER : 몬스터 = 보스						충돌체크o, 히트박스o,					2000~2999
-	* PLAYER :											충돌체크o, 히트박스o,						3000~3999
-	* LAND : 바닥.										충돌체크x, 삭제x                            4000~
+	* BUFF_CRYSTAL :							충돌체크o, 삭제o,						1000~1999
+	* MONSTER : 몬스터 = 보스					충돌체크o, 히트박스o,					2000~2999
+	* PLAYER :									충돌체크o, 히트박스o,					3000~3999
+	* LAND : 바닥.								충돌체크x, 삭제x                        4000~
 	*/
 	enum class eObjectType :BYTE{
 		START = 0,

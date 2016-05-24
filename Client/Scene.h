@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Light.h"
 #include "ObjectManager.h"
+#include "Fog.h"
 
 //#include "Player.h"
 //#include "Monster.h"
@@ -72,10 +73,39 @@ public:
 	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
+	void _MonsterFSM(float fTimeElapsed);
+
+	int PressSkillNum;							//누른 스킬 번호
+	int Player_Attack_number = 3;		//3: 평타, 4,5,6 : 1~3 스킬		타입을 보내는 용도.. 
+	bool iscoll = false;
+
+	CFog *m_pFog;
+};
+
+
+
+class CSecondScene : public CScene
+{
+public:
+	CSecondScene();
+	~CSecondScene();
+
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	virtual void ProcessInput(float fTimeElapsed);
+
+	virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+
+private:
 	int PressSkillNum;							//누른 스킬 번호
 	int Player_Attack_number = 3;		//3: 평타, 4,5,6 : 1~3 스킬		타입을 보내는 용도.. 
 	bool iscoll = false;
 };
+
+
+
+
 
 
 class CSceneManager
