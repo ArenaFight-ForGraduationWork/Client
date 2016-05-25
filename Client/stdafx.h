@@ -69,27 +69,5 @@ using namespace std;
 
 
 
-/* 서버_ 재정의때문에 일단 여기로 옮겨둠*/
-#define MAX_BUFF_SIZE	4096
-#define MAX_PACKET_SIZE	4096
-#define MAX_CHAT_SIZE	100
-
-#define MAX_USER	1000
-#define SERVER_PORT	4000
-
-// 서버 -> 클라
-#define POS			1
-#define PUT_PLAYER	2
-#define LOGIN		3
-
-// 클라 -> 서버
-#define CREATE_ROOM	1
-#define JOIN_ROOM	2
-#define PLAYER_MOVE	3
-
-
-
-
-
 
 #endif
