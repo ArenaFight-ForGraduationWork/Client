@@ -331,10 +331,10 @@ void ProcessPacket(char *ptr) {
 		login *my_packet = reinterpret_cast<login *>(ptr);
 		myid = my_packet->yourid;
 
-		/* here : 플레이어 좌표는 어디로 가져와야 하는가 */
-		/* here : 생성할 때 리소스 타입이 안 온다. 유저는 다 하나라 상관 없는데 몬스터는... 
+		/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
+		/* here : 생성할 때 리소스 타입이 안 온다. 유저는 다 하나라 상관 없는데 몬스터는...
 				> my_packet->type 이거 같은데, 내 타입만 온다. */
-		//pObjectManager->Insert(myid, eResourceType::User, );
+		pObjectManager->Insert(myid, eResourceType::User, D3DXVECTOR3(0, 0, 0));
 
 		for (int i = 0; i < my_packet->count; ++i)
 		{
@@ -433,5 +433,6 @@ DWORD WINAPI recvThread(LPVOID arg) {
 	}
 	return 0;
 }
+
 
 
