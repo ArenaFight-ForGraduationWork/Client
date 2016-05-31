@@ -659,14 +659,12 @@ void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *p
 	BD.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
 
 	pd3dDevice->CreateBuffer(&BD, NULL, &g_pd3dcbBoneMatrix);
-
 	pd3dDeviceContext->Map(g_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &g_d3dMappedResource);
-
-	g_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)g_d3dMappedResource.pData;
-
-	for (int i = 0; i < 128; i++)
-		g_pcbBoneMatrix->m_XMmtxBone[i] = XMMatrixIdentity();
-
+	{
+		g_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)g_d3dMappedResource.pData;
+		for (int i = 0; i < 128; ++i)
+			g_pcbBoneMatrix->m_XMmtxBone[i] = XMMatrixIdentity();
+	}
 	pd3dDeviceContext->Unmap(g_pd3dcbBoneMatrix, NULL);
 }
 
@@ -703,3 +701,23 @@ void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 	
 	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);				//애니메이션이 없는 그냥 오브젝트는 이 Render에만 들어감
 }
+
+
+
+
+
+
+
+
+
+
+
+
+CUnit::CUnit(UINT id) : CObject(id)
+{
+}
+CUnit::~CUnit()
+{
+}
+
+

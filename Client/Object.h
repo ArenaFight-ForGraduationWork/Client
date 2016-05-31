@@ -62,6 +62,15 @@ private:
 	int m_nTextures;
 };
 
+
+
+
+
+
+
+
+
+
 class CObject
 {
 public:
@@ -188,6 +197,18 @@ private:
 	bool isAnimating = true;
 	const D3DXMATRIX* _GetRotationMatrix();
 	const D3DXMATRIX* _GetBoundingRotationMatrix();
+};
+
+
+
+
+class CUnit : public CObject{
+public:
+	CUnit(UINT id);
+	~CUnit();
+
+protected:
+private:
 };
 
 

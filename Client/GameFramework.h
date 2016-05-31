@@ -5,7 +5,6 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "ObjectManager.h"
-#include "protocol.h"
 
 
 
@@ -34,6 +33,9 @@ public:
 
 	//윈도우의 메시지를 처리하는 함수이다. 
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+
+	void SetID(UINT id) { m_uiID = id; }
+	UINT& GetID() { return m_uiID; }
 
 private:
 	HINSTANCE m_hInstance;
@@ -69,6 +71,8 @@ private:
 	int Press_SkillNum = 0;		// 몇번째 스킬을 눌렀는가 
 	bool is_Attack = false;		// 공격버튼을 눌렀는가
 	bool is_Coll = false;			// 충돌했는가
+
+	UINT m_uiID;
 };
 
 

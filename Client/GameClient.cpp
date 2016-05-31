@@ -17,7 +17,7 @@ HINSTANCE		ghInstance;
 // # server variables
 bool server_on = false;
 char ip[16];
-int  myid;
+UINT myID;
 
 WSABUF	recv_wsabuf;
 char	send_buffer[MAX_BUFF_SIZE];
@@ -368,10 +368,12 @@ void ProcessPacket(char *ptr) {
 	case LOGIN:
 	{	/* here : 내가 들어올 때, 나와 이미 들어와있던 사람들 */
 		login *my_packet = reinterpret_cast<login *>(ptr);
-		myid = my_packet->yourid;
+		myID = my_packet->yourid;
+
+		cout << "my ID : " << myID << endl;
 
 		/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
-		pObjectManager->Insert((UINT)myid, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+		pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 			D3DXVECTOR3(0, 0, 0));
 
 		for (int i = 0; i < my_packet->count; ++i)

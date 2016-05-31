@@ -10,7 +10,7 @@ CScene::CScene()
 
 	m_OperationMode = MODE_KEYBOARD;
 
-	m_pPlayer = nullptr;
+	//m_pPlayer = nullptr;
 	m_pCameraManager = nullptr;
 
 	m_ptOldCursorPos.x = 0;
@@ -74,41 +74,42 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			m_OperationMode = MODE_KEYBOARD;
 			break;
 		case VK_F3:
-			printf(" 캐릭터 : %.2f, %.2f\n", m_pPlayer->GetObjects()->m_MaxVer.x, m_pPlayer->GetObjects()->m_MaxVer.z);
-			printf(" 몬스터 : %.2f, %.2f\n", m_pMonster->GetObjects()->m_MaxVer.x, m_pMonster->GetObjects()->m_MaxVer.z);
+			//printf(" 캐릭터 : %.2f, %.2f\n", m_pPlayer->GetObjects()->m_MaxVer.x, m_pPlayer->GetObjects()->m_MaxVer.z);
+			//printf(" 몬스터 : %.2f, %.2f\n", m_pMonster->GetObjects()->m_MaxVer.x, m_pMonster->GetObjects()->m_MaxVer.z);
 			break;
-		
-		case VK_SPACE:	//평타
-			PressSkillNum = 0;
-			Player_Attack_number = 3;
-			m_pPlayer->SetIsAttack(true);
-			//m_pMonster->SetIsAttack(true);
-			//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::ATTACK);
-			break;
-		case 0x31:			//1번
-			cout << "1번" << endl;
-			PressSkillNum = 1;
-			Player_Attack_number = 4;
-			m_pPlayer->SetIsAttack(true);
-			//m_pMonster->SetIsAttack(true);
-			//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL1);
-			break;
-		case 0x32:			//2번
-			cout << "2번" << endl;
-			PressSkillNum = 2;
-			Player_Attack_number = 5;
-			m_pPlayer->SetIsAttack(true);
-			//m_pMonster->SetIsAttack(true);
-			//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL2);
-			break;
-		case 0x33:			//3번
-			cout << "3번" << endl;
-			PressSkillNum = 3;
-			Player_Attack_number = 6;
-			m_pPlayer->SetIsAttack(true);
-			//m_pMonster->SetIsAttack(true);
-			//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL3);
-			break;
+
+			//case VK_SPACE:	//평타
+			//	PressSkillNum = 0;
+			//	Player_Attack_number = 3;
+			//	m_pPlayer->SetIsAttack(true);
+			//	//m_pMonster->SetIsAttack(true);
+			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::ATTACK);
+			//	break;
+			//case 0x31:			//1번
+			//	cout << "1번" << endl;
+			//	PressSkillNum = 1;
+			//	Player_Attack_number = 4;
+			//	m_pPlayer->SetIsAttack(true);
+			//	//m_pMonster->SetIsAttack(true);
+			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL1);
+			//	break;
+			//case 0x32:			//2번
+			//	cout << "2번" << endl;
+			//	PressSkillNum = 2;
+			//	Player_Attack_number = 5;
+			//	m_pPlayer->SetIsAttack(true);
+			//	//m_pMonster->SetIsAttack(true);
+			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL2);
+			//	break;
+			//case 0x33:			//3번
+			//	cout << "3번" << endl;
+			//	PressSkillNum = 3;
+			//	Player_Attack_number = 6;
+			//	m_pPlayer->SetIsAttack(true);
+			//	//m_pMonster->SetIsAttack(true);
+			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL3);
+			//	break;
+
 		case VK_F5:
 			m_pFog->Expand(&D3DXVECTOR3(0, 0, 0));
 			break;
@@ -164,122 +165,140 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 }
 void CFirstScene::ProcessInput(float fTimeElapsed)
 {
-	static UCHAR pKeyBuffer[256];
-	DWORD dwDirection = 0;
-	DWORD tempDirection = 0;
+	//static UCHAR pKeyBuffer[256];
+	//DWORD dwDirection = 0;
+	//DWORD tempDirection = 0;
 
-	iscoll = false;
+	//iscoll = false;
 
-	switch (m_OperationMode)
+	//switch (m_OperationMode)
+	//{
+	//case MODE_MOUSE:			// F1
+	//{
+	//	if (GetKeyboardState(pKeyBuffer))
+	//	{
+	//		// 이동
+	//		if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
+	//		if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
+	//		if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
+	//		if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
+	//	}
+
+	//	/* player state 변경, 방향이 있을경우 달린다.*/
+	//	if (dwDirection != 0)
+	//		m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::MOVE);
+	//	else
+	//		m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
+
+	//	if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::BUFF_CRYSTAL)))		//아이템 HP 충돌체크
+	//	{
+	//		//cout << "나랑 부딪힌 오브젝트 번호 : " << m_pPlayer->GetObjects()->CollOtherID << endl;
+	//		int tempId = m_pPlayer->GetObjects()->CollOtherID;
+	//		if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_HP)
+	//		{
+	//			m_pPlayer->SetHP(1);
+	//		}
+
+	//		else if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_Buff)
+	//		{
+	//			m_pPlayer->SetSpeed();
+	//		}
+	//		m_pObjectManager->DeleteObject(m_pPlayer->GetObjects()->CollOtherID);
+	//		
+	//		cout << "현재 체력 : " << m_pPlayer->GetHP() << endl;
+	//		cout << "현재 스피드 : " << m_pPlayer->GetSpeed() << endl;
+	//	}
+
+
+	//	if (m_pPlayer->GetIsAttack())		//공격 했을 때 
+	//	{
+	//		m_pPlayer->GetObjects()->SetPressSkill(PressSkillNum);	//몇번 스킬 눌렀는지 알려주고
+	//		m_pPlayer->GetObjects()->SetPlayAnimationState((eUNIT_STATE)Player_Attack_number);
+
+	//		if (m_pMonster->GetObjects())
+	//			if (m_pPlayer->GetObjects()->MyHitAndEnemyBound(m_pMonster->GetObjects()))		//내 히트박스 + 상대 충돌체크박스 확인
+	//			{
+	//				m_pMonster->SetHP(-1);
+	//			}
+
+	//		if (m_pPlayer->GetObjects()->m_fAnimationPlaytime == 0.0f)	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
+	//		{
+	//			//is_Coll = false;			//다음 충돌체크를 위해서 false
+	//			m_pPlayer->SetIsAttack(false);		//한바퀴 돌아서 공격끝났으니, 공격모션을 끝내주기 위해 false
+	//		}
+	//	}
+
+	//	if (m_pMonster->GetObjects())
+	//		if (m_pMonster->GetIsAttack())
+	//		{
+	//			if (m_pMonster->GetObjects()->m_fAnimationPlaytime == 0.0f)	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
+	//			{
+	//				//is_Coll = false;			//다음 충돌체크를 위해서 false
+	//				m_pMonster->SetIsAttack(false);		//한바퀴 돌아서 공격끝났으니, 공격모션을 끝내주기 위해 false
+	//			}
+	//		}
+	//}
+	//break;
+
+	//case MODE_KEYBOARD:
+	//{
+	//	if (GetKeyboardState(pKeyBuffer))
+	//	{
+	//		// 이동
+	//		if (pKeyBuffer[VK_UP] & 0xF0)		dwDirection |= DIR_FORWARD;
+	//		if (pKeyBuffer[VK_DOWN] & 0xF0)		dwDirection |= DIR_BACKWARD;
+	//		if (pKeyBuffer[VK_LEFT] & 0xF0)		dwDirection |= DIR_LEFT;
+	//		if (pKeyBuffer[VK_RIGHT] & 0xF0)	dwDirection |= DIR_RIGHT;
+	//		// 좌우회전
+	//		if (pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);			// Q
+	//		if (pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);		// E
+	//		// 줌
+	//		if (pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);				// Z
+	//		if (pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);				// X
+	//	}
+	//	if (dwDirection != 0)
+	//		m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::MOVE);
+	//	else
+	//		m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
+	//}
+	//break;
+	//}
+
+	//m_pPlayer->boundingBoxMove(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);		//바운딩박스 먼저 이동해서
+
+	//if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::NATURAL_FEATURE)))		//충돌체크를 한 다음
+	//{
+	//	iscoll = true;
+	//	//cout << "벽에 닿음" << endl;
+	//	m_pPlayer->GetObjects()->SetBoundingBox();
+	//	m_pPlayer->GetObjects()->SetBoundingBoxMatrix();
+	//
+	//}
+
+	//if (dwDirection && false == m_pPlayer->GetIsAttack()&& !iscoll)
+	//{
+	//	m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);	
+	//}
+
+	//m_pCameraManager->GetNowCamera()->Update(m_pPlayer->GetPosition());
+	if (m_pObjectManager->FindObject(myID))
 	{
-	case MODE_MOUSE:			// F1
-	{
-		if (GetKeyboardState(pKeyBuffer))
-		{
-			// 이동
-			if (pKeyBuffer[0x41] & 0xF0) dwDirection |= DIR_LEFT;		// A
-			if (pKeyBuffer[0x44] & 0xF0) dwDirection |= DIR_RIGHT;		// D
-			if (pKeyBuffer[0x57] & 0xF0) dwDirection |= DIR_FORWARD;	// W
-			if (pKeyBuffer[0x53] & 0xF0) dwDirection |= DIR_BACKWARD;	// S
-		}
+		//m_pCameraManager->GetNowCamera()->Update(m_pObjectManager->FindObject(myID)->GetPosition());
+		D3DXVECTOR3 pos = *(m_pObjectManager->FindObject(myID)->GetPosition());
+		m_pCameraManager->GetNowCamera()->Update(&pos);
 
-		/* player state 변경, 방향이 있을경우 달린다.*/
-		if (dwDirection != 0)
-			m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::MOVE);
-		else
-			m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
+		cout << "my ID : " << myID << endl;
 
-		if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::BUFF_CRYSTAL)))		//아이템 HP 충돌체크
-		{
-			//cout << "나랑 부딪힌 오브젝트 번호 : " << m_pPlayer->GetObjects()->CollOtherID << endl;
-			int tempId = m_pPlayer->GetObjects()->CollOtherID;
-			if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_HP)
-			{
-				m_pPlayer->SetHP(1);
-			}
+		//cout << m_pObjectManager->FindObject(myID)->GetPosition()->x << ", "
+		//	<< m_pObjectManager->FindObject(myID)->GetPosition()->y << ", "
+		//	<< m_pObjectManager->FindObject(myID)->GetPosition()->z << ", " << endl;
 
-			else if (m_pObjectManager->FindObject(tempId)->GetResourceType() == (int)eResourceType::Item_Buff)
-			{
-				m_pPlayer->SetSpeed();
-			}
-			m_pObjectManager->DeleteObject(m_pPlayer->GetObjects()->CollOtherID);
-			
-			cout << "현재 체력 : " << m_pPlayer->GetHP() << endl;
-			cout << "현재 스피드 : " << m_pPlayer->GetSpeed() << endl;
-		}
-
-
-		if (m_pPlayer->GetIsAttack())		//공격 했을 때 
-		{
-			m_pPlayer->GetObjects()->SetPressSkill(PressSkillNum);	//몇번 스킬 눌렀는지 알려주고
-			m_pPlayer->GetObjects()->SetPlayAnimationState((eUNIT_STATE)Player_Attack_number);
-
-			if (m_pMonster->GetObjects())
-				if (m_pPlayer->GetObjects()->MyHitAndEnemyBound(m_pMonster->GetObjects()))		//내 히트박스 + 상대 충돌체크박스 확인
-				{
-					m_pMonster->SetHP(-1);
-				}
-
-			if (m_pPlayer->GetObjects()->m_fAnimationPlaytime == 0.0f)	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
-			{
-				//is_Coll = false;			//다음 충돌체크를 위해서 false
-				m_pPlayer->SetIsAttack(false);		//한바퀴 돌아서 공격끝났으니, 공격모션을 끝내주기 위해 false
-			}
-		}
-
-		if (m_pMonster->GetObjects())
-			if (m_pMonster->GetIsAttack())
-			{
-				if (m_pMonster->GetObjects()->m_fAnimationPlaytime == 0.0f)	//애니메이션이 한바퀴 돌아서 0이 되면, 공격상태를 멈춘다.
-				{
-					//is_Coll = false;			//다음 충돌체크를 위해서 false
-					m_pMonster->SetIsAttack(false);		//한바퀴 돌아서 공격끝났으니, 공격모션을 끝내주기 위해 false
-				}
-			}
+		//cout << m_pCameraManager->GetNowCamera()->GetPosition()->x << ", "
+		//	<< m_pCameraManager->GetNowCamera()->GetPosition()->y << ", "
+		//	<< m_pCameraManager->GetNowCamera()->GetPosition()->z << ", " << endl;
 	}
-	break;
-
-	case MODE_KEYBOARD:
-	{
-		if (GetKeyboardState(pKeyBuffer))
-		{
-			// 이동
-			if (pKeyBuffer[VK_UP] & 0xF0)		dwDirection |= DIR_FORWARD;
-			if (pKeyBuffer[VK_DOWN] & 0xF0)		dwDirection |= DIR_BACKWARD;
-			if (pKeyBuffer[VK_LEFT] & 0xF0)		dwDirection |= DIR_LEFT;
-			if (pKeyBuffer[VK_RIGHT] & 0xF0)	dwDirection |= DIR_RIGHT;
-			// 좌우회전
-			if (pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);			// Q
-			if (pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);		// E
-			// 줌
-			if (pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);				// Z
-			if (pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);				// X
-		}
-		if (dwDirection != 0)
-			m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::MOVE);
-		else
-			m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
-	}
-	break;
-	}
-
-	m_pPlayer->boundingBoxMove(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);		//바운딩박스 먼저 이동해서
-
-	if (m_pPlayer->GetObjects()->Collison(m_pObjectManager->FindObjectInCategory(CObjectManager::eObjectType::NATURAL_FEATURE)))		//충돌체크를 한 다음
-	{
-		iscoll = true;
-		//cout << "벽에 닿음" << endl;
-		m_pPlayer->GetObjects()->SetBoundingBox();
-		m_pPlayer->GetObjects()->SetBoundingBoxMatrix();
-	
-	}
-
-	if (dwDirection && false == m_pPlayer->GetIsAttack()&& !iscoll)
-	{
-		m_pPlayer->Move(m_pCameraManager->GetNowCamera()->GetYaw(), dwDirection, fTimeElapsed);	
-	}
-
-	m_pCameraManager->GetNowCamera()->Update(m_pPlayer->GetPosition());
+	else
+		m_pCameraManager->GetNowCamera()->Update(new D3DXVECTOR3(0, 0, 0));
 }
 
 void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
@@ -295,16 +314,21 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	//	* PLAYER :											충돌체크o, 히트박스o,					3000~3999
 	//	* LAND : 바닥.										충돌체크x, 삭제x                        4000~
 
-	m_pPlayer = new CPlayer();
-	m_pPlayer->SetObject(m_pObjectManager->Insert(3000, eResourceType::User, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
-	m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
+	//m_pPlayer = new CPlayer();
+	//m_pPlayer->SetObject(m_pObjectManager->Insert(3000, eResourceType::User, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
+	//m_pPlayer->GetObjects()->SetPlayAnimationState(eUNIT_STATE::IDLE);
 
-	m_pMonster = new CMonster();
-	m_pMonster->SetObject(m_pObjectManager->Insert(2000, eResourceType::Monster1, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(-400, 0, 0), D3DXVECTOR3(0, 0, 0)));
-	m_pMonster->GetObjects()->SetPlayAnimationState(0);
+	//m_pMonster = new CMonster();
+	//m_pMonster->SetObject(m_pObjectManager->Insert(2000, eResourceType::Monster1, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(-400, 0, 0), D3DXVECTOR3(0, 0, 0)));
+	//m_pMonster->GetObjects()->SetPlayAnimationState(0);
 
 	m_pCameraManager = CCameraManager::GetSingleton();
-	m_pCameraManager->GetNowCamera()->SetLookAt(m_pPlayer->GetPosition());
+	//m_pCameraManager->GetNowCamera()->SetLookAt(m_pPlayer->GetPosition());
+	if (m_pObjectManager->FindObject(myID))
+		m_pCameraManager->GetNowCamera()->SetLookAt(m_pObjectManager->FindObject(myID)->GetPosition());
+	else
+		m_pCameraManager->GetNowCamera()->SetLookAt(new D3DXVECTOR3(0, 0, 0));
+
 
 	/* 아이템 설정 */
 	for (int i = 0; i < 6; ++i)
@@ -351,56 +375,56 @@ void CFirstScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext
 	if (m_pFog->IsInUse())
 		m_pFog->Update(pd3dDeviceContext);
 
-	if (m_pMonster->GetObjects())
-	{
-		_MonsterFSM(time);
-		if (m_pMonster->GetHP() < 0)
-		{
-			CObjectManager::GetSingleton()->DeleteObject(m_pMonster->GetObjects()->GetId());
-			m_pMonster->SetObject(nullptr);
-		}
-	}
+	//if (m_pMonster->GetObjects())
+	//{
+	//	_MonsterFSM(time);
+	//	if (m_pMonster->GetHP() < 0)
+	//	{
+	//		CObjectManager::GetSingleton()->DeleteObject(m_pMonster->GetObjects()->GetId());
+	//		m_pMonster->SetObject(nullptr);
+	//	}
+	//}
 
 	CScene::AnimateObjectsAndRender(pd3dDeviceContext, time);
 }
 
-void CFirstScene::_MonsterFSM(float fTimeElapsed)
-{
-	static float time;
-	time += fTimeElapsed;
-	static int monsterState;	// 0 = idle, 3=attack, 4=skill1, 5=skill2, 6=skill3
-	float distance = 0;
-
-	float dx = m_pPlayer->GetPosition()->x;
-	dx -= m_pMonster->GetPosition()->x;
-	float dz = m_pPlayer->GetPosition()->z;
-	dz -= m_pMonster->GetPosition()->z;
-	distance = sqrt((dx*dx) + (dz*dz));
-
-	if (distance > 500)
-	{
-		D3DXVECTOR3 move = *(m_pPlayer->GetPosition());
-		move -= *(m_pMonster->GetPosition());
-		D3DXVec3Normalize(&move, &move);
-		move.x *= 100 * fTimeElapsed;
-		move.z *= 100 * fTimeElapsed;
-		m_pMonster->MoveRelative(&move);
-		m_pMonster->GetObjects()->MoveAndRotatingBoundingBox();
-		m_pMonster->GetObjects()->MoveAndRotatingHitBox();
-		m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::MOVE);
-	}
-
-	//int IsFog = rand() % 100;
-	//if (IsFog < 40)
-	//{
-	//	D3DXVECTOR3 pos = *(m_pMonster->GetPosition());
-	//	m_pFog->Expand(&pos);
-	//}
-	//else if (IsFog > 60)
-	//{
-	//	m_pFog->Contract();
-	//}
-}
+//void CFirstScene::_MonsterFSM(float fTimeElapsed)
+//{
+//	static float time;
+//	time += fTimeElapsed;
+//	static int monsterState;	// 0 = idle, 3=attack, 4=skill1, 5=skill2, 6=skill3
+//	float distance = 0;
+//
+//	float dx = m_pPlayer->GetPosition()->x;
+//	dx -= m_pMonster->GetPosition()->x;
+//	float dz = m_pPlayer->GetPosition()->z;
+//	dz -= m_pMonster->GetPosition()->z;
+//	distance = sqrt((dx*dx) + (dz*dz));
+//
+//	if (distance > 500)
+//	{
+//		D3DXVECTOR3 move = *(m_pPlayer->GetPosition());
+//		move -= *(m_pMonster->GetPosition());
+//		D3DXVec3Normalize(&move, &move);
+//		move.x *= 100 * fTimeElapsed;
+//		move.z *= 100 * fTimeElapsed;
+//		m_pMonster->MoveRelative(&move);
+//		m_pMonster->GetObjects()->MoveAndRotatingBoundingBox();
+//		m_pMonster->GetObjects()->MoveAndRotatingHitBox();
+//		m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::MOVE);
+//	}
+//
+//	//int IsFog = rand() % 100;
+//	//if (IsFog < 40)
+//	//{
+//	//	D3DXVECTOR3 pos = *(m_pMonster->GetPosition());
+//	//	m_pFog->Expand(&pos);
+//	//}
+//	//else if (IsFog > 60)
+//	//{
+//	//	m_pFog->Contract();
+//	//}
+//}
 
 
 

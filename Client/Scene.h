@@ -1,21 +1,15 @@
 #ifndef SCENE_H_
 #define SCENE_H_
 
-
-
 #include "Object.h"
 #include "Shader.h"
 #include "Light.h"
 #include "ObjectManager.h"
 #include "Fog.h"
-
-//#include "Player.h"
-//#include "Monster.h"
-
 #include "Unit.h"
 #include "Camera.h"
 
-
+extern UINT myID;
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
@@ -41,8 +35,8 @@ protected:
 	POINT	m_ptOldCursorPos;
 	POINT	m_ptNewCursorPos;
 
-	CUnit *m_pPlayer;
-	CUnit *m_pMonster;
+	//CUnit *m_pPlayer;
+	//CUnit *m_pMonster;
 
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
@@ -73,7 +67,7 @@ public:
 	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
-	void _MonsterFSM(float fTimeElapsed);
+	//void _MonsterFSM(float fTimeElapsed);
 
 	int PressSkillNum;							//누른 스킬 번호
 	int Player_Attack_number = 3;		//3: 평타, 4,5,6 : 1~3 스킬		타입을 보내는 용도.. 
