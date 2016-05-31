@@ -289,11 +289,11 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	ID3D11DeviceContext *pd3dDeviceContext;
 	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
 
-	// * NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		0~999
+	// * NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.				0~999
 	//	* BUFF_CRYSTAL :								충돌체크o, 삭제o,							1000~1999
 	//	* MONSTER : 몬스터 = 보스						충돌체크o, 히트박스o,						2000~2999
-	//	* PLAYER :											충돌체크o, 히트박스o,						3000~3999
-	//	* LAND : 바닥.										충돌체크x, 삭제x                            4000~
+	//	* PLAYER :											충돌체크o, 히트박스o,					3000~3999
+	//	* LAND : 바닥.										충돌체크x, 삭제x                        4000~
 
 	m_pPlayer = new CPlayer();
 	m_pPlayer->SetObject(m_pObjectManager->Insert(3000, eResourceType::User, pd3dDevice, pd3dDeviceContext, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0)));
@@ -317,29 +317,29 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 		// 바닥
 		m_pObjectManager->Insert(4000, eResourceType::Floor, D3DXVECTOR3(0, 0, 0));
 
-		// 벽. 한 면에 두개씩 들어간다
-		D3DXVECTOR3 WallPos[8];
-		WallPos[0] = D3DXVECTOR3(-1250, 500, 2500);
-		WallPos[1] = D3DXVECTOR3(1250, 500, 2500);
-		WallPos[2] = D3DXVECTOR3(-1250, 500, -2500);
-		WallPos[3] = D3DXVECTOR3(1250, 500, -2500);
+		//// 벽. 한 면에 두개씩 들어간다
+		//D3DXVECTOR3 WallPos[8];
+		//WallPos[0] = D3DXVECTOR3(-1250, 500, 2500);
+		//WallPos[1] = D3DXVECTOR3(1250, 500, 2500);
+		//WallPos[2] = D3DXVECTOR3(-1250, 500, -2500);
+		//WallPos[3] = D3DXVECTOR3(1250, 500, -2500);
 
-		WallPos[4] = D3DXVECTOR3(2500, 500, 1250);
-		WallPos[5] = D3DXVECTOR3(2500, 500, -1250);
-		WallPos[6] = D3DXVECTOR3(-2500, 500, 1250);
-		WallPos[7] = D3DXVECTOR3(-2500, 500, -1250);
-		for (int i = 0; i < 8; ++i)
-		{
-			if (i < 4)
-				m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i]);	// ㅡ
-			else
-				m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i], D3DXVECTOR3(0, 90, 0));  // ㅣ
-		}
+		//WallPos[4] = D3DXVECTOR3(2500, 500, 1250);
+		//WallPos[5] = D3DXVECTOR3(2500, 500, -1250);
+		//WallPos[6] = D3DXVECTOR3(-2500, 500, 1250);
+		//WallPos[7] = D3DXVECTOR3(-2500, 500, -1250);
+		//for (int i = 0; i < 8; ++i)
+		//{
+		//	if (i < 4)
+		//		m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i]);	// ㅡ
+		//	else
+		//		m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i], D3DXVECTOR3(0, 90, 0));  // ㅣ
+		//}
 
-		m_pObjectManager->Insert(8, eResourceType::Tree, D3DXVECTOR3(-2000, 0, 1900), D3DXVECTOR3(0, 90, 0));
-		m_pObjectManager->Insert(9, eResourceType::Tree, D3DXVECTOR3(-1800, 0, -1900));
-		m_pObjectManager->Insert(10, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
-		m_pObjectManager->Insert(11, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
+		//m_pObjectManager->Insert(8, eResourceType::Tree, D3DXVECTOR3(-2000, 0, 1900), D3DXVECTOR3(0, 90, 0));
+		//m_pObjectManager->Insert(9, eResourceType::Tree, D3DXVECTOR3(-1800, 0, -1900));
+		//m_pObjectManager->Insert(10, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
+		//m_pObjectManager->Insert(11, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
 	}
 
 	m_pFog = new CFog();

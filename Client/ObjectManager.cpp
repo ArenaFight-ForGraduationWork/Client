@@ -85,7 +85,6 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
 	
-
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 

@@ -20,15 +20,13 @@ char ip[16];
 int  myid;
 
 WSABUF	recv_wsabuf;
+char	send_buffer[MAX_BUFF_SIZE];
 char	recv_buffer[MAX_BUFF_SIZE];
 char	packet_buffer[MAX_BUFF_SIZE];
 DWORD	in_packet_size = 0;
 int		saved_packet_size = 0;
 
 SOCKET	sock;
-
-packet_player_move*	move_packet;
-char	send_buffer[MAX_BUFF_SIZE];
 
 
 
@@ -47,8 +45,13 @@ void ProcessPacket(char *ptr);
 DWORD WINAPI recvThread(LPVOID arg);
 
 
-
-
+// ==============임시라 쓸모 없음
+//
+//
+bool volatile dead = true;
+//
+//
+// ==============================
 
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
@@ -177,6 +180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	static int retval;
 	static HANDLE recv_thread;
+	packet_player_move *move_packet;
 
 	switch (message)
 	{
@@ -193,34 +197,69 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
+		if (server_on)
+		{
+			if (dead)
+			{
+				move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+				if (wParam == VK_UP) {
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 1;
+					retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				}
+				else if (wParam == VK_DOWN) {
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 2;
+					retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				}
+				else if (wParam == VK_LEFT) {
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 3;
+					retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				}
+				else if (wParam == VK_RIGHT) {
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 4;
+					retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				}
+				dead = false;
+			}
+		}
+		gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
+		break;
 	case WM_KEYUP:
 		if (server_on)
 		{
 			move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
 			if (wParam == VK_UP) {
 				move_packet->size = sizeof(*move_packet);
-				move_packet->type = PLAYER_MOV;
+				move_packet->type = PLAYER_MOV_END;
 				move_packet->move_type = 1;
 				retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			}
 			else if (wParam == VK_DOWN) {
 				move_packet->size = sizeof(*move_packet);
-				move_packet->type = PLAYER_MOV;
+				move_packet->type = PLAYER_MOV_END;
 				move_packet->move_type = 2;
 				retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			}
 			else if (wParam == VK_LEFT) {
 				move_packet->size = sizeof(*move_packet);
-				move_packet->type = PLAYER_MOV;
+				move_packet->type = PLAYER_MOV_END;
 				move_packet->move_type = 3;
 				retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			}
 			else if (wParam == VK_RIGHT) {
 				move_packet->size = sizeof(*move_packet);
-				move_packet->type = PLAYER_MOV;
+				move_packet->type = PLAYER_MOV_END;
 				move_packet->move_type = 4;
 				retval = send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			}
+			dead = true;
 		}
 		gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
 		break;
@@ -332,67 +371,40 @@ void ProcessPacket(char *ptr) {
 		myid = my_packet->yourid;
 
 		/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
-		/* here : 생성할 때 리소스 타입이 안 온다. 유저는 다 하나라 상관 없는데 몬스터는...
-				> my_packet->type 이거 같은데, 내 타입만 온다. */
-		pObjectManager->Insert(myid, eResourceType::User, D3DXVECTOR3(0, 0, 0));
+		pObjectManager->Insert((UINT)myid, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+			D3DXVECTOR3(0, 0, 0));
 
 		for (int i = 0; i < my_packet->count; ++i)
 		{
-			pObjectManager->Insert(my_packet->id[i], eResourceType::User, my_packet->x[i], 0, my_packet->z[i]);
+			pObjectManager->Insert(my_packet->id[i], eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->x[i], 0, my_packet->z[i]));
 		}
-		//player.id = myid;
-		//player.on = true;
-		//for (int i = 0; i < my_packet->count; ++i) {
-
-		//	current_other_count++;
-		//	other[current_other_count].id = my_packet->id[i];
-		//	other[current_other_count].x = my_packet->x[i];
-		//	other[current_other_count].z = my_packet->z[i];
-
-		//	other[current_other_count].on = true;
-		//}
 		break;
 	}
 	case PUT_PLAYER:
-	{ /* here : 내가 들어오고 나서 들어온 사람? */
+	{ /* here : 내가 들어오고 나서 들어온 사람 */
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
-		pObjectManager->Insert(my_packet->id, eResourceType::User, my_packet->x, 0, my_packet->z);
-		//current_other_count++;
-		//other[current_other_count].on = true;
-		//other[current_other_count].id = my_packet->id;
-		//other[current_other_count].x = my_packet->x;
-		//other[current_other_count].z = my_packet->z;
+		pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(), 
+			D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		break;
 	}
 	case PLAYER_POS:
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
-		pObjectManager->FindObject(myid)->SetPosition(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-		//if (myid == my_packet->id)
-		//{
-		//	player.x = my_packet->x;
-		//	player.z = my_packet->z;
-		//}
-		//else {
-		//	for (int i = 0; i < 10; ++i) {
-		//		if (my_packet->id == other[i].id) {
-		//			other[i].x = my_packet->x;
-		//			other[i].z = my_packet->z;
-		//			break;
-		//		}
-		//	}
-		//}
+		pObjectManager->FindObject(my_packet->id)->SetPosition(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		break;
 	}
 	case BOSS_POS:
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
-		pObjectManager->FindObject(my_packet->id)->SetPosition(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-		//boss.x = my_packet->x;
-		//boss.z = my_packet->z;
+		if (pObjectManager->FindObject(my_packet->id))
+			pObjectManager->FindObject(my_packet->id)->SetPosition(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		else
+			pObjectManager->Insert(my_packet->id, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		break;
 	}
 	default:

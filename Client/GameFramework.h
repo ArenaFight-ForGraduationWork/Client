@@ -27,8 +27,10 @@ public:
 	void ReleaseObjects();
 
 	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 
-	void ProcessInput();
 	void FrameAdvance();
+
+	ID3D11Device* GetDevice() { return m_pd3dDevice; }
+	ID3D11DeviceContext* GetDeviceContext() { return m_pd3dDeviceContext; }
 
 	//윈도우의 메시지를 처리하는 함수이다. 
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);

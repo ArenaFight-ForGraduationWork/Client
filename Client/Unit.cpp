@@ -63,7 +63,6 @@ void CUnit::Move(const float cameraYaw, const DWORD dwDirection, const float fTi
 	//m_pObject->SetBoundingBox();
 
 	m_pObject->MoveAndRotatingHitBox();
-
 }
 
 void CUnit::boundingBoxMove(const float cameraYaw, const DWORD dwDirection, const float fTimeElapsed)
