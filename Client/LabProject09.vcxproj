@@ -42,9 +42,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>D:\ArenaFight\Client\Client\DirectX_SDK_June2010\Utilities_bin_x86;$(ExecutablePath)</ExecutablePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
     <IncludePath>D:\ArenaFight\Client\Client\DirectX_SDK_June2010\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\ArenaFight\Client\Client\DirectX_SDK_June2010\Lib_x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\ArenaFight\Client\Client\DirectX_SDK_June2010\Lib_x86;D:\ArenaFight\Client\Client\DirectX_SDK_June2010\Lib_x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
