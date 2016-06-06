@@ -87,12 +87,13 @@ CObject::CObject(UINT id)
 	g_pd3dcbBoneMatrix = nullptr;
 	g_pcbBoneMatrix = nullptr;
 
-	for (int i = 0; i < ATTACK_COUNT; ++i){
+	for (int i = 0; i < ATTACK_COUNT; ++i)
+	{
 		m_HitMaxVer[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_HitMinVer[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	}
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
-		m_AniMaxTime[i] = 0.0f;
+		m_AniMaxTime[i] = static_cast<__int64>(0.0f);
 }
 
 void CObject::SetResourceType(int type)
@@ -214,31 +215,40 @@ void CObject::BoundingRotateRelative(const D3DXVECTOR3 *d3dxVec)
 
 const D3DXMATRIX* CObject::_GetBoundingRotationMatrix()
 {
-	D3DXMATRIX mtxRotate;
-	D3DXMatrixIdentity(&mtxRotate);
+	D3DXMATRIX *pmtxRotate = new D3DXMATRIX();
+	D3DXMatrixIdentity(pmtxRotate);
 
-	m_boundingWorldMatrix->_11 = mtxRotate._11;
-	m_boundingWorldMatrix->_12 = mtxRotate._12;
-	m_boundingWorldMatrix->_13 = mtxRotate._13;
-	m_boundingWorldMatrix->_21 = mtxRotate._21;
-	m_boundingWorldMatrix->_22 = mtxRotate._22;
-	m_boundingWorldMatrix->_23 = mtxRotate._23;
-	m_boundingWorldMatrix->_31 = mtxRotate._31;
-	m_boundingWorldMatrix->_32 = mtxRotate._32;
-	m_boundingWorldMatrix->_33 = mtxRotate._33;
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			pmtxRotate->m[i][j] = m_boundingWorldMatrix->m[i][j];
+		}
+	}
+	/* 이거 뭐지 왜 앞뒤가 바꼈어;; */
+	//m_boundingWorldMatrix->_11 = pmtxRotate->_11;
+	//m_boundingWorldMatrix->_12 = pmtxRotate->_12;
+	//m_boundingWorldMatrix->_13 = pmtxRotate->_13;
+	//m_boundingWorldMatrix->_21 = pmtxRotate->_21;
+	//m_boundingWorldMatrix->_22 = pmtxRotate->_22;
+	//m_boundingWorldMatrix->_23 = pmtxRotate->_23;
+	//m_boundingWorldMatrix->_31 = pmtxRotate->_31;
+	//m_boundingWorldMatrix->_32 = pmtxRotate->_32;
+	//m_boundingWorldMatrix->_33 = pmtxRotate->_33;
 
-	return &mtxRotate;
+	return pmtxRotate;
 }
 
 const D3DXVECTOR3* CObject::GetBoundingPosition()
 {
-	return &D3DXVECTOR3(m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_42, m_boundingWorldMatrix->_43);
+	D3DXVECTOR3 *pPosition = new D3DXVECTOR3(m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_42, m_boundingWorldMatrix->_43);
+	return pPosition;
 }
 const D3DXVECTOR3* CObject::GetBoundingLookAt()
 {
-	D3DXVECTOR3 d3dxvLookAt(m_boundingWorldMatrix->_31, m_boundingWorldMatrix->_32, m_boundingWorldMatrix->_33);
-	D3DXVec3Normalize(&d3dxvLookAt, &d3dxvLookAt);
-	return &d3dxvLookAt;
+	D3DXVECTOR3 *pd3dxvLookAt = new D3DXVECTOR3(m_boundingWorldMatrix->_31, m_boundingWorldMatrix->_32, m_boundingWorldMatrix->_33);
+	D3DXVec3Normalize(pd3dxvLookAt, pd3dxvLookAt);
+	return pd3dxvLookAt;
 }
 
 
@@ -293,28 +303,29 @@ void CObject::RotateAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
 
 const D3DXVECTOR3* CObject::GetPosition()
 {
-	return &D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
+	D3DXVECTOR3 *pPosition = new D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
+	return pPosition;
 }
 
 const D3DXVECTOR3* CObject::GetRight()
 {
-	D3DXVECTOR3 d3dxvRight(m_pd3dxWorldMatrix->_11, m_pd3dxWorldMatrix->_12, m_pd3dxWorldMatrix->_13);
-	D3DXVec3Normalize(&d3dxvRight, &d3dxvRight);
-	return &d3dxvRight;
+	D3DXVECTOR3 *pd3dxvRight = new D3DXVECTOR3(m_pd3dxWorldMatrix->_11, m_pd3dxWorldMatrix->_12, m_pd3dxWorldMatrix->_13);
+	D3DXVec3Normalize(pd3dxvRight, pd3dxvRight);
+	return pd3dxvRight;
 }
 
 const D3DXVECTOR3* CObject::GetUp()
 {
-	D3DXVECTOR3 d3dxvUp(m_pd3dxWorldMatrix->_21, m_pd3dxWorldMatrix->_22, m_pd3dxWorldMatrix->_23);
-	D3DXVec3Normalize(&d3dxvUp, &d3dxvUp);
-	return &d3dxvUp;
+	D3DXVECTOR3 *pd3dxvUp = new D3DXVECTOR3(m_pd3dxWorldMatrix->_21, m_pd3dxWorldMatrix->_22, m_pd3dxWorldMatrix->_23);
+	D3DXVec3Normalize(pd3dxvUp, pd3dxvUp);
+	return pd3dxvUp;
 }
 
 const D3DXVECTOR3* CObject::GetLookAt()
 {
-	D3DXVECTOR3 d3dxvLookAt(m_pd3dxWorldMatrix->_31, m_pd3dxWorldMatrix->_32, m_pd3dxWorldMatrix->_33);
-	D3DXVec3Normalize(&d3dxvLookAt, &d3dxvLookAt);
-	return &d3dxvLookAt;
+	D3DXVECTOR3 *pd3dxvLookAt = new D3DXVECTOR3(m_pd3dxWorldMatrix->_31, m_pd3dxWorldMatrix->_32, m_pd3dxWorldMatrix->_33);
+	D3DXVec3Normalize(pd3dxvLookAt, pd3dxvLookAt);
+	return pd3dxvLookAt;
 }
 
 void CObject::SetTexture(CTexture *pTexture)
@@ -326,20 +337,27 @@ void CObject::SetTexture(CTexture *pTexture)
 
 const D3DXMATRIX* CObject::_GetRotationMatrix()
 {
-	D3DXMATRIX mtxRotate;
-	D3DXMatrixIdentity(&mtxRotate);
+	D3DXMATRIX *pmtxRotate = new D3DXMATRIX();
+	D3DXMatrixIdentity(pmtxRotate);
 
-	m_pd3dxWorldMatrix->_11 = mtxRotate._11;
-	m_pd3dxWorldMatrix->_12 = mtxRotate._12;
-	m_pd3dxWorldMatrix->_13 = mtxRotate._13;
-	m_pd3dxWorldMatrix->_21 = mtxRotate._21;
-	m_pd3dxWorldMatrix->_22 = mtxRotate._22;
-	m_pd3dxWorldMatrix->_23 = mtxRotate._23;
-	m_pd3dxWorldMatrix->_31 = mtxRotate._31;
-	m_pd3dxWorldMatrix->_32 = mtxRotate._32;
-	m_pd3dxWorldMatrix->_33 = mtxRotate._33;
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			pmtxRotate->m[i][j] = m_pd3dxWorldMatrix->m[i][j];
+		}
+	}
+	//m_pd3dxWorldMatrix->_11 = mtxRotate._11;
+	//m_pd3dxWorldMatrix->_12 = mtxRotate._12;
+	//m_pd3dxWorldMatrix->_13 = mtxRotate._13;
+	//m_pd3dxWorldMatrix->_21 = mtxRotate._21;
+	//m_pd3dxWorldMatrix->_22 = mtxRotate._22;
+	//m_pd3dxWorldMatrix->_23 = mtxRotate._23;
+	//m_pd3dxWorldMatrix->_31 = mtxRotate._31;
+	//m_pd3dxWorldMatrix->_32 = mtxRotate._32;
+	//m_pd3dxWorldMatrix->_33 = mtxRotate._33;
 
-	return &mtxRotate;
+	return pmtxRotate;
 }
 
 void CObject::SetPosition(D3DXVECTOR3* pos)
@@ -679,7 +697,7 @@ void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 			m_fAnimationPlaytime = 0.0f;
 		}
 		m_fAnimationPlaytime += 0.01f;				// 공격속도 제어 가능. 파닥파닥
-		NowTime = m_fAnimationPlaytime * 1000;
+		NowTime = static_cast<__int64>(m_fAnimationPlaytime) * 1000;
 
 		if ((NowTime / 10) >= (m_AniMaxTime[Animation_state] / 10))		//애니메이션 초기화되는 부분.
 		{
@@ -693,7 +711,7 @@ void CObject::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 			g_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
 		}
 
-		if (g_pd3dcbBoneMatrix != nullptr)
+		if (g_pd3dcbBoneMatrix)
 		{
 			pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &g_pd3dcbBoneMatrix);
 		}

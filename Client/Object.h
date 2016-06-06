@@ -108,8 +108,6 @@ public:
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
-	void SetPosition();
-
 	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
 
 	UINT GetId() { return m_id; }
@@ -124,7 +122,6 @@ public:
 	virtual void SetResourceType(int eType);
 	int GetResourceType() { return eSourceType; }
 
-	//virtual void Animate(int State, ID3D11DeviceContext*pd3dDeviceContext, float fTimeElapsed);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 	//애니메이션 + 렌더
@@ -149,7 +146,7 @@ public:
 	void SetTime(long long*);
 
 	void SetPlayAnimationState(int animation_state);			//지금 재생해야할 애니메이션이 몇번째것인가. 
-																				// idle, move, dead, attack, skill1, skill2, skill3
+																// idle, move, dead, attack, skill1, skill2, skill3
 	//=================================================================
 
 	//=================================================================
@@ -160,7 +157,6 @@ public:
 
 	D3DXVECTOR3 m_HitMaxVer[ATTACK_COUNT];		//히트박스를 위한 최대값
 	D3DXVECTOR3 m_HitMinVer[ATTACK_COUNT];		//히트박스를 위한 최소값
-
 
 	bool MyHitAndEnemyBound(CObject* pObject);		// 내 히트박스 + 몬스터 충돌박스 = 몬스터 체력 감소
 	bool EnemyHitAndMyBound(CObject* pObject);		// 몬스터 히트박스 + 내 충돌박스 = 내 체력 감소
@@ -191,10 +187,12 @@ private:
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
+
 	UINT m_id;
 
 	int  eSourceType;
 	bool isAnimating = true;
+
 	const D3DXMATRIX* _GetRotationMatrix();
 	const D3DXMATRIX* _GetBoundingRotationMatrix();
 };
