@@ -33,7 +33,7 @@ public:
 	void Initialize(ID3D11Device *pd3dDevice);
 
 	/* ~데이터를 가진 오브젝트를 추가 */
-	CObject* Insert(UINT id, eResourceType eType, int x = 0, int y = 0, int z = 0, int dx = 0, int dy = 0, int dz = 0);
+	CObject* Insert(UINT id, eResourceType eType, float x = 0, float y = 0, float z = 0, float dx = 0, float dy = 0, float dz = 0);
 	CObject* Insert(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
 
 	//애니메이션 전용
@@ -52,6 +52,7 @@ public:
 	UINT *puiTempArray = pObjectManager->FindObjectsInCategory(CObjectManager::eObjectType::MONSTER, iTempSize);
 	이렇게 호출한 뒤, puiTempArray[idx( 0 ~ iTempSize-1 )]로 사용하면 된다.
 	*/
+	UINT* FindObjectsInCategory(eObjectType eType, int& iSize);
 	std::vector<CObject*> FindObjectInCategory(eObjectType eType);
 
 	void DeleteObject(UINT id);

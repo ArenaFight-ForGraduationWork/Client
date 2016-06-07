@@ -84,16 +84,6 @@ public:
 	/* 로컬 Z축 방향으로 이동한다 */
 	virtual void MoveForward(float fDistance = 1.0f);
 
-	///* 바운딩박스 */
-	//void BoundingMoveForward(float fDistance = 1.0f);
-	//void BoundingMoveAbsolute(const D3DXVECTOR3 *d3dxVec);
-	//void BoundingRotateAbsolute(const D3DXVECTOR3 *d3dxVec);
-	//void BoundingRotateRelative(const D3DXVECTOR3 *d3dxVec);
-	//void SetBoundingBoxMatrix();
-	//D3DXMATRIX* GetBoundingWorldMatrix() { return m_boundingWorldMatrix; }
-	//const D3DXVECTOR3* GetBoundingPosition();
-	//const D3DXVECTOR3* GetBoundingLookAt();
-
 	void RotateRelative(const float fPitch, const float fYaw, const float fRoll);
 	void RotateRelative(const D3DXVECTOR3 *d3dxVec);
 	void RotateRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
@@ -146,8 +136,6 @@ public:
 	void SetTime(long long*);
 
 	void PlayAnimation(eAnimationType eType);
-	//==============================================================================================
-	//==============================================================================================
 
 	//==============================================================================================
 	//==============================================================================================
@@ -177,8 +165,15 @@ public:
 	//D3DXVECTOR3 GetMinVer() { return m_MinVer; }
 
 	//void SetPressSkill(int num) { PressSkillNum = num; }		//어느 공격스킬을 눌렀는가
-	//==============================================================================================
-	//==============================================================================================
+
+	//void BoundingMoveForward(float fDistance = 1.0f);
+	//void BoundingMoveAbsolute(const D3DXVECTOR3 *d3dxVec);
+	//void BoundingRotateAbsolute(const D3DXVECTOR3 *d3dxVec);
+	//void BoundingRotateRelative(const D3DXVECTOR3 *d3dxVec);
+	//void SetBoundingBoxMatrix();
+	//D3DXMATRIX* GetBoundingWorldMatrix() { return m_boundingWorldMatrix; }
+	//const D3DXVECTOR3* GetBoundingPosition();
+	//const D3DXVECTOR3* GetBoundingLookAt();
 
 private:
 	UINT m_id;

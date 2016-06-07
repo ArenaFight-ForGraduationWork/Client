@@ -30,7 +30,7 @@ void CObjectManager::Initialize(ID3D11Device *pd3dDevice)
 	pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
 }
 
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int z, int dx, int dy, int dz)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, float x, float y, float z, float dx, float dy, float dz)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
@@ -39,8 +39,8 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int 
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType((int)eType);
 
-	pObject->MoveAbsolute(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
-	pObject->RotateAbsolute(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+	pObject->MoveAbsolute(x, y, z);
+	pObject->RotateAbsolute(x, y, z);
 
 	pObject->PlayAnimation(CObject::eAnimationType::None);
 	//pObject->SetBoundingBox();
@@ -115,6 +115,15 @@ CObject* CObjectManager::FindObject(UINT id)
 	return nullptr;
 }
 
+UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iSize)
+{
+	iSize = m_mObjects[eType].size();
+	UINT *puiObjects = new UINT[iSize];
+	for (int i = 0; i < iSize; ++i)
+	{
+		puiObjects[i] = m_mObjects[eType][i]->GetId();
+	}
+}
 std::vector<CObject*> CObjectManager::FindObjectInCategory(eObjectType eType)
 {
 	return m_mObjects[eType];
