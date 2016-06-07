@@ -95,7 +95,6 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
-
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
 

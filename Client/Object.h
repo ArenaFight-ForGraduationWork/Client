@@ -205,8 +205,24 @@ public:
 	CUnit(UINT id);
 	~CUnit();
 
+
+
+	void SetStrikingPower(float fSp) { m_fStrikingPower = fSp; }
+	void SetDefensivePower(float fDp) { m_fDefensivePower = fDp; }
+	void SetMovingSpeed(float fMs) { m_fMovingSpeed = fMs; }
+	void SetHealthPoint(float fHp) { m_fHp = fHp; }
+
+	float GetStrikingPower() { return m_fStrikingPower; }
+	float GetDefensivePower() { return m_fDefensivePower; }
+	float GetMovingSpeed() { return m_fMovingSpeed; }
+	float GetHealthPoint() { return m_fHp; }
+
 protected:
 private:
+	float m_fStrikingPower;		/* 공격력 */
+	float m_fDefensivePower;	/* 방어력 */
+	float m_fMovingSpeed;		/* 이동속도. m/s */
+	float m_fHp;				/* 체력 */
 };
 
 
