@@ -28,12 +28,11 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	m_vResources[(int)eResourceType::User]->SetIDs(0, 0, 0, 1);
 	m_vResources[(int)eResourceType::Monster1]->SetIDs(1, 1, 0, 1);
 	m_vResources[(int)eResourceType::Item_HP]->SetIDs(2, 2, 0, 0);
-	m_vResources[(int)eResourceType::Item_Buff]->SetIDs(2, 7, 0, 0);		//텍스쳐 번호만 바꿔주면됨
+	m_vResources[(int)eResourceType::Item_Buff]->SetIDs(2, 7, 0, 0);
 	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 3, 0, 0);
 	m_vResources[(int)eResourceType::Tree]->SetIDs(4, 4, 0, 0);
 	m_vResources[(int)eResourceType::Wall1]->SetIDs(5, 5, 0, 0);
 	m_vResources[(int)eResourceType::MakeWall]->SetIDs(6, 6, 0, 0);
-
 }
 
 CResourceManager::~CResourceManager()
@@ -107,7 +106,7 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 5000.0f, 1.0f, 5000.0f);
 
 	// 4. 나무
-	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\tree_info.txt", D3DXVECTOR3(0.8, 0.8, 0.8));
+	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\tree_info.txt", D3DXVECTOR3(0.8f, 0.8f, 0.8f));
 
 	// 5. 만든 벽
 	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2500.0f, 1500.0f, 200.0f);
@@ -134,7 +133,6 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 
 	CTexture *tempTexture;
 	WCHAR *tempTextureAddress;
-
 
 	// 0 : 인간
 	tempTexture = new CTexture(1);
@@ -178,7 +176,6 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[5] = tempTexture;
 
-
 	// 6 : 만들어준 벽
 	tempTexture = new CTexture(1);
 	tempTextureAddress = L"./Data/wall.png";
@@ -198,8 +195,6 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[8] = tempTexture;
-
-
 }
 void CResourceManager::_LoadMaterials()
 {

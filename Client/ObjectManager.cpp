@@ -39,8 +39,8 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int 
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType((int)eType);
 
-	pObject->MoveAbsolute(x, y, z);
-	pObject->RotateAbsolute(x, y, z);
+	pObject->MoveAbsolute(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+	pObject->RotateAbsolute(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
@@ -120,7 +120,7 @@ std::vector<CObject*> CObjectManager::FindObjectInCategory(eObjectType eType)
 
 void CObjectManager::DeleteObject(UINT id)
 {
-	for (short i = 0; i < m_mObjects[(eObjectType)(id / ID_DIVIDE)].size(); ++i)
+	for (unsigned short i = 0; i < m_mObjects[(eObjectType)(id / ID_DIVIDE)].size(); ++i)
 	{
 		if (id == m_mObjects[(eObjectType)(id / ID_DIVIDE)][i]->GetId())
 		{

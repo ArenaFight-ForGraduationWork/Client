@@ -21,7 +21,7 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
 		m_ppResult[i] = nullptr;
-		m_AniMaxTime[i] = 0.0f;
+		m_AniMaxTime[i] = static_cast<__int64>(0.0f);
 	}
 
 }
@@ -267,7 +267,7 @@ CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTO
 
 	ppVertices = new CTexturedNormalVertex[m_nVertices];
 
-	for (int i = 0; i < pVertices.size(); ++i)
+	for (unsigned int i = 0; i < pVertices.size(); ++i)
 	{
 		ppVertices[i].SetPosition(pVertices.at(i)->GetPosition());
 		ppVertices[i].SetNormal(pVertices.at(i)->GetNormal());

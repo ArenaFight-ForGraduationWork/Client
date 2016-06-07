@@ -174,10 +174,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	HDC hdc;
-
 	static int retval;
 	static HANDLE recv_thread;
 	packet_player_move *move_packet;
@@ -334,7 +330,7 @@ void err_display(char *msg) {
 		NULL, WSAGetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR)&lpMsgBuf, 0, NULL);
-	printf("[%s] %s", msg, (LPCTSTR)lpMsgBuf);
+	printf("[%s] %Ls", msg, (LPCTSTR)lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
 

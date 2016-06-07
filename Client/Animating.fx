@@ -49,9 +49,10 @@ PS_INPUT VS(VS_INPUT input)
 {
 	PS_INPUT output = (PS_INPUT)0;
 
-	float4 Pos = float4(input.position, 1);
+	float4 Pos;
+	Pos = float4(input.position, 1);
 
-		uint iBone0 = input.Bones1.r;
+	uint iBone0 = input.Bones1.r;
 	uint iBone1 = input.Bones1.g;
 	uint iBone2 = input.Bones1.b;
 	uint iBone3 = input.Bones1.a;
@@ -87,12 +88,15 @@ PS_INPUT VS(VS_INPUT input)
 	if (fWeight6 > 0) output.position += fWeight6 * mul(Pos, m6);
 	if (fWeight7 > 0) output.position += fWeight7 * mul(Pos, m7);
 
-	output.normalW = mul(input.normal, (float3x3)gmtxWorld);
-	output.positionW = mul(Pos, (float3x3)gmtxWorld);
+	output.position = mul(output.position, gmtxWorld);
+	output.position = mul(output.position, gmtxView);
+	output.position = mul(output.position, gmtxProjection);
+
+	output.positionW = mul(Pos.xyz, (float3x3)gmtxWorld);
 	output.positionW += float3(gmtxWorld._41, gmtxWorld._42, gmtxWorld._43);
-	matrix mtxWorldViewProjection = mul(gmtxWorld, gmtxView);
-	mtxWorldViewProjection = mul(mtxWorldViewProjection, gmtxProjection);
-	output.position = mul(output.position, mtxWorldViewProjection);
+
+	output.normalW = mul(input.normal, (float3x3)gmtxWorld);
+
 	output.tex2dcoord = input.tex2dcoord;
 
 	if (gfFogRange < 0)
@@ -104,7 +108,7 @@ PS_INPUT VS(VS_INPUT input)
 		float distance;
 		distance = sqrt(((gf3FogCenter.x - inputVertex.x)*(gf3FogCenter.x - inputVertex.x))
 			+ ((gf3FogCenter.z - inputVertex.z)*(gf3FogCenter.z - inputVertex.z))
-			);
+		);
 		output.fogFactor = saturate(distance / gfFogRange);
 	}
 
@@ -178,7 +182,7 @@ LIGHTEDCOLOR DirectionalLight(int i, float3 vNormal, float3 vToCamera)
 	LIGHTEDCOLOR output = (LIGHTEDCOLOR)0;
 
 	float3 vToLight = -gLights[i].m_vDirection;
-		float fDiffuseFactor = dot(vToLight, vNormal);
+	float fDiffuseFactor = dot(vToLight, vNormal);
 	//조명의 방향이 법선 벡터와 이루는 각도가 예각일 때 직접 조명의 영향을 계산한다.
 	if (fDiffuseFactor > 0.0f)
 	{
@@ -187,14 +191,14 @@ LIGHTEDCOLOR DirectionalLight(int i, float3 vNormal, float3 vToCamera)
 		{
 #ifdef _WITH_REFLECT
 			float3 vReflect = reflect(-vToLight, vNormal);
-				float fSpecularFactor = pow(max(dot(vReflect, vToCamera), 0.0f), gMaterial.m_cSpecular.a);
+			float fSpecularFactor = pow(max(dot(vReflect, vToCamera), 0.0f), gMaterial.m_cSpecular.a);
 #else
 #ifdef _WITH_LOCAL_VIEWER_HIGHLIGHTING
 			float3 vHalf = normalize(vToCamera + vToLight);
 #else
 			float3 vHalf = float3(0.0f, 1.0f, 0.0f);
 #endif
-				float fSpecularFactor = pow(max(dot(vHalf, vNormal), 0.0f), gMaterial.m_cSpecular.a);
+			float fSpecularFactor = pow(max(dot(vHalf, vNormal), 0.0f), gMaterial.m_cSpecular.a);
 #endif
 			output.m_cSpecular = gMaterial.m_cSpecular * (gLights[i].m_cSpecular * fSpecularFactor);
 		}
@@ -210,7 +214,7 @@ LIGHTEDCOLOR PointLight(int i, float3 vPosition, float3 vNormal, float3 vToCamer
 	LIGHTEDCOLOR output = (LIGHTEDCOLOR)0;
 
 	float3 vToLight = gLights[i].m_vPosition - vPosition;
-		float fDistance = length(vToLight);
+	float fDistance = length(vToLight);
 	//조명까지의 거리가 조명의 유효거리보다 작을 때만 조명의 영향을 계산한다.
 	if (fDistance <= gLights[i].m_fRange)
 	{
@@ -224,14 +228,14 @@ LIGHTEDCOLOR PointLight(int i, float3 vPosition, float3 vNormal, float3 vToCamer
 			{
 #ifdef _WITH_REFLECT
 				float3 vReflect = reflect(-vToLight, vNormal);
-					float fSpecularFactor = pow(max(dot(vReflect, vToCamera), 0.0f), gMaterial.m_cSpecular.a);
+				float fSpecularFactor = pow(max(dot(vReflect, vToCamera), 0.0f), gMaterial.m_cSpecular.a);
 #else
 #ifdef _WITH_LOCAL_VIEWER_HIGHLIGHTING
 				float3 vHalf = normalize(vToCamera + vToLight);
 #else
 				float3 vHalf = float3(0.0f, 1.0f, 0.0f);
 #endif
-					float fSpecularFactor = pow(max(dot(vHalf, vNormal), 0.0f), gMaterial.m_cSpecular.a);
+				float fSpecularFactor = pow(max(dot(vHalf, vNormal), 0.0f), gMaterial.m_cSpecular.a);
 #endif
 				output.m_cSpecular = gMaterial.m_cSpecular * (gLights[i].m_cSpecular * fSpecularFactor);
 			}
@@ -251,7 +255,7 @@ LIGHTEDCOLOR SpotLight(int i, float3 vPosition, float3 vNormal, float3 vToCamera
 {
 	LIGHTEDCOLOR output = (LIGHTEDCOLOR)0;
 	float3 vToLight = gLights[i].m_vPosition - vPosition;
-		float fDistance = length(vToLight);
+	float fDistance = length(vToLight);
 	//조명까지의 거리가 조명의 유효거리보다 작을 때만 조명의 영향을 계산한다.
 	if (fDistance <= gLights[i].m_fRange)
 	{
@@ -265,14 +269,14 @@ LIGHTEDCOLOR SpotLight(int i, float3 vPosition, float3 vNormal, float3 vToCamera
 			{
 #ifdef _WITH_REFLECT
 				float3 vReflect = reflect(-vToLight, vNormal);
-					float fSpecularFactor = pow(max(dot(vReflect, vToCamera), 0.0f), gMaterial.m_cSpecular.a);
+				float fSpecularFactor = pow(max(dot(vReflect, vToCamera), 0.0f), gMaterial.m_cSpecular.a);
 #else
 #ifdef _WITH_LOCAL_VIEWER_HIGHLIGHTING
 				float3 vHalf = normalize(vToCamera + vToLight);
 #else
 				float3 vHalf = float3(0.0f, 1.0f, 0.0f);
 #endif
-					float fSpecularFactor = pow(max(dot(vHalf, vNormal), 0.0f), gMaterial.m_cSpecular.a);
+				float fSpecularFactor = pow(max(dot(vHalf, vNormal), 0.0f), gMaterial.m_cSpecular.a);
 #endif
 				output.m_cSpecular = gMaterial.m_cSpecular * (gLights[i].m_cSpecular * fSpecularFactor);
 			}
@@ -297,32 +301,32 @@ float4 Lighting(float3 vPosition, float3 vNormal)
 {
 	int i;
 	float3 vCameraPosition = float3(gvCameraPosition.x, gvCameraPosition.y, gvCameraPosition.z);
-		float3 vToCamera = normalize(vCameraPosition - vPosition);
-		LIGHTEDCOLOR LightedColor = (LIGHTEDCOLOR)0;
+	float3 vToCamera = normalize(vCameraPosition - vPosition);
+	LIGHTEDCOLOR LightedColor = (LIGHTEDCOLOR)0;
 	float4 cColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
-		for (i = 0; i < MAX_LIGHTS; i++)
+	for (i = 0; i < MAX_LIGHTS; i++)
+	{
+		//활성화된 조명에 대하여 조명의 영향을 계산한다.
+		if (gLights[i].m_bEnable == 1.0f)
 		{
-			//활성화된 조명에 대하여 조명의 영향을 계산한다.
-			if (gLights[i].m_bEnable == 1.0f)
+			//조명의 유형에 따라 조명의 영향을 계산한다.
+			if (gLights[i].m_nType == DIRECTIONAL_LIGHT)
 			{
-				//조명의 유형에 따라 조명의 영향을 계산한다.
-				if (gLights[i].m_nType == DIRECTIONAL_LIGHT)
-				{
-					LightedColor = DirectionalLight(i, vNormal, vToCamera);
-					cColor += (LightedColor.m_cAmbient + LightedColor.m_cDiffuse + LightedColor.m_cSpecular);
-				}
-				if (gLights[i].m_nType == POINT_LIGHT)
-				{
-					LightedColor = PointLight(i, vPosition, vNormal, vToCamera);
-					cColor += (LightedColor.m_cAmbient + LightedColor.m_cDiffuse + LightedColor.m_cSpecular);
-				}
-				if (gLights[i].m_nType == SPOT_LIGHT)
-				{
-					LightedColor = SpotLight(i, vPosition, vNormal, vToCamera);
-					cColor += (LightedColor.m_cAmbient + LightedColor.m_cDiffuse + LightedColor.m_cSpecular);
-				}
+				LightedColor = DirectionalLight(i, vNormal, vToCamera);
+				cColor += (LightedColor.m_cAmbient + LightedColor.m_cDiffuse + LightedColor.m_cSpecular);
+			}
+			if (gLights[i].m_nType == POINT_LIGHT)
+			{
+				LightedColor = PointLight(i, vPosition, vNormal, vToCamera);
+				cColor += (LightedColor.m_cAmbient + LightedColor.m_cDiffuse + LightedColor.m_cSpecular);
+			}
+			if (gLights[i].m_nType == SPOT_LIGHT)
+			{
+				LightedColor = SpotLight(i, vPosition, vNormal, vToCamera);
+				cColor += (LightedColor.m_cAmbient + LightedColor.m_cDiffuse + LightedColor.m_cSpecular);
 			}
 		}
+	}
 	//글로벌 주변 조명의 영향을 최종 색상에 더한다.
 	cColor += (gcLightGlobalAmbient * gMaterial.m_cAmbient);
 	//최종 색상의 알파값은 물질의 디퓨즈 색상의 알파값으로 설정한다.

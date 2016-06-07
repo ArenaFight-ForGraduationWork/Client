@@ -167,7 +167,7 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 
 	fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_llAnimationMaxTime, &m_uiAnimationNodeIndexCount);
 
-	m_ppResult[StateCnt] = new XMFLOAT4X4*[m_llAnimationMaxTime / 10];
+	m_ppResult[StateCnt] = new XMFLOAT4X4*[static_cast<unsigned int>(m_llAnimationMaxTime) / 10];
 
 	for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
 	{

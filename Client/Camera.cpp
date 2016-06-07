@@ -142,9 +142,9 @@ CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
 {
 	double theta = D3DXToRadian(m_fTheta);
-	m_pd3dxvPosition->x = pd3dxvPosition->x + (m_fDistanceFromObject * cos(theta));
+	m_pd3dxvPosition->x = pd3dxvPosition->x + (m_fDistanceFromObject * static_cast<float>(cos(theta)));
 	m_pd3dxvPosition->y = pd3dxvPosition->y + m_fHeight;
-	m_pd3dxvPosition->z = pd3dxvPosition->z + (m_fDistanceFromObject * sin(theta));
+	m_pd3dxvPosition->z = pd3dxvPosition->z + (m_fDistanceFromObject * static_cast<float>(sin(theta)));
 
 	D3DXVECTOR3 d3dxvLookAtPosition = D3DXVECTOR3(pd3dxvPosition->x, pd3dxvPosition->y + 170, pd3dxvPosition->z);
 	SetLookAtPosition(d3dxvLookAtPosition);
