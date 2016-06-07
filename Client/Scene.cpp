@@ -78,6 +78,19 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			//printf(" 몬스터 : %.2f, %.2f\n", m_pMonster->GetObjects()->m_MaxVer.x, m_pMonster->GetObjects()->m_MaxVer.z);
 			break;
 
+		//case VK_F5:
+		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
+		//	break;
+		//case VK_F6:
+		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
+		//	break;
+		//case VK_F7:
+		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Dead);
+		//	break;
+		//case VK_F8:
+		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill1);
+		//	break;
+
 			//case VK_SPACE:	//평타
 			//	PressSkillNum = 0;
 			//	Player_Attack_number = 3;
@@ -115,7 +128,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			break;
 		case VK_F6:
 			m_pFog->Contract();
-			break;
 			break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);

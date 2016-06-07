@@ -41,6 +41,9 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int 
 
 	pObject->MoveAbsolute(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 	pObject->RotateAbsolute(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+
+	pObject->PlayAnimation(CObject::eAnimationType::None);
+
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
@@ -60,7 +63,8 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 
-	pObject->SetBoundingBox();
+	pObject->PlayAnimation(CObject::eAnimationType::None);
+	//pObject->SetBoundingBox();
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
@@ -82,16 +86,17 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetTime(pResourceManager->GetMesh(eType)->m_AniMaxTime);
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);
 	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
-	
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
 	
 	pObject->MoveAbsolute(&position);
 	pObject->RotateAbsolute(&direction);
 
-	pObject->SetBoundingBox();	//위에서 일단 이동한만큼 월드변환이 바껴있음'ㅅ'
-	pObject->SetBoundingBoxMatrix();
-	pObject->SetHitBox();			//히트박스 설정
-	pObject->SetIsAnimation();	//애니메이션 렌더를 쓰기 위해 isAnimating = true; 해줌
+	//pObject->SetBoundingBox();	//위에서 일단 이동한만큼 월드변환이 바껴있음'ㅅ'
+	//pObject->SetBoundingBoxMatrix();
+	//pObject->SetHitBox();			//히트박스 설정
+	//pObject->SetIsAnimation();	//애니메이션 렌더를 쓰기 위해 isAnimating = true; 해줌
+	//pObject->SetPlayAnimationState(eUNIT_STATE::IDLE);
+	pObject->PlayAnimation(CObject::eAnimationType::Idle);
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 

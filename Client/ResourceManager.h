@@ -54,7 +54,7 @@ enum eUNIT_STATE{
 	ATTACK,
 	SKILL1,
 	SKILL2,
-	SKILL3
+	SKILL3,
 };
 
 class CResourceManager
