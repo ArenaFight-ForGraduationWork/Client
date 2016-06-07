@@ -43,6 +43,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, int x, int y, int 
 	pObject->RotateAbsolute(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 
 	pObject->PlayAnimation(CObject::eAnimationType::None);
+	//pObject->SetBoundingBox();
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
@@ -75,8 +76,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 }
 
 CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 position, D3DXVECTOR3 direction)
-{
-	//애니메이션 데이터 전용
+{	// 애니메이션 데이터 전용
 	CObject *pObject = new CObject(id);
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
@@ -94,8 +94,6 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	//pObject->SetBoundingBox();	//위에서 일단 이동한만큼 월드변환이 바껴있음'ㅅ'
 	//pObject->SetBoundingBoxMatrix();
 	//pObject->SetHitBox();			//히트박스 설정
-	//pObject->SetIsAnimation();	//애니메이션 렌더를 쓰기 위해 isAnimating = true; 해줌
-	//pObject->SetPlayAnimationState(eUNIT_STATE::IDLE);
 	pObject->PlayAnimation(CObject::eAnimationType::Idle);
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);

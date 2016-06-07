@@ -274,32 +274,29 @@ void CObject::RotateRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
 }
 void CObject::RotateAbsolute(const float fPitch, const float fYaw, const float fRoll)
 {
-	// 1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
-	D3DXMATRIX mtxPresentRotation = (*_GetRotationMatrix());
-	D3DXMatrixInverse(&mtxPresentRotation, 0, &mtxPresentRotation);
-	(*m_pd3dxWorldMatrix) = mtxPresentRotation * (*m_pd3dxWorldMatrix);
+	// 1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
+	// 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
+	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
+	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
+	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
 
 	// 2) fPitch, fYaw, fRoll로 회전하기
 	RotateRelative(fPitch, fYaw, fRoll);
 }
-void CObject::RotateAbsolute(const D3DXVECTOR3 *d3dxVec)  // 0, x, 0    y축기준
+void CObject::RotateAbsolute(const D3DXVECTOR3 *d3dxVec)
 {
-	// 1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
-	D3DXMATRIX mtxPresentRotation = (*_GetRotationMatrix());
-	D3DXMatrixInverse(&mtxPresentRotation, 0, &mtxPresentRotation);
-	(*m_pd3dxWorldMatrix) = mtxPresentRotation * (*m_pd3dxWorldMatrix);
+	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
+	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
+	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
 
-	// 2) d3dxVec만큼 회전하기
 	RotateRelative(d3dxVec);
 }
 void CObject::RotateAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
 {
-	// 1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
-	D3DXMATRIX mtxPresentRotation = (*_GetRotationMatrix());
-	D3DXMatrixInverse(&mtxPresentRotation, 0, &mtxPresentRotation);
-	(*m_pd3dxWorldMatrix) = mtxPresentRotation * (*m_pd3dxWorldMatrix);
+	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
+	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
+	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
 
-	// 2) fPitch, fYaw, fRoll로 회전하기
 	RotateRelative(pd3dxvAxis, fAngle);
 }
 
