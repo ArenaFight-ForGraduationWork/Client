@@ -77,11 +77,27 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 
 CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {	// 애니메이션 데이터 전용
-	CObject *pObject = new CObject(id);
+	CObject *pObject;
+	switch (eType)
+	{
+	case eResourceType::User:
+	case eResourceType::Monster1:
+		pObject = new CUnit(id);
+		break;
+	case eResourceType::Item_HP:
+	case eResourceType::Item_Buff:
+	case eResourceType::Floor:
+	case eResourceType::Tree:
+	case eResourceType::Wall1:
+	case eResourceType::MakeWall:
+	default:
+		pObject = new CObject(id);
+		break;
+	}
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
-	pObject->SetResourceType((int)eType);
+	pObject->SetResourceType(static_cast<int>(eType));
 	
 	pObject->SetTime(pResourceManager->GetMesh(eType)->m_AniMaxTime);
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);
