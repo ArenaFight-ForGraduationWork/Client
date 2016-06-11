@@ -6,7 +6,7 @@
 
 #define ID_DIVIDE 1000
 
-
+extern UINT myID;
 
 class CObjectManager
 {
@@ -16,7 +16,7 @@ public:
 	* BUFF_CRYSTAL :							충돌체크o, 삭제o,						1000~1999
 	* MONSTER : 몬스터 = 보스					충돌체크o, 히트박스o,					2000~2999
 	* PLAYER :									충돌체크o, 히트박스o,					3000~3999
-	* LAND : 바닥.								충돌체크x, 삭제x                        4000~
+	* LAND : 바닥								충돌체크x, 삭제x                        4000~
 	*/
 	enum class eObjectType :BYTE{
 		START = 0,
@@ -53,10 +53,11 @@ public:
 	이렇게 호출한 뒤, puiTempArray[idx( 0 ~ iTempSize-1 )]로 사용하면 된다.
 	*/
 	UINT* FindObjectsInCategory(eObjectType eType, int& iSize);
-	std::vector<CObject*> FindObjectInCategory(eObjectType eType);
 
 	void DeleteObject(UINT id);
 	void DeleteObjectAll();
+
+	bool CheckCollision();
 
 private:
 	std::map<eObjectType, std::vector<CObject*>> m_mObjects;

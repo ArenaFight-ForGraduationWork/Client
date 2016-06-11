@@ -39,11 +39,11 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, float x, float y, 
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType((int)eType);
 
-	pObject->MoveAbsolute(x, y, z);
-	pObject->RotateAbsolute(x, y, z);
+	pObject->SetPositionAbsolute(x, y, z);
+	pObject->SetDirectionAbsolute(x, y, z);
 
 	pObject->PlayAnimation(CObject::eAnimationType::None);
-	//pObject->SetBoundingBox();
+	pObject->SetBoundingBox();
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
@@ -61,11 +61,11 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType((int)eType);
 
-	pObject->MoveAbsolute(&position);
-	pObject->RotateAbsolute(&direction);
+	pObject->SetPositionAbsolute(&position);
+	pObject->SetDirectionAbsolute(&direction);
 
 	pObject->PlayAnimation(CObject::eAnimationType::None);
-	//pObject->SetBoundingBox();
+	pObject->SetBoundingBox();
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
 
@@ -104,10 +104,10 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
 	
-	pObject->MoveAbsolute(&position);
-	pObject->RotateAbsolute(&direction);
+	pObject->SetPositionAbsolute(&position);
+	pObject->SetDirectionAbsolute(&direction);
 
-	//pObject->SetBoundingBox();	//위에서 일단 이동한만큼 월드변환이 바껴있음'ㅅ'
+	pObject->SetBoundingBox();
 	//pObject->SetBoundingBoxMatrix();
 	//pObject->SetHitBox();			//히트박스 설정
 	pObject->PlayAnimation(CObject::eAnimationType::Idle);
@@ -140,11 +140,6 @@ UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iSize)
 	}
 
 	return puiObjects;
-}
-std::vector<CObject*> CObjectManager::FindObjectInCategory(eObjectType eType)
-{
-	return m_mObjects[eType];
-	//return m_mObjects[(eObjectType)(id / ID_DIVIDE)];
 }
 
 void CObjectManager::DeleteObject(UINT id)
@@ -192,3 +187,24 @@ void CObjectManager::DeleteObjectAll()
 	}
 	m_mObjects.clear();
 }
+
+
+bool CObjectManager::CheckCollision()
+{
+	if (!FindObject(myID))
+		return;
+
+	for (auto monster : m_mObjects[eObjectType::MONSTER])
+	{
+		float distance = ((FindObject(myID)->GetPosition()->x - monster->GetPosition()->x)*(FindObject(myID)->GetPosition()->x - monster->GetPosition()->x))
+			+ ((FindObject(myID)->GetPosition()->z - monster->GetPosition()->z)*(FindObject(myID)->GetPosition()->z - monster->GetPosition()->z));
+		if (sqrt(distance) <= FindObject(myID)->GetRadius() + monster->GetRadius())
+		{
+			return true;
+		}
+	}
+}
+
+
+
+

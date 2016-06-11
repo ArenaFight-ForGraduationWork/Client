@@ -112,6 +112,10 @@ CObject::CObject(UINT id)
 		m_fAniMaxTime[i] = 0.0f;
 
 	m_eAnimationType = eAnimationType::Idle;
+
+	//m_pMaxVer = nullptr;
+	//m_pMinVer = nullptr;
+	m_fRadius = 0.0;
 }
 
 void CObject::SetResourceType(int type)
@@ -139,8 +143,14 @@ void CObject::SetMaterial(CMaterial *pMaterial)
 	m_pMaterial = pMaterial;
 	if (m_pMaterial) m_pMaterial->AddRef();
 }
+void CObject::SetTexture(CTexture *pTexture)
+{
+	if (m_pTexture) m_pTexture->Release();
+	m_pTexture = pTexture;
+	if (m_pTexture) m_pTexture->AddRef();
+}
 
-void CObject::MoveRelative(const float fx, const float fy, const float fz)
+void CObject::SetPositionRelative(const float fx, const float fy, const float fz)
 {
 	D3DXVECTOR3 d3dxvPosition = *GetPosition();
 
@@ -152,9 +162,9 @@ void CObject::MoveRelative(const float fx, const float fy, const float fz)
 	d3dxvPosition += fy * d3dxvUp;
 	d3dxvPosition += fz * d3dxvLookAt;
 
-	MoveAbsolute(&d3dxvPosition);
+	SetPositionAbsolute(&d3dxvPosition);
 }
-void CObject::MoveRelative(const D3DXVECTOR3 *d3dxVec)
+void CObject::SetPositionRelative(const D3DXVECTOR3 *d3dxVec)
 {
 	D3DXVECTOR3 d3dxvPosition = *GetPosition();
 
@@ -166,20 +176,19 @@ void CObject::MoveRelative(const D3DXVECTOR3 *d3dxVec)
 	d3dxvPosition += d3dxVec->y * d3dxvUp;
 	d3dxvPosition += d3dxVec->z * d3dxvLookAt;
 
-	MoveAbsolute(&d3dxvPosition);
+	SetPositionAbsolute(&d3dxvPosition);
 }
-void CObject::MoveAbsolute(const float fx, const float fy, const float fz)
+void CObject::SetPositionAbsolute(const float fx, const float fy, const float fz)
 {
 	m_pd3dxWorldMatrix->_41 = fx;
 	m_pd3dxWorldMatrix->_42 = fy;
 	m_pd3dxWorldMatrix->_43 = fz;
 }
-void CObject::MoveAbsolute(const D3DXVECTOR3 *d3dxVec)
+void CObject::SetPositionAbsolute(const D3DXVECTOR3 *d3dxVec)
 {
 	m_pd3dxWorldMatrix->_41 = d3dxVec->x;
 	m_pd3dxWorldMatrix->_42 = d3dxVec->y;
 	m_pd3dxWorldMatrix->_43 = d3dxVec->z;
-
 }
 
 void CObject::MoveForward(const float fDistance)
@@ -187,7 +196,7 @@ void CObject::MoveForward(const float fDistance)
 	D3DXVECTOR3 d3dxvPosition = *GetPosition();
 	D3DXVECTOR3 d3dxvLookAt = *GetLookAt();
 	d3dxvPosition += fDistance * d3dxvLookAt;
-	MoveAbsolute(&d3dxvPosition);
+	SetPositionAbsolute(&d3dxvPosition);
 }
 
 
@@ -198,10 +207,10 @@ void CObject::MoveForward(const float fDistance)
 //	D3DXVECTOR3 d3dxvTempLookAt = *GetLookAt();
 //	d3dxvTempPosition += fDistance * d3dxvTempLookAt;
 //	//cout << d3dxvTempPosition.x << ", " << d3dxvTempPosition.z << endl;
-//	BoundingMoveAbsolute(&d3dxvTempPosition);
+//	BoundingSetPositionAbsolute(&d3dxvTempPosition);
 //}
 //
-//void CObject::BoundingMoveAbsolute(const D3DXVECTOR3 *d3dxVec)
+//void CObject::BoundingSetPositionAbsolute(const D3DXVECTOR3 *d3dxVec)
 //{
 //	m_boundingWorldMatrix->_41 = d3dxVec->x;
 //	m_boundingWorldMatrix->_42 = d3dxVec->y;
@@ -209,7 +218,7 @@ void CObject::MoveForward(const float fDistance)
 //	//printf(" 바운딩 : %f, %f\n", m_boundingWorldMatrix->_41, m_boundingWorldMatrix->_43);
 //}
 //
-//void CObject::BoundingRotateAbsolute(const D3DXVECTOR3 *d3dxVec)
+//void CObject::BoundingSetDirectionAbsolute(const D3DXVECTOR3 *d3dxVec)
 //{
 //	// 1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
 //	D3DXMATRIX mtxPresentRotation = (*_GetBoundingRotationMatrix());
@@ -217,9 +226,9 @@ void CObject::MoveForward(const float fDistance)
 //	(*m_boundingWorldMatrix) = mtxPresentRotation * (*m_boundingWorldMatrix);
 //
 //	// 2) d3dxVec만큼 회전하기
-//	BoundingRotateRelative(d3dxVec);
+//	BoundingSetDirectionRelative(d3dxVec);
 //}
-//void CObject::BoundingRotateRelative(const D3DXVECTOR3 *d3dxVec)
+//void CObject::BoundingSetDirectionRelative(const D3DXVECTOR3 *d3dxVec)
 //{
 //	D3DXMATRIX mtxRotate;
 //	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(d3dxVec->y), (float)D3DXToRadian(d3dxVec->x), (float)D3DXToRadian(d3dxVec->z));
@@ -254,56 +263,55 @@ void CObject::MoveForward(const float fDistance)
 //	return pd3dxvLookAt;
 //}
 
-void CObject::RotateRelative(const float fPitch, const float fYaw, const float fRoll)
+void CObject::SetDirectionRelative(const float fPitch, const float fYaw, const float fRoll)
 {
 	D3DXMATRIX mtxRotate;
 	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(fYaw), (float)D3DXToRadian(fPitch), (float)D3DXToRadian(fRoll));
 	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
 }
-void CObject::RotateRelative(const D3DXVECTOR3 *d3dxVec)
+void CObject::SetDirectionRelative(const D3DXVECTOR3 *d3dxVec)
 {
 	D3DXMATRIX mtxRotate;
 	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(d3dxVec->y), (float)D3DXToRadian(d3dxVec->x), (float)D3DXToRadian(d3dxVec->z));
 	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
 }
-void CObject::RotateRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
+void CObject::SetDirectionRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
 {
 	D3DXMATRIX mtxRotate;
 	D3DXMatrixRotationAxis(&mtxRotate, pd3dxvAxis, (float)D3DXToRadian(fAngle));
 	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
 }
-void CObject::RotateAbsolute(const float fPitch, const float fYaw, const float fRoll)
+void CObject::SetDirectionAbsolute(const float fPitch, const float fYaw, const float fRoll)
 {
-	// 1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
-	// 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
+	//   1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
+	// v 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
 	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
 	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
 	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
 
 	// 2) fPitch, fYaw, fRoll로 회전하기
-	RotateRelative(fPitch, fYaw, fRoll);
+	SetDirectionRelative(fPitch, fYaw, fRoll);
 }
-void CObject::RotateAbsolute(const D3DXVECTOR3 *d3dxVec)
+void CObject::SetDirectionAbsolute(const D3DXVECTOR3 *d3dxVec)
 {
 	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
 	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
 	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
 
-	RotateRelative(d3dxVec);
+	SetDirectionRelative(d3dxVec);
 }
-void CObject::RotateAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
+void CObject::SetDirectionAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle)
 {
 	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
 	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
 	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
 
-	RotateRelative(pd3dxvAxis, fAngle);
+	SetDirectionRelative(pd3dxvAxis, fAngle);
 }
 
 const D3DXVECTOR3* CObject::GetPosition()
 {
-	D3DXVECTOR3 *pPosition = new D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
-	return pPosition;
+	return  new D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
 }
 
 const D3DXVECTOR3* CObject::GetRight()
@@ -327,35 +335,9 @@ const D3DXVECTOR3* CObject::GetLookAt()
 	return pd3dxvLookAt;
 }
 
-void CObject::SetTexture(CTexture *pTexture)
-{
-	if (m_pTexture) m_pTexture->Release();
-	m_pTexture = pTexture;
-	if (m_pTexture) m_pTexture->AddRef();
-}
 
-const D3DXMATRIX* CObject::_GetRotationMatrix()
-{
-	D3DXMATRIX *pmtxRotate = new D3DXMATRIX();
-	D3DXMatrixIdentity(pmtxRotate);
 
-	for (int i = 0; i < 3; ++i)
-	{
-		for (int j = 0; j < 3; ++j)
-		{
-			pmtxRotate->m[i][j] = m_pd3dxWorldMatrix->m[i][j];
-		}
-	}
 
-	return pmtxRotate;
-}
-
-void CObject::SetPosition(D3DXVECTOR3* pos)
-{
-	m_pd3dxWorldMatrix->_41 = pos->x;
-	m_pd3dxWorldMatrix->_42 = pos->y;
-	m_pd3dxWorldMatrix->_43 = pos->z;
-}
 
 ////===========================================================
 ////		충돌박스, 히트박스를 위한 함수들
@@ -363,41 +345,75 @@ void CObject::SetPosition(D3DXVECTOR3* pos)
 ////		2) EnemyHitAndMyBound : 적 히트박스 + 내 충돌박스 = 내 체력 감소
 ////		3) Collison : 내 충돌박스 + 아이템일때만 충돌박스 = 아이템 효과 발동
 ////===========================================================
-//void CObject::SetBoundingBox()
-//{
-//	m_MaxVer = this->m_pMesh->GetMaxVer();
-//	m_MinVer = this->m_pMesh->GetMinVer();
-//
-//	//위치값 변환
-//	D3DXVec3TransformCoord(&m_MaxVer, &m_MaxVer, GetWorldMatrix());		// 연산의 결과가 저장될 벡터의 주소값, 연산을 수행할 3차원 벡터값, 연산을 수행할 4X4행렬의 주소값
-//	D3DXVec3TransformCoord(&m_MinVer, &m_MinVer, GetWorldMatrix());
-//
-//	if (m_MaxVer.x < m_MinVer.x)
-//	{
-//		float temp;
-//		temp = m_MaxVer.x;
-//		m_MaxVer.x = m_MinVer.x;
-//		m_MinVer.x = temp;
-//	}
-//	if (m_MaxVer.y < m_MinVer.y)
-//	{
-//		float temp;
-//		temp = m_MaxVer.y;
-//		m_MaxVer.y = m_MinVer.y;
-//		m_MinVer.y = temp;
-//	}
-//	if (m_MaxVer.z < m_MinVer.z)
-//	{
-//		float temp;
-//		temp = m_MaxVer.z;
-//		m_MaxVer.z = m_MinVer.z;
-//		m_MinVer.z = temp;
-//	}
-//
-//	//printf("ID : %d, max : %f, %f, %f\n", this->GetId(), m_MaxVer.x, m_MaxVer.y, m_MaxVer.z);
-//	//printf("ID : %d, min : %f, %f, %f\n", this->GetId(), m_MinVer.x, m_MinVer.y, m_MinVer.z);
-//
-//}
+void CObject::SetBoundingBox()
+{
+	//if (m_pMaxVer)	delete m_pMaxVer;
+	//if (m_pMinVer)	delete m_pMinVer;
+
+	//m_pMaxVer =	&(m_pMesh->GetMaxVer());
+	//m_pMinVer = &(m_pMesh->GetMinVer());
+	m_MaxVer =	(m_pMesh->GetMaxVer());
+	m_MinVer = (m_pMesh->GetMinVer());
+
+	//if (m_pMaxVer->x < m_pMinVer->x)
+	//{
+	//	float temp;
+	//	temp = m_pMaxVer->x;
+	//	m_pMaxVer->x = m_pMinVer->x;
+	//	m_pMinVer->x = temp;
+	//}
+	//if (m_pMaxVer->y < m_pMinVer->y)
+	//{
+	//	float temp;
+	//	temp = m_pMaxVer->y;
+	//	m_pMaxVer->y = m_pMinVer->y;
+	//	m_pMinVer->y = temp;
+	//}
+	//if (m_pMaxVer->z < m_pMinVer->z)
+	//{
+	//	float temp;
+	//	temp = m_pMaxVer->z;
+	//	m_pMaxVer->z = m_pMinVer->z;
+	//	m_pMinVer->z = temp;
+	//}
+	if (m_MaxVer.x < m_MinVer.x)
+	{
+		float temp;
+		temp = m_MinVer.x;
+		m_MinVer.x = m_MinVer.x;
+		m_MinVer.x = temp;
+	}
+	if (m_MinVer.y < m_MinVer.y)
+	{
+		float temp;
+		temp = m_MinVer.y;
+		m_MinVer.y = m_MinVer.y;
+		m_MinVer.y = temp;
+	}
+	if (m_MinVer.z < m_MinVer.z)
+	{
+		float temp;
+		temp = m_MinVer.z;
+		m_MinVer.z = m_MinVer.z;
+		m_MinVer.z = temp;
+	}
+
+	//cout << "Max" << m_pMaxVer->x << ", "
+	//	<< m_pMaxVer->y << ", "
+	//	<< m_pMaxVer->z << endl;
+	//cout << "Min" << m_pMinVer->x << ", "
+	//	<< m_pMinVer->y << ", "
+	//	<< m_pMinVer->z << endl;
+	cout << "Max" << m_MaxVer.x << ", "
+		<< m_MaxVer.y << ", "
+		<< m_MaxVer.z << endl;
+	cout << "Min" << m_MinVer.x << ", "
+		<< m_MinVer.y << ", "
+		<< m_MinVer.z << endl;
+
+	m_fRadius = static_cast<float>(sqrt((m_MinVer.x * m_MinVer.x)
+		+ (m_MinVer.z * m_MinVer.z)));
+}
 //void CObject::SetBoundingBoxMatrix()
 //{
 //	//printf(" 설정 전 월드변환 : %f, %f\n", m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_43);
@@ -626,6 +642,38 @@ void CObject::SetPosition(D3DXVECTOR3* pos)
 //	else
 //		return false;
 //}
+const D3DXVECTOR3* CObject::GetMaxVer()
+{
+	//cout << "Max" << m_pMaxVer->x << ", "
+	//	<< m_pMaxVer->y << ", "
+	//	<< m_pMaxVer->z << endl;
+	//cout << "Min" << m_pMinVer->x << ", "
+	//	<< m_pMinVer->y << ", "
+	//	<< m_pMinVer->z << endl;
+	//cout << "Max" << m_MaxVer.x << ", "
+	//	<< m_MaxVer.y << ", "
+	//	<< m_MaxVer.z << endl;
+	//cout << "Min" << m_MinVer.x << ", "
+	//	<< m_MinVer.y << ", "
+	//	<< m_MinVer.z << endl;
+
+	//D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
+	//D3DXVec3TransformCoord(pVertex, m_pMaxVer, m_pd3dxWorldMatrix);
+	//return pVertex;
+	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
+	D3DXVec3TransformCoord(pVertex, &m_MaxVer, m_pd3dxWorldMatrix);
+	return pVertex;
+}
+const D3DXVECTOR3* CObject::GetMinVer()
+{
+	//D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
+	//D3DXVec3TransformCoord(pVertex, m_pMinVer, m_pd3dxWorldMatrix);
+	//return pVertex;
+	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
+	D3DXVec3TransformCoord(pVertex, &m_MinVer, m_pd3dxWorldMatrix);
+	return pVertex;
+}
+
 
 
 
@@ -726,9 +774,23 @@ void CObject::PlayAnimation(eAnimationType eType)
 	if (eType == m_eAnimationType)
 		return;
 
-	m_eAnimationType = eType;
-
-	m_fAnimationPlaytime = 0.0f;
+	switch (m_eAnimationType)
+	{
+	case CObject::eAnimationType::Idle:
+	case CObject::eAnimationType::Move:
+	{
+		m_eAnimationType = eType;
+		m_fAnimationPlaytime = 0.0f;
+	}break;
+	case CObject::eAnimationType::Dead:		// 죽었으면 애니메이션이 안 바뀜
+	case CObject::eAnimationType::Attack:	// 공격중엔 바꾸지 마라
+	case CObject::eAnimationType::Skill1:
+	case CObject::eAnimationType::Skill2:
+	case CObject::eAnimationType::Skill3:
+	case CObject::eAnimationType::None:
+		return;
+	default:break;
+	}
 }
 
 

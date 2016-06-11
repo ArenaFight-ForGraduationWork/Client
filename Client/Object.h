@@ -68,31 +68,27 @@ private:
 
 
 
-
-
-
 class CObject
 {
 public:
 	CObject(UINT id);
 	virtual ~CObject();
 
-	void MoveRelative(const float fx, const float fy, const float fz);
-	void MoveRelative(const D3DXVECTOR3 *d3dxVec);
-	void MoveAbsolute(const float fx, const float fy, const float fz);
-	void MoveAbsolute(const D3DXVECTOR3 *d3dxVec);
+	void SetPositionRelative(const float fx, const float fy, const float fz);
+	void SetPositionRelative(const D3DXVECTOR3 *d3dxVec);
+	void SetPositionAbsolute(const float fx, const float fy, const float fz);
+	void SetPositionAbsolute(const D3DXVECTOR3 *d3dxVec);
 	/* 로컬 Z축 방향으로 이동한다 */
 	virtual void MoveForward(float fDistance = 1.0f);
 
-	void RotateRelative(const float fPitch, const float fYaw, const float fRoll);
-	void RotateRelative(const D3DXVECTOR3 *d3dxVec);
-	void RotateRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
-	void RotateAbsolute(const float fPitch, const float fYaw, const float fRoll);
-	void RotateAbsolute(const D3DXVECTOR3 *d3dxVec);
-	void RotateAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
+	void SetDirectionRelative(const float fPitch, const float fYaw, const float fRoll);
+	void SetDirectionRelative(const D3DXVECTOR3 *d3dxVec);
+	void SetDirectionRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
+	void SetDirectionAbsolute(const float fPitch, const float fYaw, const float fRoll);
+	void SetDirectionAbsolute(const D3DXVECTOR3 *d3dxVec);
+	void SetDirectionAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
 
-	void SetPosition(D3DXVECTOR3* pos);
-	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환한다.
+	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환
 	const D3DXVECTOR3* GetPosition();
 	const D3DXVECTOR3* GetRight();
 	const D3DXVECTOR3* GetUp();
@@ -100,7 +96,7 @@ public:
 
 	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
 
-	UINT GetId() { return m_id; }
+	const UINT& GetId() { return m_id; }
 
 	virtual void SetMesh(CMesh *pMesh);
 	CMesh* GetMesh() { return m_pMesh; }
@@ -140,10 +136,19 @@ public:
 	//==============================================================================================
 	//==============================================================================================
 	/* Collision Detection */
-	///* 충돌체크를 위한 변수 및 함수 */
-	//int PressSkillNum;						// 지금 누른 스킬이 몇번째 공격스킬인가. 1. attack, 2. skill1, 3. skill2, 4.skill3
-	//D3DXVECTOR3 m_MaxVer;			//충돌체크를 위한 최대값
-	//D3DXVECTOR3 m_MinVer;			//충돌체크를 위한 최소값
+private:
+	D3DXVECTOR3 m_MaxVer;
+	D3DXVECTOR3 m_MinVer;
+	float m_fRadius;
+
+public:
+	void SetBoundingBox();
+
+	const D3DXVECTOR3* GetMaxVer();
+	const D3DXVECTOR3* GetMinVer();
+	const float& GetRadius() { return m_fRadius; }
+
+	//int PressSkillNum;			// 지금 누른 스킬이 몇번째 공격스킬인가. 1. attack, 2. skill1, 3. skill2, 4.skill3
 
 	//D3DXVECTOR3 m_HitMaxVer[ATTACK_COUNT];		//히트박스를 위한 최대값
 	//D3DXVECTOR3 m_HitMinVer[ATTACK_COUNT];		//히트박스를 위한 최소값
@@ -155,21 +160,20 @@ public:
 	//int CollOtherID;												//나랑 부딪힌 것의 아이디
 	//bool isColl = false;											//충돌했는가 안했는가 확인용도
 
-	//virtual void SetBoundingBox();							// 모든 오브젝트에 다 있음
 	//virtual void SetHitBox();									// 공격모션이 있는 것만 히트박스가 있음
 
 	//virtual void MoveAndRotatingHitBox();					//애니메이션 있는것만 사용
 	//virtual void MoveAndRotatingBoundingBox();			//애니메이션 있는것만 사용
 
-	//D3DXVECTOR3 GetMaxVer() { return m_MaxVer; }
-	//D3DXVECTOR3 GetMinVer() { return m_MinVer; }
+	//const D3DXVECTOR3 GetMaxVer() { return m_pMaxVer; }
+	//const D3DXVECTOR3 GetMinVer() { return m_pMinVer; }
 
 	//void SetPressSkill(int num) { PressSkillNum = num; }		//어느 공격스킬을 눌렀는가
 
 	//void BoundingMoveForward(float fDistance = 1.0f);
-	//void BoundingMoveAbsolute(const D3DXVECTOR3 *d3dxVec);
-	//void BoundingRotateAbsolute(const D3DXVECTOR3 *d3dxVec);
-	//void BoundingRotateRelative(const D3DXVECTOR3 *d3dxVec);
+	//void BoundingSetPositionAbsolute(const D3DXVECTOR3 *d3dxVec);
+	//void BoundingSetDirectionAbsolute(const D3DXVECTOR3 *d3dxVec);
+	//void BoundingSetDirectionRelative(const D3DXVECTOR3 *d3dxVec);
 	//void SetBoundingBoxMatrix();
 	//D3DXMATRIX* GetBoundingWorldMatrix() { return m_boundingWorldMatrix; }
 	//const D3DXVECTOR3* GetBoundingPosition();
@@ -195,7 +199,6 @@ private:
 	int m_AnimationIndexCount;
 	eAnimationType m_eAnimationType;
 
-	const D3DXMATRIX* _GetRotationMatrix();
 	//const D3DXMATRIX* _GetBoundingRotationMatrix();
 };
 

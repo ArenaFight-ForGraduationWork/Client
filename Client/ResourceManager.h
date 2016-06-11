@@ -47,15 +47,8 @@ enum class eResourceType : BYTE{
 	END
 };
 
-enum eUNIT_STATE{
-	IDLE = 0,
-	MOVE,
-	DEAD,
-	ATTACK,
-	SKILL1,
-	SKILL2,
-	SKILL3,
-};
+
+
 
 class CResourceManager
 {
@@ -67,6 +60,9 @@ public:
 		END
 	};
 
+	static CResourceManager* GetSingleton(ID3D11Device *pd3dDevice);
+	~CResourceManager();
+
 	CMesh* GetMesh(eResourceType type);
 	CTexture* GetTexture(eResourceType type);
 	CMaterial* GetMaterial(eResourceType type);
@@ -75,13 +71,6 @@ public:
 
 	bool IsTextureEnable(eResourceType type);
 	bool IsMaterialEnable(eResourceType type);
-
-	static CResourceManager* GetSingleton(ID3D11Device *pd3dDevice);
-
-	~CResourceManager();
-
-	//애니메이션 로드용도로 우선 만들어봤당.
-	void _LoadAnimationData(ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3dDeviceContext);
 
 private:
 	CResourceManager(ID3D11Device *pd3dDevice);
@@ -97,7 +86,6 @@ private:
 	void _LoadTextures(ID3D11Device *pd3dDevice);
 	void _LoadMaterials();
 	void _CreateShaders(ID3D11Device *pd3dDevice);
-
 };
 
 
