@@ -648,8 +648,7 @@ void CObject::SetTime(long long* time)
 {
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
-		m_fAniMaxTime[i] = time[i];
-		cout << i << "¹øÂ° maxtime:" << m_fAniMaxTime[i] << endl;
+		m_fAniMaxTime[i] = static_cast<float>(time[i]);
 	}
 }
 

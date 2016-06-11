@@ -117,7 +117,6 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
 
-	cout << "Insert ¿Ï·á" << endl;
 	return pObject;
 }
 
@@ -139,6 +138,8 @@ UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iSize)
 	{
 		puiObjects[i] = m_mObjects[eType][i]->GetId();
 	}
+
+	return puiObjects;
 }
 std::vector<CObject*> CObjectManager::FindObjectInCategory(eObjectType eType)
 {

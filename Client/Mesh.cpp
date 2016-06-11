@@ -340,10 +340,9 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
 		m_ppResult[i] = CFbx::GetInstance()->GetResult(i);								
 		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
-		cout << i << "번째 time:" << m_AniMaxTime[i] << endl;
 		SetAnimationMaxTime(m_AniMaxTime[i]);
 	}
-	cout <<"=========="<< CharNum << "번째 캐릭터 Import Complete========" << endl;
+
 	pHitMaxVer = new D3DXVECTOR3[ATTACK_COUNT];
 	pHitMinVer = new D3DXVECTOR3[ATTACK_COUNT];
 	CFbx::GetInstance()->ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
@@ -352,13 +351,12 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 	{
 		m_HitMaxVer[i] = pHitMaxVer[i];
 		m_HitMinVer[i] = pHitMinVer[i];
-		//printf("%f %f %f\n", m_HitMaxVer[i].x, m_HitMaxVer[i].y, m_HitMaxVer[i].z);
 	}
 
 	m_AnimationIndexCnt = CFbx::GetInstance()->GetAnimationIndexCount();
 	SetAnimationIndexCnt(m_AnimationIndexCnt);		// Cmesh의 AnimationIndex에 넣어줌. object에서 가져갈 수 있도록
 	SetMaxVer(CFbx::GetInstance()->GetMaxVer());	// 값을 가져와서 CMesh의 m_MaxVer에 넣어줌. object에서 가져갈 수 있도록
-	SetMinVer(CFbx::GetInstance()->GetMinVer());		// 값을 가져와서 CMesh의 m_MinVer에 넣어줌. object에서 가져갈 수 있도록
+	SetMinVer(CFbx::GetInstance()->GetMinVer());	// 값을 가져와서 CMesh의 m_MinVer에 넣어줌. object에서 가져갈 수 있도록
 
 	CFbx::GetInstance()->Fbx_ReadTextFile_Weight(CharNum, ppVertices);
 

@@ -62,8 +62,23 @@ CFirstScene::~CFirstScene()
 
 void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
+	static UCHAR pKeyBuffer[256];
+
 	switch (nMessageID)
 	{
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_UP:
+		case VK_LEFT:
+		case VK_RIGHT:
+		case VK_DOWN:
+		{
+			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
+		}break;
+		default:break;
+		}
+		break;
 	case WM_KEYUP:
 		switch (wParam)
 		{
@@ -73,55 +88,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case VK_F2:
 			m_OperationMode = MODE_KEYBOARD;
 			break;
-		case VK_F3:
-			//printf(" 캐릭터 : %.2f, %.2f\n", m_pPlayer->GetObjects()->m_MaxVer.x, m_pPlayer->GetObjects()->m_MaxVer.z);
-			//printf(" 몬스터 : %.2f, %.2f\n", m_pMonster->GetObjects()->m_MaxVer.x, m_pMonster->GetObjects()->m_MaxVer.z);
-			break;
-
-		//case VK_F5:
-		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
-		//	break;
-		//case VK_F6:
-		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-		//	break;
-		//case VK_F7:
-		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Dead);
-		//	break;
-		//case VK_F8:
-		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill1);
-		//	break;
-
-			//case VK_SPACE:	//평타
-			//	PressSkillNum = 0;
-			//	Player_Attack_number = 3;
-			//	m_pPlayer->SetIsAttack(true);
-			//	//m_pMonster->SetIsAttack(true);
-			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::ATTACK);
-			//	break;
-			//case 0x31:			//1번
-			//	cout << "1번" << endl;
-			//	PressSkillNum = 1;
-			//	Player_Attack_number = 4;
-			//	m_pPlayer->SetIsAttack(true);
-			//	//m_pMonster->SetIsAttack(true);
-			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL1);
-			//	break;
-			//case 0x32:			//2번
-			//	cout << "2번" << endl;
-			//	PressSkillNum = 2;
-			//	Player_Attack_number = 5;
-			//	m_pPlayer->SetIsAttack(true);
-			//	//m_pMonster->SetIsAttack(true);
-			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL2);
-			//	break;
-			//case 0x33:			//3번
-			//	cout << "3번" << endl;
-			//	PressSkillNum = 3;
-			//	Player_Attack_number = 6;
-			//	m_pPlayer->SetIsAttack(true);
-			//	//m_pMonster->SetIsAttack(true);
-			//	//m_pMonster->GetObjects()->SetPlayAnimationState(eUNIT_STATE::SKILL3);
-			//	break;
 
 		case VK_F5:
 			m_pFog->Expand(&D3DXVECTOR3(0, 0, 0));
@@ -129,16 +95,39 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case VK_F6:
 			m_pFog->Contract();
 			break;
+
+		case VK_UP:
+		case VK_LEFT:
+		case VK_RIGHT:
+		case VK_DOWN:
+		{
+			if (GetKeyboardState(pKeyBuffer))
+			{
+				if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
+					|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
+				{
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
+				}
+			}
+		}break;
+
+		case 0x31:	// 1
+			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill1);
+			break;
+		case 0x32:	// 2
+			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill2);
+			break;
+		case 0x33:	// 3
+			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill3);
+			break;
+
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
-		default:
-			break;
+		default:break;
 		}
 		break;
-
-	default:
-		break;
+	default:break;
 	}
 }
 void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
@@ -298,8 +287,6 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 		//m_pCameraManager->GetNowCamera()->Update(m_pObjectManager->FindObject(myID)->GetPosition());
 		D3DXVECTOR3 pos = *(m_pObjectManager->FindObject(myID)->GetPosition());
 		m_pCameraManager->GetNowCamera()->Update(&pos);
-
-		cout << "my ID : " << myID << endl;
 
 		//cout << m_pObjectManager->FindObject(myID)->GetPosition()->x << ", "
 		//	<< m_pObjectManager->FindObject(myID)->GetPosition()->y << ", "

@@ -366,8 +366,6 @@ void ProcessPacket(char *ptr) {
 		login *my_packet = reinterpret_cast<login *>(ptr);
 		myID = my_packet->yourid;
 
-		cout << "my ID : " << myID << endl;
-
 		/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
 		pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 			D3DXVECTOR3(0, 0, 0));
