@@ -145,6 +145,7 @@ struct login {
 	int bossid;
 	float bossx;
 	float bossy;
+	float direction;
 };
 struct packet_player_move {
 	BYTE size;
@@ -157,31 +158,25 @@ struct packet_player_move_end {
 	BYTE type;
 	int id;
 };
-struct packet_chat {
-	BYTE size;
-	BYTE type;
-	int id;
-	char message[MAX_CHAT_SIZE];
-};
-//struct sc_packet_chat {
-//	BYTE size;
-//	BYTE type;
-//	int id;
-//	char message[MAX_CHAT_SIZE];
-//};
 struct player_position {
 	BYTE size;
 	BYTE type;
 	int id;
 	float x;
 	float z;
+	float distance;
 	BYTE move_type;
+	float direction;
 };
 struct put_player {
 	BYTE size;
 	BYTE type;
 	int id;
 	float x;
+	float z;
+	float distance;
+	BYTE move_type;
+	float direction;
 };
 struct remove_player {
 	BYTE size;
@@ -199,7 +194,6 @@ struct boss_attack {
 	BYTE type;
 	BYTE attack_type;
 	int id;
-	float direction;
 };
 #pragma pack (pop)
 #endif

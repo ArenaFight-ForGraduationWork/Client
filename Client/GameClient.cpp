@@ -222,7 +222,7 @@ void ProcessPacket(char *ptr) {
 			myID = my_packet->id;
 			/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
 			pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-				D3DXVECTOR3(0, 0, 0));
+				D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, my_packet->direction, 0));
 
 			pObject = pObjectManager->FindObject(my_packet->bossid);
 			if (pObject)
@@ -237,7 +237,7 @@ void ProcessPacket(char *ptr) {
 		// 다른 사람이 접속. 기존/신규
 		if (my_packet->id != myID) {
 			pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+				D3DXVECTOR3(my_packet->x, 0, my_packet->z), D3DXVECTOR3(0, my_packet->direction, 0));
 		}
 	}break;
 	case PUT_PLAYER:
@@ -253,7 +253,11 @@ void ProcessPacket(char *ptr) {
 
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (pObject)
-			pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		{
+			//pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+			pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->direction, 0));
+			pObject->MoveForward(my_packet->distance);
+		}
 		else
 			pObject = pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
@@ -265,7 +269,11 @@ void ProcessPacket(char *ptr) {
 
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (pObject)
-			pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		{
+			//pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+			pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->direction, 0));
+			pObject->MoveForward(my_packet->distance);
+		}
 		else
 			pObject = pObjectManager->Insert(my_packet->id, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
