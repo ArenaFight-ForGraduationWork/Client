@@ -5,19 +5,27 @@
 
 #define MAX_BUFF_SIZE   4096
 #define MAX_PACKET_SIZE  4096
-
 #define MAX_USER 1000
+#define MAX_CHAT_SIZE  100
 
 #define SERVER_PORT  4000
 
-#define MAX_CHAT_SIZE  100
 
-#define W			1
-#define S			2
-#define A			3
-#define D			4
+// 클라 -> 서버 누른 키확인
+#define W		1
+#define S		2
+#define A		3
+#define D		4
+//#define WA		5
+//#define WD		6
+//#define SA		7
+//#define SD		8
 
-
+// 플레이어 스킬
+#define NORMAL_ATTACK	1
+#define PLAYER_SKILL1	2
+#define PLAYER_SKILL2	3
+#define PLAYER_SKILL3	4
 
 
 // 서버 -> 클라
@@ -35,7 +43,8 @@
 #define ROOM_PUT_PLAYER 12
 #define OUT_ROOM		13
 #define BOSS_POS		14
-
+#define SC_PLAYER_ATTACK	15
+#define SC_BOSS_ATTACK		16
 
 // 클라 -> 서버
 #define CREATE_ROOM		1
@@ -46,13 +55,23 @@
 #define LOBBY_CHAT		6
 #define ROOM_CHAT		7
 #define PLAYER_MOV_END	8
+#define PLAYER_ATTACK	9
 
 #define LOBBY 1
 #define ROOM  2
 #define FIGHT 3
 
 
+// 보스상태
+#define BOSS_NORMAL	1
+#define BOSS_MOVE	2
+#define BOSS_ATTACK	3
 
+// 보스공격
+#define BOSS_NORMAL_ATTACK 1
+#define BOSS_SKILL1 2
+#define BOSS_SKILL2 3
+#define BOSS_SKILL3 4
 
 #pragma pack (push, 1)
 struct create_room {
@@ -121,11 +140,15 @@ struct login {
 	int yourid;
 	float x[10];
 	float z[10];
+	int bossid;
+	float bossx;
+	float bossy;
 };
 struct packet_player_move {
 	BYTE size;
 	BYTE type;
 	BYTE move_type;
+	float direction;
 };
 struct packet_chat {
 	BYTE size;
@@ -150,6 +173,19 @@ struct remove_player {
 	BYTE size;
 	BYTE type;
 	int id;
+};
+struct player_attack {
+	BYTE size;
+	BYTE type;
+	int id;
+	BYTE attack_type;
+};
+struct boss_attack {
+	BYTE size;
+	BYTE type;
+	BYTE attack_type;
+	int id;
+	float direction;
 };
 #pragma pack (pop)
 

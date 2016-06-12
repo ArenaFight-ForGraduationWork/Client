@@ -19,6 +19,13 @@ extern char		packet_buffer[MAX_BUFF_SIZE];
 extern DWORD	in_packet_size;
 extern int		saved_packet_size;
 
+extern bool key_up;
+extern bool key_down;
+extern bool key_left;
+extern bool key_right;
+
+
+
 // # server funcions
 void err_quit(char *msg);
 void err_display(char *msg);
@@ -26,13 +33,7 @@ void ServerConnect();
 void ProcessPacket(char *ptr);
 DWORD WINAPI recvThread(LPVOID arg);
 
-// ==============임시라 쓸모 없음
-//
-//
-extern bool volatile dead;
-//
-//
-// ==============================
+
 
 
 #endif

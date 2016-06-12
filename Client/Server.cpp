@@ -16,14 +16,10 @@ char	packet_buffer[MAX_BUFF_SIZE];
 DWORD	in_packet_size = 0;
 int		saved_packet_size = 0;
 
-// ==============임시라 쓸모 없음
-//
-//
-bool volatile dead = true;
-//
-//
-// ==============================
-
+bool key_up = false;
+bool key_down = false;
+bool key_left = false;
+bool key_right = false;
 
 
 void err_quit(char *msg) {

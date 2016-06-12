@@ -225,36 +225,55 @@ void ProcessPacket(char *ptr) {
 			pObjectManager->Insert(my_packet->id[i], eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(my_packet->x[i], 0, my_packet->z[i]));
 		}
-		break;
-	}
+
+		if (pObjectManager->FindObject(my_packet->bossid))
+			pObjectManager->FindObject(my_packet->bossid)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+		else
+			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+	}break;
 	case PUT_PLAYER:
 	{ /* here : 내가 들어오고 나서 들어온 사람 */
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
 		pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 			D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-		break;
-	}
+	}break;
 	case PLAYER_POS:
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
 		pObjectManager->FindObject(my_packet->id)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-		break;
-	}
+	}break;
 	case BOSS_POS:
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
-
-		cout << my_packet->id << endl;
 
 		if (pObjectManager->FindObject(my_packet->id))
 			pObjectManager->FindObject(my_packet->id)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		else
 			pObjectManager->Insert(my_packet->id, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-		break;
-	}
+	}break;
+	case REMOVE_PLAYER:
+	{
+		remove_player *my_packet = reinterpret_cast<remove_player*>(ptr);
+		pObjectManager->DeleteObject(my_packet->id);
+	}break;
+	case SC_PLAYER_ATTACK:
+	{
+		player_attack *my_packet = reinterpret_cast<player_attack *>(ptr);
+		pObjectManager->FindObject(my_packet->id)->PlayAnimation(static_cast<CObject::eAnimationType>(static_cast<BYTE>(my_packet->attack_type + 2)));
+		// attack_type : 1,2,3,4
+		// eAnimationType : 3,4,5,6
+	}break;
+	case SC_BOSS_ATTACK:
+	{
+		boss_attack *my_packet = reinterpret_cast<boss_attack *>(ptr);
+		pObjectManager->FindObject(my_packet->id)->PlayAnimation(static_cast<CObject::eAnimationType>(static_cast<BYTE>(my_packet->attack_type + 2)));
+		// attack_type : 1,2,3,4
+		// eAnimationType : 3,4,5,6
+	}break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
