@@ -192,7 +192,7 @@ void CObjectManager::DeleteObjectAll()
 bool CObjectManager::CheckCollision()
 {
 	if (!FindObject(myID))
-		return;
+		return false;
 
 	for (auto monster : m_mObjects[eObjectType::MONSTER])
 	{
@@ -203,6 +203,8 @@ bool CObjectManager::CheckCollision()
 			return true;
 		}
 	}
+	 
+	return false;
 }
 
 

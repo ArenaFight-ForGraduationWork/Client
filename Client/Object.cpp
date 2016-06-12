@@ -404,15 +404,14 @@ void CObject::SetBoundingBox()
 	//cout << "Min" << m_pMinVer->x << ", "
 	//	<< m_pMinVer->y << ", "
 	//	<< m_pMinVer->z << endl;
-	cout << "Max" << m_MaxVer.x << ", "
-		<< m_MaxVer.y << ", "
-		<< m_MaxVer.z << endl;
-	cout << "Min" << m_MinVer.x << ", "
-		<< m_MinVer.y << ", "
-		<< m_MinVer.z << endl;
+	//cout << "Max" << m_MaxVer.x << ", "
+	//	<< m_MaxVer.y << ", "
+	//	<< m_MaxVer.z << endl;
+	//cout << "Min" << m_MinVer.x << ", "
+	//	<< m_MinVer.y << ", "
+	//	<< m_MinVer.z << endl;
 
-	m_fRadius = static_cast<float>(sqrt((m_MinVer.x * m_MinVer.x)
-		+ (m_MinVer.z * m_MinVer.z)));
+	m_fRadius = static_cast<float>(sqrt((m_MinVer.x * m_MinVer.x) + (m_MinVer.z * m_MinVer.z)));
 }
 //void CObject::SetBoundingBoxMatrix()
 //{

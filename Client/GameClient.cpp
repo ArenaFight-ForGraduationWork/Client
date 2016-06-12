@@ -396,6 +396,8 @@ void ProcessPacket(char *ptr) {
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
+		cout << my_packet->id << endl;
+
 		if (pObjectManager->FindObject(my_packet->id))
 			pObjectManager->FindObject(my_packet->id)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		else

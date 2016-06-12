@@ -113,12 +113,18 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 		case 0x31:	// 1
 			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill1);
+			if (m_pObjectManager->CheckCollision())
+				cout << "collide" << endl;
 			break;
 		case 0x32:	// 2
 			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill2);
+			if (m_pObjectManager->CheckCollision())
+				cout << "collide" << endl;
 			break;
 		case 0x33:	// 3
 			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill3);
+			if (m_pObjectManager->CheckCollision())
+				cout << "collide" << endl;
 			break;
 
 		case VK_ESCAPE:
@@ -168,12 +174,12 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 {
 	if (m_pObjectManager->FindObject(myID))
 	{
-		cout << "Max " << m_pObjectManager->FindObject(myID)->GetMaxVer()->x << ", "
-			<< m_pObjectManager->FindObject(myID)->GetMaxVer()->y << ", "
-			<< m_pObjectManager->FindObject(myID)->GetMaxVer()->z << endl;
-		cout << "Min " << m_pObjectManager->FindObject(myID)->GetMinVer()->x << ", "
-			<< m_pObjectManager->FindObject(myID)->GetMinVer()->y << ", "
-			<< m_pObjectManager->FindObject(myID)->GetMinVer()->z << endl;
+		//cout << "Max " << m_pObjectManager->FindObject(myID)->GetMaxVer()->x << ", "
+		//	<< m_pObjectManager->FindObject(myID)->GetMaxVer()->y << ", "
+		//	<< m_pObjectManager->FindObject(myID)->GetMaxVer()->z << endl;
+		//cout << "Min " << m_pObjectManager->FindObject(myID)->GetMinVer()->x << ", "
+		//	<< m_pObjectManager->FindObject(myID)->GetMinVer()->y << ", "
+		//	<< m_pObjectManager->FindObject(myID)->GetMinVer()->z << endl;
 	}
 
 	if (m_pObjectManager->FindObject(myID))
@@ -204,7 +210,7 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	/* 맵 꾸미기 */
 	{
 		// 바닥
-		m_pObjectManager->Insert(4000, eResourceType::Floor, D3DXVECTOR3(0, 0, 0));
+		m_pObjectManager->Insert(3000, eResourceType::Floor, D3DXVECTOR3(0, 0, 0));
 
 		//// 벽. 한 면에 두개씩 들어간다
 		//D3DXVECTOR3 WallPos[8];
