@@ -5,4 +5,4 @@ ipch/
 
 *.sdf
 *.suo
-*.VC.db
+GameClient.VC.db
