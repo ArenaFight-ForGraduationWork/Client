@@ -45,6 +45,9 @@
 #define BOSS_POS		14
 #define SC_PLAYER_ATTACK	15
 #define SC_BOSS_ATTACK		16
+#define SC_PLAYER_ATTACK_S	17
+#define SC_PLAYER_MOV_END	18
+
 
 // 클라 -> 서버
 #define CREATE_ROOM		1
@@ -78,6 +81,7 @@ struct create_room {
 	BYTE size;
 	BYTE type;
 	int id;
+	//int room_name;
 	char room_name[MAX_CHAT_SIZE];
 	BYTE stage;
 };
@@ -135,11 +139,9 @@ struct game_start_f {
 struct login {
 	BYTE size;
 	BYTE type;
-	int id[10];
-	BYTE count;
-	int yourid;
-	float x[10];
-	float z[10];
+	int id;
+	float x;
+	float z;
 	int bossid;
 	float bossx;
 	float bossy;
@@ -150,12 +152,23 @@ struct packet_player_move {
 	BYTE move_type;
 	float direction;
 };
+struct packet_player_move_end {
+	BYTE size;
+	BYTE type;
+	int id;
+};
 struct packet_chat {
 	BYTE size;
 	BYTE type;
 	int id;
 	char message[MAX_CHAT_SIZE];
 };
+//struct sc_packet_chat {
+//	BYTE size;
+//	BYTE type;
+//	int id;
+//	char message[MAX_CHAT_SIZE];
+//};
 struct player_position {
 	BYTE size;
 	BYTE type;
@@ -168,6 +181,7 @@ struct put_player {
 	BYTE size;
 	BYTE type;
 	int id;
+	float x;
 };
 struct remove_player {
 	BYTE size;
@@ -188,8 +202,4 @@ struct boss_attack {
 	float direction;
 };
 #pragma pack (pop)
-
-
-
-
 #endif

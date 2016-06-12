@@ -11,6 +11,7 @@ extern bool		server_on;
 extern char		ip[16];
 extern UINT		myID;
 extern SOCKET	sock;
+extern bool		first_login;
 
 extern WSABUF	recv_wsabuf;
 extern char		send_buffer[MAX_BUFF_SIZE];

@@ -208,32 +208,40 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 void ProcessPacket(char *ptr) {
-	CObjectManager *pObjectManager = CObjectManager::GetSingleton();
+	static CObjectManager *pObjectManager = CObjectManager::GetSingleton();
+	static CObject *pObject;
 
 	switch (ptr[1]) {
 	case LOGIN:
-	{	/* here : 내가 들어올 때, 나와 이미 들어와있던 사람들 */
+	{	
 		login *my_packet = reinterpret_cast<login *>(ptr);
-		myID = my_packet->yourid;
 
-		/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
-		pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-			D3DXVECTOR3(0, 0, 0));
-
-		for (int i = 0; i < my_packet->count; ++i)
+		// 내가 접속
+		if (first_login)
 		{
-			pObjectManager->Insert(my_packet->id[i], eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-				D3DXVECTOR3(my_packet->x[i], 0, my_packet->z[i]));
+			myID = my_packet->id;
+			/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
+			pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(0, 0, 0));
+
+			pObject = pObjectManager->FindObject(my_packet->bossid);
+			if (pObject)
+				pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+			else
+				pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+					D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+
+			first_login = false;
 		}
 
-		if (pObjectManager->FindObject(my_packet->bossid))
-			pObjectManager->FindObject(my_packet->bossid)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
-		else
-			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-				D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+		// 다른 사람이 접속. 기존/신규
+		if (my_packet->id != myID) {
+			pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		}
 	}break;
 	case PUT_PLAYER:
-	{ /* here : 내가 들어오고 나서 들어온 사람 */
+	{ /* 필요가 없는듯 하다 */
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
 		pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
@@ -243,35 +251,36 @@ void ProcessPacket(char *ptr) {
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
-		if (my_packet->id == myID)
-		{
-			cout << "ID : " << my_packet->id << ", "
-				<< my_packet->x << ", "
-				<< my_packet->z << endl;
-		}
-
-		if (pObjectManager->FindObject(my_packet->id))
-			pObjectManager->FindObject(my_packet->id)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		pObject = pObjectManager->FindObject(my_packet->id);
+		if (pObject)
+			pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		else
-			pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+			pObject = pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		pObject->PlayAnimation(CObject::eAnimationType::Move);
+
+		//if (my_packet->id == myID)
+		//	cout << "ID : " << my_packet->id << ", "
+		//	<< my_packet->x << ", " << my_packet->z << endl;
 	}break;
 	case BOSS_POS:
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
-		if (pObjectManager->FindObject(my_packet->id))
-			pObjectManager->FindObject(my_packet->id)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		pObject = pObjectManager->FindObject(my_packet->id);
+		if (pObject)
+			pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		else
-			pObjectManager->Insert(my_packet->id, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+			pObject = pObjectManager->Insert(my_packet->id, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		pObject->PlayAnimation(CObject::eAnimationType::Move);
 	}break;
 	case REMOVE_PLAYER:
 	{
 		remove_player *my_packet = reinterpret_cast<remove_player*>(ptr);
 		pObjectManager->DeleteObject(my_packet->id);
 	}break;
-	case SC_PLAYER_ATTACK:
+	case SC_PLAYER_ATTACK_S:
 	{
 		player_attack *my_packet = reinterpret_cast<player_attack *>(ptr);
 		pObjectManager->FindObject(my_packet->id)->PlayAnimation(static_cast<CObject::eAnimationType>(static_cast<BYTE>(my_packet->attack_type + 2)));
@@ -284,6 +293,16 @@ void ProcessPacket(char *ptr) {
 		pObjectManager->FindObject(my_packet->id)->PlayAnimation(static_cast<CObject::eAnimationType>(static_cast<BYTE>(my_packet->attack_type + 2)));
 		// attack_type : 1,2,3,4
 		// eAnimationType : 3,4,5,6
+	}break;
+	case SC_PLAYER_MOV_END:
+	{
+		packet_player_move_end *my_packet = reinterpret_cast<packet_player_move_end *>(ptr);
+
+		pObject = pObjectManager->FindObject(my_packet->id);
+		if (pObject)
+			pObject->PlayAnimation(CObject::eAnimationType::Idle);
+
+		//cout << "ID : " << my_packet->id << endl;
 	}break;
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);

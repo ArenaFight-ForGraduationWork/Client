@@ -8,6 +8,7 @@ bool server_on = false;
 char ip[16];
 UINT myID;
 SOCKET	sock;
+bool first_login = true;
 
 WSABUF	recv_wsabuf;
 char	send_buffer[MAX_BUFF_SIZE];
