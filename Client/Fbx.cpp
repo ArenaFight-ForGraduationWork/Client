@@ -2,6 +2,8 @@
 #include "Fbx.h"
 
 
+
+
 CFbx::CFbx()
 {
 	m_fAnimationPlayTime = 0.0f;
@@ -14,43 +16,39 @@ CFbx::CFbx()
 	}
 
 	m_pAniIndexCount = nullptr;
-	m_pAniTime = nullptr;
 }
-
 
 CFbx::~CFbx()
 {
-	/*for (int i = 0; i < 5; ++i)
-		m_ppResult[i] = nullptr;*/
-
 }
 
-CFbx* CFbx::m_instance;
-
-void CFbx::Fbx_ReadTextFile_Mesh(char* fileName, vector<CTexturedNormalVertex*> &v, D3DXVECTOR3 scale)
+void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex *v, D3DXVECTOR3 scale)
 {
+	FILE *fp;
 	fopen_s(&fp, fileName, "rt");
 
 	int Cnt = 0;
 	fscanf_s(fp, "%d\n", &Cnt);
 
-	D3DXVECTOR3 m_pos;
+	D3DXVECTOR3 outPos;
 	D3DXVECTOR3 outNormal;
 	D3DXVECTOR3 outUV;
 
+	v = new CTexturedNormalVertex[Cnt];
 	for (int i = 0; i < Cnt; ++i)
 	{
 		//정점데이터 얻어오기
-		fscanf_s(fp, "%f %f %f\n", &m_pos.x, &m_pos.y, &m_pos.z);
+		fscanf_s(fp, "%f %f %f\n", &outPos.x, &outPos.y, &outPos.z);
 		fscanf_s(fp, "%f %f %f\n", &outNormal.x, &outNormal.y, &outNormal.z);
 		fscanf_s(fp, "%f %f\n", &outUV.x, &outUV.y);
 
-		m_pos.x *= scale.x;
-		m_pos.y *= scale.y;
-		m_pos.z *= scale.z;
+		outPos.x *= scale.x;
+		outPos.y *= scale.y;
+		outPos.z *= scale.z;
 
-		CTexturedNormalVertex* m_pVer = new CTexturedNormalVertex(D3DXVECTOR3(m_pos.x, m_pos.z, -m_pos.y), D3DXVECTOR3(outNormal.x, outNormal.z, -outNormal.y), D3DXVECTOR2(outUV.x, outUV.y));
-		v.push_back(m_pVer);
+		v[i].SetPosition(D3DXVECTOR3(outPos.x, outPos.z, -outPos.y));
+		v[i].SetNormal(D3DXVECTOR3(outNormal.x, outNormal.z, -outNormal.y));
+		v[i].SetUV(D3DXVECTOR2(outUV.x, outUV.y));
 	}
 
 	fscanf_s(fp, "%f %f %f\n", &m_MaxVer.x, &m_MaxVer.y, &m_MaxVer.z);
@@ -59,20 +57,20 @@ void CFbx::Fbx_ReadTextFile_Mesh(char* fileName, vector<CTexturedNormalVertex*> 
 	m_MaxVer *= *scale;
 	m_MinVer *= *scale;
 
-	//printf(" Object max x : %f, max y : %f, ,max z : %f\n", m_MaxVer.x, m_MaxVer.y, m_MaxVer.z);
-	//printf(" Object min x : %f, min y : %f, ,min z : %f\n", m_MinVer.x, m_MinVer.y, m_MinVer.z);
-
 	fclose(fp);
 }
 
 void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 {
+	FILE *fp;
+
 	switch (CharNum)
 	{
 	case 0:	// 인간
 		fopen_s(&fp, "Data\\C_info.txt", "rt");
 		break;
 	case 1:   //슬라임
+	default:
 		fopen_s(&fp, "Data\\M_info.txt", "rt");
 		break;
 	}
@@ -85,12 +83,15 @@ void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 
 void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 {
+	FILE *fp;
+
 	switch (CharNum)
 	{
 	case 0:	// 인간
 		fopen_s(&fp, "Data\\C_weight.txt", "rt");
 		break;
 	case 1:  //슬라임
+	default:
 		fopen_s(&fp, "Data\\M_weight.txt", "rt");
 		break;
 	}
@@ -111,14 +112,17 @@ void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 	fclose(fp);
 }
 
-void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
+void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
 {
+	FILE *fp;
+
 	switch (CharNum)
 	{
 	case 0:	// 인간
 		fopen_s(&fp, "Data\\C_info.txt", "rt");
 		break;
 	case 1:   //슬라임
+	default:
 		fopen_s(&fp, "Data\\M_info.txt", "rt");
 		break;
 	}
@@ -129,7 +133,7 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 
 	for (int i = 0; i < Cnt; ++i)
 	{
-		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvPosition.x, &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
+		fscanf_s(fp, "%f %f %f\n", &(v[i].m_d3dxvPosition.x), &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
 		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvNormal.x, &v[i].m_d3dxvNormal.y, &v[i].m_d3dxvNormal.z);
 		fscanf_s(fp, "%f %f\n", &v[i].m_d3dxvTexCoord.x, &v[i].m_d3dxvTexCoord.y);
 	}
@@ -142,6 +146,7 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 
 void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 {
+	FILE *fMonA[ANIMATION_COUNT];
 
 	switch (CharNum)
 	{
@@ -159,8 +164,8 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 		fopen_s(&fMonA[1], "Data\\M_matrix_move.txt", "rt");
 		fopen_s(&fMonA[2], "Data\\M_matrix_dead.txt", "rt");		//아직 dead가 없음
 		fopen_s(&fMonA[3], "Data\\M_matrix_attack.txt", "rt");		//평타 : 물기
-		fopen_s(&fMonA[4], "Data\\M_matrix_dash.txt", "rt");			//스킬 1 : 돌진
-		fopen_s(&fMonA[5], "Data\\M_matrix_jump.txt", "rt");			//스킬 2 : 충격파
+		fopen_s(&fMonA[4], "Data\\M_matrix_dash.txt", "rt");		//스킬 1 : 돌진
+		fopen_s(&fMonA[5], "Data\\M_matrix_jump.txt", "rt");		//스킬 2 : 충격파
 		fopen_s(&fMonA[6], "Data\\M_matrix_jumpjump.txt", "rt");	//스킬 3:  쿵쿵쿵
 		break;
 	}
@@ -193,29 +198,29 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	{
 		fclose(fMonA[i]);
 	}
-
 }
 
 void CFbx::ReadTextFile_HitBox(int CharNum, D3DXVECTOR3* &max, D3DXVECTOR3* &min)
 {
+	FILE *fp;
+
 	switch (CharNum)
 	{
 	case 0:	// 인간
 		fopen_s(&fp, "Data\\C_hitbox.txt", "rt");
 		break;
 	case 1:	// 슬라임
+	default:
 		fopen_s(&fp, "Data\\M_hitbox.txt", "rt");
 		break;
 	}
 
 	int Cnt = 0;
 	fscanf_s(fp, "%d\n", &Cnt);
-	tempsize = Cnt;
 
 	for (int i = 0; i < Cnt; ++i)
 	{
 		fscanf_s(fp, "%f %f %f %f %f %f\n", &max[i].x, &max[i].y, &max[i].z, &min[i].x, &min[i].y, &min[i].z);
-		//printf("%f %f %f %f %f %f\n", m_HitMaxVer[i].x, m_HitMaxVer[i].y, m_HitMaxVer[i].z, m_HitMinVer[i].x, m_HitMinVer[i].y, m_HitMinVer[i].z);
 	}
 
 	fclose(fp);

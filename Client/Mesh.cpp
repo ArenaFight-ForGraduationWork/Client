@@ -252,30 +252,23 @@ D3DXVECTOR3 CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertice
 	return(d3dxvNormal);
 }
 
-//===============================================================
-//
-//
-//
-//===============================================================
+
+
+
+
+
+
+
+
 
 CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
 {
+	CFbx::GetSingleton()->Fbx_ReadTextFile_Mesh(ptxtName, ppVertices, d3dxvScale);
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(ptxtName, pVertices, d3dxvScale);
+	m_nVertices = CFbx::GetSingleton()->GetSize();
 
-	m_nVertices = pVertices.size();
-
-	ppVertices = new CTexturedNormalVertex[m_nVertices];
-
-	for (unsigned int i = 0; i < pVertices.size(); ++i)
-	{
-		ppVertices[i].SetPosition(pVertices.at(i)->GetPosition());
-		ppVertices[i].SetNormal(pVertices.at(i)->GetNormal());
-		ppVertices[i].SetUV(pVertices.at(i)->GetUV());
-	}
-	
-	SetMaxVer(CFbx::GetInstance()->GetMaxVer());
-	SetMinVer(CFbx::GetInstance()->GetMinVer());	
+	SetMaxVer(CFbx::GetSingleton()->GetMaxVer());
+	SetMinVer(CFbx::GetSingleton()->GetMinVer());
 
 	m_nStride = sizeof(CTexturedNormalVertex);
 	m_nOffset = 0;
@@ -321,31 +314,30 @@ void CImportedMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 
 
 
-//=========================================
-//
-// 애니메이션을 가진 메쉬 클래스
-//
-//=========================================
+
+
+
+
 CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3dDevice)
 {
-	CFbx::GetInstance()->Fbx_ReadTextFile_Info(CharNum);
-	m_nVertices = CFbx::GetInstance()->GetSize();
+	CFbx::GetSingleton()->Fbx_ReadTextFile_Info(CharNum);
+	m_nVertices = CFbx::GetSingleton()->GetSize();
 
 	ppVertices = new CAnimationVertex[m_nVertices];
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
+	CFbx::GetSingleton()->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
 
 	for (int i = 0; i < StateCnt; ++i)
 	{
-		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
-		m_ppResult[i] = CFbx::GetInstance()->GetResult(i);								
-		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
+		CFbx::GetSingleton()->Fbx_ReadTextFile_Ani(CharNum, i);
+		m_ppResult[i] = CFbx::GetSingleton()->GetResult(i);
+		m_AniMaxTime[i] = CFbx::GetSingleton()->GetAnimationMaxTime();
 		SetAnimationMaxTime(m_AniMaxTime[i]);
 	}
 
 	pHitMaxVer = new D3DXVECTOR3[ATTACK_COUNT];
 	pHitMinVer = new D3DXVECTOR3[ATTACK_COUNT];
-	CFbx::GetInstance()->ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
+	CFbx::GetSingleton()->ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
 
 	for (int i = 0; i < ATTACK_COUNT; ++i)
 	{
@@ -353,12 +345,12 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 		m_HitMinVer[i] = pHitMinVer[i];
 	}
 
-	m_AnimationIndexCnt = CFbx::GetInstance()->GetAnimationIndexCount();
+	m_AnimationIndexCnt = CFbx::GetSingleton()->GetAnimationIndexCount();
 	SetAnimationIndexCnt(m_AnimationIndexCnt);		// Cmesh의 AnimationIndex에 넣어줌. object에서 가져갈 수 있도록
-	SetMaxVer(CFbx::GetInstance()->GetMaxVer());	// 값을 가져와서 CMesh의 m_MaxVer에 넣어줌. object에서 가져갈 수 있도록
-	SetMinVer(CFbx::GetInstance()->GetMinVer());	// 값을 가져와서 CMesh의 m_MinVer에 넣어줌. object에서 가져갈 수 있도록
+	SetMaxVer(CFbx::GetSingleton()->GetMaxVer());	// 값을 가져와서 CMesh의 m_MaxVer에 넣어줌. object에서 가져갈 수 있도록
+	SetMinVer(CFbx::GetSingleton()->GetMinVer());	// 값을 가져와서 CMesh의 m_MinVer에 넣어줌. object에서 가져갈 수 있도록
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Weight(CharNum, ppVertices);
+	CFbx::GetSingleton()->Fbx_ReadTextFile_Weight(CharNum, ppVertices);
 
 	m_nStride = sizeof(CAnimationVertex);
 	m_nOffset = 0;

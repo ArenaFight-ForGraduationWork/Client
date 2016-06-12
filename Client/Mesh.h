@@ -87,7 +87,6 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 private:
-	std::vector<CTexturedNormalVertex*> pVertices;
 	CTexturedNormalVertex* ppVertices;
 };
 
