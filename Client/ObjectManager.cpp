@@ -37,7 +37,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, float x, float y, 
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
-	pObject->SetResourceType((int)eType);
+	pObject->SetResourceType(static_cast<int>(eType));
 
 	pObject->SetPositionAbsolute(x, y, z);
 	pObject->SetDirectionAbsolute(x, y, z);
@@ -59,7 +59,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
-	pObject->SetResourceType((int)eType);
+	pObject->SetResourceType(static_cast<int>(eType));
 
 	pObject->SetPositionAbsolute(&position);
 	pObject->SetDirectionAbsolute(&direction);
@@ -67,7 +67,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 	pObject->PlayAnimation(CObject::eAnimationType::None);
 	pObject->SetBoundingBox();
 
-	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
+	m_mObjects[(eObjectType)static_cast<UINT>(id / ID_DIVIDE)].push_back(pObject);
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);

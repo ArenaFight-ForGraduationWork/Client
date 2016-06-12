@@ -182,10 +182,10 @@ public:
 	void SetMovingSpeed(float fMs) { m_fMovingSpeed = fMs; }
 	void SetHealthPoint(float fHp) { m_fHp = fHp; }
 
-	float GetStrikingPower() { return m_fStrikingPower; }
-	float GetDefensivePower() { return m_fDefensivePower; }
-	float GetMovingSpeed() { return m_fMovingSpeed; }
-	float GetHealthPoint() { return m_fHp; }
+	float& GetStrikingPower() { return m_fStrikingPower; }
+	float& GetDefensivePower() { return m_fDefensivePower; }
+	float& GetMovingSpeed() { return m_fMovingSpeed; }
+	float& GetHealthPoint() { return m_fHp; }
 
 protected:
 private:

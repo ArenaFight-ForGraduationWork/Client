@@ -258,10 +258,6 @@ void ProcessPacket(char *ptr) {
 			pObject = pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 		pObject->PlayAnimation(CObject::eAnimationType::Move);
-
-		//if (my_packet->id == myID)
-		//	cout << "ID : " << my_packet->id << ", "
-		//	<< my_packet->x << ", " << my_packet->z << endl;
 	}break;
 	case BOSS_POS:
 	{
@@ -301,11 +297,10 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (pObject)
 			pObject->PlayAnimation(CObject::eAnimationType::Idle);
-
-		//cout << "ID : " << my_packet->id << endl;
 	}break;
 	default:
-		printf("Unknown PACKET type [%d]\n", ptr[1]);
+		cout << "Unknown PACKET type [" << ptr[1] << "]" << endl;
+		break;
 	}
 }
 
