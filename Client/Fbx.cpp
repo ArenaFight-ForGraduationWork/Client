@@ -6,14 +6,21 @@
 
 CFbx::CFbx()
 {
-	m_fAnimationPlayTime = 0.0f;
-	m_llAnimationMaxTime = 0;
-
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
 		m_ppResult[i] = nullptr;
 		m_AniTime[i] = 0;
 	}
+
+	m_llAnimationMaxTime = 0;
+	m_uiAnimationNodeIndexCount = 0;
+	m_fAnimationPlayTime = 0.0f;
+
+	size = 0;
+	tempcnt = 0;
+
+	m_pMaxVer = new D3DXVECTOR3();
+	m_pMinVer = new D3DXVECTOR3();
 
 	m_pAniIndexCount = nullptr;
 }
@@ -51,11 +58,11 @@ void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex *v, D3DXV
 		v[i].SetUV(D3DXVECTOR2(outUV.x, outUV.y));
 	}
 
-	fscanf_s(fp, "%f %f %f\n", &m_MaxVer.x, &m_MaxVer.y, &m_MaxVer.z);
-	fscanf_s(fp, "%f %f %f\n", &m_MinVer.x, &m_MinVer.y, &m_MinVer.z);
+	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
+	fscanf_s(fp, "%f %f %f\n", &(m_pMinVer->x), &(m_pMinVer->y), &(m_pMinVer->z));
 
-	m_MaxVer *= *scale;
-	m_MinVer *= *scale;
+	*m_pMaxVer *= *scale;
+	*m_pMinVer *= *scale;
 
 	fclose(fp);
 }
@@ -138,8 +145,8 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
 		fscanf_s(fp, "%f %f\n", &v[i].m_d3dxvTexCoord.x, &v[i].m_d3dxvTexCoord.y);
 	}
 
-	fscanf_s(fp, "%f %f %f\n", &m_MaxVer.x, &m_MaxVer.y, &m_MaxVer.z);
-	fscanf_s(fp, "%f %f %f\n", &m_MinVer.x, &m_MinVer.y, &m_MinVer.z);
+	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
+	fscanf_s(fp, "%f %f %f\n", &(m_pMinVer->x), &(m_pMinVer->y), &(m_pMinVer->z));
 
 	fclose(fp);
 }
@@ -200,7 +207,7 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	}
 }
 
-void CFbx::ReadTextFile_HitBox(int CharNum, D3DXVECTOR3* &max, D3DXVECTOR3* &min)
+void CFbx::Fbx_ReadTextFile_HitBox(int CharNum, D3DXVECTOR3* &max, D3DXVECTOR3* &min)
 {
 	FILE *fp;
 
