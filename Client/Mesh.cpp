@@ -337,7 +337,7 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 
 	pHitMaxVer = new D3DXVECTOR3[ATTACK_COUNT];
 	pHitMinVer = new D3DXVECTOR3[ATTACK_COUNT];
-	CFbx::GetSingleton()->ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
+	CFbx::GetSingleton()->Fbx_ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
 
 	for (int i = 0; i < ATTACK_COUNT; ++i)
 	{

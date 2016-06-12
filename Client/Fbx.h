@@ -4,6 +4,8 @@
 #include "Vertex.h"
 
 
+/* 문자열 합치기 strcat(a, b) : a와 b를 합침. */
+
 class CFbx
 {
 public:

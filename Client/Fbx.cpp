@@ -37,25 +37,21 @@ void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex *v, D3DXV
 	int Cnt = 0;
 	fscanf_s(fp, "%d\n", &Cnt);
 
-	D3DXVECTOR3 outPos;
-	D3DXVECTOR3 outNormal;
-	D3DXVECTOR3 outUV;
-
 	v = new CTexturedNormalVertex[Cnt];
+
+	D3DXVECTOR3 outTemp;
 	for (int i = 0; i < Cnt; ++i)
 	{
 		//정점데이터 얻어오기
-		fscanf_s(fp, "%f %f %f\n", &outPos.x, &outPos.y, &outPos.z);
-		fscanf_s(fp, "%f %f %f\n", &outNormal.x, &outNormal.y, &outNormal.z);
-		fscanf_s(fp, "%f %f\n", &outUV.x, &outUV.y);
+		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
+		outTemp.x *= scale.x;	outTemp.y *= scale.y;	outTemp.z *= scale.z;
+		v[i].SetPosition(D3DXVECTOR3(outTemp.x, outTemp.z, -outTemp.y));
 
-		outPos.x *= scale.x;
-		outPos.y *= scale.y;
-		outPos.z *= scale.z;
+		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
+		v[i].SetNormal(D3DXVECTOR3(outTemp.x, outTemp.z, -outTemp.y));
 
-		v[i].SetPosition(D3DXVECTOR3(outPos.x, outPos.z, -outPos.y));
-		v[i].SetNormal(D3DXVECTOR3(outNormal.x, outNormal.z, -outNormal.y));
-		v[i].SetUV(D3DXVECTOR2(outUV.x, outUV.y));
+		fscanf_s(fp, "%f %f\n", &outTemp.x, &outTemp.y);
+		v[i].SetUV(D3DXVECTOR2(outTemp.x, outTemp.y));
 	}
 
 	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
@@ -85,6 +81,7 @@ void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 	int Cnt = 0;		//size값을 가져올 임시 변수
 	fscanf_s(fp, "%d\n", &Cnt);
 	size = Cnt;
+
 	fclose(fp);
 }
 

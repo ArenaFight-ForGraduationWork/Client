@@ -113,7 +113,6 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	
 	// 6. 만들어준 벽
 	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\wall.txt", D3DXVECTOR3(1,1, 1));		//만들어준 벽
-
 }
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
