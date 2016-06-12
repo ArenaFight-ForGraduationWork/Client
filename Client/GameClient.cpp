@@ -243,7 +243,18 @@ void ProcessPacket(char *ptr) {
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
-		pObjectManager->FindObject(my_packet->id)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		if (my_packet->id == myID)
+		{
+			cout << "ID : " << my_packet->id << ", "
+				<< my_packet->x << ", "
+				<< my_packet->z << endl;
+		}
+
+		if (pObjectManager->FindObject(my_packet->id))
+			pObjectManager->FindObject(my_packet->id)->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		else
+			pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 	}break;
 	case BOSS_POS:
 	{
