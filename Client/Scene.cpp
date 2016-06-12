@@ -63,22 +63,61 @@ CFirstScene::~CFirstScene()
 void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
 	static UCHAR pKeyBuffer[256];
+	packet_player_move *move_packet;
 
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
-		switch (wParam)
+	{
+		if (server_on)
 		{
-		case VK_UP:
-		case VK_LEFT:
-		case VK_RIGHT:
-		case VK_DOWN:
-		{
-			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-		}break;
-		default:break;
+			if (dead)
+			{
+				move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+				switch (wParam)
+				{
+				case VK_UP:
+				{
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 1;
+					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
+				}break;
+				case VK_DOWN:
+				{
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 2;
+					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
+				}break;
+				case VK_LEFT:
+				{
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 3;
+					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
+				}break;
+				case VK_RIGHT:
+				{
+					move_packet->size = sizeof(*move_packet);
+					move_packet->type = PLAYER_MOV;
+					move_packet->move_type = 4;
+					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
+				}break;
+				default:break;
+				}
+				dead = false;
+			}
 		}
-		break;
+	}break;
 	case WM_KEYUP:
 		switch (wParam)
 		{
@@ -89,18 +128,21 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			m_OperationMode = MODE_KEYBOARD;
 			break;
 
-		case VK_F5:
+		case VK_F3:
 			m_pFog->Expand(&D3DXVECTOR3(0, 0, 0));
 			break;
-		case VK_F6:
+		case VK_F4:
 			m_pFog->Contract();
 			break;
 
 		case VK_UP:
-		case VK_LEFT:
-		case VK_RIGHT:
-		case VK_DOWN:
 		{
+			move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+			move_packet->size = sizeof(*move_packet);
+			move_packet->type = PLAYER_MOV_END;
+			move_packet->move_type = 1;
+			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+			dead = true;
 			if (GetKeyboardState(pKeyBuffer))
 			{
 				if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
@@ -110,6 +152,56 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 				}
 			}
 		}break;
+		case VK_LEFT:
+		{
+			move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+			move_packet->size = sizeof(*move_packet);
+			move_packet->type = PLAYER_MOV_END;
+			move_packet->move_type = 3;
+			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+			dead = true;
+			if (GetKeyboardState(pKeyBuffer))
+			{
+				if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
+					|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
+				{
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
+				}
+			}
+		}break;
+		case VK_RIGHT:
+		{
+			move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+			move_packet->size = sizeof(*move_packet);
+			move_packet->type = PLAYER_MOV_END;
+			move_packet->move_type = 4;
+			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+			dead = true;
+			if (GetKeyboardState(pKeyBuffer))
+			{
+				if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
+					|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
+				{
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
+				}
+			}
+		}break;
+		case VK_DOWN:
+		{
+			move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+			move_packet->size = sizeof(*move_packet);
+			move_packet->type = PLAYER_MOV_END;
+			move_packet->move_type = 2;
+			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+			dead = true;
+			if (GetKeyboardState(pKeyBuffer))
+			{
+				if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
+					|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
+				{
+					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
+				}
+			}		}break;
 
 		case 0x31:	// 1
 			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill1);

@@ -8,8 +8,7 @@
 #include "Fog.h"
 #include "Unit.h"
 #include "Camera.h"
-
-extern UINT myID;
+#include "Server.h"
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
