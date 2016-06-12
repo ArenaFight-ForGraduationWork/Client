@@ -148,37 +148,6 @@ public:
 	const D3DXVECTOR3* GetMinVer();
 	const float& GetRadius() { return m_fRadius; }
 
-	//int PressSkillNum;			// 지금 누른 스킬이 몇번째 공격스킬인가. 1. attack, 2. skill1, 3. skill2, 4.skill3
-
-	//D3DXVECTOR3 m_HitMaxVer[ATTACK_COUNT];		//히트박스를 위한 최대값
-	//D3DXVECTOR3 m_HitMinVer[ATTACK_COUNT];		//히트박스를 위한 최소값
-
-	//bool MyHitAndEnemyBound(CObject* pObject);		// 내 히트박스 + 몬스터 충돌박스 = 몬스터 체력 감소
-	//bool EnemyHitAndMyBound(CObject* pObject);		// 몬스터 히트박스 + 내 충돌박스 = 내 체력 감소
-	//bool Collison(CObject *pObject);							//충돌체크
-	//bool Collison(vector<CObject*> &vObject);			//카테고리별로 충돌체크
-	//int CollOtherID;												//나랑 부딪힌 것의 아이디
-	//bool isColl = false;											//충돌했는가 안했는가 확인용도
-
-	//virtual void SetHitBox();									// 공격모션이 있는 것만 히트박스가 있음
-
-	//virtual void MoveAndRotatingHitBox();					//애니메이션 있는것만 사용
-	//virtual void MoveAndRotatingBoundingBox();			//애니메이션 있는것만 사용
-
-	//const D3DXVECTOR3 GetMaxVer() { return m_pMaxVer; }
-	//const D3DXVECTOR3 GetMinVer() { return m_pMinVer; }
-
-	//void SetPressSkill(int num) { PressSkillNum = num; }		//어느 공격스킬을 눌렀는가
-
-	//void BoundingMoveForward(float fDistance = 1.0f);
-	//void BoundingSetPositionAbsolute(const D3DXVECTOR3 *d3dxVec);
-	//void BoundingSetDirectionAbsolute(const D3DXVECTOR3 *d3dxVec);
-	//void BoundingSetDirectionRelative(const D3DXVECTOR3 *d3dxVec);
-	//void SetBoundingBoxMatrix();
-	//D3DXMATRIX* GetBoundingWorldMatrix() { return m_boundingWorldMatrix; }
-	//const D3DXVECTOR3* GetBoundingPosition();
-	//const D3DXVECTOR3* GetBoundingLookAt();
-
 private:
 	UINT m_id;
 
@@ -198,8 +167,6 @@ private:
 	float m_fAniMaxTime[ANIMATION_COUNT];
 	int m_AnimationIndexCount;
 	eAnimationType m_eAnimationType;
-
-	//const D3DXMATRIX* _GetBoundingRotationMatrix();
 };
 
 

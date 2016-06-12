@@ -100,17 +100,15 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType(static_cast<int>(eType));
 	
-	pObject->SetTime(pResourceManager->GetMesh(eType)->m_AniMaxTime);
-	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->m_AnimationIndexCnt);
-	pObject->SetResult(pResourceManager->GetMesh(eType)->m_ppResult);
+	pObject->SetTime(pResourceManager->GetMesh(eType)->GetAniMaxTime());
+	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->GetAnimationIndexCnt());
+	pObject->SetResult(pResourceManager->GetMesh(eType)->GetResultMatrix());
 	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
 	
 	pObject->SetPositionAbsolute(&position);
 	pObject->SetDirectionAbsolute(&direction);
 
 	pObject->SetBoundingBox();
-	//pObject->SetBoundingBoxMatrix();
-	//pObject->SetHitBox();			//히트박스 설정
 	pObject->PlayAnimation(CObject::eAnimationType::Idle);
 
 	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);

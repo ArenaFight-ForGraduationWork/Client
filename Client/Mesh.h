@@ -10,13 +10,6 @@
 class CMesh
 {
 public:
-	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
-	long long m_AniMaxTime[ANIMATION_COUNT];
-	unsigned int m_AnimationIndexCnt;
-
-	D3DXVECTOR3 m_HitMaxVer[ATTACK_COUNT];
-	D3DXVECTOR3 m_HitMinVer[ATTACK_COUNT];
-
 	CMesh(ID3D11Device *pd3dDevice);
 	virtual ~CMesh();
 
@@ -26,13 +19,14 @@ public:
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
-	void SetAnimationMaxTime(long long time) { m_AnimationMaxTime = time; }
-	void SetAnimationIndexCnt(int cnt) { m_AnimationIndexCount = cnt; }
+	XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
+	long long* GetAniMaxTime() { return m_llAniMaxTime; }
+	unsigned int GetAnimationIndexCnt() { return m_uiAnimationIndexCnt; }
 
-	void SetMaxVer(D3DXVECTOR3 max)	{ m_MaxVer = max; }
-	void SetMinVer(D3DXVECTOR3 min)	{ m_MinVer = min; }
-	D3DXVECTOR3 GetMaxVer()	{ return m_MaxVer; }
-	D3DXVECTOR3 GetMinVer()		{ return m_MinVer; }
+	void SetMaxVer(D3DXVECTOR3 *max) { m_pMaxVer = max; }
+	void SetMinVer(D3DXVECTOR3 *min) { m_pMinVer = min; }
+	D3DXVECTOR3& GetMaxVer() { return *m_pMaxVer; }
+	D3DXVECTOR3& GetMinVer() { return *m_pMinVer; }
 
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
@@ -48,14 +42,17 @@ protected:
 
 	ID3D11RasterizerState *m_pd3dRasterizerState;
 
+	D3DXVECTOR3 *m_pMaxVer;
+	D3DXVECTOR3 *m_pMinVer;
+
+	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
+	long long m_llAniMaxTime[ANIMATION_COUNT];
+	unsigned int m_uiAnimationIndexCnt;
+
 private:
 	int m_nReferences;
-	long long m_AnimationMaxTime = 0;
-	int m_AnimationIndexCount = 0;
-
-	D3DXVECTOR3 m_MaxVer;
-	D3DXVECTOR3 m_MinVer;
 };
+
 
 
 class CCubeMeshIlluminatedTextured : public CMesh
@@ -98,7 +95,6 @@ private:
 class CImportedAnimatingMesh : public CMesh
 {
 public:
-
 	CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int CharNum, int StateCnt);
 	virtual ~CImportedAnimatingMesh();
 
@@ -107,9 +103,9 @@ public:
 
 private:
 	CAnimationVertex* ppVertices;
-
-	D3DXVECTOR3* pHitMaxVer;
-	D3DXVECTOR3* pHitMinVer;
 };
+
+
+
 
 #endif

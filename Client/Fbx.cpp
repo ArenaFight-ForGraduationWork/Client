@@ -6,6 +6,9 @@
 
 CFbx::CFbx()
 {
+	m_iSize = 0;
+	tempcnt = 0;
+
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
 		m_ppResult[i] = nullptr;
@@ -16,17 +19,33 @@ CFbx::CFbx()
 	m_uiAnimationNodeIndexCount = 0;
 	m_fAnimationPlayTime = 0.0f;
 
-	size = 0;
-	tempcnt = 0;
-
 	m_pMaxVer = new D3DXVECTOR3();
 	m_pMinVer = new D3DXVECTOR3();
 
 	m_pAniIndexCount = nullptr;
 }
-
 CFbx::~CFbx()
 {
+}
+
+void CFbx::Fbx_ReadTextFile_Info(int CharNum)
+{
+	FILE *fp;
+
+	switch (CharNum)
+	{
+	case 0:	// 인간
+		fopen_s(&fp, "Data\\C_info.txt", "rt");
+		break;
+	case 1:   //슬라임
+	default:
+		fopen_s(&fp, "Data\\M_info.txt", "rt");
+		break;
+	}
+
+	fscanf_s(fp, "%d\n", &m_iSize);
+
+	fclose(fp);
 }
 
 void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex *v, D3DXVECTOR3 scale)
@@ -62,60 +81,6 @@ void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex *v, D3DXV
 
 	fclose(fp);
 }
-
-void CFbx::Fbx_ReadTextFile_Info(int CharNum)
-{
-	FILE *fp;
-
-	switch (CharNum)
-	{
-	case 0:	// 인간
-		fopen_s(&fp, "Data\\C_info.txt", "rt");
-		break;
-	case 1:   //슬라임
-	default:
-		fopen_s(&fp, "Data\\M_info.txt", "rt");
-		break;
-	}
-
-	int Cnt = 0;		//size값을 가져올 임시 변수
-	fscanf_s(fp, "%d\n", &Cnt);
-	size = Cnt;
-
-	fclose(fp);
-}
-
-void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
-{
-	FILE *fp;
-
-	switch (CharNum)
-	{
-	case 0:	// 인간
-		fopen_s(&fp, "Data\\C_weight.txt", "rt");
-		break;
-	case 1:  //슬라임
-	default:
-		fopen_s(&fp, "Data\\M_weight.txt", "rt");
-		break;
-	}
-
-	int iter = 0;
-	int index = 0;
-	float weight = 0.0f;
-
-	for (int i = 0; i <tempcnt; ++i)
-	{
-		for (int j = 0; j < 8; ++j)
-		{
-			fscanf_s(fp, "%d %d %f\n", &iter, &index, &weight);
-			cAniVer[iter].AddBone(index, weight);
-		}
-	}
-
-	fclose(fp);
-}
-
 void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
 {
 	FILE *fp;
@@ -131,11 +96,9 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
 		break;
 	}
 
-	int Cnt = 0;
-	fscanf_s(fp, "%d\n", &Cnt);
-	tempcnt = Cnt;	//tempCnt는 weight에서 포문돌릴때 사용함.
+	fscanf_s(fp, "%d\n", &tempcnt);
 
-	for (int i = 0; i < Cnt; ++i)
+	for (int i = 0; i < tempcnt; ++i)
 	{
 		fscanf_s(fp, "%f %f %f\n", &(v[i].m_d3dxvPosition.x), &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
 		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvNormal.x, &v[i].m_d3dxvNormal.y, &v[i].m_d3dxvNormal.z);
@@ -204,28 +167,37 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	}
 }
 
-void CFbx::Fbx_ReadTextFile_HitBox(int CharNum, D3DXVECTOR3* &max, D3DXVECTOR3* &min)
+void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 {
 	FILE *fp;
 
 	switch (CharNum)
 	{
 	case 0:	// 인간
-		fopen_s(&fp, "Data\\C_hitbox.txt", "rt");
+		fopen_s(&fp, "Data\\C_weight.txt", "rt");
 		break;
-	case 1:	// 슬라임
+	case 1:  //슬라임
 	default:
-		fopen_s(&fp, "Data\\M_hitbox.txt", "rt");
+		fopen_s(&fp, "Data\\M_weight.txt", "rt");
 		break;
 	}
 
-	int Cnt = 0;
-	fscanf_s(fp, "%d\n", &Cnt);
+	int iter = 0;
+	int index = 0;
+	float weight = 0.0f;
 
-	for (int i = 0; i < Cnt; ++i)
+	for (int i = 0; i <tempcnt; ++i)
 	{
-		fscanf_s(fp, "%f %f %f %f %f %f\n", &max[i].x, &max[i].y, &max[i].z, &min[i].x, &min[i].y, &min[i].z);
+		for (int j = 0; j < 8; ++j)
+		{
+			fscanf_s(fp, "%d %d %f\n", &iter, &index, &weight);
+			cAniVer[iter].AddBone(index, weight);
+		}
 	}
 
 	fclose(fp);
 }
+
+
+
+
