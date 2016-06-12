@@ -75,65 +75,49 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case VK_UP:
 		{
 			if (server_on) {
-				if (!key_up)
-				{
-					move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-					move_packet->size = sizeof(*move_packet);
-					move_packet->type = PLAYER_MOV;
-					move_packet->move_type = W;
-					move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-					key_up = true;
-					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-				}
+				move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+				move_packet->size = sizeof(*move_packet);
+				move_packet->type = PLAYER_MOV;
+				move_packet->move_type = W;
+				move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
+				send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
 			}
 		}break;
 		case VK_DOWN:
 		{
 			if (server_on) {
-				if (!key_down)
-				{
-					move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-					move_packet->size = sizeof(*move_packet);
-					move_packet->type = PLAYER_MOV;
-					move_packet->move_type = S;
-					move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-					key_down = true;
-					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-				}
+				move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+				move_packet->size = sizeof(*move_packet);
+				move_packet->type = PLAYER_MOV;
+				move_packet->move_type = S;
+				move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
+				send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
 			}
 		}break;
 		case VK_LEFT:
 		{
 			if (server_on) {
-				if (!key_left)
-				{
-					move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-					move_packet->size = sizeof(*move_packet);
-					move_packet->type = PLAYER_MOV;
-					move_packet->move_type = A;
-					move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-					key_left = true;
-					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-				}
+				move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+				move_packet->size = sizeof(*move_packet);
+				move_packet->type = PLAYER_MOV;
+				move_packet->move_type = A;
+				move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
+				send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
 			}
 		}break;
 		case VK_RIGHT:
 		{
 			if (server_on) {
-				if (!key_right)
-				{
-					move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-					move_packet->size = sizeof(*move_packet);
-					move_packet->type = PLAYER_MOV;
-					move_packet->move_type = D;
-					move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-					send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-					key_right = true;
-					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-				}
+				move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
+				move_packet->size = sizeof(*move_packet);
+				move_packet->type = PLAYER_MOV;
+				move_packet->move_type = D;
+				move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
+				send(sock, (char*)move_packet, sizeof(*move_packet), 0);
+				m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
 			}
 		}break;
 		default:break;
@@ -163,7 +147,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			move_packet->type = PLAYER_MOV_END;
 			move_packet->move_type = W;
 			move_packet->direction = 0;
-			key_up = false;
 			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			if (GetKeyboardState(pKeyBuffer))
 			{
@@ -181,7 +164,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			move_packet->type = PLAYER_MOV_END;
 			move_packet->move_type = A;
 			move_packet->direction = 0;
-			key_left = false;
 			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			if (GetKeyboardState(pKeyBuffer))
 			{
@@ -199,7 +181,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			move_packet->type = PLAYER_MOV_END;
 			move_packet->move_type = D;
 			move_packet->direction = 0;
-			key_right = false;
 			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			if (GetKeyboardState(pKeyBuffer))
 			{
@@ -217,7 +198,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			move_packet->type = PLAYER_MOV_END;
 			move_packet->move_type = S;
 			move_packet->direction = 0;
-			key_down = false;
 			send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 			if (GetKeyboardState(pKeyBuffer))
 			{
@@ -327,16 +307,6 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 }
 void CFirstScene::ProcessInput(float fTimeElapsed)
 {
-	if (m_pObjectManager->FindObject(myID))
-	{
-		//cout << "Max " << m_pObjectManager->FindObject(myID)->GetMaxVer()->x << ", "
-		//	<< m_pObjectManager->FindObject(myID)->GetMaxVer()->y << ", "
-		//	<< m_pObjectManager->FindObject(myID)->GetMaxVer()->z << endl;
-		//cout << "Min " << m_pObjectManager->FindObject(myID)->GetMinVer()->x << ", "
-		//	<< m_pObjectManager->FindObject(myID)->GetMinVer()->y << ", "
-		//	<< m_pObjectManager->FindObject(myID)->GetMinVer()->z << endl;
-	}
-
 	if (m_pObjectManager->FindObject(myID))
 		m_pCameraManager->GetNowCamera()->Update(m_pObjectManager->FindObject(myID)->GetPosition());
 	else

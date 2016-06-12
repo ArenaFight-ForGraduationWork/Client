@@ -137,8 +137,8 @@ public:
 	//==============================================================================================
 	/* Collision Detection */
 private:
-	D3DXVECTOR3 m_MaxVer;
-	D3DXVECTOR3 m_MinVer;
+	D3DXVECTOR3 *m_pMaxVer;
+	D3DXVECTOR3 *m_pMinVer;
 	float m_fRadius;
 
 public:

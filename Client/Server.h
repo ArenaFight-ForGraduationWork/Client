@@ -20,10 +20,6 @@ extern char		packet_buffer[MAX_BUFF_SIZE];
 extern DWORD	in_packet_size;
 extern int		saved_packet_size;
 
-extern bool key_up;
-extern bool key_down;
-extern bool key_left;
-extern bool key_right;
 
 
 

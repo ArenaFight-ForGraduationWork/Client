@@ -108,8 +108,8 @@ CObject::CObject(UINT id)
 
 	m_eAnimationType = eAnimationType::Idle;
 
-	//m_pMaxVer = nullptr;
-	//m_pMinVer = nullptr;
+	m_pMaxVer = nullptr;
+	m_pMinVer = nullptr;
 	m_fRadius = 0.0;
 }
 
@@ -272,102 +272,46 @@ const D3DXVECTOR3* CObject::GetLookAt()
 
 void CObject::SetBoundingBox()
 {
-	//if (m_pMaxVer)	delete m_pMaxVer;
-	//if (m_pMinVer)	delete m_pMinVer;
+	if (m_pMaxVer)	delete m_pMaxVer;
+	if (m_pMinVer)	delete m_pMinVer;
+	m_pMaxVer = &(m_pMesh->GetMaxVer());
+	m_pMinVer = &(m_pMesh->GetMinVer());
 
-	//m_pMaxVer =	&(m_pMesh->GetMaxVer());
-	//m_pMinVer = &(m_pMesh->GetMinVer());
-	m_MaxVer =	(m_pMesh->GetMaxVer());
-	m_MinVer = (m_pMesh->GetMinVer());
-
-	//if (m_pMaxVer->x < m_pMinVer->x)
-	//{
-	//	float temp;
-	//	temp = m_pMaxVer->x;
-	//	m_pMaxVer->x = m_pMinVer->x;
-	//	m_pMinVer->x = temp;
-	//}
-	//if (m_pMaxVer->y < m_pMinVer->y)
-	//{
-	//	float temp;
-	//	temp = m_pMaxVer->y;
-	//	m_pMaxVer->y = m_pMinVer->y;
-	//	m_pMinVer->y = temp;
-	//}
-	//if (m_pMaxVer->z < m_pMinVer->z)
-	//{
-	//	float temp;
-	//	temp = m_pMaxVer->z;
-	//	m_pMaxVer->z = m_pMinVer->z;
-	//	m_pMinVer->z = temp;
-	//}
-	if (m_MaxVer.x < m_MinVer.x)
+	if (m_pMaxVer->x < m_pMinVer->x)
 	{
 		float temp;
-		temp = m_MinVer.x;
-		m_MinVer.x = m_MinVer.x;
-		m_MinVer.x = temp;
+		temp = m_pMaxVer->x;
+		m_pMaxVer->x = m_pMinVer->x;
+		m_pMinVer->x = temp;
 	}
-	if (m_MinVer.y < m_MinVer.y)
+	if (m_pMaxVer->y < m_pMinVer->y)
 	{
 		float temp;
-		temp = m_MinVer.y;
-		m_MinVer.y = m_MinVer.y;
-		m_MinVer.y = temp;
+		temp = m_pMaxVer->y;
+		m_pMaxVer->y = m_pMinVer->y;
+		m_pMinVer->y = temp;
 	}
-	if (m_MinVer.z < m_MinVer.z)
+	if (m_pMaxVer->z < m_pMinVer->z)
 	{
 		float temp;
-		temp = m_MinVer.z;
-		m_MinVer.z = m_MinVer.z;
-		m_MinVer.z = temp;
+		temp = m_pMaxVer->z;
+		m_pMaxVer->z = m_pMinVer->z;
+		m_pMinVer->z = temp;
 	}
 
-	//cout << "Max" << m_pMaxVer->x << ", "
-	//	<< m_pMaxVer->y << ", "
-	//	<< m_pMaxVer->z << endl;
-	//cout << "Min" << m_pMinVer->x << ", "
-	//	<< m_pMinVer->y << ", "
-	//	<< m_pMinVer->z << endl;
-	//cout << "Max" << m_MaxVer.x << ", "
-	//	<< m_MaxVer.y << ", "
-	//	<< m_MaxVer.z << endl;
-	//cout << "Min" << m_MinVer.x << ", "
-	//	<< m_MinVer.y << ", "
-	//	<< m_MinVer.z << endl;
-
-	m_fRadius = static_cast<float>(sqrt((m_MinVer.x * m_MinVer.x) + (m_MinVer.z * m_MinVer.z)));
+	m_fRadius = static_cast<float>(sqrt((m_pMinVer->x * m_pMinVer->x) + (m_pMinVer->z * m_pMinVer->z)));
 }
 
 const D3DXVECTOR3* CObject::GetMaxVer()
 {
-	//cout << "Max" << m_pMaxVer->x << ", "
-	//	<< m_pMaxVer->y << ", "
-	//	<< m_pMaxVer->z << endl;
-	//cout << "Min" << m_pMinVer->x << ", "
-	//	<< m_pMinVer->y << ", "
-	//	<< m_pMinVer->z << endl;
-	//cout << "Max" << m_MaxVer.x << ", "
-	//	<< m_MaxVer.y << ", "
-	//	<< m_MaxVer.z << endl;
-	//cout << "Min" << m_MinVer.x << ", "
-	//	<< m_MinVer.y << ", "
-	//	<< m_MinVer.z << endl;
-
-	//D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	//D3DXVec3TransformCoord(pVertex, m_pMaxVer, m_pd3dxWorldMatrix);
-	//return pVertex;
 	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVec3TransformCoord(pVertex, &m_MaxVer, m_pd3dxWorldMatrix);
+	D3DXVec3TransformCoord(pVertex, m_pMaxVer, m_pd3dxWorldMatrix);
 	return pVertex;
 }
 const D3DXVECTOR3* CObject::GetMinVer()
 {
-	//D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	//D3DXVec3TransformCoord(pVertex, m_pMinVer, m_pd3dxWorldMatrix);
-	//return pVertex;
 	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVec3TransformCoord(pVertex, &m_MinVer, m_pd3dxWorldMatrix);
+	D3DXVec3TransformCoord(pVertex, m_pMinVer, m_pd3dxWorldMatrix);
 	return pVertex;
 }
 
