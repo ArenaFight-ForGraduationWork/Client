@@ -48,18 +48,17 @@ void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 	fclose(fp);
 }
 
-void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex *v, D3DXVECTOR3 scale)
+void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v, D3DXVECTOR3 scale)
 {
 	FILE *fp;
 	fopen_s(&fp, fileName, "rt");
 
-	int Cnt = 0;
-	fscanf_s(fp, "%d\n", &Cnt);
+	fscanf_s(fp, "%d\n", &m_iSize);
 
-	v = new CTexturedNormalVertex[Cnt];
+	v = new CTexturedNormalVertex[m_iSize];
 
 	D3DXVECTOR3 outTemp;
-	for (int i = 0; i < Cnt; ++i)
+	for (int i = 0; i < m_iSize; ++i)
 	{
 		//정점데이터 얻어오기
 		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);

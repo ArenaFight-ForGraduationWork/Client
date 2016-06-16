@@ -47,7 +47,7 @@
 #define SC_BOSS_ATTACK		16
 #define SC_PLAYER_ATTACK_S	17
 #define SC_PLAYER_MOV_END	18
-
+#define BOSS_DEAD         19
 
 // 클라 -> 서버
 #define CREATE_ROOM		1
@@ -146,6 +146,7 @@ struct login {
 	float bossx;
 	float bossy;
 	float direction;
+	float bossdirection;
 };
 struct packet_player_move {
 	BYTE size;
@@ -193,6 +194,11 @@ struct boss_attack {
 	BYTE size;
 	BYTE type;
 	BYTE attack_type;
+	int id;
+};
+struct boss_dead {
+	BYTE size;
+	BYTE type;
 	int id;
 };
 #pragma pack (pop)

@@ -224,12 +224,20 @@ void ProcessPacket(char *ptr) {
 			pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 				D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, my_packet->direction, 0));
 
+			// º¸½º
 			pObject = pObjectManager->FindObject(my_packet->bossid);
 			if (pObject)
+			{
 				pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+				pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->bossdirection, 0));
+			}
 			else
-				pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+			{
+				pObject = pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
 					D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+				pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+				pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->bossdirection, 0));
+			}
 
 			first_login = false;
 		}
@@ -254,7 +262,6 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (pObject)
 		{
-			//pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 			pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->direction, 0));
 			pObject->MoveForward(my_packet->distance);
 		}
@@ -305,6 +312,11 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (pObject)
 			pObject->PlayAnimation(CObject::eAnimationType::Idle);
+	}break;
+	case BOSS_DEAD:
+	{
+		boss_dead *my_packet = reinterpret_cast<boss_dead *>(ptr);
+		pObjectManager->FindObject(my_packet->id)->PlayAnimation(CObject::eAnimationType::Dead);
 	}break;
 	default:
 		cout << "Unknown PACKET type [" << ptr[1] << "]" << endl;

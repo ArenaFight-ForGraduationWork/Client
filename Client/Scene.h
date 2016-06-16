@@ -6,7 +6,6 @@
 #include "Light.h"
 #include "ObjectManager.h"
 #include "Fog.h"
-#include "Unit.h"
 #include "Camera.h"
 #include "Server.h"
 

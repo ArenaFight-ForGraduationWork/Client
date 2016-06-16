@@ -18,7 +18,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	_LoadMaterials();
 	_CreateShaders(pd3dDevice);
 
-	/* 
+	/*
 		Mesh, Texture, Material, Shader
 											1. object  2. Animation
 	*/
@@ -33,6 +33,9 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	m_vResources[(int)eResourceType::Tree]->SetIDs(4, 4, 0, 0);
 	m_vResources[(int)eResourceType::Wall1]->SetIDs(5, 5, 0, 0);
 	m_vResources[(int)eResourceType::MakeWall]->SetIDs(6, 6, 0, 0);
+	m_vResources[(int)eResourceType::grass]->SetIDs(7, 9, 0, 0);
+	m_vResources[(int)eResourceType::BRock]->SetIDs(8, 10, 0, 0);
+	m_vResources[(int)eResourceType::SRock]->SetIDs(9, 10, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -110,9 +113,16 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 
 	// 5. 만든 벽
 	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2500.0f, 1500.0f, 200.0f);
-	
+
 	// 6. 만들어준 벽
-	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\wall.txt", D3DXVECTOR3(1,1, 1));		//만들어준 벽
+	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\wall.txt", D3DXVECTOR3(1, 1, 1));		//만들어준 벽
+
+	// 7. 풀
+	m_mMesh[7] = new CImportedMesh(pd3dDevice, "Data\\grass_Info.txt", D3DXVECTOR3(1, 1, 1));
+
+	m_mMesh[8] = new CImportedMesh(pd3dDevice, "Data\\Brock_Info.txt", D3DXVECTOR3(1, 1, 1));
+
+	m_mMesh[9] = new CImportedMesh(pd3dDevice, "Data\\Srock_Info.txt", D3DXVECTOR3(1, 1, 1));
 }
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
@@ -194,6 +204,18 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[8] = tempTexture;
+
+	tempTexture = new CTexture(1);
+	tempTextureAddress = L"./Data/grass.jpg";
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
+	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	m_mTexture[9] = tempTexture;
+
+	tempTexture = new CTexture(1);
+	tempTextureAddress = L"./Data/돌.jpg";
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
+	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	m_mTexture[10] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
 {

@@ -13,7 +13,7 @@ public:
 	~CFbx();
 
 	void Fbx_ReadTextFile_Info(int CharNum);		//사이즈 좀 얻을라고 만듦.
-	void Fbx_ReadTextFile_Mesh(char* fileName, CTexturedNormalVertex *v, D3DXVECTOR3 scale);		// object 전용
+	void Fbx_ReadTextFile_Mesh(char* fileName, CTexturedNormalVertex* &v, D3DXVECTOR3 scale);		// object 전용
 	void Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v);									// Animation전용
 	void Fbx_ReadTextFile_Ani(int CharNum, int StateCnt);
 	void Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex*);

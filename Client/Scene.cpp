@@ -246,22 +246,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			send(sock, (char*)attack_packet, sizeof(*attack_packet), 0);
 		}break;
 
-		//case 0x31:	// 1
-		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill1);
-		//	if (m_pObjectManager->CheckCollision())
-		//		cout << "collide" << endl;
-		//	break;
-		//case 0x32:	// 2
-		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill2);
-		//	if (m_pObjectManager->CheckCollision())
-		//		cout << "collide" << endl;
-		//	break;
-		//case 0x33:	// 3
-		//	m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Skill3);
-		//	if (m_pObjectManager->CheckCollision())
-		//		cout << "collide" << endl;
-		//	break;
-
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
@@ -307,6 +291,15 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 }
 void CFirstScene::ProcessInput(float fTimeElapsed)
 {
+	static UCHAR pKeyBuffer[256];
+	if (GetKeyboardState(pKeyBuffer))
+	{
+		if (pKeyBuffer[0x51] & 0xf0)
+			m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);
+		if (pKeyBuffer[0x45] & 0xf0)
+			m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);
+	}
+
 	if (m_pObjectManager->FindObject(myID))
 		m_pCameraManager->GetNowCamera()->Update(m_pObjectManager->FindObject(myID)->GetPosition());
 	else
@@ -328,39 +321,50 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 	///* 아이템 설정 */
 	//for (int i = 0; i < 6; ++i)
-	//	m_pObjectManager->Insert(i + 1000, eResourceType::Item_HP, D3DXVECTOR3(static_cast<float>(rand() % 400) * i, 50, static_cast<float>(rand() % 500 + 10)*i));
+	//	m_pObjectManager->Insert(i + 2000, eResourceType::Item_HP, D3DXVECTOR3(static_cast<float>(rand() % 400) * i, 50, static_cast<float>(rand() % 500 + 10)*i));
 	//for (int i = 6; i < 11; ++i)
-	//	m_pObjectManager->Insert(i + 1000, eResourceType::Item_Buff, D3DXVECTOR3(static_cast<float>(rand() % 400 - 300) * i, 50, static_cast<float>(rand() % 200 - 150)*i));
+	//	m_pObjectManager->Insert(i + 2000, eResourceType::Item_Buff, D3DXVECTOR3(static_cast<float>(rand() % 400 - 300) * i, 50, static_cast<float>(rand() % 200 - 150)*i));
 
 	/* 맵 꾸미기 */
 	{
 		// 바닥
 		m_pObjectManager->Insert(3000, eResourceType::Floor, D3DXVECTOR3(0, 0, 0));
 
-		//// 벽. 한 면에 두개씩 들어간다
-		//D3DXVECTOR3 WallPos[8];
-		//WallPos[0] = D3DXVECTOR3(-1250, 500, 2500);
-		//WallPos[1] = D3DXVECTOR3(1250, 500, 2500);
-		//WallPos[2] = D3DXVECTOR3(-1250, 500, -2500);
-		//WallPos[3] = D3DXVECTOR3(1250, 500, -2500);
+		// 벽. 한 면에 두개씩 들어간다
+		D3DXVECTOR3 WallPos[8];
+		WallPos[0] = D3DXVECTOR3(-1250, 500, 2500);
+		WallPos[1] = D3DXVECTOR3(1250, 500, 2500);
+		WallPos[2] = D3DXVECTOR3(-1250, 500, -2500);
+		WallPos[3] = D3DXVECTOR3(1250, 500, -2500);
 
-		//WallPos[4] = D3DXVECTOR3(2500, 500, 1250);
-		//WallPos[5] = D3DXVECTOR3(2500, 500, -1250);
-		//WallPos[6] = D3DXVECTOR3(-2500, 500, 1250);
-		//WallPos[7] = D3DXVECTOR3(-2500, 500, -1250);
-		//for (int i = 0; i < 8; ++i)
-		//{
-		//	if (i < 4)
-		//		m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i]);	// ㅡ
-		//	else
-		//		m_pObjectManager->Insert(i, eResourceType::Wall1, WallPos[i], D3DXVECTOR3(0, 90, 0));  // ㅣ
-		//}
+		WallPos[4] = D3DXVECTOR3(2500, 500, 1250);
+		WallPos[5] = D3DXVECTOR3(2500, 500, -1250);
+		WallPos[6] = D3DXVECTOR3(-2500, 500, 1250);
+		WallPos[7] = D3DXVECTOR3(-2500, 500, -1250);
+		for (int i = 0; i < 8; ++i)
+		{
+			if (i < 4)
+				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, WallPos[i]);	// ㅡ
+			else
+				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, WallPos[i], D3DXVECTOR3(0, 90, 0));  // ㅣ
+		}
 
-		//m_pObjectManager->Insert(8, eResourceType::Tree, D3DXVECTOR3(-2000, 0, 1900), D3DXVECTOR3(0, 90, 0));
-		//m_pObjectManager->Insert(9, eResourceType::Tree, D3DXVECTOR3(-1800, 0, -1900));
-		//m_pObjectManager->Insert(10, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
-		//m_pObjectManager->Insert(11, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
+		// 나무
+		m_pObjectManager->Insert(4010, eResourceType::Tree, D3DXVECTOR3(-2000, 0, 1900), D3DXVECTOR3(0, 90, 0));
+		m_pObjectManager->Insert(4011, eResourceType::Tree, D3DXVECTOR3(-1800, 0, -1900));
+		m_pObjectManager->Insert(4012, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
+		m_pObjectManager->Insert(4013, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
+
+		for (short i = 0; i < 20; ++i)
+			m_pObjectManager->Insert(4020 + i, eResourceType::grass, D3DXVECTOR3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000)));
 	}
+	/* ObjectList의 카테고리
+	* PLAYER :									충돌체크o, 히트박스o,					0~999
+	* MONSTER : 몬스터 = 보스					충돌체크o, 히트박스o,					1000~1999
+	* BUFF_CRYSTAL :							충돌체크o, 삭제o,						2000~2999
+	* LAND : 바닥								충돌체크x, 삭제x                        3000~3999
+	* NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		4000~5999
+	*/
 
 	m_pFog = new CFog();
 	m_pFog->Initialize(pd3dDevice);
