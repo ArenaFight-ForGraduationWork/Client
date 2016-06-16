@@ -1,27 +1,30 @@
-// GameClient.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
-//
-
 #include "stdafx.h"
 #include "GameClient.h"
+#include "Server.h"
+#include "ObjectManager.h"
 #include "GameFramework.h"
-#include "protocol.h"
+
+
 
 #define MAX_LOADSTRING 100
 
-// 전역 변수:
-HINSTANCE hInst;								// 현재 인스턴스입니다.
-TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
-TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
-
+// # global variables
+HINSTANCE hInst;						// 현재 인스턴스
+TCHAR szTitle[MAX_LOADSTRING];			// 제목 표시줄 텍스트
+TCHAR szWindowClass[MAX_LOADSTRING];	// 기본 창 클래스 이름
 
 CGameFramework	gGameFramework;
 HINSTANCE		ghInstance;
 
-// 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
+// # functions
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+
+
+
+
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -112,21 +115,23 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	ghInstance = hInstance;
 
-	//서버_접속
-	//ServerConnect();
+	// Connect Server
+	cout << "ip : ";
+	cin >> ip;
+	ServerConnect();
 
 	DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
 	RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
 	AdjustWindowRect(&rc, dwStyle, FALSE);
 	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
-	if (!hMainWnd) return(FALSE);
+	if (!hMainWnd) return FALSE;
 
 	gGameFramework.OnCreate(hInstance, hMainWnd);
 
 	::ShowWindow(hMainWnd, nCmdShow);
 	::UpdateWindow(hMainWnd);
 
-	return(TRUE);
+	return TRUE;
 }
 
 
@@ -139,15 +144,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_PAINT	- 주 창을 그립니다.
 //  WM_DESTROY	- 종료 메시지를 게시하고 반환합니다.
 //
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	HDC hdc;
+	static int retval;
+	static HANDLE recv_thread;
 
 	switch (message)
 	{
+	case WM_CREATE:
+		SetTimer(hWnd, 1, 10, NULL);
+		break;
 	case WM_SIZE:
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
@@ -159,6 +165,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 		gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
 		break;
+	case WM_TIMER:
+		switch (wParam)
+		{
+		case 1:
+			recv_thread = CreateThread(NULL, 0, recvThread, NULL, 0, 0);
+			break;
+		default:break;
+		}
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -168,7 +183,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-// 정보 대화 상자의 메시지 처리기입니다.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
@@ -187,3 +201,127 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return (INT_PTR)FALSE;
 }
+
+
+
+
+
+
+void ProcessPacket(char *ptr) {
+	static CObjectManager *pObjectManager = CObjectManager::GetSingleton();
+	static CObject *pObject;
+
+	switch (ptr[1]) {
+	case LOGIN:
+	{	
+		login *my_packet = reinterpret_cast<login *>(ptr);
+
+		// 내가 접속
+		if (first_login)
+		{
+			myID = my_packet->id;
+			/* here : 플레이어 좌표는 어디로 가져와야 하는가 > 안 주니까 000으로 설정 */
+			pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, my_packet->direction, 0));
+
+			// 보스
+			pObject = pObjectManager->FindObject(my_packet->bossid);
+			if (pObject)
+			{
+				pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+				pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->bossdirection, 0));
+			}
+			else
+			{
+				pObject = pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+					D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+				pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossy));
+				pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->bossdirection, 0));
+			}
+
+			first_login = false;
+		}
+
+		// 다른 사람이 접속. 기존/신규
+		if (my_packet->id != myID) {
+			pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->x, 0, my_packet->z), D3DXVECTOR3(0, my_packet->direction, 0));
+		}
+	}break;
+	case PUT_PLAYER:
+	{ /* 필요가 없는듯 하다 */
+		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
+
+		pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+			D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+	}break;
+	case PLAYER_POS:
+	{
+		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
+
+		pObject = pObjectManager->FindObject(my_packet->id);
+		if (pObject)
+		{
+			pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->direction, 0));
+			pObject->MoveForward(my_packet->distance);
+		}
+		else
+			pObject = pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		pObject->PlayAnimation(CObject::eAnimationType::Move);
+	}break;
+	case BOSS_POS:
+	{
+		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
+
+		pObject = pObjectManager->FindObject(my_packet->id);
+		if (pObject)
+		{
+			//pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+			pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->direction, 0));
+			pObject->MoveForward(my_packet->distance);
+		}
+		else
+			pObject = pObjectManager->Insert(my_packet->id, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
+				D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+		pObject->PlayAnimation(CObject::eAnimationType::Move);
+	}break;
+	case REMOVE_PLAYER:
+	{
+		remove_player *my_packet = reinterpret_cast<remove_player*>(ptr);
+		pObjectManager->DeleteObject(my_packet->id);
+	}break;
+	case SC_PLAYER_ATTACK_S:
+	{
+		player_attack *my_packet = reinterpret_cast<player_attack *>(ptr);
+		pObjectManager->FindObject(my_packet->id)->PlayAnimation(static_cast<CObject::eAnimationType>(static_cast<BYTE>(my_packet->attack_type + 2)));
+		// attack_type : 1,2,3,4
+		// eAnimationType : 3,4,5,6
+	}break;
+	case SC_BOSS_ATTACK:
+	{
+		boss_attack *my_packet = reinterpret_cast<boss_attack *>(ptr);
+		pObjectManager->FindObject(my_packet->id)->PlayAnimation(static_cast<CObject::eAnimationType>(static_cast<BYTE>(my_packet->attack_type + 2)));
+		// attack_type : 1,2,3,4
+		// eAnimationType : 3,4,5,6
+	}break;
+	case SC_PLAYER_MOV_END:
+	{
+		packet_player_move_end *my_packet = reinterpret_cast<packet_player_move_end *>(ptr);
+
+		pObject = pObjectManager->FindObject(my_packet->id);
+		if (pObject)
+			pObject->PlayAnimation(CObject::eAnimationType::Idle);
+	}break;
+	case BOSS_DEAD:
+	{
+		boss_dead *my_packet = reinterpret_cast<boss_dead *>(ptr);
+		pObjectManager->FindObject(my_packet->id)->PlayAnimation(CObject::eAnimationType::Dead);
+	}break;
+	default:
+		cout << "Unknown PACKET type [" << ptr[1] << "]" << endl;
+		break;
+	}
+}
+
+

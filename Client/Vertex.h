@@ -1,6 +1,9 @@
 #ifndef VERTEX_H_
 #define VERTEX_H_
 
+
+
+
 class CVertex
 {
 private:
@@ -115,6 +118,8 @@ public:
 	~CAnimationVertex(){}
 	void AddBone(int index, float Weight);
 };
+
+
 
 
 #endif

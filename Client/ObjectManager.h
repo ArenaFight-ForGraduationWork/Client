@@ -6,25 +6,25 @@
 
 #define ID_DIVIDE 1000
 
-
+extern UINT myID;
 
 class CObjectManager
 {
 public:
 	/* ObjectList의 카테고리
-	* NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		0~999
-	* BUFF_CRYSTAL :							충돌체크o, 삭제o,						1000~1999
-	* MONSTER : 몬스터 = 보스					충돌체크o, 히트박스o,					2000~2999
-	* PLAYER :									충돌체크o, 히트박스o,					3000~3999
-	* LAND : 바닥.								충돌체크x, 삭제x                        4000~
+	* PLAYER :									충돌체크o, 히트박스o,					0~999
+	* MONSTER : 몬스터 = 보스					충돌체크o, 히트박스o,					1000~1999
+	* BUFF_CRYSTAL :							충돌체크o, 삭제o,						2000~2999
+	* LAND : 바닥								충돌체크x, 삭제x                        3000~3999
+	* NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		4000~5999
 	*/
-	enum class eObjectType :BYTE{
+	enum class eObjectType :BYTE {
 		START = 0,
-		NATURAL_FEATURE = 0,
-		BUFF_CRYSTAL,
+		PLAYER = 0,
 		MONSTER,
-		PLAYER,
+		BUFF_CRYSTAL,
 		LAND,
+		NATURAL_FEATURE,
 		END
 	};
 
@@ -33,7 +33,7 @@ public:
 	void Initialize(ID3D11Device *pd3dDevice);
 
 	/* ~데이터를 가진 오브젝트를 추가 */
-	CObject* Insert(UINT id, eResourceType eType, int x = 0, int y = 0, int z = 0, int dx = 0, int dy = 0, int dz = 0);
+	CObject* Insert(UINT id, eResourceType eType, float x = 0, float y = 0, float z = 0, float dx = 0, float dy = 0, float dz = 0);
 	CObject* Insert(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
 
 	//애니메이션 전용
@@ -52,10 +52,12 @@ public:
 	UINT *puiTempArray = pObjectManager->FindObjectsInCategory(CObjectManager::eObjectType::MONSTER, iTempSize);
 	이렇게 호출한 뒤, puiTempArray[idx( 0 ~ iTempSize-1 )]로 사용하면 된다.
 	*/
-	std::vector<CObject*> FindObjectInCategory(eObjectType eType);
+	UINT* FindObjectsInCategory(eObjectType eType, int& iSize);
 
 	void DeleteObject(UINT id);
 	void DeleteObjectAll();
+
+	bool CheckCollision();
 
 private:
 	std::map<eObjectType, std::vector<CObject*>> m_mObjects;

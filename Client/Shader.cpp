@@ -138,9 +138,8 @@ void CShader::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 			UpdateShaderVariables(pd3dDeviceContext, obj->GetMaterial());
 		if (obj->GetTexture())
 			UpdateShaderVariables(pd3dDeviceContext, obj->GetTexture());
-		obj->AnimateObjectAndRender(pd3dDeviceContext, time);
+		obj->AnimateAndRender(pd3dDeviceContext, time);
 	}
-
 }
 
 
@@ -150,7 +149,6 @@ void CShader::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 CIlluminatedTexturedShader::CIlluminatedTexturedShader()
 {
 }
-
 CIlluminatedTexturedShader::~CIlluminatedTexturedShader()
 {
 }

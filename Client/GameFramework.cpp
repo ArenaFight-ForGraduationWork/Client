@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
+
+
+
+
 CGameFramework::CGameFramework()
 {
 	m_pd3dDevice = NULL;
@@ -111,11 +115,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 	m_nWndClientHeight = rcClient.bottom - rcClient.top;
 
 	UINT dwCreateDeviceFlags = 0;
-#ifdef _DEBUG
-	dwCreateDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
 
-	//디바이스를 생성하기 위하여 시도할 드라이버 유형의 순서를 나타낸다.
+	// 디바이스를 생성하기 위하여 시도할 드라이버 유형의 순서
 	D3D_DRIVER_TYPE d3dDriverTypes[] =
 	{
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -124,7 +125,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 	};
 	UINT nDriverTypes = sizeof(d3dDriverTypes) / sizeof(D3D10_DRIVER_TYPE);
 
-	//디바이스를 생성하기 위하여 시도할 특성 레벨의 순서를 나타낸다.
+	//디바이스를 생성하기 위하여 시도할 특성 레벨의 순서
 	D3D_FEATURE_LEVEL d3dFeatureLevels[] =
 	{
 		D3D_FEATURE_LEVEL_11_0,
@@ -133,7 +134,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 	};
 	UINT nFeatureLevels = sizeof(d3dFeatureLevels) / sizeof(D3D_FEATURE_LEVEL);
 
-	//생성할 스왑 체인을 서술하는 구조체이다.
+	// 생성할 스왑 체인을 서술하는 구조체
 	DXGI_SWAP_CHAIN_DESC dxgiSwapChainDesc;
 	::ZeroMemory(&dxgiSwapChainDesc, sizeof(dxgiSwapChainDesc));
 	dxgiSwapChainDesc.BufferCount = 1;
@@ -152,8 +153,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 	D3D_FEATURE_LEVEL nd3dFeatureLevel = D3D_FEATURE_LEVEL_11_0;
 
 	HRESULT hResult = S_OK;
-	//디바이스의 드라이버 유형과 특성 레벨을 지원하는 디바이스와 스왑 체인을 생성한다.
-	// 고수준의 디바이스 생성을 시도하고 실패하면 다음 수준의 디바이스를 생성한다.
+	// 디바이스의 드라이버 유형과 특성 레벨을 지원하는 디바이스와 스왑 체인을 생성
+	// 고수준의 디바이스 생성을 시도하고 실패하면 다음 수준의 디바이스를 생성
 	for (UINT i = 0; i < nDriverTypes; i++)
 	{
 		nd3dDriverType = d3dDriverTypes[i];
@@ -163,7 +164,7 @@ bool CGameFramework::CreateDirect3DDisplay()
 	}
 	if (!m_pDXGISwapChain || !m_pd3dDevice || !m_pd3dDeviceContext) return false;
 
-	//렌더 타겟 뷰를 생성하는 함수를 호출한다.
+	// 렌더 타겟 뷰를 생성하는 함수를 호출
 	if (!CreateRenderTargetDepthStencilView()) return false;
 
 	return true;
@@ -232,7 +233,7 @@ void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60.0f);
 
-	float fClearColor[4] = { COLORRGB(69), COLORRGB(28), COLORRGB(163), 1.0f };
+	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
 	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 

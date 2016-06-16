@@ -1,4 +1,8 @@
-#pragma once
+#ifndef TIMER_H_
+#define TIMER_H_
+
+
+
 
 const ULONG MAX_SAMPLE_COUNT = 50;
 
@@ -32,3 +36,6 @@ public:
 	bool flow1second() { return go1second; }			// true면 1초 지남. false면 뭐.. 0.3초 이런식으로 지난거임
 };
 
+
+
+#endif

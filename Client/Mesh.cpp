@@ -3,6 +3,9 @@
 #include "Fbx.h"
 
 
+
+
+
 CMesh::CMesh(ID3D11Device *pd3dDevice)
 {
 	m_nStride = sizeof(CDiffusedVertex);
@@ -17,13 +20,15 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	m_nStartIndex = 0;
 	m_nBaseVertex = 0;
 
-
+	m_pMaxVer = new D3DXVECTOR3();
+	m_pMinVer = new D3DXVECTOR3();
+	
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
 		m_ppResult[i] = nullptr;
-		m_AniMaxTime[i] = 0.0f;
+		m_llAniMaxTime[i] = static_cast<__int64>(0.0f);
 	}
-
+	m_uiAnimationIndexCnt = 0;
 }
 
 CMesh::~CMesh()
@@ -74,8 +79,8 @@ CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(ID3D11Device *pd3dDev
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
-	SetMaxVer(D3DXVECTOR3(fx, fy, fz));
-	SetMinVer(D3DXVECTOR3(-fx, -fy, -fz));
+	m_pMaxVer->x = fx; m_pMaxVer->y = fy; m_pMaxVer->z = fz;
+	m_pMinVer->x = -fx; m_pMinVer->y = -fy; m_pMinVer->z = -fz;
 
 	CTexturedNormalVertex pVertices[36];
 	int i = 0;
@@ -252,30 +257,25 @@ D3DXVECTOR3 CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertice
 	return(d3dxvNormal);
 }
 
-//===============================================================
-//
-//
-//
-//===============================================================
+
+
+
+
+
+
+
+
 
 CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
 {
+	CFbx *pFbx = new CFbx();
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(ptxtName, pVertices, d3dxvScale);
+	pFbx->Fbx_ReadTextFile_Mesh(ptxtName, ppVertices, d3dxvScale);
 
-	m_nVertices = pVertices.size();
+	m_nVertices = pFbx->GetSize();
 
-	ppVertices = new CTexturedNormalVertex[m_nVertices];
-
-	for (int i = 0; i < pVertices.size(); ++i)
-	{
-		ppVertices[i].SetPosition(pVertices.at(i)->GetPosition());
-		ppVertices[i].SetNormal(pVertices.at(i)->GetNormal());
-		ppVertices[i].SetUV(pVertices.at(i)->GetUV());
-	}
-	
-	SetMaxVer(CFbx::GetInstance()->GetMaxVer());
-	SetMinVer(CFbx::GetInstance()->GetMinVer());	
+	m_pMaxVer = &(pFbx->GetMaxVer());
+	m_pMinVer = &(pFbx->GetMinVer());
 
 	m_nStride = sizeof(CTexturedNormalVertex);
 	m_nOffset = 0;
@@ -321,46 +321,34 @@ void CImportedMesh::Render(ID3D11DeviceContext *pd3dDeviceContext)
 
 
 
-//=========================================
-//
-// 애니메이션을 가진 메쉬 클래스
-//
-//=========================================
+
+
+
+
 CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int CharNum, int StateCnt) : CMesh(pd3dDevice)
 {
-	CFbx::GetInstance()->Fbx_ReadTextFile_Info(CharNum);
-	m_nVertices = CFbx::GetInstance()->GetSize();
+	CFbx *pFbx = new CFbx();
+
+	pFbx->Fbx_ReadTextFile_Info(CharNum);
+	m_nVertices = pFbx->GetSize();
 
 	ppVertices = new CAnimationVertex[m_nVertices];
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
+	pFbx->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
 
 	for (int i = 0; i < StateCnt; ++i)
 	{
-		CFbx::GetInstance()->Fbx_ReadTextFile_Ani(CharNum, i);
-		m_ppResult[i] = CFbx::GetInstance()->GetResult(i);								
-		m_AniMaxTime[i] = CFbx::GetInstance()->GetAnimationMaxTime();
-		cout << i << "번째 time:" << m_AniMaxTime[i] << endl;
-		SetAnimationMaxTime(m_AniMaxTime[i]);
-	}
-	cout <<"=========="<< CharNum << "번째 캐릭터 Import Complete========" << endl;
-	pHitMaxVer = new D3DXVECTOR3[ATTACK_COUNT];
-	pHitMinVer = new D3DXVECTOR3[ATTACK_COUNT];
-	CFbx::GetInstance()->ReadTextFile_HitBox(CharNum, pHitMaxVer, pHitMinVer);
-
-	for (int i = 0; i < ATTACK_COUNT; ++i)
-	{
-		m_HitMaxVer[i] = pHitMaxVer[i];
-		m_HitMinVer[i] = pHitMinVer[i];
-		//printf("%f %f %f\n", m_HitMaxVer[i].x, m_HitMaxVer[i].y, m_HitMaxVer[i].z);
+		pFbx->Fbx_ReadTextFile_Ani(CharNum, i);
+		m_ppResult[i] = pFbx->GetResult(i);
+		m_llAniMaxTime[i] = pFbx->GetAnimationMaxTime();
 	}
 
-	m_AnimationIndexCnt = CFbx::GetInstance()->GetAnimationIndexCount();
-	SetAnimationIndexCnt(m_AnimationIndexCnt);		// Cmesh의 AnimationIndex에 넣어줌. object에서 가져갈 수 있도록
-	SetMaxVer(CFbx::GetInstance()->GetMaxVer());	// 값을 가져와서 CMesh의 m_MaxVer에 넣어줌. object에서 가져갈 수 있도록
-	SetMinVer(CFbx::GetInstance()->GetMinVer());		// 값을 가져와서 CMesh의 m_MinVer에 넣어줌. object에서 가져갈 수 있도록
+	m_uiAnimationIndexCnt = pFbx->GetAnimationIndexCount();
 
-	CFbx::GetInstance()->Fbx_ReadTextFile_Weight(CharNum, ppVertices);
+	m_pMaxVer = &(pFbx->GetMaxVer());
+	m_pMinVer = &(pFbx->GetMinVer());
+
+	pFbx->Fbx_ReadTextFile_Weight(CharNum, ppVertices);
 
 	m_nStride = sizeof(CAnimationVertex);
 	m_nOffset = 0;

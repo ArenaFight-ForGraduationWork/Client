@@ -50,46 +50,23 @@ using namespace std;
 
 #define FRAME_BUFFER_WIDTH	800	/* 프레임 버퍼의 너비 */
 #define FRAME_BUFFER_HEIGHT	600	/* 프레임 버퍼의 높이 */
+//#define FRAME_BUFFER_WIDTH	1680	/* 프레임 버퍼의 너비 */
+//#define FRAME_BUFFER_HEIGHT	1050	/* 프레임 버퍼의 높이 */
 #define ASPECT_RATIO	(float(FRAME_BUFFER_WIDTH)/float(FRAME_BUFFER_HEIGHT))	/* 프레임 버퍼의 종횡비 */
 
 #define COLORRGB(x) (x/255.0f)
 
-// messeage input
-#define DIR_FORWARD		0x01
-#define DIR_BACKWARD	0x02
-#define DIR_LEFT		0x04
-#define DIR_RIGHT		0x08
-#define DIR_UP			0x10
-#define DIR_DOWN		0x20
+//// messeage input
+//#define DIR_FORWARD		0x01
+//#define DIR_BACKWARD	0x02
+//#define DIR_LEFT		0x04
+//#define DIR_RIGHT		0x08
+//#define DIR_UP			0x10
+//#define DIR_DOWN		0x20
 
 
-#define ANIMATION_COUNT 7		// 오브젝트가 행동하는 애니메이션의 개수 :: idle, run, dead, attack, skill1, skill2 , skill3
-#define ATTACK_COUNT 4			// 공격모션 개수 :: attack, skill1, skill2, skill3 , 히트박스 읽어올때 개수좀 쓸라고!!
-
-
-
-
-/* 서버_ 재정의때문에 일단 여기로 옮겨둠*/
-#define MAX_BUFF_SIZE	4096
-#define MAX_PACKET_SIZE	4096
-#define MAX_CHAT_SIZE	100
-
-#define MAX_USER	1000
-#define SERVER_PORT	4000
-
-// 서버 -> 클라
-#define POS			1
-#define PUT_PLAYER	2
-#define LOGIN		3
-
-// 클라 -> 서버
-#define CREATE_ROOM	1
-#define JOIN_ROOM	2
-#define PLAYER_MOVE	3
-
-
-
-
+#define ANIMATION_COUNT	7		// 오브젝트가 행동하는 애니메이션의 개수 :: idle, run, dead, attack, skill1, skill2 , skill3
+#define ATTACK_COUNT	4		// 공격모션 개수 :: attack, skill1, skill2, skill3 , 히트박스 읽어올때 개수좀 쓸라고!!
 
 
 #endif
