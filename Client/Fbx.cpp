@@ -35,11 +35,11 @@ void CFbx::Fbx_ReadTextFile_Info(int CharNum)
 	switch (CharNum)
 	{
 	case 0:	// 인간
-		fopen_s(&fp, "Data\\C_info.txt", "rt");
+		fopen_s(&fp, "Data\\Human\\C_info.txt", "rt");
 		break;
 	case 1:   //슬라임
 	default:
-		fopen_s(&fp, "Data\\M_info.txt", "rt");
+		fopen_s(&fp, "Data\\Slime\\M_info.txt", "rt");
 		break;
 	}
 
@@ -87,11 +87,11 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
 	switch (CharNum)
 	{
 	case 0:	// 인간
-		fopen_s(&fp, "Data\\C_info.txt", "rt");
+		fopen_s(&fp, "Data\\Human\\C_info.txt", "rt");
 		break;
 	case 1:   //슬라임
 	default:
-		fopen_s(&fp, "Data\\M_info.txt", "rt");
+		fopen_s(&fp, "Data\\Slime\\M_info.txt", "rt");
 		break;
 	}
 
@@ -117,22 +117,22 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	switch (CharNum)
 	{
 	case 0:	// 인간
-		fopen_s(&fMonA[0], "Data\\C_matrix_idle.txt", "rt");
-		fopen_s(&fMonA[1], "Data\\C_matrix_run.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\C_matrix_dead.txt", "rt");
-		fopen_s(&fMonA[3], "Data\\C_matrix_attack.txt", "rt");
-		fopen_s(&fMonA[4], "Data\\C_matrix_skill1.txt", "rt");
-		fopen_s(&fMonA[5], "Data\\C_matrix_skill2.txt", "rt");
-		fopen_s(&fMonA[6], "Data\\C_matrix_skill3.txt", "rt");
+		fopen_s(&fMonA[0], "Data\\Human\\C_matrix_idle.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\Human\\C_matrix_run.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\Human\\C_matrix_dead.txt", "rt");
+		fopen_s(&fMonA[3], "Data\\Human\\C_matrix_attack.txt", "rt");
+		fopen_s(&fMonA[4], "Data\\Human\\C_matrix_skill1.txt", "rt");
+		fopen_s(&fMonA[5], "Data\\Human\\C_matrix_skill2.txt", "rt");
+		fopen_s(&fMonA[6], "Data\\Human\\C_matrix_skill3.txt", "rt");
 		break;
 	case 1:  //슬라임
-		fopen_s(&fMonA[0], "Data\\M_matrix_idle.txt", "rt");
-		fopen_s(&fMonA[1], "Data\\M_matrix_move.txt", "rt");
-		fopen_s(&fMonA[2], "Data\\M_matrix_dead.txt", "rt");		//아직 dead가 없음
-		fopen_s(&fMonA[3], "Data\\M_matrix_attack.txt", "rt");		//평타 : 물기
-		fopen_s(&fMonA[4], "Data\\M_matrix_dash.txt", "rt");		//스킬 1 : 돌진
-		fopen_s(&fMonA[5], "Data\\M_matrix_jump.txt", "rt");		//스킬 2 : 충격파
-		fopen_s(&fMonA[6], "Data\\M_matrix_jumpjump.txt", "rt");	//스킬 3:  쿵쿵쿵
+		fopen_s(&fMonA[0], "Data\\Slime\\M_matrix_idle.txt", "rt");
+		fopen_s(&fMonA[1], "Data\\Slime\\M_matrix_move.txt", "rt");
+		fopen_s(&fMonA[2], "Data\\Slime\\M_matrix_dead.txt", "rt");		//아직 dead가 없음
+		fopen_s(&fMonA[3], "Data\\Slime\\M_matrix_attack.txt", "rt");		//평타 : 물기
+		fopen_s(&fMonA[4], "Data\\Slime\\M_matrix_dash.txt", "rt");		//스킬 1 : 돌진
+		fopen_s(&fMonA[5], "Data\\Slime\\M_matrix_jump.txt", "rt");		//스킬 2 : 충격파
+		fopen_s(&fMonA[6], "Data\\Slime\\M_matrix_jumpjump.txt", "rt");	//스킬 3:  쿵쿵쿵
 		break;
 	}
 
@@ -173,11 +173,11 @@ void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 	switch (CharNum)
 	{
 	case 0:	// 인간
-		fopen_s(&fp, "Data\\C_weight.txt", "rt");
+		fopen_s(&fp, "Data\\Human\\C_weight.txt", "rt");
 		break;
 	case 1:  //슬라임
 	default:
-		fopen_s(&fp, "Data\\M_weight.txt", "rt");
+		fopen_s(&fp, "Data\\Slime\\M_weight.txt", "rt");
 		break;
 	}
 

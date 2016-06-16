@@ -32,10 +32,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 3, 0, 0);
 	m_vResources[(int)eResourceType::Tree]->SetIDs(4, 4, 0, 0);
 	m_vResources[(int)eResourceType::Wall1]->SetIDs(5, 5, 0, 0);
-	m_vResources[(int)eResourceType::MakeWall]->SetIDs(6, 6, 0, 0);
 	m_vResources[(int)eResourceType::grass]->SetIDs(7, 9, 0, 0);
-	m_vResources[(int)eResourceType::BRock]->SetIDs(8, 10, 0, 0);
-	m_vResources[(int)eResourceType::SRock]->SetIDs(9, 10, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -103,26 +100,19 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	m_mMesh[1] = new CImportedAnimatingMesh(pd3dDevice, 1, 7);
 
 	// 2. 아이템 오브젝트
-	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\ItemObject_Info.txt", D3DXVECTOR3(1, 1, 1));
+	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\Buff_Crystal\\ItemObject_Info.txt", D3DXVECTOR3(1, 1, 1));
 
 	// 3. 바닥
 	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 5000.0f, 1.0f, 5000.0f);
 
 	// 4. 나무
-	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\tree_info.txt", D3DXVECTOR3(0.8f, 0.8f, 0.8f));
+	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Tree\\tree_info.txt", D3DXVECTOR3(0.8f, 0.8f, 0.8f));
 
 	// 5. 만든 벽
 	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2500.0f, 1500.0f, 200.0f);
 
-	// 6. 만들어준 벽
-	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\wall.txt", D3DXVECTOR3(1, 1, 1));		//만들어준 벽
-
 	// 7. 풀
-	m_mMesh[7] = new CImportedMesh(pd3dDevice, "Data\\grass_Info.txt", D3DXVECTOR3(1, 1, 1));
-
-	m_mMesh[8] = new CImportedMesh(pd3dDevice, "Data\\Brock_Info.txt", D3DXVECTOR3(1, 1, 1));
-
-	m_mMesh[9] = new CImportedMesh(pd3dDevice, "Data\\Srock_Info.txt", D3DXVECTOR3(1, 1, 1));
+	m_mMesh[7] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Grass\\grass_Info.txt", D3DXVECTOR3(1, 1, 1));
 }
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
@@ -145,77 +135,64 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 
 	// 0 : 인간
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/human.png";
+	tempTextureAddress = L"./Data/Human/human.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[0] = tempTexture;
 
 	// 1 : 슬라임
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/monster.png";
+	tempTextureAddress = L"./Data/Slime/monster.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[1] = tempTexture;
 
 	// 2: Item_HP
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Item_RED.png";
+	tempTextureAddress = L"./Data/Buff_Crystal/Item_RED.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[2] = tempTexture;
 
 	// 3 : 바닥
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/ground.png";
+	tempTextureAddress = L"./Data/Decoration/Floor/ground.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[3] = tempTexture;
 
 	// 4: 나무
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/tree.png";
+	tempTextureAddress = L"./Data/Decoration/Tree/tree.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[4] = tempTexture;
 
 	// 5 : 만든 벽
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/벽돌.jpg";
+	tempTextureAddress = L"./Data/Decoration/Wall/wall.jpg";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[5] = tempTexture;
 
-	// 6 : 만들어준 벽
-	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/wall.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
-	m_mTexture[6] = tempTexture;
-
 	// 7. Item_buff
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/파란보석.png";
+	tempTextureAddress = L"./Data/Buff_Crystal/Item_BLUE.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[7] = tempTexture;
 
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/흰보석.png";
+	tempTextureAddress = L"./Data/Buff_Crystal/Item_WHITE.png";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[8] = tempTexture;
 
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/grass.jpg";
+	tempTextureAddress = L"./Data/Decoration/Grass/grass.jpg";
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
 	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
 	m_mTexture[9] = tempTexture;
-
-	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/돌.jpg";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
-	m_mTexture[10] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
 {

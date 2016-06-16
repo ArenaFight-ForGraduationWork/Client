@@ -319,11 +319,11 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	else
 		m_pCameraManager->GetNowCamera()->SetLookAt(new D3DXVECTOR3(0, 0, 0));
 
-	///* 아이템 설정 */
-	//for (int i = 0; i < 6; ++i)
-	//	m_pObjectManager->Insert(i + 2000, eResourceType::Item_HP, D3DXVECTOR3(static_cast<float>(rand() % 400) * i, 50, static_cast<float>(rand() % 500 + 10)*i));
-	//for (int i = 6; i < 11; ++i)
-	//	m_pObjectManager->Insert(i + 2000, eResourceType::Item_Buff, D3DXVECTOR3(static_cast<float>(rand() % 400 - 300) * i, 50, static_cast<float>(rand() % 200 - 150)*i));
+	/* 아이템 설정 */
+	for (int i = 0; i < 6; ++i)
+		m_pObjectManager->Insert(i + 2000, eResourceType::Item_HP, D3DXVECTOR3(static_cast<float>(rand() % 400) * i, 50, static_cast<float>(rand() % 500 + 10)*i));
+	for (int i = 6; i < 11; ++i)
+		m_pObjectManager->Insert(i + 2000, eResourceType::Item_Buff, D3DXVECTOR3(static_cast<float>(rand() % 400 - 300) * i, 50, static_cast<float>(rand() % 200 - 150)*i));
 
 	/* 맵 꾸미기 */
 	{
