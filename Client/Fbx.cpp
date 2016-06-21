@@ -15,7 +15,7 @@ CFbx::CFbx()
 		m_AniTime[i] = 0;
 	}
 
-	m_llAnimationMaxTime = 0;
+	m_iAnimationMaxTime = 0;
 	m_uiAnimationNodeIndexCount = 0;
 	m_fAnimationPlayTime = 0.0f;
 
@@ -136,16 +136,16 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 		break;
 	}
 
-	fscanf_s(fMonA[StateCnt], "%lld %d\n", &m_llAnimationMaxTime, &m_uiAnimationNodeIndexCount);
+	fscanf_s(fMonA[StateCnt], "%d %d\n", &m_iAnimationMaxTime, &m_uiAnimationNodeIndexCount);
 
-	m_ppResult[StateCnt] = new XMFLOAT4X4*[static_cast<unsigned int>(m_llAnimationMaxTime) / 10];
+	m_ppResult[StateCnt] = new XMFLOAT4X4*[static_cast<unsigned int>(m_iAnimationMaxTime) / 10];
 
-	for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	for (long long i = 0; i < m_iAnimationMaxTime / 10; ++i)
 	{
 		m_ppResult[StateCnt][i] = new XMFLOAT4X4[m_uiAnimationNodeIndexCount];
 	}
 
-	for (long long i = 0; i < m_llAnimationMaxTime / 10; ++i)
+	for (long long i = 0; i < m_iAnimationMaxTime / 10; ++i)
 	{
 		for (unsigned int j = 0; j < m_uiAnimationNodeIndexCount; ++j)
 		{

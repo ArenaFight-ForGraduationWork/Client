@@ -20,7 +20,7 @@ public:
 	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
 
 	XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
-	long long* GetAniMaxTime() { return m_llAniMaxTime; }
+	int* GetAniMaxTime() { return m_iAnimationMaxTime; }
 	unsigned int GetAnimationIndexCnt() { return m_uiAnimationIndexCnt; }
 
 	void SetMaxVer(D3DXVECTOR3 *max) { m_pMaxVer = max; }
@@ -46,7 +46,7 @@ protected:
 	D3DXVECTOR3 *m_pMinVer;
 
 	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
-	long long m_llAniMaxTime[ANIMATION_COUNT];
+	int m_iAnimationMaxTime[ANIMATION_COUNT];
 	unsigned int m_uiAnimationIndexCnt;
 
 private:

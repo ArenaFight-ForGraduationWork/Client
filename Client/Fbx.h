@@ -21,7 +21,7 @@ public:
 	int& GetSize() { return m_iSize; }
 	XMFLOAT4X4** GetResult(int i) { return m_ppResult[i]; }
 
-	long long GetAnimationMaxTime() { return m_llAnimationMaxTime; }
+	int& GetAnimationMaxTime() { return m_iAnimationMaxTime; }
 	int GetAnimationIndexCount() { return m_uiAnimationNodeIndexCount; }
 
 	D3DXVECTOR3& GetMaxVer() { return *m_pMaxVer; }
@@ -34,7 +34,7 @@ private:
 	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
 	long long m_AniTime[ANIMATION_COUNT];
 
-	long long m_llAnimationMaxTime;				//애니메이션 최대 길이
+	int m_iAnimationMaxTime;					// 애니메이션 최대 길이
 	unsigned int m_uiAnimationNodeIndexCount;	//애니메이션 노드 갯수
 	float m_fAnimationPlayTime;					//애니메이션 재생 시간
 

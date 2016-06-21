@@ -129,7 +129,7 @@ public:
 	void SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext);
 	void SetAniIndexCount(int);
 	void SetResult(XMFLOAT4X4***);
-	void SetTime(long long*);
+	void SetTime(int*);
 
 	void PlayAnimation(eAnimationType eType);
 

@@ -333,11 +333,11 @@ void CObject::SetAniIndexCount(int count)
 	m_AnimationIndexCount = count;
 }
 
-void CObject::SetTime(long long* time)
+void CObject::SetTime(int *time)
 {
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
-		m_iAniMaxTime[i] = static_cast<int>(time[i]);
+		m_iAniMaxTime[i] = time[i];
 	}
 }
 

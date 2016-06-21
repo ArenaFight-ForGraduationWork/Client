@@ -26,7 +26,7 @@ CMesh::CMesh(ID3D11Device *pd3dDevice)
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
 		m_ppResult[i] = nullptr;
-		m_llAniMaxTime[i] = static_cast<__int64>(0.0f);
+		m_iAnimationMaxTime[i] = 0;
 	}
 	m_uiAnimationIndexCnt = 0;
 }
@@ -339,7 +339,7 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 	{
 		pFbx->Fbx_ReadTextFile_Ani(CharNum, i);
 		m_ppResult[i] = pFbx->GetResult(i);
-		m_llAniMaxTime[i] = pFbx->GetAnimationMaxTime();
+		m_iAnimationMaxTime[i] = pFbx->GetAnimationMaxTime();
 	}
 
 	m_uiAnimationIndexCnt = pFbx->GetAnimationIndexCount();
