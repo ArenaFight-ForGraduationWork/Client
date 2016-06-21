@@ -74,27 +74,26 @@ public:
 	CObject(UINT id);
 	virtual ~CObject();
 
-	void SetPositionRelative(const float fx, const float fy, const float fz);
-	void SetPositionRelative(const D3DXVECTOR3 *d3dxVec);
-	void SetPositionAbsolute(const float fx, const float fy, const float fz);
-	void SetPositionAbsolute(const D3DXVECTOR3 *d3dxVec);
+	void SetPositionRelative(float& fx, float& fy, float& fz);
+	void SetPositionRelative(D3DXVECTOR3 *d3dxVec);
+	void SetPositionAbsolute(float& fx, float& fy, float& fz);
+	void SetPositionAbsolute(D3DXVECTOR3 *d3dxVec);
 	/* 로컬 Z축 방향으로 이동한다 */
-	virtual void MoveForward(float fDistance = 1.0f);
+	virtual void MoveForward(float& fDistance);
 
-	void SetDirectionRelative(const float fPitch, const float fYaw, const float fRoll);
-	void SetDirectionRelative(const D3DXVECTOR3 *d3dxVec);
-	void SetDirectionRelative(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
-	void SetDirectionAbsolute(const float fPitch, const float fYaw, const float fRoll);
-	void SetDirectionAbsolute(const D3DXVECTOR3 *d3dxVec);
-	void SetDirectionAbsolute(const D3DXVECTOR3 *pd3dxvAxis, const float fAngle);
+	void SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll);
+	void SetDirectionRelative(D3DXVECTOR3 *d3dxVec);
+	void SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll);
+	void SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec);
 
 	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환
 	const D3DXVECTOR3* GetPosition();
+	const D3DXVECTOR3* GetDirection();
 	const D3DXVECTOR3* GetRight();
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
-	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
+	const D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
 
 	const UINT& GetId() { return m_id; }
 
@@ -151,13 +150,14 @@ public:
 private:
 	UINT m_id;
 
+	D3DXVECTOR3 *m_pd3dxvDirection;
+
 	int  eSourceType;
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
 
 	D3DXMATRIX *m_pd3dxWorldMatrix;
-	D3DXMATRIX *m_boundingWorldMatrix;
 
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;
