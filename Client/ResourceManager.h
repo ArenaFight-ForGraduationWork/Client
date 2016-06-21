@@ -43,13 +43,9 @@ enum class eResourceType : BYTE{
 	Floor,
 	Tree,
 	Wall1,
-	MakeWall,
 	grass,
-	BRock,
-	SRock,
 	END
 };
-
 
 
 

@@ -154,7 +154,6 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 				for (int n = 0; n < 4; ++n)
 				{
 					fscanf_s(fMonA[StateCnt], "%f\n", &m_ppResult[StateCnt][i][j](m, n));
-
 				}
 			}
 		}

@@ -333,7 +333,6 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 	m_nVertices = pFbx->GetSize();
 
 	ppVertices = new CAnimationVertex[m_nVertices];
-
 	pFbx->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
 
 	for (int i = 0; i < StateCnt; ++i)

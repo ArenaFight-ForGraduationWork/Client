@@ -104,7 +104,7 @@ CObject::CObject(UINT id)
 	m_fAnimationPlaytime = 0.0f;
 
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
-		m_fAniMaxTime[i] = 0.0f;
+		m_iAniMaxTime[i] = 0;
 
 	m_eAnimationType = eAnimationType::Idle;
 
@@ -337,7 +337,7 @@ void CObject::SetTime(long long* time)
 {
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
-		m_fAniMaxTime[i] = static_cast<float>(time[i]);
+		m_iAniMaxTime[i] = static_cast<int>(time[i]);
 	}
 }
 
@@ -370,7 +370,7 @@ void CObject::AnimateAndRender(ID3D11DeviceContext* pd3dDeviceContext, float tim
 		m_fAnimationPlaytime += time * 1000;
 
 		/* 현재 애니메이션을 한 번 완료했을 때 */
-		if ((m_fAnimationPlaytime / 10) >= static_cast<int>(m_fAniMaxTime[static_cast<int>(m_eAnimationType)] / 10))
+		if ((m_fAnimationPlaytime / 10) >= m_iAniMaxTime[static_cast<int>(m_eAnimationType)] / 10)
 		{
 			switch (m_eAnimationType)
 			{

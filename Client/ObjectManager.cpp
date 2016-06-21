@@ -90,7 +90,6 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	case eResourceType::Floor:
 	case eResourceType::Tree:
 	case eResourceType::Wall1:
-	case eResourceType::MakeWall:
 	default:
 		pObject = new CObject(id);
 		break;

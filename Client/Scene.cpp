@@ -319,11 +319,12 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	else
 		m_pCameraManager->GetNowCamera()->SetLookAt(new D3DXVECTOR3(0, 0, 0));
 
-	/* 아이템 설정 */
-	for (int i = 0; i < 6; ++i)
-		m_pObjectManager->Insert(i + 2000, eResourceType::Item_HP, D3DXVECTOR3(static_cast<float>(rand() % 400) * i, 50, static_cast<float>(rand() % 500 + 10)*i));
-	for (int i = 6; i < 11; ++i)
-		m_pObjectManager->Insert(i + 2000, eResourceType::Item_Buff, D3DXVECTOR3(static_cast<float>(rand() % 400 - 300) * i, 50, static_cast<float>(rand() % 200 - 150)*i));
+	///* 아이템 설정 */
+	//for (int i = 0; i < 10; ++i)
+	//	m_pObjectManager->Insert(i + 2000, eResourceType::Item_HP, D3DXVECTOR3(i * 100, 50, i * 100));
+	//for (int i = 20; i < 30; ++i)
+	//	m_pObjectManager->Insert(i + 2000, eResourceType::Item_Buff, D3DXVECTOR3((i-19)*-100, 50, (i-19)*-100));
+	/* check : 여기 이상하게 rand()에서 i가 터진다. 지금 이렇게 해놔서 벡터 assert가 안 뜨는데, 원래 rand()로 좌표 찍던 때는 계속 터짐*/
 
 	/* 맵 꾸미기 */
 	{
@@ -358,13 +359,6 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 		for (short i = 0; i < 20; ++i)
 			m_pObjectManager->Insert(4020 + i, eResourceType::grass, D3DXVECTOR3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000)));
 	}
-	/* ObjectList의 카테고리
-	* PLAYER :									충돌체크o, 히트박스o,					0~999
-	* MONSTER : 몬스터 = 보스					충돌체크o, 히트박스o,					1000~1999
-	* BUFF_CRYSTAL :							충돌체크o, 삭제o,						2000~2999
-	* LAND : 바닥								충돌체크x, 삭제x                        3000~3999
-	* NATURAL_FEATURE : 벽, 나무, 돌 등등	    충돌체크o, 삭제x, 이동 못하게 함.		4000~5999
-	*/
 
 	m_pFog = new CFog();
 	m_pFog->Initialize(pd3dDevice);

@@ -164,7 +164,7 @@ private:
 	XMFLOAT4X4 ***m_pppResult;
 
 	float m_fAnimationPlaytime;
-	float m_fAniMaxTime[ANIMATION_COUNT];
+	int m_iAniMaxTime[ANIMATION_COUNT];
 	int m_AnimationIndexCount;
 	eAnimationType m_eAnimationType;
 };

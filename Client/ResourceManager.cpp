@@ -32,7 +32,7 @@ CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
 	m_vResources[(int)eResourceType::Floor]->SetIDs(3, 3, 0, 0);
 	m_vResources[(int)eResourceType::Tree]->SetIDs(4, 4, 0, 0);
 	m_vResources[(int)eResourceType::Wall1]->SetIDs(5, 5, 0, 0);
-	m_vResources[(int)eResourceType::grass]->SetIDs(7, 9, 0, 0);
+	m_vResources[(int)eResourceType::grass]->SetIDs(6, 9, 0, 0);
 }
 
 CResourceManager::~CResourceManager()
@@ -112,7 +112,7 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2500.0f, 1500.0f, 200.0f);
 
 	// 7. Ǯ
-	m_mMesh[7] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Grass\\grass_Info.txt", D3DXVECTOR3(1, 1, 1));
+	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Grass\\grass_Info.txt", D3DXVECTOR3(1, 1, 1));
 }
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
