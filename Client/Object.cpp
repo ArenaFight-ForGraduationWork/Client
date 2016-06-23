@@ -114,7 +114,7 @@ CObject::CObject(UINT id)
 
 void CObject::SetResourceType(int type)
 {
-	eSourceType = type;
+	m_iSourceType = type;
 }
 
 CObject::~CObject()
@@ -333,7 +333,7 @@ void CObject::SetResult(XMFLOAT4X4*** result)
 
 void CObject::SetAniIndexCount(int count)
 {
-	m_AnimationIndexCount = count;
+	m_iAnimationIndexCount = count;
 }
 
 void CObject::SetTime(int *time)
@@ -366,7 +366,7 @@ void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *p
 }
 
 
-void CObject::AnimateAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time)
+void CObject::AnimateAndRender(ID3D11DeviceContext* pd3dDeviceContext, float& time)
 {
 	if (eAnimationType::None != m_eAnimationType)
 	{
@@ -399,7 +399,7 @@ void CObject::AnimateAndRender(ID3D11DeviceContext* pd3dDeviceContext, float tim
 			}
 		}
 
-		for (int i = 0; i < m_AnimationIndexCount; ++i)
+		for (int i = 0; i < m_iAnimationIndexCount; ++i)
 		{
 			XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[static_cast<int>(m_eAnimationType)][static_cast<int>(m_fAnimationPlaytime) / 10][i]);
 			m_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;

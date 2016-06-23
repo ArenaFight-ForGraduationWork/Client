@@ -100,19 +100,19 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	m_mMesh[1] = new CImportedAnimatingMesh(pd3dDevice, 1, 7);
 
 	// 2. 아이템 오브젝트
-	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\Buff_Crystal\\ItemObject_Info.txt", D3DXVECTOR3(1, 1, 1));
+	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\Buff_Crystal\\ItemObject_Info.txt");
 
 	// 3. 바닥
 	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 5000.0f, 1.0f, 5000.0f);
 
 	// 4. 나무
-	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Tree\\tree_info.txt", D3DXVECTOR3(0.8f, 0.8f, 0.8f));
+	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Tree\\tree_info.txt");
 
 	// 5. 만든 벽
 	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2500.0f, 1500.0f, 200.0f);
 
 	// 7. 풀
-	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Grass\\grass_Info.txt", D3DXVECTOR3(1, 1, 1));
+	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Grass\\grass_Info.txt");
 }
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)

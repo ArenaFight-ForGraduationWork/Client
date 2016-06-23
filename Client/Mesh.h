@@ -77,7 +77,7 @@ private:
 class CImportedMesh : public CMesh
 {
 public:
-	CImportedMesh(ID3D11Device *pd3dDevice, char* pTxtName, D3DXVECTOR3 d3dxvScale = D3DXVECTOR3(1.0f, 1.0f, 1.0f));
+	CImportedMesh(ID3D11Device *pd3dDevice, char* pTxtName);
 	virtual ~CImportedMesh();
 
 	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);

@@ -266,11 +266,11 @@ D3DXVECTOR3 CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertice
 
 
 
-CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName, D3DXVECTOR3 d3dxvScale) : CMesh(pd3dDevice)
+CImportedMesh::CImportedMesh(ID3D11Device *pd3dDevice, char* ptxtName) : CMesh(pd3dDevice)
 {
 	CFbx *pFbx = new CFbx();
 
-	pFbx->Fbx_ReadTextFile_Mesh(ptxtName, ppVertices, d3dxvScale);
+	pFbx->ReadTextFile_Mesh(ptxtName, ppVertices);
 
 	m_nVertices = pFbx->GetSize();
 
@@ -329,15 +329,12 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 {
 	CFbx *pFbx = new CFbx();
 
-	pFbx->Fbx_ReadTextFile_Info(CharNum);
+	pFbx->ReadTextFile_Mesh(CharNum, ppVertices);
 	m_nVertices = pFbx->GetSize();
-
-	ppVertices = new CAnimationVertex[m_nVertices];
-	pFbx->Fbx_ReadTextFile_Mesh(CharNum, ppVertices);
 
 	for (int i = 0; i < StateCnt; ++i)
 	{
-		pFbx->Fbx_ReadTextFile_Ani(CharNum, i);
+		pFbx->ReadTextFile_Ani(CharNum, i);
 		m_ppResult[i] = pFbx->GetResult(i);
 		m_iAnimationMaxTime[i] = pFbx->GetAnimationMaxTime();
 	}
@@ -347,7 +344,7 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int Cha
 	m_pMaxVer = &(pFbx->GetMaxVer());
 	m_pMinVer = &(pFbx->GetMinVer());
 
-	pFbx->Fbx_ReadTextFile_Weight(CharNum, ppVertices);
+	pFbx->ReadTextFile_Weight(CharNum, ppVertices);
 
 	m_nStride = sizeof(CAnimationVertex);
 	m_nOffset = 0;

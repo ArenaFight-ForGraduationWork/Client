@@ -12,11 +12,10 @@ public:
 	CFbx();
 	~CFbx();
 
-	void Fbx_ReadTextFile_Info(int CharNum);		//사이즈 좀 얻을라고 만듦.
-	void Fbx_ReadTextFile_Mesh(char* fileName, CTexturedNormalVertex* &v, D3DXVECTOR3 scale);		// object 전용
-	void Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v);									// Animation전용
-	void Fbx_ReadTextFile_Ani(int CharNum, int StateCnt);
-	void Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex*);
+	void ReadTextFile_Mesh(char* fileName, CTexturedNormalVertex* &v);		// object 전용
+	void ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v);									// Animation전용
+	void ReadTextFile_Ani(int CharNum, int StateCnt);
+	void ReadTextFile_Weight(int CharNum, CAnimationVertex*);
 
 	int& GetSize() { return m_iSize; }
 	XMFLOAT4X4** GetResult(int i) { return m_ppResult[i]; }
@@ -29,10 +28,8 @@ public:
 
 private:
 	int m_iSize;
-	int tempcnt;	// weight에서 for문 돌릴 때 사용하려고 만듦
 
 	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
-	long long m_AniTime[ANIMATION_COUNT];
 
 	int m_iAnimationMaxTime;					// 애니메이션 최대 길이
 	unsigned int m_uiAnimationNodeIndexCount;	//애니메이션 노드 갯수

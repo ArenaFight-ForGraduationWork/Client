@@ -93,7 +93,7 @@ public:
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
-	const D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
+	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
 
 	const UINT& GetId() { return m_id; }
 
@@ -104,10 +104,10 @@ public:
 	void SetTexture(CTexture *pTexture);
 	CTexture* GetTexture() { return m_pTexture; }
 
-	virtual void SetResourceType(int eType);
-	int GetResourceType() { return eSourceType; }
+	void SetResourceType(int eType);
+	int& GetResourceType() { return m_iSourceType; }
 
-	virtual void AnimateAndRender(ID3D11DeviceContext*, float time);
+	void AnimateAndRender(ID3D11DeviceContext*, float& time);
 
 	//==============================================================================================
 	//==============================================================================================
@@ -152,7 +152,7 @@ private:
 
 	D3DXVECTOR3 *m_pd3dxvDirection;
 
-	int  eSourceType;
+	int m_iSourceType;
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
@@ -161,11 +161,11 @@ private:
 
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;
-	XMFLOAT4X4 ***m_pppResult;
 
+	XMFLOAT4X4 ***m_pppResult;
 	float m_fAnimationPlaytime;
 	int m_iAniMaxTime[ANIMATION_COUNT];
-	int m_AnimationIndexCount;
+	int m_iAnimationIndexCount;
 	eAnimationType m_eAnimationType;
 };
 

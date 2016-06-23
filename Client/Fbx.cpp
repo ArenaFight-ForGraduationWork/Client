@@ -7,12 +7,10 @@
 CFbx::CFbx()
 {
 	m_iSize = 0;
-	tempcnt = 0;
 
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
 		m_ppResult[i] = nullptr;
-		m_AniTime[i] = 0;
 	}
 
 	m_iAnimationMaxTime = 0;
@@ -28,27 +26,7 @@ CFbx::~CFbx()
 {
 }
 
-void CFbx::Fbx_ReadTextFile_Info(int CharNum)
-{
-	FILE *fp;
-
-	switch (CharNum)
-	{
-	case 0:	// 인간
-		fopen_s(&fp, "Data\\Human\\C_info.txt", "rt");
-		break;
-	case 1:   //슬라임
-	default:
-		fopen_s(&fp, "Data\\Slime\\M_info.txt", "rt");
-		break;
-	}
-
-	fscanf_s(fp, "%d\n", &m_iSize);
-
-	fclose(fp);
-}
-
-void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v, D3DXVECTOR3 scale)
+void CFbx::ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v)
 {
 	FILE *fp;
 	fopen_s(&fp, fileName, "rt");
@@ -62,7 +40,6 @@ void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v, D3DX
 	{
 		//정점데이터 얻어오기
 		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
-		outTemp.x *= scale.x;	outTemp.y *= scale.y;	outTemp.z *= scale.z;
 		v[i].SetPosition(D3DXVECTOR3(outTemp.x, outTemp.z, -outTemp.y));
 
 		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
@@ -75,12 +52,9 @@ void CFbx::Fbx_ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v, D3DX
 	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
 	fscanf_s(fp, "%f %f %f\n", &(m_pMinVer->x), &(m_pMinVer->y), &(m_pMinVer->z));
 
-	*m_pMaxVer *= *scale;
-	*m_pMinVer *= *scale;
-
 	fclose(fp);
 }
-void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
+void CFbx::ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 {
 	FILE *fp;
 
@@ -95,9 +69,10 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
 		break;
 	}
 
-	fscanf_s(fp, "%d\n", &tempcnt);
+	fscanf_s(fp, "%d\n", &m_iSize);
+	v = new CAnimationVertex[m_iSize];
 
-	for (int i = 0; i < tempcnt; ++i)
+	for (int i = 0; i < m_iSize; ++i)
 	{
 		fscanf_s(fp, "%f %f %f\n", &(v[i].m_d3dxvPosition.x), &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
 		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvNormal.x, &v[i].m_d3dxvNormal.y, &v[i].m_d3dxvNormal.z);
@@ -110,7 +85,7 @@ void CFbx::Fbx_ReadTextFile_Mesh(int CharNum, CAnimationVertex *v)
 	fclose(fp);
 }
 
-void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
+void CFbx::ReadTextFile_Ani(int CharNum, int StateCnt)
 {
 	FILE *fMonA[ANIMATION_COUNT];
 
@@ -165,7 +140,7 @@ void CFbx::Fbx_ReadTextFile_Ani(int CharNum, int StateCnt)
 	}
 }
 
-void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
+void CFbx::ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 {
 	FILE *fp;
 
@@ -184,7 +159,7 @@ void CFbx::Fbx_ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 	int index = 0;
 	float weight = 0.0f;
 
-	for (int i = 0; i <tempcnt; ++i)
+	for (int i = 0; i <m_iSize; ++i)
 	{
 		for (int j = 0; j < 8; ++j)
 		{
