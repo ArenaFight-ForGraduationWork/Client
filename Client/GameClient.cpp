@@ -277,7 +277,6 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (pObject)
 		{
-			//pObject->SetPositionAbsolute(new D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 			pObject->SetDirectionAbsolute(new D3DXVECTOR3(0, my_packet->direction, 0));
 			pObject->MoveForward(my_packet->distance);
 		}

@@ -56,13 +56,13 @@ using namespace std;
 
 #define COLORRGB(x) (x/255.0f)
 
-//// messeage input
-//#define DIR_FORWARD		0x01
-//#define DIR_BACKWARD	0x02
-//#define DIR_LEFT		0x04
-//#define DIR_RIGHT		0x08
-//#define DIR_UP			0x10
-//#define DIR_DOWN		0x20
+// messeage input
+#define DIR_FORWARD		0x01	// 0000 0001
+#define DIR_BACKWARD	0x02	// 0000 0010
+#define DIR_LEFT		0x04	// 0000 0100
+#define DIR_RIGHT		0x08	// 0000 1000
+//#define DIR_UP			0x10	// 0001 0000
+//#define DIR_DOWN		0x20	// 0010 0000
 
 
 #define ANIMATION_COUNT	7		// 오브젝트가 행동하는 애니메이션의 개수 :: idle, run, dead, attack, skill1, skill2 , skill3

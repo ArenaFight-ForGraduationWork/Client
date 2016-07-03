@@ -44,7 +44,7 @@ public:
 
 	void AddRef();
 	void Release();
-	
+
 	/* nIndex번째 인덱스 자리에 텍스쳐를 설정한다 */
 	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, ID3D11SamplerState *pd3dSamplerState);
 
@@ -67,7 +67,7 @@ private:
 
 
 
-
+class CUnitComponet;
 class CObject
 {
 public:
@@ -78,8 +78,8 @@ public:
 	void SetPositionRelative(D3DXVECTOR3 *d3dxVec);
 	void SetPositionAbsolute(float& fx, float& fy, float& fz);
 	void SetPositionAbsolute(D3DXVECTOR3 *d3dxVec);
-	/* 로컬 Z축 방향으로 이동한다 */
-	virtual void MoveForward(float& fDistance);
+	/* 로컬 Z축 방향으로 이동한다. 속력이 있으면 속력*시간(fVar), 없으면 거리(fVar)만큼 움직인다  */
+	virtual void MoveForward(float& fVar);
 
 	void SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll);
 	void SetDirectionRelative(D3DXVECTOR3 *d3dxVec);
@@ -108,6 +108,9 @@ public:
 	int& GetResourceType() { return m_iSourceType; }
 
 	void AnimateAndRender(ID3D11DeviceContext*, float& time);
+
+	void SetComponent();
+	CUnitComponet* GetComponent() { return m_pUnitComponent; }
 
 	//==============================================================================================
 	//==============================================================================================
@@ -167,25 +170,27 @@ private:
 	int m_iAniMaxTime[ANIMATION_COUNT];
 	int m_iAnimationIndexCount;
 	eAnimationType m_eAnimationType;
+
+	CUnitComponet *m_pUnitComponent;
 };
 
 
 
-
-class CUnit : public CObject{
+class CUnitComponet
+{
 public:
-	CUnit(UINT id);
-	~CUnit();
+	CUnitComponet() : m_fStrikingPower(10), m_fDefensivePower(10), m_fMovingSpeed(200), m_fHp(100) {}
+	~CUnitComponet() {}
 
-	void SetStrikingPower(float fSp) { m_fStrikingPower = fSp; }
-	void SetDefensivePower(float fDp) { m_fDefensivePower = fDp; }
-	void SetMovingSpeed(float fMs) { m_fMovingSpeed = fMs; }
-	void SetHealthPoint(float fHp) { m_fHp = fHp; }
+	void SetStrikingPower(float& fSp) { m_fStrikingPower = fSp; }
+	void SetDefensivePower(float& fDp) { m_fDefensivePower = fDp; }
+	void SetMovingSpeed(float& fMs) { m_fMovingSpeed = fMs; }
+	void SetHealthPoint(float& fHp) { m_fHp = fHp; }
 
-	float& GetStrikingPower() { return m_fStrikingPower; }
-	float& GetDefensivePower() { return m_fDefensivePower; }
-	float& GetMovingSpeed() { return m_fMovingSpeed; }
-	float& GetHealthPoint() { return m_fHp; }
+	float GetStrikingPower() { return m_fStrikingPower; }
+	float GetDefensivePower() { return m_fDefensivePower; }
+	float GetMovingSpeed() { return m_fMovingSpeed; }
+	float GetHealthPoint() { return m_fHp; }
 
 protected:
 private:
@@ -194,6 +199,29 @@ private:
 	float m_fMovingSpeed;		/* 이동속도. m/s */
 	float m_fHp;				/* 체력 */
 };
+
+//class CUnit : public CObject {
+//public:
+//	CUnit(UINT id);
+//	~CUnit();
+//
+//	void SetStrikingPower(float fSp) { m_fStrikingPower = fSp; }
+//	void SetDefensivePower(float fDp) { m_fDefensivePower = fDp; }
+//	void SetMovingSpeed(float fMs) { m_fMovingSpeed = fMs; }
+//	void SetHealthPoint(float fHp) { m_fHp = fHp; }
+//
+//	float& GetStrikingPower() { return m_fStrikingPower; }
+//	float& GetDefensivePower() { return m_fDefensivePower; }
+//	float& GetMovingSpeed() { return m_fMovingSpeed; }
+//	float& GetHealthPoint() { return m_fHp; }
+//
+//protected:
+//private:
+//	float m_fStrikingPower;		/* 공격력 */
+//	float m_fDefensivePower;	/* 방어력 */
+//	float m_fMovingSpeed;		/* 이동속도. m/s */
+//	float m_fHp;				/* 체력 */
+//};
 
 
 

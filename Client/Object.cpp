@@ -110,6 +110,8 @@ CObject::CObject(UINT id)
 	m_pMaxVer = nullptr;
 	m_pMinVer = nullptr;
 	m_fRadius = 0.0;
+
+	m_pUnitComponent = nullptr;
 }
 
 void CObject::SetResourceType(int type)
@@ -184,10 +186,13 @@ void CObject::SetPositionAbsolute(D3DXVECTOR3 *d3dxVec)
 	m_pd3dxWorldMatrix->_42 = d3dxVec->y;
 	m_pd3dxWorldMatrix->_43 = d3dxVec->z;
 }
-void CObject::MoveForward(float& fDistance)
+void CObject::MoveForward(float& fVar)
 {
 	D3DXVECTOR3 d3dxvPosition = *GetPosition();
-	d3dxvPosition += fDistance * *GetLookAt();
+	if (m_pUnitComponent)	// 속력이 존재하면 속력 * 시간(fVar)
+		d3dxvPosition += m_pUnitComponent->GetMovingSpeed() * fVar * (*GetLookAt());
+	else // 속력이 없으면 거리(fVar)
+		d3dxvPosition += fVar * (*GetLookAt());
 	SetPositionAbsolute(&d3dxvPosition);
 }
 
@@ -437,24 +442,28 @@ void CObject::PlayAnimation(eAnimationType eType)
 	}
 }
 
-
-
-
-
-
-
-
-
-
-CUnit::CUnit(UINT id) : CObject(id)
+void CObject::SetComponent()
 {
-	m_fStrikingPower = 10;
-	m_fDefensivePower = 10;
-	m_fMovingSpeed = 500;
-	m_fHp = 100;
-}
-CUnit::~CUnit()
-{
+	m_pUnitComponent = new CUnitComponet();
 }
 
 
+
+
+
+
+
+
+
+//CUnit::CUnit(UINT id) : CObject(id)
+//{
+//	m_fStrikingPower = 10;
+//	m_fDefensivePower = 10;
+//	m_fMovingSpeed = 500;
+//	m_fHp = 100;
+//}
+//CUnit::~CUnit()
+//{
+//}
+//
+//

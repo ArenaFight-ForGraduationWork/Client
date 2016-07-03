@@ -159,7 +159,7 @@ void CFbx::ReadTextFile_Weight(int CharNum, CAnimationVertex* cAniVer)
 	int index = 0;
 	float weight = 0.0f;
 
-	for (int i = 0; i <m_iSize; ++i)
+	for (int i = 0; i < m_iSize; ++i)
 	{
 		for (int j = 0; j < 8; ++j)
 		{
