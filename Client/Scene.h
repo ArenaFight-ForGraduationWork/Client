@@ -62,8 +62,9 @@ public:
 	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
-	UCHAR pKeyBuffer[256];
-	DWORD dwDirection;
+	UCHAR m_pKeyBuffer[256];
+	DWORD m_dwDirectionPrev;
+	DWORD m_dwDirectionNow;
 
 
 	CFog *m_pFog;

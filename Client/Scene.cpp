@@ -53,7 +53,8 @@ void CScene::AnimateObjectsAndRender(ID3D11DeviceContext *pd3dDeviceContext, flo
 
 CFirstScene::CFirstScene()
 {
-	dwDirection = 0;
+	m_dwDirectionPrev = 0;
+	m_dwDirectionNow = 0;
 
 	m_pFog = nullptr;
 }
@@ -79,42 +80,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//		move_packet->size = sizeof(*move_packet);
 		//		move_packet->type = PLAYER_MOV;
 		//		move_packet->move_type = W;
-		//		move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-		//		send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//		m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-		//	}
-		//}break;
-		//case VK_DOWN:
-		//{
-		//	if (server_on) {
-		//		move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//		move_packet->size = sizeof(*move_packet);
-		//		move_packet->type = PLAYER_MOV;
-		//		move_packet->move_type = S;
-		//		move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-		//		send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//		m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-		//	}
-		//}break;
-		//case VK_LEFT:
-		//{
-		//	if (server_on) {
-		//		move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//		move_packet->size = sizeof(*move_packet);
-		//		move_packet->type = PLAYER_MOV;
-		//		move_packet->move_type = A;
-		//		move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-		//		send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//		m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-		//	}
-		//}break;
-		//case VK_RIGHT:
-		//{
-		//	if (server_on) {
-		//		move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//		move_packet->size = sizeof(*move_packet);
-		//		move_packet->type = PLAYER_MOV;
-		//		move_packet->move_type = D;
 		//		move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
 		//		send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 		//		m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
@@ -146,57 +111,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//	move_packet->size = sizeof(*move_packet);
 		//	move_packet->type = PLAYER_MOV_END;
 		//	move_packet->move_type = W;
-		//	move_packet->direction = 0;
-		//	send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//	if (GetKeyboardState(pKeyBuffer))
-		//	{
-		//		if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
-		//			|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
-		//		{
-		//			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
-		//		}
-		//	}
-		//}break;
-		//case VK_LEFT:
-		//{
-		//	move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//	move_packet->size = sizeof(*move_packet);
-		//	move_packet->type = PLAYER_MOV_END;
-		//	move_packet->move_type = A;
-		//	move_packet->direction = 0;
-		//	send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//	if (GetKeyboardState(pKeyBuffer))
-		//	{
-		//		if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
-		//			|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
-		//		{
-		//			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
-		//		}
-		//	}
-		//}break;
-		//case VK_RIGHT:
-		//{
-		//	move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//	move_packet->size = sizeof(*move_packet);
-		//	move_packet->type = PLAYER_MOV_END;
-		//	move_packet->move_type = D;
-		//	move_packet->direction = 0;
-		//	send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//	if (GetKeyboardState(pKeyBuffer))
-		//	{
-		//		if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
-		//			|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
-		//		{
-		//			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
-		//		}
-		//	}
-		//}break;
-		//case VK_DOWN:
-		//{
-		//	move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//	move_packet->size = sizeof(*move_packet);
-		//	move_packet->type = PLAYER_MOV_END;
-		//	move_packet->move_type = S;
 		//	move_packet->direction = 0;
 		//	send(sock, (char*)move_packet, sizeof(*move_packet), 0);
 		//	if (GetKeyboardState(pKeyBuffer))
@@ -291,59 +205,69 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 }
 void CFirstScene::ProcessInput(float fTimeElapsed)
 {
-	static UCHAR pKeyBuffer[256];
-	DWORD dwDirection = 0;
-
 	CObject *pPlayer = m_pObjectManager->FindObject(myID);
 	if (pPlayer)
 	{
-		if (GetKeyboardState(pKeyBuffer))
+		m_dwDirectionPrev = m_dwDirectionNow;
+		m_dwDirectionNow = 0;
+
+		if (GetKeyboardState(m_pKeyBuffer))
 		{
-			if (pKeyBuffer[VK_SPACE] & 0xF0)	// attack
+			if (m_pKeyBuffer[VK_SPACE] & 0xF0)	// attack
 			{
 				pPlayer->PlayAnimation(CObject::eAnimationType::Attack);
 			}
-			else if (pKeyBuffer[0x31] & 0xF0)	// skill1
+			else if (m_pKeyBuffer[0x31] & 0xF0)	// skill1
 			{
 				pPlayer->PlayAnimation(CObject::eAnimationType::Skill1);
 			}
-			else if (pKeyBuffer[0x32] & 0xF0)	// skill2
+			else if (m_pKeyBuffer[0x32] & 0xF0)	// skill2
 			{
 				pPlayer->PlayAnimation(CObject::eAnimationType::Skill2);
 			}
-			else if (pKeyBuffer[0x33] & 0xF0)	// skill3
+			else if (m_pKeyBuffer[0x33] & 0xF0)	// skill3
 			{
 				pPlayer->PlayAnimation(CObject::eAnimationType::Skill3);
 			}
-			else 
+			else
 			{
 				// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
 				D3DXVECTOR2 inputAngle(0, 0);
-				if (pKeyBuffer[VK_UP] & 0xF0)
+				if (m_pKeyBuffer[VK_UP] & 0xF0)
 				{
-					dwDirection |= DIR_FORWARD;
+					m_dwDirectionNow |= DIR_FORWARD;
 					inputAngle.y += 1;
 				}
-				if (pKeyBuffer[VK_DOWN] & 0xF0)
+				if (m_pKeyBuffer[VK_DOWN] & 0xF0)
 				{
-					dwDirection |= DIR_BACKWARD;
+					m_dwDirectionNow |= DIR_BACKWARD;
 					inputAngle.y -= 1;
 				}
-				if (pKeyBuffer[VK_LEFT] & 0xF0)
+				if (m_pKeyBuffer[VK_LEFT] & 0xF0)
 				{
-					dwDirection |= DIR_LEFT;
+					m_dwDirectionNow |= DIR_LEFT;
 					inputAngle.x += 1;
 				}
-				if (pKeyBuffer[VK_RIGHT] & 0xF0)
+				if (m_pKeyBuffer[VK_RIGHT] & 0xF0)
 				{
-					dwDirection |= DIR_RIGHT;
+					m_dwDirectionNow |= DIR_RIGHT;
 					inputAngle.x -= 1;
 				}
+
+				if ((!m_dwDirectionPrev) && (m_dwDirectionNow))
+				{
+					/* send move_start_packet */
+				}
+				else if ((m_dwDirectionPrev) && (!m_dwDirectionNow))
+				{
+					/* send move_end_packet */
+				}
+
 				if (D3DXVECTOR2(0, 0) != inputAngle) // inputAngle==(0,0)이면 어느 방향으로든 움직이지 않는다 => 이동 계산X
 				{
 					D3DXVECTOR2 defaultAngle(0, 1);	// X, Z
 					float fAngle = acosf(D3DXVec2Dot(&defaultAngle, &inputAngle) / (D3DXVec2Length(&defaultAngle) * D3DXVec2Length(&inputAngle)));
-					fAngle = D3DXToDegree(fAngle);
+					fAngle = static_cast<float>(D3DXToDegree(fAngle));
 					fAngle = ((defaultAngle.x* inputAngle.y - defaultAngle.y*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
 
 					pPlayer->SetDirectionAbsolute(&D3DXVECTOR3(0, m_pCameraManager->GetNowCamera()->GetYaw() + fAngle, 0));
@@ -357,11 +281,11 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 			}
 		}
 		// 좌우회전
-		if (pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);		// Q
-		if (pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);	// E
+		if (m_pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);		// Q
+		if (m_pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);	// E
 		// 줌
-		if (pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);			// Z
-		if (pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);			// X
+		if (m_pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);			// Z
+		if (m_pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);			// X
 	}
 
 	if (pPlayer)
