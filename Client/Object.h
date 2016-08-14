@@ -46,7 +46,7 @@ public:
 	void Release();
 
 	/* nIndex번째 인덱스 자리에 텍스쳐를 설정한다 */
-	void SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, ID3D11SamplerState *pd3dSamplerState);
+	void SetTexture(ID3D11Device *pd3dDevice, int nIndex, WCHAR *textureAddress);
 
 	int& GetNumOfTextures() { return m_nTextures; }
 

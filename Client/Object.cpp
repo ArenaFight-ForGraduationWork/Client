@@ -65,17 +65,34 @@ void CTexture::Release()
 	if (m_nReferences == 0) delete this;
 }
 
-void CTexture::SetTexture(int nIndex, ID3D11ShaderResourceView *pd3dsrvTexture, ID3D11SamplerState *pd3dSamplerState)
+void CTexture::SetTexture(ID3D11Device *pd3dDevice, int nIndex, WCHAR *textureAddress)
 {
+	ID3D11SamplerState *pd3dSamplerState = nullptr;
+	ID3D11ShaderResourceView *pd3dsrvTexture = nullptr;
+	D3D11_SAMPLER_DESC d3dSamplerDesc;
+
+	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
+	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	d3dSamplerDesc.MinLOD = 0;
+	d3dSamplerDesc.MaxLOD = 0;
+	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
+
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, textureAddress, NULL, NULL, &pd3dsrvTexture, NULL);
+
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
 	if (m_ppd3dSamplerStates[nIndex]) m_ppd3dSamplerStates[nIndex]->Release();
 	m_ppd3dsrvTextures[nIndex] = pd3dsrvTexture;
 	m_ppd3dSamplerStates[nIndex] = pd3dSamplerState;
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->AddRef();
 	if (m_ppd3dSamplerStates[nIndex]) m_ppd3dSamplerStates[nIndex]->AddRef();
+
+	pd3dSamplerState = nullptr;
+	pd3dsrvTexture = nullptr;
 }
-
-
 
 
 

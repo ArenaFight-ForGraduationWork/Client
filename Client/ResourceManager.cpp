@@ -117,81 +117,51 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 
 void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 {
-	ID3D11SamplerState *pd3dSamplerState = NULL;
-	D3D11_SAMPLER_DESC d3dSamplerDesc;
-	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	d3dSamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	d3dSamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-	d3dSamplerDesc.MinLOD = 0;
-	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
-	ID3D11ShaderResourceView *pd3dTexture = NULL;
-
 	CTexture *tempTexture;
-	WCHAR *tempTextureAddress;
 
-	// 0 : 인간
+	/// 0: player
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Human/human.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Human/human.png");
 	m_mTexture[0] = tempTexture;
 
-	// 1 : 슬라임
+	/// 1: monster1=slime
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Slime/monster.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Slime/monster.png");
 	m_mTexture[1] = tempTexture;
 
-	// 2: Item_HP
+	/// 2: Item_HP
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Buff_Crystal/Item_RED.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_RED.png");
 	m_mTexture[2] = tempTexture;
 
-	// 3 : 바닥
+	/// 3: floor
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Decoration/Floor/ground.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Floor/ground.png");
 	m_mTexture[3] = tempTexture;
 
-	// 4: 나무
+	/// 4: tree
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Decoration/Tree/tree.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Tree/tree.png");
 	m_mTexture[4] = tempTexture;
 
-	// 5 : 만든 벽
+	/// 5: wall
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Decoration/Wall/wall.jpg";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Wall/wall.jpg");
 	m_mTexture[5] = tempTexture;
 
-	// 7. Item_buff
+	/// 7: Item_buff
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Buff_Crystal/Item_BLUE.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_BLUE.png");
 	m_mTexture[7] = tempTexture;
 
-	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Buff_Crystal/Item_WHITE.png";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
-	m_mTexture[8] = tempTexture;
+	///// 8: Item_?
+	//tempTexture = new CTexture(1);
+	//tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_WHITE.png");
+	//m_mTexture[8] = tempTexture;
 
+	/// 9: Grass
 	tempTexture = new CTexture(1);
-	tempTextureAddress = L"./Data/Decoration/Grass/grass.jpg";
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, tempTextureAddress, NULL, NULL, &pd3dTexture, NULL);
-	tempTexture->SetTexture(0, pd3dTexture, pd3dSamplerState);
+	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Grass/grass.jpg");
 	m_mTexture[9] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()

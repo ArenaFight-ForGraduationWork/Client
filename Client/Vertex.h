@@ -6,9 +6,6 @@
 
 class CVertex
 {
-private:
-	D3DXVECTOR3 m_d3dxvPosition;
-
 public:
 	CVertex() { m_d3dxvPosition = D3DXVECTOR3(0, 0, 0); }
 	CVertex(D3DXVECTOR3 d3dxvPosition) { m_d3dxvPosition = d3dxvPosition; }
@@ -17,6 +14,9 @@ public:
 	{
 		return m_d3dxvPosition;
 	}
+
+private:
+	D3DXVECTOR3 m_d3dxvPosition;
 };
 
 class CDiffusedVertex
@@ -54,6 +54,9 @@ public:
 	CTexturedVertex(float x, float y, float z, float u, float v) { m_d3dxvPosition = D3DXVECTOR3(x, y, z); m_d3dxvTexCoord = D3DXVECTOR2(u, v); }
 	CTexturedVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR2 d3dxvTexture) { m_d3dxvPosition = d3dxvPosition; m_d3dxvTexCoord = d3dxvTexture; }
 	~CTexturedVertex() { }
+
+	void SetPosition(float x, float y, float z) { m_d3dxvPosition.x = x; m_d3dxvPosition.y = y; m_d3dxvPosition.z = z; }
+	void SetTexCoord(float u, float v) { m_d3dxvTexCoord.x = u; m_d3dxvTexCoord.y = v; }
 
 private:
 	D3DXVECTOR3 m_d3dxvPosition;
