@@ -242,3 +242,48 @@ void CAnimatingShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
 
 
 
+CTextureShader::CTextureShader()
+{
+}
+CTextureShader::~CTextureShader()
+{
+}
+
+void CTextureShader::CreateShader(ID3D11Device *pd3dDevice)
+{
+	CShader::CreateShader(pd3dDevice);
+
+	D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	UINT nElements = ARRAYSIZE(d3dInputLayout);
+	CreateVertexShaderFromFile(pd3dDevice, L"Texture.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"Texture.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+}
+
+void CTextureShader::CreateShaderVariables(ID3D11Device *pd3dDevice)
+{
+	CShader::CreateShaderVariables(pd3dDevice);
+
+	//D3D11_BUFFER_DESC d3dBufferDesc;
+	//ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	//d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	//d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//d3dBufferDesc.ByteWidth = sizeof(MATERIAL);
+	//pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
+}
+
+void CTextureShader::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float indexCount)
+{
+	CShader::AnimateObjectAndRender(pd3dDeviceContext, 0);
+
+	// Render the triangle
+	pd3dDeviceContext->DrawIndexed(static_cast<int>(indexCount), 0, 0);
+}
+
+
+
+

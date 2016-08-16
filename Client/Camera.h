@@ -1,13 +1,7 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-
-
-struct VS_CB_VIEWPROJECTION_MATRIX
-{
-	D3DXMATRIX m_d3dxmtxView;
-	D3DXMATRIX m_d3dxmtxProjection;
-};
+#include "ConstantBuffers.h"
 
 
 enum class eCameraType : BYTE{
@@ -31,6 +25,8 @@ public:
 	void RegenerateViewMatrix();
 
 	void GenerateProjectionMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance, const float fAspectRatio, const float fFOVAngle);
+	void GenerateOrthoMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance);
+	D3DXMATRIX* GetOrthoMatrix() { return m_pd3dxmtxOrtho; }
 
 	void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
@@ -88,6 +84,10 @@ protected:
 	D3DXMATRIX *m_pd3dxmtxView;
 	/* 투영 변환행렬 */
 	D3DXMATRIX *m_pd3dxmtxProjection;
+	/* 정사영 변환행렬 */
+	D3DXMATRIX *m_pd3dxmtxOrtho;
+	/* 카메라 월드변환 행렬 */
+	D3DXMATRIX *m_pd3dxmtxWorld;
 
 	// 뷰-포트를 나타내는 멤버 변수를 선언한다.
 	D3D11_VIEWPORT *m_pd3dViewport;

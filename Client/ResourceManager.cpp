@@ -179,17 +179,23 @@ void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
 {
 	CShader *pShader;
 
-	// 0 : CIlluminatedTexturedShader
+	// 0 : Unanimating Mesh. CIlluminatedTexturedShader
 	pShader = new CIlluminatedTexturedShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[0] = pShader;
 
-	// 1 : PlayerShader
+	// 1 : Animating Mesh. PlayerShader
 	pShader = new CAnimatingShader();
 	pShader->CreateShader(pd3dDevice);
 	pShader->CreateShaderVariables(pd3dDevice);
 	m_mShader[1] = pShader;
+
+	// 2 : UI. TextureShader
+	pShader = new CTextureShader();
+	pShader->CreateShader(pd3dDevice);
+	pShader->CreateShaderVariables(pd3dDevice);
+	m_mShader[2] = pShader;
 }
 
 

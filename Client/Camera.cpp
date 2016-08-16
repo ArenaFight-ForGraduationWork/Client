@@ -23,6 +23,8 @@ CCamera::CCamera()
 	D3DXMatrixIdentity(m_pd3dxmtxView);
 	m_pd3dxmtxProjection = new D3DXMATRIX();
 	D3DXMatrixIdentity(m_pd3dxmtxProjection);
+	m_pd3dxmtxOrtho = new D3DXMATRIX();
+	D3DXMatrixIdentity(m_pd3dxmtxOrtho);
 
 	m_pd3dcbCamera = nullptr;
 }
@@ -84,6 +86,11 @@ void CCamera::RegenerateViewMatrix()
 void CCamera::GenerateProjectionMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance, const float fAspectRatio, const float fFOVAngle)
 {
 	D3DXMatrixPerspectiveFovLH(m_pd3dxmtxProjection, (float)D3DXToRadian(fFOVAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance);
+}
+
+void CCamera::GenerateOrthoMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance)
+{
+	D3DXMatrixOrthoLH(m_pd3dxmtxOrtho, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, fNearPlaneDistance, fFarPlaneDistance);
 }
 
 void CCamera::CreateShaderVariables(ID3D11Device *pd3dDevice)
@@ -203,6 +210,7 @@ void CCameraManager::Initialize(ID3D11Device *pd3dDevice)
 	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
 	pCamera->SetViewport(pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	pCamera->GenerateProjectionMatrix(1.01f, 10000.0f, ASPECT_RATIO, 60.0f);
+	pCamera->GenerateOrthoMatrix(1.01f, 10000.0f);
 	pCamera->GenerateViewMatrix();
 	m_mCameras[eCameraType::THIRD_PERSON_CAMERA] = pCamera;
 

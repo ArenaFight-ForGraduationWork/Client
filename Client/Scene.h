@@ -8,9 +8,12 @@
 #include "Fog.h"
 #include "Camera.h"
 #include "Server.h"
+#include "UserInterface.h"
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
+
+
 
 class CScene
 {
@@ -25,7 +28,8 @@ public:
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
-	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);	//추가
+	virtual void AnimateObjectsAndRender3D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+	virtual void AnimateObjectsAndRender2D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 protected:
 	DWORD m_OperationMode;
@@ -35,6 +39,9 @@ protected:
 
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
+
+	CUserInterface *m_pInterface;
+	ID3D11Buffer *m_pd3dcbCamera;
 
 private:
 	std::vector<CShader*> m_vShaders;
@@ -59,13 +66,13 @@ public:
 	virtual void ProcessInput(float fTimeElapsed);
 
 	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+	virtual void AnimateObjectsAndRender3D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+	virtual void AnimateObjectsAndRender2D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
 	UCHAR m_pKeyBuffer[256];
 	DWORD m_dwDirectionPrev;
 	DWORD m_dwDirectionNow;
-
 
 	CFog *m_pFog;
 };
@@ -86,9 +93,6 @@ public:
 	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
 
 private:
-	int PressSkillNum;					//누른 스킬 번호
-	int Player_Attack_number = 3;		//3: 평타, 4,5,6 : 1~3 스킬		타입을 보내는 용도.. 
-	bool iscoll = false;
 };
 
 

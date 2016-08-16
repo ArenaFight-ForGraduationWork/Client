@@ -17,15 +17,15 @@ public:
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
 	void OnDestroy();
 
-	//디바이스, 스왑 체인, 디바이스 컨텍스트, 디바이스와 관련된 뷰를 생성하는 함수이다. 
+	// 디바이스, 스왑 체인, 디바이스 컨텍스트, 디바이스와 관련된 뷰를 생성하는 함수
 	bool CreateRenderTargetDepthStencilView();
 	bool CreateRenderTargetView();
 	bool CreateDirect3DDisplay();
 
-	//렌더링할 메쉬, 객체를 생성하고 소멸하는 함수이다. 
+	// 렌더링할 메쉬, 객체를 생성하고 소멸하는 함수
 	void ReleaseObjects();
 
-	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 
+	// 프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수
 	void FrameAdvance();
 
 	ID3D11Device* GetDevice() { return m_pd3dDevice; }
@@ -53,26 +53,34 @@ private:
 	//렌더 타겟 뷰 인터페이스에 대한 포인터이다. 
 	ID3D11RenderTargetView *m_pd3dRenderTargetView;
 
-	//다음은 게임 프레임워크에서 사용할 타이머이다.
+	// 게임 프레임워크에서 사용할 타이머
 	CGameTimer m_GameTimer;
 
-	//다음은 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열이다.
+	// 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열
 	_TCHAR m_pszBuffer[50];
 
-	//깊이 버퍼(Depth Buffer) 객체 인터페이스와 뷰에 대한 포인터이다.
+	// 깊이 버퍼(Depth Buffer) 객체 인터페이스와 뷰에 대한 포인터
 	ID3D11Texture2D *m_pd3dDepthStencilBuffer;
 	ID3D11DepthStencilView *m_pd3dDepthStencilView;
+
+	ID3D11DepthStencilState* m_pd3dDepthStencilState;
+	ID3D11DepthStencilState* m_pd3dDepthDisabledStencilState;
+
+	ID3D11BlendState* m_alphaEnableBlendingState;
+	ID3D11BlendState* m_alphaDisableBlendingState;
 
 	CObjectManager *m_pObjectManager;
 	CSceneManager *m_pSceneManager;
 	CCameraManager *m_pCameraManager;
 
-	int player_state = 2;			//IDLE, RUN, ATTACK ...
-	int Press_SkillNum = 0;		// 몇번째 스킬을 눌렀는가 
-	bool is_Attack = false;		// 공격버튼을 눌렀는가
-	bool is_Coll = false;			// 충돌했는가
-
 	UINT m_uiID;
+
+	// turn off z buffer after rendering 3d screen, render 2d screen and turn on z buffer finally
+	void TurnZBufferOn();
+	void TurnZBufferOff();
+
+	void TurnOnAlphaBlending();
+	void TurnOffAlphaBlending();
 };
 
 

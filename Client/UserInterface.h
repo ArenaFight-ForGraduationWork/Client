@@ -10,17 +10,18 @@ public:
 	CUserInterface(const CUserInterface&);
 	~CUserInterface();
 
-	void Initialize(ID3D11Device *pd3dDevice, int screenWidth, int screenHeight, int bitmapWidth, int bitmapHeight);
+	void Initialize(ID3D11Device *pd3dDevice, int screenWidth, int screenHeight);
 	void Destroy();
 
-	void Render(ID3D11DeviceContext *pd3dDeviceContext);
+	void SetTexture(ID3D11Device *pd3dDevice, WCHAR *pFilePath, int bitmapWidth, int bitmapHeight);
+	CTexture* GetTexture() { return m_pTexture; }
 
-	int GetIndexCount();
-	ID3D11ShaderResourceView* GetTexture();
+	void ChangeSize(int bitmapWidth, int bitmapHeight);
 
+	void Render(ID3D11DeviceContext *pd3dDeviceContext, int positionX, int positionY);
 
+	int GetIndexCount() { return m_iIndexSize; }
 
-	/* pos + tex = CDiffusedVertex */
 protected:
 private:
 	ID3D11Buffer *m_pVertexBuffer;
@@ -38,10 +39,6 @@ private:
 
 	int m_iPreviousPosX;
 	int m_iPreviousPosY;
-
-	void Update();
-	void LoadTexture();
-	void ReleaseTexture();
 };
 
 

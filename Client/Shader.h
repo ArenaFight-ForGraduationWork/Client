@@ -2,6 +2,7 @@
 #define SHADER_H_
 
 #include "Object.h"
+#include "ConstantBuffers.h"
 
 
 
@@ -47,7 +48,7 @@ protected:
 
 	void CreateVertexShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout);
 	void CreatePixelShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader);
-	void CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
+	//void CreateGeometryShaderFromFile(ID3D11Device *pd3dDevice, WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
 };
 
 
@@ -82,6 +83,19 @@ public:
 	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
 };
 
+
+
+class CTextureShader : public CShader
+{
+public:
+	CTextureShader();
+	CTextureShader(const CTextureShader& ref) { }
+	~CTextureShader();
+
+	virtual void CreateShader(ID3D11Device *pd3dDevice);
+	virtual void CreateShaderVariables(ID3D11Device *pd3dDevice);
+	virtual void AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, float time);
+};
 
 
 

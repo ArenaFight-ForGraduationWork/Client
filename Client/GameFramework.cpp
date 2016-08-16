@@ -20,6 +20,12 @@ CGameFramework::CGameFramework()
 
 	m_pd3dDepthStencilBuffer = NULL;
 	m_pd3dDepthStencilView = NULL;
+
+	m_pd3dDepthStencilState = nullptr;
+	m_pd3dDepthDisabledStencilState = nullptr;
+
+	m_alphaEnableBlendingState = nullptr;
+	m_alphaDisableBlendingState = nullptr;
 }
 
 CGameFramework::~CGameFramework()
@@ -77,6 +83,47 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	d3dDepthStencilBufferDesc.MiscFlags = 0;
 	if (FAILED(hResult = m_pd3dDevice->CreateTexture2D(&d3dDepthStencilBufferDesc, NULL, &m_pd3dDepthStencilBuffer))) return false;
 
+	// Create first depth stencil state(using depth buffer)
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
+	// Stencil operations if pixel is front-facing.
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	// Stencil operations if pixel is back-facing.
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilState(&depthStencilDesc, &m_pd3dDepthStencilState)))	return false;
+	m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
+
+	// Create first depth stencil state(unusing depth buffer)
+	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
+	ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
+	depthDisabledStencilDesc.DepthEnable = false; /// <<<	only defference from other depth stencil view
+	depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthDisabledStencilDesc.StencilEnable = true;
+	depthDisabledStencilDesc.StencilReadMask = 0xFF;
+	depthDisabledStencilDesc.StencilWriteMask = 0xFF;
+	depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilState(&depthDisabledStencilDesc, &m_pd3dDepthDisabledStencilState)))	return false;
+
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
 	ZeroMemory(&d3dDepthStencilViewDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
@@ -86,6 +133,21 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return false;
 
 	m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
+
+	// Blend
+	D3D11_BLEND_DESC blendStateDescription;
+	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
+	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	if (FAILED(hResult = m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState))) return false;
+	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
+	if (FAILED(hResult = m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState))) return false;
 
 	return true;
 }
@@ -220,6 +282,8 @@ void CGameFramework::OnDestroy()
 	if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
 	if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
+	if (m_pd3dDepthStencilState) m_pd3dDepthStencilState->Release();
+	if (m_pd3dDepthDisabledStencilState) m_pd3dDepthDisabledStencilState->Release();
 	if (m_pDXGISwapChain) m_pDXGISwapChain->Release();
 	if (m_pd3dDeviceContext) m_pd3dDeviceContext->Release();
 	if (m_pd3dDevice) m_pd3dDevice->Release();
@@ -243,7 +307,12 @@ void CGameFramework::FrameAdvance()
 	if (m_pSceneManager)
 	{
 		m_pSceneManager->GetNowScene()->ProcessInput(m_GameTimer.GetTimeElapsed());
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender3D(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+		TurnZBufferOff();
+		//TurnOnAlphaBlending();
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender2D(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+		//TurnOffAlphaBlending();
+		TurnZBufferOn();
 	}
 
 	m_pDXGISwapChain->Present(0, 0);
@@ -251,3 +320,47 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.GetFrameRate(m_pszBuffer + 12, 37);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
+
+void CGameFramework::TurnZBufferOn()
+{
+	m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
+	return;
+}
+
+void CGameFramework::TurnZBufferOff()
+{
+	m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthDisabledStencilState, 1);
+	return;
+}
+
+void CGameFramework::TurnOnAlphaBlending()
+{
+	float blendFactor[4];
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn on the alpha blending.
+	m_pd3dDeviceContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
+
+	return;
+}
+void CGameFramework::TurnOffAlphaBlending()
+{
+	float blendFactor[4];
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn off the alpha blending.
+	m_pd3dDeviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
+
+	return;
+}
+
