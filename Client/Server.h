@@ -2,6 +2,7 @@
 #define SERVER_H_
 
 #include "stdafx.h"
+#include <conio.h>
 #include "protocol.h"
 
 
@@ -12,7 +13,10 @@ extern char		ip[16];
 extern UINT		myID;
 extern SOCKET	sock;
 extern bool		first_login;
+extern BYTE		player_status;
+extern int		select1;
 
+extern HANDLE	recv_thread;
 extern WSABUF	recv_wsabuf;
 extern char		send_buffer[MAX_BUFF_SIZE];
 extern char		recv_buffer[MAX_BUFF_SIZE];
@@ -29,6 +33,8 @@ void err_display(char *msg);
 void ServerConnect();
 void ProcessPacket(char *ptr);
 DWORD WINAPI recvThread(LPVOID arg);
+
+//void game_thread();
 
 
 

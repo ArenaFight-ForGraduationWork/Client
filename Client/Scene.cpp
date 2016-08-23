@@ -87,8 +87,10 @@ CFirstScene::~CFirstScene()
 
 void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
-	packet_player_move *move_packet;
-	player_attack* attack_packet;
+	//packet_player_move *move_packet;
+	//player_attack* attack_packet;
+
+	int retval;
 
 	switch (nMessageID)
 	{
@@ -127,24 +129,46 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case VK_F4:
 			m_pFog->Contract();
 			break;
-
-		//case VK_UP:
-		//{
-		//	move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//	move_packet->size = sizeof(*move_packet);
-		//	move_packet->type = PLAYER_MOV_END;
-		//	move_packet->move_type = W;
-		//	move_packet->direction = 0;
-		//	send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//	if (GetKeyboardState(pKeyBuffer))
-		//	{
-		//		if (!((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer[VK_DOWN] & 0xF0)
-		//			|| (pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer[VK_RIGHT] & 0xF0)))
-		//		{
-		//			m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
-		//		}
-		//	}
-		//}break;
+		case VK_UP:
+		{
+			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
+			pp->size = sizeof(*pp);
+			pp->type = PLAYER_MOV;
+			pp->move_type = 1;
+			retval = send(sock, (char*)pp, sizeof(*pp), 0);
+			if (retval == SOCKET_ERROR)
+				printf("event data send ERROR\n");
+		} break;
+		case VK_DOWN:
+		{
+			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
+			pp->size = sizeof(*pp);
+			pp->type = PLAYER_MOV;
+			pp->move_type = 2;
+			retval = send(sock, (char*)pp, sizeof(*pp), 0);
+			if (retval == SOCKET_ERROR)
+				printf("event data send ERROR\n");
+		}break;
+		case VK_LEFT:
+		{
+			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
+			pp->size = sizeof(*pp);
+			pp->type = PLAYER_MOV;
+			pp->move_type = 3;
+			retval = send(sock, (char*)pp, sizeof(*pp), 0);
+			if (retval == SOCKET_ERROR)
+				printf("event data send ERROR\n");
+		}break;
+		case VK_RIGHT:
+		{
+			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
+			pp->size = sizeof(*pp);
+			pp->type = PLAYER_MOV;
+			pp->move_type = 4;
+			retval = send(sock, (char*)pp, sizeof(*pp), 0);
+			if (retval == SOCKET_ERROR)
+				printf("event data send ERROR\n");
+		}break;
 
 		//case VK_SPACE:
 		//{
