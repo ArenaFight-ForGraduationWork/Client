@@ -96,22 +96,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	{
 	case WM_KEYDOWN:
 	{
-		//switch (wParam)
-		//{
-		//case VK_UP:
-		//{
-		//	if (server_on) {
-		//		move_packet = reinterpret_cast<packet_player_move*>(send_buffer);
-		//		move_packet->size = sizeof(*move_packet);
-		//		move_packet->type = PLAYER_MOV;
-		//		move_packet->move_type = W;
-		//		move_packet->direction = m_pCameraManager->GetNowCamera()->GetYaw();
-		//		send(sock, (char*)move_packet, sizeof(*move_packet), 0);
-		//		m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Move);
-		//	}
-		//}break;
-		//default:break;
-		//}
 	}break;
 	case WM_KEYUP:
 		switch (wParam)
@@ -129,83 +113,33 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case VK_F4:
 			m_pFog->Contract();
 			break;
-		case VK_UP:
-		{
-			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
-			pp->size = sizeof(*pp);
-			pp->type = PLAYER_MOV;
-			pp->move_type = 1;
-			retval = send(sock, (char*)pp, sizeof(*pp), 0);
-			if (retval == SOCKET_ERROR)
-				printf("event data send ERROR\n");
-		} break;
-		case VK_DOWN:
-		{
-			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
-			pp->size = sizeof(*pp);
-			pp->type = PLAYER_MOV;
-			pp->move_type = 2;
-			retval = send(sock, (char*)pp, sizeof(*pp), 0);
-			if (retval == SOCKET_ERROR)
-				printf("event data send ERROR\n");
-		}break;
-		case VK_LEFT:
-		{
-			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
-			pp->size = sizeof(*pp);
-			pp->type = PLAYER_MOV;
-			pp->move_type = 3;
-			retval = send(sock, (char*)pp, sizeof(*pp), 0);
-			if (retval == SOCKET_ERROR)
-				printf("event data send ERROR\n");
-		}break;
-		case VK_RIGHT:
-		{
-			packet_player_move* pp = reinterpret_cast<packet_player_move*>(send_buffer);
-			pp->size = sizeof(*pp);
-			pp->type = PLAYER_MOV;
-			pp->move_type = 4;
-			retval = send(sock, (char*)pp, sizeof(*pp), 0);
-			if (retval == SOCKET_ERROR)
-				printf("event data send ERROR\n");
-		}break;
 
-		//case VK_SPACE:
+
+
+		//case VK_UP:
+		//case VK_DOWN:
+		//case VK_LEFT:
+		//case VK_RIGHT:
 		//{
-		//	attack_packet = reinterpret_cast<player_attack*>(send_buffer);
-		//	attack_packet->id = myID;
-		//	attack_packet->size = sizeof(*attack_packet);
-		//	attack_packet->type = PLAYER_ATTACK;
-		//	attack_packet->attack_type = NORMAL_ATTACK;
-		//	send(sock, (char*)attack_packet, sizeof(*attack_packet), 0);
+		//	player_position *pp = reinterpret_cast<player_position*>(send_buffer);
+
+		//	pp->size = sizeof(*pp);
+		//	pp->type = PLAYER_MOV;	// herehere
+		//	CObject *pPlayer = m_pObjectManager->FindObject(myID);
+		//	pp->x = pPlayer->GetPosition()->x;
+		//	pp->z = pPlayer->GetPosition()->z;
+		//	pp->direction = pPlayer->GetDirection()->y;
+		//	pp->isMoving = true;
+		//	retval = send(sock, (char*)pp, sizeof(*pp), 0);
+		//	if (retval == SOCKET_ERROR)
+		//		printf("event data send ERROR\n");
 		//}break;
-		//case 0x31:	// 1
-		//{
-		//	attack_packet = reinterpret_cast<player_attack*>(send_buffer);
-		//	attack_packet->id = myID;
-		//	attack_packet->size = sizeof(*attack_packet);
-		//	attack_packet->type = PLAYER_ATTACK;
-		//	attack_packet->attack_type = PLAYER_SKILL1;
-		//	send(sock, (char*)attack_packet, sizeof(*attack_packet), 0);
-		//}break;
-		//case 0x32:	// 2
-		//{
-		//	attack_packet = reinterpret_cast<player_attack*>(send_buffer);
-		//	attack_packet->id = myID;
-		//	attack_packet->size = sizeof(*attack_packet);
-		//	attack_packet->type = PLAYER_ATTACK;
-		//	attack_packet->attack_type = PLAYER_SKILL2;
-		//	send(sock, (char*)attack_packet, sizeof(*attack_packet), 0);
-		//}break;
-		//case 0x33:	// 3
-		//{
-		//	attack_packet = reinterpret_cast<player_attack*>(send_buffer);
-		//	attack_packet->id = myID;
-		//	attack_packet->size = sizeof(*attack_packet);
-		//	attack_packet->type = PLAYER_ATTACK;
-		//	attack_packet->attack_type = PLAYER_SKILL3;
-		//	send(sock, (char*)attack_packet, sizeof(*attack_packet), 0);
-		//}break;
+
+
+		// 기본공격(space) : VK_SPACE
+		// 스킬 : 0x31, 0x32, 0x33
+
+
 
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
@@ -301,15 +235,6 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 					inputAngle.x -= 1;
 				}
 
-				if ((!m_dwDirectionPrev) && (m_dwDirectionNow))
-				{
-					/* send move_start_packet */
-				}
-				else if ((m_dwDirectionPrev) && (!m_dwDirectionNow))
-				{
-					/* send move_end_packet */
-				}
-
 				if (D3DXVECTOR2(0, 0) != inputAngle) // inputAngle==(0,0)이면 어느 방향으로든 움직이지 않는다 => 이동 계산X
 				{
 					D3DXVECTOR2 defaultAngle(0, 1);	// X, Z
@@ -322,15 +247,46 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 					// 2) 로컬 z축으로 속도 * 시간만큼 이동
 					pPlayer->MoveForward(fTimeElapsed);
 					pPlayer->PlayAnimation(CObject::eAnimationType::Move);
+
+					if (m_dwDirectionNow)
+					{	/* this client's player is moving */
+						player_position *pp = reinterpret_cast<player_position*>(send_buffer);
+
+						pp->size = sizeof(*pp);
+						pp->type = PLAYER_MOV;	// herehere
+						pp->x = pPlayer->GetPosition()->x;
+						pp->z = pPlayer->GetPosition()->z;
+						pp->direction = pPlayer->GetDirection()->y;
+						pp->isMoving = true;
+						if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
+							printf("event data send ERROR\n");
+					}
+					else
+					{	/* if ((m_dwDirectionPrev) && (!m_dwDirectionNow)) 
+							this client's player was moving, but now doesn't move */
+						if (m_dwDirectionPrev)
+						{
+							player_position *pp = reinterpret_cast<player_position*>(send_buffer);
+
+							pp->size = sizeof(*pp);
+							pp->type = PLAYER_MOV;	// herehere
+							pp->x = pPlayer->GetPosition()->x;
+							pp->z = pPlayer->GetPosition()->z;
+							pp->direction = pPlayer->GetDirection()->y;
+							pp->isMoving = false;
+							if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
+								printf("event data send ERROR\n");
+						}
+					}
 				}
 				else
 					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
 			}
 		}
-		// 좌우회전
+		// 카메라 좌우회전
 		if (m_pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);	// Q
 		if (m_pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);	// E
-		// 줌
+		// 카메라 줌
 		if (m_pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);			// Z
 		if (m_pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);			// X
 	}

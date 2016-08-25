@@ -111,7 +111,7 @@ struct join_room_s {
 struct join_room_f {
 	BYTE size;
 	BYTE type;
-	int id;
+	int id = -1;
 };
 struct out_room {
 	BYTE size;
@@ -119,6 +119,7 @@ struct out_room {
 	int id = -1;
 	int room_master;
 };
+
 struct game_start {
 	BYTE size;
 	BYTE type;
@@ -135,6 +136,12 @@ struct game_start_s {
 	BYTE size;
 	BYTE type;
 	int id[4] = { -1, -1, -1, -1 };
+
+	// юс╫ц
+	int bossx = 5;
+	int bossz = 2000;
+	int bossid = 1000;
+	int bossdis = 5;
 };
 struct game_start_f {
 	BYTE size;
@@ -145,11 +152,6 @@ struct login {
 	BYTE type;
 	int id;
 };
-struct packet_player_move {
-	BYTE size;
-	BYTE type;
-	BYTE move_type;
-};
 struct packet_chat {
 	BYTE size;
 	BYTE type;
@@ -157,19 +159,24 @@ struct packet_chat {
 	char message[MAX_CHAT_SIZE];
 };
 //struct sc_packet_chat {
-//	BYTE size;
-//	BYTE type;
-//	int id;
-//	char message[MAX_CHAT_SIZE];
+//   BYTE size;
+//   BYTE type;
+//   int id;
+//   char message[MAX_CHAT_SIZE];
 //};
+struct lobby_put_player {
+	BYTE size;
+	BYTE type;
+	int id;
+};
 struct player_position {
 	BYTE size;
 	BYTE type;
 	int id;
 	float x;
-	float y;
 	float z;
-	short direction;
+	float direction;
+	bool isMoving;
 };
 struct put_player {
 	BYTE size;
