@@ -254,6 +254,7 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 
 						pp->size = sizeof(*pp);
 						pp->type = PLAYER_MOV;	// herehere
+						pp->id = myID;
 						pp->x = pPlayer->GetPosition()->x;
 						pp->z = pPlayer->GetPosition()->z;
 						pp->direction = pPlayer->GetDirection()->y;
@@ -270,6 +271,7 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 
 							pp->size = sizeof(*pp);
 							pp->type = PLAYER_MOV;	// herehere
+							pp->id = myID;
 							pp->x = pPlayer->GetPosition()->x;
 							pp->z = pPlayer->GetPosition()->z;
 							pp->direction = pPlayer->GetDirection()->y;

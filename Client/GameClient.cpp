@@ -293,12 +293,18 @@ void ProcessPacket(char *ptr) {
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
+		cout << my_packet->id << endl;
 		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
 		if (pObject)
 		{
-			cout << my_packet->x << ", " << my_packet->z << endl;
-			pObject->SetPositionRelative(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+			cout << "myID : " << myID << ", ";
+			cout << "packet_id : " << my_packet->id << my_packet->x << ", " << my_packet->z << endl;
+			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->direction, 0));
+			if (my_packet->isMoving)
+				pObject->PlayAnimation(CObject::eAnimationType::Move);
+			else
+				pObject->PlayAnimation(CObject::eAnimationType::Idle);
 		}
 		pObject = nullptr;
 	}break;
