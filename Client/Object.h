@@ -46,7 +46,7 @@ public:
 	void Release();
 
 	/* nIndex번째 인덱스 자리에 텍스쳐를 설정한다 */
-	void SetTexture(ID3D11Device *pd3dDevice, int nIndex, WCHAR *textureAddress);
+	void SetTexture(int nIndex, WCHAR *textureAddress);
 
 	int& GetNumOfTextures() { return m_nTextures; }
 
@@ -107,7 +107,7 @@ public:
 	void SetResourceType(int eType);
 	int& GetResourceType() { return m_iSourceType; }
 
-	void AnimateAndRender(ID3D11DeviceContext*, float& time);
+	void AnimateAndRender(float& time);
 
 	void SetComponent();
 	CUnitComponet* GetComponent() { return m_pUnitComponent; }
@@ -128,7 +128,7 @@ public:
 		END
 	};
 
-	void SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext);
+	void SetConstantBuffer();
 	void SetAniIndexCount(int);
 	void SetResult(XMFLOAT4X4***);
 	void SetTime(int*);

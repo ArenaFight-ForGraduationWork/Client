@@ -101,7 +101,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetTime(pResourceManager->GetMesh(eType)->GetAniMaxTime());
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->GetAnimationIndexCnt());
 	pObject->SetResult(pResourceManager->GetMesh(eType)->GetResultMatrix());
-	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
+	pObject->SetConstantBuffer();
 	
 	pObject->SetPositionAbsolute(&position);
 	pObject->SetDirectionAbsolute(&direction);

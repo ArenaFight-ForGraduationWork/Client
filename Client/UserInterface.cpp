@@ -111,7 +111,7 @@ void CUserInterface::SetTexture(ID3D11Device *pd3dDevice, WCHAR *pFilePath, int 
 	m_iBitmapWidth = bitmapWidth;
 	m_iBitmapHeight = bitmapHeight;
 
-	m_pTexture->SetTexture(pd3dDevice, 0, pFilePath);
+	m_pTexture->SetTexture(0, pFilePath);
 }
 
 void CUserInterface::ChangeSize(int bitmapWidth, int bitmapHeight)

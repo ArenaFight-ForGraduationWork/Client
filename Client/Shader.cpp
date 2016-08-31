@@ -138,7 +138,7 @@ void CShader::AnimateObjectAndRender(ID3D11DeviceContext* pd3dDeviceContext, flo
 			UpdateShaderVariables(pd3dDeviceContext, obj->GetMaterial());
 		if (obj->GetTexture())
 			UpdateShaderVariables(pd3dDeviceContext, obj->GetTexture());
-		obj->AnimateAndRender(pd3dDeviceContext, time);
+		obj->AnimateAndRender(time);
 	}
 }
 

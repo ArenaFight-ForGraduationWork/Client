@@ -121,37 +121,37 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 
 	/// 0: player
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Human/human.png");
+	tempTexture->SetTexture(0, L"./Data/Human/human.png");
 	m_mTexture[0] = tempTexture;
 
 	/// 1: monster1=slime
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Slime/monster.png");
+	tempTexture->SetTexture(0, L"./Data/Slime/monster.png");
 	m_mTexture[1] = tempTexture;
 
 	/// 2: Item_HP
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_RED.png");
+	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_RED.png");
 	m_mTexture[2] = tempTexture;
 
 	/// 3: floor
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Floor/ground.png");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Floor/ground.png");
 	m_mTexture[3] = tempTexture;
 
 	/// 4: tree
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Tree/tree.png");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Tree/tree.png");
 	m_mTexture[4] = tempTexture;
 
 	/// 5: wall
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Wall/wall.jpg");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Wall/wall.jpg");
 	m_mTexture[5] = tempTexture;
 
 	/// 7: Item_buff
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_BLUE.png");
+	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_BLUE.png");
 	m_mTexture[7] = tempTexture;
 
 	///// 8: Item_?
@@ -161,7 +161,7 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 
 	/// 9: Grass
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Grass/grass.jpg");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Grass/grass.jpg");
 	m_mTexture[9] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
