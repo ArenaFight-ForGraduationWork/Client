@@ -34,7 +34,7 @@ void CScene::BuildObjects()
 		m_vShaders.push_back(pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i));
 	}
 
-	m_pLight->BuildLights(gpCommonState->m_pd3dDevice);
+	m_pLight->BuildLights();
 
 	m_pInterface = new CUserInterface();
 }
@@ -46,7 +46,7 @@ void CScene::ReleaseObjects()
 
 void CScene::AnimateObjectsAndRender3D(float time)
 {
-	m_pLight->UpdateLights(gpCommonState->m_pd3dDeviceContext);
+	m_pLight->UpdateLights();
 
 	for (unsigned int i = 0; i < m_vShaders.size() - 1; ++i)
 	{
