@@ -30,7 +30,7 @@ public:
 
 	static CObjectManager* GetSingleton();
 	~CObjectManager();
-	void Initialize(ID3D11Device *pd3dDevice);
+	void Initialize();
 
 	/* ~데이터를 가진 오브젝트를 추가 */
 	CObject* Insert(UINT id, eResourceType eType, float x = 0, float y = 0, float z = 0, float dx = 0, float dy = 0, float dz = 0);

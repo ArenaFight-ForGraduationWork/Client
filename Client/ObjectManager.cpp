@@ -25,9 +25,9 @@ CObjectManager* CObjectManager::GetSingleton()
 	return &instance;
 }
 
-void CObjectManager::Initialize(ID3D11Device *pd3dDevice)
+void CObjectManager::Initialize()
 {
-	pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
+	pResourceManager = CResourceManager::GetSingleton(gpCommonState->m_pd3dDevice);
 }
 
 CObject* CObjectManager::Insert(UINT id, eResourceType eType, float x, float y, float z, float dx, float dy, float dz)

@@ -44,7 +44,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	// 오브젝트 매니저를 초기화한다
 	m_pObjectManager = CObjectManager::GetSingleton();
-	m_pObjectManager->Initialize(gpCommonState->m_pd3dDevice);
+	m_pObjectManager->Initialize();
 
 	// 카메라 매니저를 초기화한다
 	m_pCameraManager = CCameraManager::GetSingleton();
