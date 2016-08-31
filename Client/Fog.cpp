@@ -18,21 +18,21 @@ CFog::~CFog()
 {
 }
 
-void CFog::Initialize(ID3D11Device *pd3dDevice)
+void CFog::Initialize()
 {
 	this->Destroy();
 
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	ID3D11DeviceContext *pDeviceContext;
-	pd3dDevice->GetImmediateContext(&pDeviceContext);
+	gpCommonState->m_pd3dDevice->GetImmediateContext(&pDeviceContext);
 
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.ByteWidth = sizeof(VS_CB_FOG);
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFog);
+	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFog);
 
 	pDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	{
@@ -43,7 +43,7 @@ void CFog::Initialize(ID3D11Device *pd3dDevice)
 	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
 }
 
-void CFog::Update(ID3D11DeviceContext *pd3dDeviceContext)
+void CFog::Update()
 {
 	switch (m_eState)
 	{
@@ -71,7 +71,7 @@ void CFog::Update(ID3D11DeviceContext *pd3dDeviceContext)
 		break;
 	}
 
-	UpdateShaderVariables(pd3dDeviceContext);
+	UpdateShaderVariables();
 }
 void CFog::Expand(D3DXVECTOR3 *pd3dvCenter)
 {
@@ -91,18 +91,18 @@ void CFog::Contract()
 	}
 }
 
-void CFog::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
+void CFog::UpdateShaderVariables()
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 
-	pd3dDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	{
 		VS_CB_FOG *pcbFog = (VS_CB_FOG *)d3dMappedResource.pData;
 		pcbFog->m_d3dxvCenter = *m_pd3dxvCenter;
 		pcbFog->m_fRange = m_fNowRange;
 	}
-	pd3dDeviceContext->Unmap(m_pd3dcbFog, 0);
-	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
+	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbFog, 0);
+	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
 }
 
 void CFog::Destroy()

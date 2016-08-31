@@ -354,7 +354,7 @@ void CFirstScene::BuildObjects()
 	}
 
 	m_pFog = new CFog();
-	m_pFog->Initialize(gpCommonState->m_pd3dDevice);
+	m_pFog->Initialize();
 
 	// create interface object
 	m_pInterface = new CUserInterface();
@@ -373,7 +373,7 @@ void CFirstScene::BuildObjects()
 void CFirstScene::AnimateObjectsAndRender3D(float time)
 {
 	if (m_pFog->IsInUse())
-		m_pFog->Update(gpCommonState->m_pd3dDeviceContext);
+		m_pFog->Update();
 
 	CScene::AnimateObjectsAndRender3D(time);
 }

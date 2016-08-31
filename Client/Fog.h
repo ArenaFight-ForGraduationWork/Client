@@ -18,15 +18,15 @@ public:
 	CFog();
 	~CFog();
 
-	void Initialize(ID3D11Device *pd3dDevice);
+	void Initialize();
 	void Destroy();
 
 	/* 반드시 IsInUse()함수로 현재 사용중인지 체크하고 사용할 것. 자세한 것은 Fog.h 헤더파일 아래에. */
-	void Update(ID3D11DeviceContext *pd3dDeviceContext);
+	void Update();
 	void Expand(D3DXVECTOR3 *pd3dvCenter);
 	void Contract();
 
-	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
+	void UpdateShaderVariables();
 
 	bool IsInUse();
 
