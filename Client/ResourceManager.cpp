@@ -181,20 +181,20 @@ void CResourceManager::_CreateShaders()
 
 	// 0 : Unanimating Mesh. CIlluminatedTexturedShader
 	pShader = new CIlluminatedTexturedShader();
-	pShader->CreateShader(gpCommonState->m_pd3dDevice);
-	pShader->CreateShaderVariables(gpCommonState->m_pd3dDevice);
+	pShader->CreateShader();
+	pShader->CreateShaderVariables();
 	m_mShader[0] = pShader;
 
 	// 1 : Animating Mesh. PlayerShader
 	pShader = new CAnimatingShader();
-	pShader->CreateShader(gpCommonState->m_pd3dDevice);
-	pShader->CreateShaderVariables(gpCommonState->m_pd3dDevice);
+	pShader->CreateShader();
+	pShader->CreateShaderVariables();
 	m_mShader[1] = pShader;
 
 	// 2 : UI. TextureShader
 	pShader = new CTextureShader();
-	pShader->CreateShader(gpCommonState->m_pd3dDevice);
-	pShader->CreateShaderVariables(gpCommonState->m_pd3dDevice);
+	pShader->CreateShader();
+	pShader->CreateShaderVariables();
 	m_mShader[2] = pShader;
 }
 

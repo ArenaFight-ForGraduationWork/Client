@@ -50,7 +50,7 @@ void CScene::AnimateObjectsAndRender3D(float time)
 
 	for (unsigned int i = 0; i < m_vShaders.size() - 1; ++i)
 	{
-		m_vShaders[i]->AnimateObjectAndRender(gpCommonState->m_pd3dDeviceContext, time);
+		m_vShaders[i]->AnimateObjectAndRender(time);
 	}
 	//for (auto shader : m_vShaders)
 	//{
@@ -61,12 +61,12 @@ void CScene::AnimateObjectsAndRender2D(float time)
 {
 	D3DXMATRIX matrix;
 	D3DXMatrixIdentity(&matrix);
-	m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(gpCommonState->m_pd3dDeviceContext, &matrix);
+	m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(&matrix);
 
 	for (unsigned int i = 0; i < m_pInterface->GetTexture()->GetNumOfTextures(); ++i)
 	{
-		m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(gpCommonState->m_pd3dDeviceContext, m_pInterface->GetTexture());
-		m_vShaders[m_vShaders.size() - 1]->AnimateObjectAndRender(gpCommonState->m_pd3dDeviceContext, static_cast<float>(m_pInterface->GetIndexCount()));
+		m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(m_pInterface->GetTexture());
+		m_vShaders[m_vShaders.size() - 1]->AnimateObjectAndRender(static_cast<float>(m_pInterface->GetIndexCount()));
 	}
 }
 
