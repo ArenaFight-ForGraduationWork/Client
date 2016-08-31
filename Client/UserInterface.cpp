@@ -34,7 +34,6 @@ void CUserInterface::Initialize(int screenWidth, int screenHeight)
 		unsigned long* indices;
 		D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
 		D3D11_SUBRESOURCE_DATA vertexData, indexData;
-		HRESULT result;
 
 		m_iVertexSize = 6;
 		m_iIndexSize = m_iVertexSize;

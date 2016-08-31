@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Camera.h"
 
+#include "ConstantBuffers.h"
+
+
+
 CCamera::CCamera()
 {
 	m_pd3dxvPosition = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);

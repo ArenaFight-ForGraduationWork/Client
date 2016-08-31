@@ -1,7 +1,6 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-#include "ConstantBuffers.h"
 
 
 enum class eCameraType : BYTE{

@@ -4,11 +4,8 @@
 
 
 #include "Mesh.h"
+#include "ConstantBuffers.h"
 
-struct VS_CB_BONE_MATRIX
-{
-	XMMATRIX m_XMmtxBone[128];
-};
 
 /* 재질 관련 정보를 표현 */
 struct MATERIAL

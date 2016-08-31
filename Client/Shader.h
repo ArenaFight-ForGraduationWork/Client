@@ -2,16 +2,6 @@
 #define SHADER_H_
 
 #include "Object.h"
-#include "ConstantBuffers.h"
-
-
-
-struct VS_CB_WORLD_MATRIX
-{
-	D3DXMATRIX m_d3dxmtxWorld;
-};
-
-
 
 
 

@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Fog.h"
 
+#include "ConstantBuffers.h"
+
+
 
 CFog::CFog()
 {

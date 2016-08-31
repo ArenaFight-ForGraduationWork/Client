@@ -3,14 +3,6 @@
 
 
 
-struct VS_CB_FOG
-{
-	D3DXVECTOR3 m_d3dxvCenter;
-	float m_fRange;					// if m_fRange < 0, fog is enable.
-};
-
-
-
 /* 안개를 관리하는 클래스. 사용법은 Fog.h 파일 하단 참조 */
 class CFog
 {

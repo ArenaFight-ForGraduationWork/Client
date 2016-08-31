@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "Shader.h"
 
+#include "ConstantBuffers.h"
+
 // http://blog.naver.com/snrnsrk06/100202723546 (Effect.fx)
+
 
 
 CShader::CShader()
