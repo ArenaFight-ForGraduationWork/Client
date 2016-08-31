@@ -432,7 +432,7 @@ void CObject::AnimateAndRender(ID3D11DeviceContext* pd3dDeviceContext, float& ti
 		}
 	}
 	
-	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
+	if (m_pMesh) m_pMesh->Render();
 }
 
 void CObject::PlayAnimation(eAnimationType eType)
