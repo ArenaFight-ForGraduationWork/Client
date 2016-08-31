@@ -57,7 +57,6 @@
     <ClCompile Include="UserInterface.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SpriteBatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -123,7 +122,6 @@
     <ClInclude Include="ConstantBuffers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteBatch.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameClient.ico">
