@@ -206,8 +206,7 @@ void CCameraManager::Initialize()
 	pCamera = new CThirdPersonCamera();
 	pCamera->CreateShaderVariables();
 	pCamera->SetLookAt(new D3DXVECTOR3(0,0,0));
-	ID3D11DeviceContext *pd3dDeviceContext;
-	gpCommonState->m_pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
+	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
 	pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	pCamera->GenerateProjectionMatrix(1.01f, 10000.0f, ASPECT_RATIO, 60.0f);
 	pCamera->GenerateOrthoMatrix(1.01f, 10000.0f);

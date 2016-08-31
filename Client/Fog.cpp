@@ -24,8 +24,7 @@ void CFog::Initialize()
 
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	ID3D11DeviceContext *pDeviceContext;
-	gpCommonState->m_pd3dDevice->GetImmediateContext(&pDeviceContext);
+	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
 
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -34,13 +33,13 @@ void CFog::Initialize()
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbFog);
 
-	pDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	{
 		VS_CB_FOG *pcbFog = (VS_CB_FOG *)d3dMappedResource.pData;
 		pcbFog->m_fRange = -1;		// if m_fRange < 0, fog is Enable.
 	}
-	pDeviceContext->Unmap(m_pd3dcbFog, 0);
-	pDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
+	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbFog, 0);
+	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_FOG, 1, &m_pd3dcbFog);
 }
 
 void CFog::Update()
