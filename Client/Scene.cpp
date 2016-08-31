@@ -381,8 +381,10 @@ void CFirstScene::AnimateObjectsAndRender3D(float time)
 void CFirstScene::AnimateObjectsAndRender2D(float time)
 {	
 	// turn off the z buffer ** first **
-
+	if(m_pObjectManager->FindObject(myID))
 	m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint());
+	else
+		m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, 0);
 	m_pInterface->Render(FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// À§Ä¡
 
 	// set view + projection matrix buffer

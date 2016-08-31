@@ -246,8 +246,7 @@ void ProcessPacket(char *ptr) {
 		for (unsigned int i = 0; i < 4; ++i)
 		{
 			if (my_packet->id[i] != -1) {
-				pObjectManager->Insert(my_packet->id[i], eResourceType::User, gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext,
-					D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+				pObjectManager->Insert(my_packet->id[i], eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
 				printf("룸에 있는 플레이어 id:%d\n", my_packet->id[i]);
 			}
 		}
@@ -267,8 +266,7 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (!pObject)
 		{	// 해당 id가 존재하지 않으면
-			pObjectManager->Insert(my_packet->id, eResourceType::User, gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext,
-				D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+			pObjectManager->Insert(my_packet->id, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
 		}
 		else
 		{ //  해당 id가 존재하면
@@ -328,8 +326,7 @@ void ProcessPacket(char *ptr) {
 		printf("게임을 시작합니다\n");
 		player_status = FIGHT;
 
-		pObjectManager->Insert((UINT)myID, eResourceType::User, gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext,
-			D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+		pObjectManager->Insert((UINT)myID, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
 
 		printf("보스 ID:%d\n", my_packet->bossid);
 
@@ -341,8 +338,7 @@ void ProcessPacket(char *ptr) {
 		}
 		else
 		{	// if boss doesn't exist
-			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext,
-				D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossz), D3DXVECTOR3(0, my_packet->bossdis, 0));
+			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossz), D3DXVECTOR3(0, my_packet->bossdis, 0), true);
 		}
 		pObject = nullptr;
 	}break;
