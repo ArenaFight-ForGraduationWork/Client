@@ -26,15 +26,15 @@ CScene::~CScene()
 {
 }
 
-void CScene::BuildObjects(ID3D11Device *pd3dDevice)
+void CScene::BuildObjects()
 {
-	CResourceManager *pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
+	CResourceManager *pResourceManager = CResourceManager::GetSingleton(gpCommonState->m_pd3dDevice);
 	for (BYTE i = (BYTE)CResourceManager::eShaderType::START; i < (BYTE)CResourceManager::eShaderType::END; ++i)
 	{
 		m_vShaders.push_back(pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i));
 	}
 
-	m_pLight->BuildLights(pd3dDevice);
+	m_pLight->BuildLights(gpCommonState->m_pd3dDevice);
 
 	m_pInterface = new CUserInterface();
 }
@@ -44,29 +44,29 @@ void CScene::ReleaseObjects()
 	m_vShaders.clear();
 }
 
-void CScene::AnimateObjectsAndRender3D(ID3D11DeviceContext *pd3dDeviceContext, float time)
+void CScene::AnimateObjectsAndRender3D(float time)
 {
-	m_pLight->UpdateLights(pd3dDeviceContext);
+	m_pLight->UpdateLights(gpCommonState->m_pd3dDeviceContext);
 
 	for (unsigned int i = 0; i < m_vShaders.size() - 1; ++i)
 	{
-		m_vShaders[i]->AnimateObjectAndRender(pd3dDeviceContext, time);
+		m_vShaders[i]->AnimateObjectAndRender(gpCommonState->m_pd3dDeviceContext, time);
 	}
 	//for (auto shader : m_vShaders)
 	//{
 	//	shader->AnimateObjectAndRender(pd3dDeviceContext, time);
 	//}
 }
-void CScene::AnimateObjectsAndRender2D(ID3D11DeviceContext *pd3dDeviceContext, float time)
+void CScene::AnimateObjectsAndRender2D(float time)
 {
 	D3DXMATRIX matrix;
 	D3DXMatrixIdentity(&matrix);
-	m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(pd3dDeviceContext, &matrix);
+	m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(gpCommonState->m_pd3dDeviceContext, &matrix);
 
 	for (unsigned int i = 0; i < m_pInterface->GetTexture()->GetNumOfTextures(); ++i)
 	{
-		m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(pd3dDeviceContext, m_pInterface->GetTexture());
-		m_vShaders[m_vShaders.size() - 1]->AnimateObjectAndRender(pd3dDeviceContext, static_cast<float>(m_pInterface->GetIndexCount()));
+		m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(gpCommonState->m_pd3dDeviceContext, m_pInterface->GetTexture());
+		m_vShaders[m_vShaders.size() - 1]->AnimateObjectAndRender(gpCommonState->m_pd3dDeviceContext, static_cast<float>(m_pInterface->GetIndexCount()));
 	}
 }
 
@@ -299,12 +299,12 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 		m_pCameraManager->GetNowCamera()->Update(new D3DXVECTOR3(0, 0, 0));
 }
 
-void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
+void CFirstScene::BuildObjects()
 {
-	CScene::BuildObjects(pd3dDevice);
+	CScene::BuildObjects();
 
 	ID3D11DeviceContext *pd3dDeviceContext;
-	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
+	gpCommonState->m_pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
 
 	m_pCameraManager = CCameraManager::GetSingleton();
 	if (m_pObjectManager->FindObject(myID))
@@ -354,12 +354,12 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	}
 
 	m_pFog = new CFog();
-	m_pFog->Initialize(pd3dDevice);
+	m_pFog->Initialize(gpCommonState->m_pd3dDevice);
 
 	// create interface object
 	m_pInterface = new CUserInterface();
-	m_pInterface->Initialize(pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-	m_pInterface->SetTexture(pd3dDevice, L"./Data/UI/health.png", 20, 20);	// 크기
+	m_pInterface->Initialize(gpCommonState->m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+	m_pInterface->SetTexture(gpCommonState->m_pd3dDevice, L"./Data/UI/health.png", 20, 20);	// 크기
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -367,35 +367,35 @@ void CFirstScene::BuildObjects(ID3D11Device *pd3dDevice)
 	bd.ByteWidth = sizeof(VS_CB_VIEWPROJECTION_MATRIX);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	pd3dDevice->CreateBuffer(&bd, NULL, &m_pd3dcbCamera);
+	gpCommonState->m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pd3dcbCamera);
 }
 
-void CFirstScene::AnimateObjectsAndRender3D(ID3D11DeviceContext *pd3dDeviceContext, float time)
+void CFirstScene::AnimateObjectsAndRender3D(float time)
 {
 	if (m_pFog->IsInUse())
-		m_pFog->Update(pd3dDeviceContext);
+		m_pFog->Update(gpCommonState->m_pd3dDeviceContext);
 
-	CScene::AnimateObjectsAndRender3D(pd3dDeviceContext, time);
+	CScene::AnimateObjectsAndRender3D(time);
 }
 
-void CFirstScene::AnimateObjectsAndRender2D(ID3D11DeviceContext *pd3dDeviceContext, float time)
+void CFirstScene::AnimateObjectsAndRender2D(float time)
 {	
 	// turn off the z buffer ** first **
 
 	m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint());
-	m_pInterface->Render(pd3dDeviceContext, FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// 위치
+	m_pInterface->Render(gpCommonState->m_pd3dDeviceContext, FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// 위치
 
 	// set view + projection matrix buffer
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
 	D3DXMATRIX matrix;	D3DXMatrixIdentity(&matrix);
 	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxView, &matrix);
 	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxProjection, m_pCameraManager->GetNowCamera()->GetOrthoMatrix());
-	pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
-	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
+	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
+	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
 
-	CScene::AnimateObjectsAndRender2D(pd3dDeviceContext, time);
+	CScene::AnimateObjectsAndRender2D(time);
 
 	// turn ** on ** the z buffer
 }

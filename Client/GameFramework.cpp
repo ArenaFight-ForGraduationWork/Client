@@ -54,7 +54,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_pSceneManager = CSceneManager::GetSingleton();
 	m_pSceneManager->Initialize();
 	m_pSceneManager->Change(CSceneManager::eSceneType::FIRST);
-	m_pSceneManager->GetNowScene()->BuildObjects(gpCommonState->m_pd3dDevice);
+	m_pSceneManager->GetNowScene()->BuildObjects();
 
 	return true;
 }
@@ -308,9 +308,9 @@ void CGameFramework::FrameAdvance()
 	if (m_pSceneManager)
 	{
 		m_pSceneManager->GetNowScene()->ProcessInput(m_GameTimer.GetTimeElapsed());
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender3D(gpCommonState->m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender3D(m_GameTimer.GetTimeElapsed());
 		TurnZBufferOff();
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender2D(gpCommonState->m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender2D(m_GameTimer.GetTimeElapsed());
 		TurnZBufferOn();
 	}
 

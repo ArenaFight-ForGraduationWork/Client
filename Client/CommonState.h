@@ -5,6 +5,10 @@
 
 
 
+/*
+	CCommonState *gpCommonState;
+*/
+
 class CCommonState
 {
 public:
