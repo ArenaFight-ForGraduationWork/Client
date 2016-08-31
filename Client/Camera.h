@@ -28,10 +28,10 @@ public:
 	void GenerateOrthoMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance);
 	D3DXMATRIX* GetOrthoMatrix() { return m_pd3dxmtxOrtho; }
 
-	void CreateShaderVariables(ID3D11Device *pd3dDevice);
-	void UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext);
+	void CreateShaderVariables();
+	void UpdateShaderVariables();
 
-	void SetViewport(ID3D11DeviceContext *pd3dDeviceContext, DWORD xStart, DWORD yStart, DWORD nWidth, DWORD nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
+	void SetViewport(DWORD xStart, DWORD yStart, DWORD nWidth, DWORD nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
 	const D3D11_VIEWPORT* GetViewport() { return m_pd3dViewport; }
 
 	const D3DXMATRIX* GetViewMatrix() { return m_pd3dxmtxView; }
@@ -119,7 +119,7 @@ public:
 	static CCameraManager* GetSingleton();
 	~CCameraManager();
 
-	void Initialize(ID3D11Device *pd3dDevice);
+	void Initialize();
 	void Destroy();
 
 	CCamera* GetNowCamera();

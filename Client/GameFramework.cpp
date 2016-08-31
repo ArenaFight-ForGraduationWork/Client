@@ -48,7 +48,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	// 카메라 매니저를 초기화한다
 	m_pCameraManager = CCameraManager::GetSingleton();
-	m_pCameraManager->Initialize(gpCommonState->m_pd3dDevice);
+	m_pCameraManager->Initialize();
 
 	// 씬 매니저를 초기화한다
 	m_pSceneManager = CSceneManager::GetSingleton();
@@ -252,7 +252,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 		CreateRenderTargetDepthStencilView();
 
-		m_pCameraManager->GetNowCamera()->SetViewport(gpCommonState->m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
+		m_pCameraManager->GetNowCamera()->SetViewport(0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
 
 		break;
 	}
@@ -303,7 +303,7 @@ void CGameFramework::FrameAdvance()
 	if (m_pd3dDepthStencilView) gpCommonState->m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	if (m_pCameraManager)
-		m_pCameraManager->GetNowCamera()->UpdateShaderVariables(gpCommonState->m_pd3dDeviceContext);
+		m_pCameraManager->GetNowCamera()->UpdateShaderVariables();
 
 	if (m_pSceneManager)
 	{
