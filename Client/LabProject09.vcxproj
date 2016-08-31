@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CommonState.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="Fbx.h" />
     <ClInclude Include="Fog.h" />
@@ -114,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CommonState.cpp" />
     <ClCompile Include="Fbx.cpp" />
     <ClCompile Include="Fog.cpp" />
     <ClCompile Include="GameFramework.cpp" />

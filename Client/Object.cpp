@@ -65,7 +65,7 @@ void CTexture::Release()
 	if (m_nReferences == 0) delete this;
 }
 
-void CTexture::SetTexture(ID3D11Device *pd3dDevice, int nIndex, WCHAR *textureAddress)
+void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 {
 	ID3D11SamplerState *pd3dSamplerState = nullptr;
 	ID3D11ShaderResourceView *pd3dsrvTexture = nullptr;
@@ -79,9 +79,9 @@ void CTexture::SetTexture(ID3D11Device *pd3dDevice, int nIndex, WCHAR *textureAd
 	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	d3dSamplerDesc.MinLOD = 0;
 	d3dSamplerDesc.MaxLOD = 0;
-	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
+	gpCommonState->m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
 
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, textureAddress, NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(gpCommonState->m_pd3dDevice, textureAddress, NULL, NULL, &pd3dsrvTexture, NULL);
 
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
 	if (m_ppd3dSamplerStates[nIndex]) m_ppd3dSamplerStates[nIndex]->Release();
@@ -366,7 +366,7 @@ void CObject::SetTime(int *time)
 	}
 }
 
-void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext)
+void CObject::SetConstantBuffer()
 {
 	//애니메이션을 위한 본 매트릭스 상수버퍼 생성
 	D3D11_BUFFER_DESC BD;
@@ -377,18 +377,18 @@ void CObject::SetConstantBuffer(ID3D11Device* pd3dDevice, ID3D11DeviceContext *p
 	BD.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	pd3dDevice->CreateBuffer(&BD, NULL, &m_pd3dcbBoneMatrix);
-	pd3dDeviceContext->Map(m_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &d3dMappedResource);
+	gpCommonState->m_pd3dDevice->CreateBuffer(&BD, NULL, &m_pd3dcbBoneMatrix);
+	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &d3dMappedResource);
 	{
 		m_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)d3dMappedResource.pData;
 		for (int i = 0; i < 128; ++i)
 			m_pcbBoneMatrix->m_XMmtxBone[i] = XMMatrixIdentity();
 	}
-	pd3dDeviceContext->Unmap(m_pd3dcbBoneMatrix, NULL);
+	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbBoneMatrix, NULL);
 }
 
 
-void CObject::AnimateAndRender(ID3D11DeviceContext* pd3dDeviceContext, float& time)
+void CObject::AnimateAndRender(float& time)
 {
 	if (eAnimationType::None != m_eAnimationType)
 	{
@@ -428,11 +428,11 @@ void CObject::AnimateAndRender(ID3D11DeviceContext* pd3dDeviceContext, float& ti
 		}
 		if (m_pd3dcbBoneMatrix)
 		{
-			pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
+			gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
 		}
 	}
 	
-	if (m_pMesh) m_pMesh->Render(pd3dDeviceContext);
+	if (m_pMesh) m_pMesh->Render();
 }
 
 void CObject::PlayAnimation(eAnimationType eType)

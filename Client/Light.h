@@ -41,8 +41,8 @@ public:
 	CLight();
 	~CLight();
 
-	void BuildLights(ID3D11Device *pd3dDevice);
-	void UpdateLights(ID3D11DeviceContext *pd3dDeviceContext);
+	void BuildLights();
+	void UpdateLights();
 	void ReleaseLights();
 
 private:

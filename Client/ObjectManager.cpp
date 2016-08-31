@@ -25,34 +25,21 @@ CObjectManager* CObjectManager::GetSingleton()
 	return &instance;
 }
 
-void CObjectManager::Initialize(ID3D11Device *pd3dDevice)
+void CObjectManager::Initialize()
 {
-	pResourceManager = CResourceManager::GetSingleton(pd3dDevice);
+	pResourceManager = CResourceManager::GetSingleton();
 }
 
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, float x, float y, float z, float dx, float dy, float dz)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction, bool isAnimating)
 {
-	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
-	CObject *pObject = new CObject(id);
-	pObject->SetMesh(pResourceManager->GetMesh(eType));
-	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
-	pObject->SetTexture(pResourceManager->GetTexture(eType));
-	pObject->SetResourceType(static_cast<int>(eType));
-
-	pObject->SetPositionAbsolute(x, y, z);
-	pObject->SetDirectionAbsolute(x, y, z);
-
-	pObject->PlayAnimation(CObject::eAnimationType::None);
-	pObject->SetBoundingBox();
-
-	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
-
-	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
-	pShader->InsertObject(pObject);
-
-	return pObject;
+	if (isAnimating)
+		 return _InsertAnimateT(id, eType, position, direction);
+	else
+		return _InsertAnimateF(id, eType, position, direction);
 }
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+
+
+CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	CObject *pObject = new CObject(id);
@@ -74,8 +61,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 
 	return pObject;
 }
-
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3dDevice, ID3D11DeviceContext *pd3dDeviceContext, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
 {	// 애니메이션 데이터 전용
 	CObject *pObject = new CObject(id);
 
@@ -101,7 +87,7 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, ID3D11Device *pd3d
 	pObject->SetTime(pResourceManager->GetMesh(eType)->GetAniMaxTime());
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->GetAnimationIndexCnt());
 	pObject->SetResult(pResourceManager->GetMesh(eType)->GetResultMatrix());
-	pObject->SetConstantBuffer(pd3dDevice, pd3dDeviceContext);
+	pObject->SetConstantBuffer();
 	
 	pObject->SetPositionAbsolute(&position);
 	pObject->SetDirectionAbsolute(&direction);

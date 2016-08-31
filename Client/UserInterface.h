@@ -10,15 +10,15 @@ public:
 	CUserInterface(const CUserInterface&);
 	~CUserInterface();
 
-	void Initialize(ID3D11Device *pd3dDevice, int screenWidth, int screenHeight);
+	void Initialize(int screenWidth, int screenHeight);
 	void Destroy();
 
-	void SetTexture(ID3D11Device *pd3dDevice, WCHAR *pFilePath, int bitmapWidth, int bitmapHeight);
+	void SetTexture(WCHAR *pFilePath, int bitmapWidth, int bitmapHeight);
 	CTexture* GetTexture() { return m_pTexture; }
 
 	void ChangeSize(int bitmapWidth, int bitmapHeight);
 
-	void Render(ID3D11DeviceContext *pd3dDeviceContext, int positionX, int positionY);
+	void Render(int positionX, int positionY);
 
 	int GetIndexCount() { return m_iIndexSize; }
 

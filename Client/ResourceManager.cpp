@@ -11,12 +11,12 @@ void CResource::SetIDs(BYTE meshID, BYTE textureID, BYTE materialID, BYTE shader
 }
 
 
-CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
+CResourceManager::CResourceManager()
 {
-	_LoadMesh(pd3dDevice);
-	_LoadTextures(pd3dDevice);
+	_LoadMesh();
+	_LoadTextures();
 	_LoadMaterials();
-	_CreateShaders(pd3dDevice);
+	_CreateShaders();
 
 	/*
 		Mesh, Texture, Material, Shader
@@ -85,73 +85,73 @@ bool CResourceManager::IsMaterialEnable(eResourceType type)
 	return false;
 }
 
-CResourceManager* CResourceManager::GetSingleton(ID3D11Device *pd3dDevice)
+CResourceManager* CResourceManager::GetSingleton()
 {
-	static CResourceManager instance(pd3dDevice);
+	static CResourceManager instance;
 	return &instance;
 }
 
-void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
+void CResourceManager::_LoadMesh()
 {
 	// 0. 메인 캐릭터
-	m_mMesh[0] = new CImportedAnimatingMesh(pd3dDevice, 0, 7);
+	m_mMesh[0] = new CImportedAnimatingMesh(0, 7);
 
 	// 1. 몬스터 - 슬라임
-	m_mMesh[1] = new CImportedAnimatingMesh(pd3dDevice, 1, 7);
+	m_mMesh[1] = new CImportedAnimatingMesh(1, 7);
 
 	// 2. 아이템 오브젝트
-	m_mMesh[2] = new CImportedMesh(pd3dDevice, "Data\\Buff_Crystal\\ItemObject_Info.txt");
+	m_mMesh[2] = new CImportedMesh("Data\\Buff_Crystal\\ItemObject_Info.txt");
 
 	// 3. 바닥
-	m_mMesh[3] = new CCubeMeshIlluminatedTextured(pd3dDevice, 5000.0f, 1.0f, 5000.0f);
+	m_mMesh[3] = new CCubeMeshIlluminatedTextured(5000.0f, 1.0f, 5000.0f);
 
 	// 4. 나무
-	m_mMesh[4] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Tree\\tree_info.txt");
+	m_mMesh[4] = new CImportedMesh("Data\\Decoration\\Tree\\tree_info.txt");
 
 	// 5. 만든 벽
-	m_mMesh[5] = new CCubeMeshIlluminatedTextured(pd3dDevice, 2500.0f, 1500.0f, 200.0f);
+	m_mMesh[5] = new CCubeMeshIlluminatedTextured(2500.0f, 1500.0f, 200.0f);
 
 	// 7. 풀
-	m_mMesh[6] = new CImportedMesh(pd3dDevice, "Data\\Decoration\\Grass\\grass_Info.txt");
+	m_mMesh[6] = new CImportedMesh("Data\\Decoration\\Grass\\grass_Info.txt");
 }
 
-void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
+void CResourceManager::_LoadTextures()
 {
 	CTexture *tempTexture;
 
 	/// 0: player
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Human/human.png");
+	tempTexture->SetTexture(0, L"./Data/Human/human.png");
 	m_mTexture[0] = tempTexture;
 
 	/// 1: monster1=slime
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Slime/monster.png");
+	tempTexture->SetTexture(0, L"./Data/Slime/monster.png");
 	m_mTexture[1] = tempTexture;
 
 	/// 2: Item_HP
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_RED.png");
+	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_RED.png");
 	m_mTexture[2] = tempTexture;
 
 	/// 3: floor
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Floor/ground.png");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Floor/ground.png");
 	m_mTexture[3] = tempTexture;
 
 	/// 4: tree
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Tree/tree.png");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Tree/tree.png");
 	m_mTexture[4] = tempTexture;
 
 	/// 5: wall
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Wall/wall.jpg");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Wall/wall.jpg");
 	m_mTexture[5] = tempTexture;
 
 	/// 7: Item_buff
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_BLUE.png");
+	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_BLUE.png");
 	m_mTexture[7] = tempTexture;
 
 	///// 8: Item_?
@@ -161,7 +161,7 @@ void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
 
 	/// 9: Grass
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Decoration/Grass/grass.jpg");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Grass/grass.jpg");
 	m_mTexture[9] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
@@ -175,26 +175,26 @@ void CResourceManager::_LoadMaterials()
 	tempMaterial->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	m_mMaterial[0] = tempMaterial;
 }
-void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
+void CResourceManager::_CreateShaders()
 {
 	CShader *pShader;
 
 	// 0 : Unanimating Mesh. CIlluminatedTexturedShader
 	pShader = new CIlluminatedTexturedShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
+	pShader->CreateShader();
+	pShader->CreateShaderVariables();
 	m_mShader[0] = pShader;
 
 	// 1 : Animating Mesh. PlayerShader
 	pShader = new CAnimatingShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
+	pShader->CreateShader();
+	pShader->CreateShaderVariables();
 	m_mShader[1] = pShader;
 
 	// 2 : UI. TextureShader
 	pShader = new CTextureShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
+	pShader->CreateShader();
+	pShader->CreateShaderVariables();
 	m_mShader[2] = pShader;
 }
 

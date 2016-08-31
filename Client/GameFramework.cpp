@@ -1,16 +1,15 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
+#include "CommonState.h"
 
 
 
 
 CGameFramework::CGameFramework()
 {
-	m_pd3dDevice = NULL;
 	m_pDXGISwapChain = NULL;
 	m_pd3dRenderTargetView = NULL;
-	m_pd3dDeviceContext = NULL;
 
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
@@ -38,22 +37,24 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
 
+	gpCommonState = CCommonState::GetSingleton();
+
 	// Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다
 	if (!CreateDirect3DDisplay()) return false;
 
 	// 오브젝트 매니저를 초기화한다
 	m_pObjectManager = CObjectManager::GetSingleton();
-	m_pObjectManager->Initialize(m_pd3dDevice);
+	m_pObjectManager->Initialize();
 
 	// 카메라 매니저를 초기화한다
 	m_pCameraManager = CCameraManager::GetSingleton();
-	m_pCameraManager->Initialize(m_pd3dDevice);
+	m_pCameraManager->Initialize();
 
 	// 씬 매니저를 초기화한다
 	m_pSceneManager = CSceneManager::GetSingleton();
 	m_pSceneManager->Initialize();
 	m_pSceneManager->Change(CSceneManager::eSceneType::FIRST);
-	m_pSceneManager->GetNowScene()->BuildObjects(m_pd3dDevice);
+	m_pSceneManager->GetNowScene()->BuildObjects();
 
 	return true;
 }
@@ -64,7 +65,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 
 	ID3D11Texture2D *pd3dBackBuffer;
 	if (FAILED(hResult = m_pDXGISwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return false;
-	if (FAILED(hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 
 	// Create depth stencil texture
@@ -81,7 +82,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	d3dDepthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	d3dDepthStencilBufferDesc.CPUAccessFlags = 0;
 	d3dDepthStencilBufferDesc.MiscFlags = 0;
-	if (FAILED(hResult = m_pd3dDevice->CreateTexture2D(&d3dDepthStencilBufferDesc, NULL, &m_pd3dDepthStencilBuffer))) return false;
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateTexture2D(&d3dDepthStencilBufferDesc, NULL, &m_pd3dDepthStencilBuffer))) return false;
 
 	// Create first depth stencil state(using depth buffer)
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -102,8 +103,8 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
 	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilState(&depthStencilDesc, &m_pd3dDepthStencilState)))	return false;
-	m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilState(&depthStencilDesc, &m_pd3dDepthStencilState)))	return false;
+	gpCommonState->m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
 
 	// Create first depth stencil state(unusing depth buffer)
 	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
@@ -122,7 +123,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
 	depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilState(&depthDisabledStencilDesc, &m_pd3dDepthDisabledStencilState)))	return false;
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilState(&depthDisabledStencilDesc, &m_pd3dDepthDisabledStencilState)))	return false;
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
@@ -130,9 +131,9 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	d3dDepthStencilViewDesc.Format = d3dDepthStencilBufferDesc.Format;
 	d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	d3dDepthStencilViewDesc.Texture2D.MipSlice = 0;
-	if (FAILED(hResult = m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return false;
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return false;
 
-	m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
+	gpCommonState->m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
 
 	// Blend
 	D3D11_BLEND_DESC blendStateDescription;
@@ -145,9 +146,9 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
 	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-	if (FAILED(hResult = m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState))) return false;
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState))) return false;
 	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
-	if (FAILED(hResult = m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState))) return false;
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState))) return false;
 
 	return true;
 }
@@ -160,11 +161,11 @@ bool CGameFramework::CreateRenderTargetView()
 	//스왑 체인의 후면버퍼에 대한 렌더 타겟 뷰를 생성한다.
 	ID3D11Texture2D *pd3dBackBuffer;
 	if (FAILED(hResult = m_pDXGISwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return false;
-	if (FAILED(hResult = m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
+	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 
 	//렌더 타겟 뷰를 생성하고 출력-병합 단계에 연결한다.
-	m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, NULL);
+	gpCommonState->m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, NULL);
 
 	return true;
 }
@@ -222,9 +223,9 @@ bool CGameFramework::CreateDirect3DDisplay()
 		nd3dDriverType = d3dDriverTypes[i];
 		if (SUCCEEDED(hResult = D3D11CreateDeviceAndSwapChain(NULL, nd3dDriverType, NULL, 
 			dwCreateDeviceFlags, d3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &dxgiSwapChainDesc, 
-			&m_pDXGISwapChain, &m_pd3dDevice, &nd3dFeatureLevel, &m_pd3dDeviceContext))) break;
+			&m_pDXGISwapChain, &gpCommonState->m_pd3dDevice, &nd3dFeatureLevel, &gpCommonState->m_pd3dDeviceContext))) break;
 	}
-	if (!m_pDXGISwapChain || !m_pd3dDevice || !m_pd3dDeviceContext) return false;
+	if (!m_pDXGISwapChain || !gpCommonState->m_pd3dDevice || !gpCommonState->m_pd3dDeviceContext) return false;
 
 	// 렌더 타겟 뷰를 생성하는 함수를 호출
 	if (!CreateRenderTargetDepthStencilView()) return false;
@@ -241,7 +242,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		m_nWndClientWidth = LOWORD(lParam);
 		m_nWndClientHeight = HIWORD(lParam);
 
-		m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
+		gpCommonState->m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
 
 		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
@@ -251,7 +252,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 		CreateRenderTargetDepthStencilView();
 
-		m_pCameraManager->GetNowCamera()->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
+		m_pCameraManager->GetNowCamera()->SetViewport(0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
 
 		break;
 	}
@@ -278,15 +279,15 @@ void CGameFramework::OnDestroy()
 
 	m_pObjectManager->DeleteObjectAll();
 
-	if (m_pd3dDeviceContext) m_pd3dDeviceContext->ClearState();
+	if (gpCommonState->m_pd3dDeviceContext) gpCommonState->m_pd3dDeviceContext->ClearState();
 	if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
 	if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 	if (m_pd3dDepthStencilState) m_pd3dDepthStencilState->Release();
 	if (m_pd3dDepthDisabledStencilState) m_pd3dDepthDisabledStencilState->Release();
 	if (m_pDXGISwapChain) m_pDXGISwapChain->Release();
-	if (m_pd3dDeviceContext) m_pd3dDeviceContext->Release();
-	if (m_pd3dDevice) m_pd3dDevice->Release();
+	if (gpCommonState->m_pd3dDeviceContext) gpCommonState->m_pd3dDeviceContext->Release();
+	if (gpCommonState->m_pd3dDevice) gpCommonState->m_pd3dDevice->Release();
 }
 
 void CGameFramework::ReleaseObjects()
@@ -298,20 +299,18 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.Tick(60.0f);
 
 	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
-	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	if (m_pd3dRenderTargetView) gpCommonState->m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+	if (m_pd3dDepthStencilView) gpCommonState->m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	if (m_pCameraManager)
-		m_pCameraManager->GetNowCamera()->UpdateShaderVariables(m_pd3dDeviceContext);
+		m_pCameraManager->GetNowCamera()->UpdateShaderVariables();
 
 	if (m_pSceneManager)
 	{
 		m_pSceneManager->GetNowScene()->ProcessInput(m_GameTimer.GetTimeElapsed());
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender3D(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender3D(m_GameTimer.GetTimeElapsed());
 		TurnZBufferOff();
-		//TurnOnAlphaBlending();
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender2D(m_pd3dDeviceContext, m_GameTimer.GetTimeElapsed());
-		//TurnOffAlphaBlending();
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender2D(m_GameTimer.GetTimeElapsed());
 		TurnZBufferOn();
 	}
 
@@ -323,44 +322,15 @@ void CGameFramework::FrameAdvance()
 
 void CGameFramework::TurnZBufferOn()
 {
-	m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
+	gpCommonState->m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
 	return;
 }
 
 void CGameFramework::TurnZBufferOff()
 {
-	m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthDisabledStencilState, 1);
+	gpCommonState->m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthDisabledStencilState, 1);
 	return;
 }
 
-void CGameFramework::TurnOnAlphaBlending()
-{
-	float blendFactor[4];
 
-	// Setup the blend factor.
-	blendFactor[0] = 0.0f;
-	blendFactor[1] = 0.0f;
-	blendFactor[2] = 0.0f;
-	blendFactor[3] = 0.0f;
-
-	// Turn on the alpha blending.
-	m_pd3dDeviceContext->OMSetBlendState(m_alphaEnableBlendingState, blendFactor, 0xffffffff);
-
-	return;
-}
-void CGameFramework::TurnOffAlphaBlending()
-{
-	float blendFactor[4];
-
-	// Setup the blend factor.
-	blendFactor[0] = 0.0f;
-	blendFactor[1] = 0.0f;
-	blendFactor[2] = 0.0f;
-	blendFactor[3] = 0.0f;
-
-	// Turn off the alpha blending.
-	m_pd3dDeviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
-
-	return;
-}
 
