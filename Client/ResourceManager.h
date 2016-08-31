@@ -60,7 +60,7 @@ public:
 		END
 	};
 
-	static CResourceManager* GetSingleton(ID3D11Device *pd3dDevice);
+	static CResourceManager* GetSingleton();
 	~CResourceManager();
 
 	CMesh* GetMesh(eResourceType type);
@@ -73,7 +73,7 @@ public:
 	bool IsMaterialEnable(eResourceType type);
 
 private:
-	CResourceManager(ID3D11Device *pd3dDevice);
+	CResourceManager();
 
 	std::vector<CResource*> m_vResources;
 
@@ -82,10 +82,10 @@ private:
 	std::map<BYTE, CMaterial*> m_mMaterial;
 	std::map<BYTE, CShader*> m_mShader;
 
-	void _LoadMesh(ID3D11Device *pd3dDevice);
-	void _LoadTextures(ID3D11Device *pd3dDevice);
+	void _LoadMesh();
+	void _LoadTextures();
 	void _LoadMaterials();
-	void _CreateShaders(ID3D11Device *pd3dDevice);
+	void _CreateShaders();
 };
 
 

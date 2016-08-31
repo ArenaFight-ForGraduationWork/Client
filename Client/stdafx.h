@@ -35,6 +35,8 @@
 #include <thread>
 #include <WinSock2.h>
 
+#include "CommonState.h"
+
 using namespace std;
 
 #define VS_SLOT_VIEWPROJECTION_MATRIX	0x00

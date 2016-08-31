@@ -10,14 +10,14 @@
 class CMesh
 {
 public:
-	CMesh(ID3D11Device *pd3dDevice);
+	CMesh();
 	virtual ~CMesh();
 
 	void AddRef();
 	void Release();
 
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void CreateRasterizerState();
+	virtual void Render();
 
 	XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
 	int* GetAniMaxTime() { return m_iAnimationMaxTime; }
@@ -58,11 +58,11 @@ private:
 class CCubeMeshIlluminatedTextured : public CMesh
 {
 public:
-	CCubeMeshIlluminatedTextured(ID3D11Device *pd3dDevice, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+	CCubeMeshIlluminatedTextured(float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
 	virtual ~CCubeMeshIlluminatedTextured();
 
-	virtual void SetRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void SetRasterizerState();
+	virtual void Render();
 
 private:
 	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
@@ -77,11 +77,11 @@ private:
 class CImportedMesh : public CMesh
 {
 public:
-	CImportedMesh(ID3D11Device *pd3dDevice, char* pTxtName);
+	CImportedMesh(char* pTxtName);
 	virtual ~CImportedMesh();
 
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void CreateRasterizerState();
+	virtual void Render();
 
 private:
 	CTexturedNormalVertex* ppVertices;
@@ -95,11 +95,11 @@ private:
 class CImportedAnimatingMesh : public CMesh
 {
 public:
-	CImportedAnimatingMesh(ID3D11Device *pd3dDevice, int CharNum, int StateCnt);
+	CImportedAnimatingMesh(int CharNum, int StateCnt);
 	virtual ~CImportedAnimatingMesh();
 
-	virtual void CreateRasterizerState(ID3D11Device *pd3dDevice);
-	virtual void Render(ID3D11DeviceContext *pd3dDeviceContext);
+	virtual void CreateRasterizerState();
+	virtual void Render();
 
 private:
 	CAnimationVertex* ppVertices;

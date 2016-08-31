@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "Camera.h"
 
+#include "ConstantBuffers.h"
+
+
+
 CCamera::CCamera()
 {
 	m_pd3dxvPosition = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -33,7 +37,7 @@ CCamera::~CCamera()
 	if (m_pd3dcbCamera) m_pd3dcbCamera->Release();
 }
 
-void CCamera::SetViewport(ID3D11DeviceContext *pd3dDeviceContext, DWORD xTopLeft, DWORD yTopLeft, DWORD nWidth, DWORD nHeight, float fMinZ, float fMaxZ)
+void CCamera::SetViewport(DWORD xTopLeft, DWORD yTopLeft, DWORD nWidth, DWORD nHeight, float fMinZ, float fMaxZ)
 {
 	m_pd3dViewport = new D3D11_VIEWPORT();
 	m_pd3dViewport->TopLeftX = float(xTopLeft);
@@ -42,7 +46,7 @@ void CCamera::SetViewport(ID3D11DeviceContext *pd3dDeviceContext, DWORD xTopLeft
 	m_pd3dViewport->Height = float(nHeight);
 	m_pd3dViewport->MinDepth = fMinZ;
 	m_pd3dViewport->MaxDepth = fMaxZ;
-	pd3dDeviceContext->RSSetViewports(1, m_pd3dViewport);
+	gpCommonState->m_pd3dDeviceContext->RSSetViewports(1, m_pd3dViewport);
 }
 
 void CCamera::GenerateViewMatrix()
@@ -93,7 +97,7 @@ void CCamera::GenerateOrthoMatrix(const float fNearPlaneDistance, const float fF
 	D3DXMatrixOrthoLH(m_pd3dxmtxOrtho, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, fNearPlaneDistance, fFarPlaneDistance);
 }
 
-void CCamera::CreateShaderVariables(ID3D11Device *pd3dDevice)
+void CCamera::CreateShaderVariables()
 {
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -101,19 +105,19 @@ void CCamera::CreateShaderVariables(ID3D11Device *pd3dDevice)
 	bd.ByteWidth = sizeof(VS_CB_VIEWPROJECTION_MATRIX);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	pd3dDevice->CreateBuffer(&bd, NULL, &m_pd3dcbCamera);
+	gpCommonState->m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pd3dcbCamera);
 }
 
-void CCamera::UpdateShaderVariables(ID3D11DeviceContext *pd3dDeviceContext)
+void CCamera::UpdateShaderVariables()
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
 	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxView, m_pd3dxmtxView);
 	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxProjection, m_pd3dxmtxProjection);
-	pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
+	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
 
-	pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
+	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
 }
 
 const float CCamera::GetYaw()
@@ -199,16 +203,15 @@ CCameraManager* CCameraManager::GetSingleton()
 	return &instance;
 }
 
-void CCameraManager::Initialize(ID3D11Device *pd3dDevice)
+void CCameraManager::Initialize()
 {
 	CCamera *pCamera;
 
 	pCamera = new CThirdPersonCamera();
-	pCamera->CreateShaderVariables(pd3dDevice);
+	pCamera->CreateShaderVariables();
 	pCamera->SetLookAt(new D3DXVECTOR3(0,0,0));
-	ID3D11DeviceContext *pd3dDeviceContext;
-	pd3dDevice->GetImmediateContext(&pd3dDeviceContext);
-	pCamera->SetViewport(pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
+	pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	pCamera->GenerateProjectionMatrix(1.01f, 10000.0f, ASPECT_RATIO, 60.0f);
 	pCamera->GenerateOrthoMatrix(1.01f, 10000.0f);
 	pCamera->GenerateViewMatrix();

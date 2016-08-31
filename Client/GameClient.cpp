@@ -163,8 +163,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 		gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
 		break;
-	//case WM_TIMER:
-	//	break;
+		//case WM_TIMER:
+		//	break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -239,15 +239,15 @@ void ProcessPacket(char *ptr) {
 	}break;
 	case JOIN_ROOM_S:
 	{	/* 방 접속 성공시 받는 패킷.
-		1) 내가 방에 들어가 있을 때 이미 와있는 사람 정보를 받는다
+		1) 내가 방에 들어가 있을 때 이미 와있는 사람 정보를 받는다 == 나도 포함
 		2) 나 이후에 들어오는 사람은 ROOM_PUT_PLAYER 패킷으로 온다
 		현재 상태(player_status)를 LOBBY > ROOM 으로 변경	*/
 		join_room_s *my_packet = reinterpret_cast<join_room_s *>(ptr);
 		for (unsigned int i = 0; i < 4; ++i)
 		{
 			if (my_packet->id[i] != -1) {
-				pObjectManager->Insert(my_packet->id[i], eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-					D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+				if (myID != my_packet->id[i])	/* 방에 이미 들어와있는 사람 정보 중에 myID도 포함이므로 제외한다 */
+					pObjectManager->Insert(my_packet->id[i], eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
 				printf("룸에 있는 플레이어 id:%d\n", my_packet->id[i]);
 			}
 		}
@@ -267,8 +267,7 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (!pObject)
 		{	// 해당 id가 존재하지 않으면
-			pObjectManager->Insert(my_packet->id, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-				D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+			pObjectManager->Insert(my_packet->id, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
 		}
 		else
 		{ //  해당 id가 존재하면
@@ -328,8 +327,7 @@ void ProcessPacket(char *ptr) {
 		printf("게임을 시작합니다\n");
 		player_status = FIGHT;
 
-		pObjectManager->Insert((UINT)myID, eResourceType::User, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-			D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0));
+		pObjectManager->Insert((UINT)myID, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
 
 		printf("보스 ID:%d\n", my_packet->bossid);
 
@@ -341,8 +339,7 @@ void ProcessPacket(char *ptr) {
 		}
 		else
 		{	// if boss doesn't exist
-			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, gGameFramework.GetDevice(), gGameFramework.GetDeviceContext(),
-				D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossz), D3DXVECTOR3(0, my_packet->bossdis, 0));
+			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossz), D3DXVECTOR3(0, my_packet->bossdis, 0), true);
 		}
 		pObject = nullptr;
 	}break;
@@ -371,7 +368,7 @@ void ProcessPacket(char *ptr) {
 		// 방주인은 그렇다 쳐도 아닌 사람은 왜 방에 접속하지도 않았는데 ROOM 상태인가
 		game_start_s *my_packet = reinterpret_cast<game_start_s *>(ptr);
 
-		for (unsigned int i = 0; i < 4; ++i) 
+		for (unsigned int i = 0; i < 4; ++i)
 		{
 			if (pObjectManager->FindObject(my_packet->id[i]))
 			{ //  해당 id가 존재하면

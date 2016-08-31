@@ -25,11 +25,11 @@ public:
 	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
 	virtual void ProcessInput(float fTimeElapsed) = 0;
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
+	virtual void BuildObjects();
 	void ReleaseObjects();
 
-	virtual void AnimateObjectsAndRender3D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
-	virtual void AnimateObjectsAndRender2D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+	virtual void AnimateObjectsAndRender3D(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender2D(float fTimeElapsed);
 
 protected:
 	DWORD m_OperationMode;
@@ -65,9 +65,9 @@ public:
 	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
 	virtual void ProcessInput(float fTimeElapsed);
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void AnimateObjectsAndRender3D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
-	virtual void AnimateObjectsAndRender2D(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+	virtual void BuildObjects();
+	virtual void AnimateObjectsAndRender3D(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender2D(float fTimeElapsed);
 
 private:
 	UCHAR m_pKeyBuffer[256];
@@ -89,8 +89,8 @@ public:
 	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
 	virtual void ProcessInput(float fTimeElapsed);
 
-	virtual void BuildObjects(ID3D11Device *pd3dDevice);
-	virtual void AnimateObjectsAndRender(ID3D11DeviceContext* pd3dDeviceContext, float fTimeElapsed);
+	virtual void BuildObjects();
+	virtual void AnimateObjectsAndRender(float fTimeElapsed);
 
 private:
 };
