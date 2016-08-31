@@ -17,7 +17,7 @@ CUserInterface::~CUserInterface()
 	Destroy();
 }
 
-void CUserInterface::Initialize(ID3D11Device *pd3dDevice, int screenWidth, int screenHeight)
+void CUserInterface::Initialize(int screenWidth, int screenHeight)
 {
 	// 화면 크기를 저장한다
 	m_iScreenWidth = screenWidth;
@@ -60,7 +60,7 @@ void CUserInterface::Initialize(ID3D11Device *pd3dDevice, int screenWidth, int s
 		vertexData.SysMemSlicePitch = 0;
 
 		// Now create the vertex buffer.
-		pd3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &m_pVertexBuffer);
+		gpCommonState->m_pd3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &m_pVertexBuffer);
 
 		// Set up the description of the static index buffer.
 		indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -76,7 +76,7 @@ void CUserInterface::Initialize(ID3D11Device *pd3dDevice, int screenWidth, int s
 		indexData.SysMemSlicePitch = 0;
 
 		// Create the index buffer.
-		pd3dDevice->CreateBuffer(&indexBufferDesc, &indexData, &m_pIndexBuffer);
+		gpCommonState->m_pd3dDevice->CreateBuffer(&indexBufferDesc, &indexData, &m_pIndexBuffer);
 
 		// Release the arrays now that the vertex and index buffers have been created and loaded.
 		delete[] vertices;
@@ -105,7 +105,7 @@ void CUserInterface::Destroy()
 	}
 }
 
-void CUserInterface::SetTexture(ID3D11Device *pd3dDevice, WCHAR *pFilePath, int bitmapWidth, int bitmapHeight)
+void CUserInterface::SetTexture(WCHAR *pFilePath, int bitmapWidth, int bitmapHeight)
 {
 	// 비트맵이 그려져야 하는 곳의 픽셀 크기 저장
 	m_iBitmapWidth = bitmapWidth;
@@ -120,7 +120,7 @@ void CUserInterface::ChangeSize(int bitmapWidth, int bitmapHeight)
 	m_iBitmapHeight = bitmapHeight;
 }
 
-void CUserInterface::Render(ID3D11DeviceContext *pd3dDeviceContext, int positionX, int positionY)
+void CUserInterface::Render(int positionX, int positionY)
 {
 	// 1) buffer update
 	for (;;)
@@ -161,10 +161,10 @@ void CUserInterface::Render(ID3D11DeviceContext *pd3dDeviceContext, int position
 		pVertices[5].SetTexCoord(1.0f, 1.0f);
 
 		D3D11_MAPPED_SUBRESOURCE mappedResource;
-		pd3dDeviceContext->Map(m_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		gpCommonState->m_pd3dDeviceContext->Map(m_pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 		CTexturedVertex *pVerticesPtr = (CTexturedVertex*)mappedResource.pData;
 		memcpy(pVerticesPtr, (void*)pVertices, (sizeof(CTexturedVertex) * m_iVertexSize));
-		pd3dDeviceContext->Unmap(m_pVertexBuffer, 0);
+		gpCommonState->m_pd3dDeviceContext->Unmap(m_pVertexBuffer, 0);
 
 		delete[] pVertices;
 		pVertices = 0;
@@ -177,8 +177,8 @@ void CUserInterface::Render(ID3D11DeviceContext *pd3dDeviceContext, int position
 		unsigned int stride = sizeof(CTexturedVertex);
 		unsigned int offset = 0;
 
-		pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
-		pd3dDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		gpCommonState->m_pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
+		gpCommonState->m_pd3dDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		gpCommonState->m_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 }

@@ -358,8 +358,8 @@ void CFirstScene::BuildObjects()
 
 	// create interface object
 	m_pInterface = new CUserInterface();
-	m_pInterface->Initialize(gpCommonState->m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-	m_pInterface->SetTexture(gpCommonState->m_pd3dDevice, L"./Data/UI/health.png", 20, 20);	// 크기
+	m_pInterface->Initialize(FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+	m_pInterface->SetTexture(L"./Data/UI/health.png", 20, 20);	// 크기
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -383,7 +383,7 @@ void CFirstScene::AnimateObjectsAndRender2D(float time)
 	// turn off the z buffer ** first **
 
 	m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint());
-	m_pInterface->Render(gpCommonState->m_pd3dDeviceContext, FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// 위치
+	m_pInterface->Render(FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// 위치
 
 	// set view + projection matrix buffer
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
