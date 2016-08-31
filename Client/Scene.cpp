@@ -28,7 +28,7 @@ CScene::~CScene()
 
 void CScene::BuildObjects()
 {
-	CResourceManager *pResourceManager = CResourceManager::GetSingleton(gpCommonState->m_pd3dDevice);
+	CResourceManager *pResourceManager = CResourceManager::GetSingleton();
 	for (BYTE i = (BYTE)CResourceManager::eShaderType::START; i < (BYTE)CResourceManager::eShaderType::END; ++i)
 	{
 		m_vShaders.push_back(pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i));

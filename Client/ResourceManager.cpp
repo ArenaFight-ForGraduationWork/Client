@@ -11,12 +11,12 @@ void CResource::SetIDs(BYTE meshID, BYTE textureID, BYTE materialID, BYTE shader
 }
 
 
-CResourceManager::CResourceManager(ID3D11Device *pd3dDevice)
+CResourceManager::CResourceManager()
 {
-	_LoadMesh(pd3dDevice);
-	_LoadTextures(pd3dDevice);
+	_LoadMesh();
+	_LoadTextures();
 	_LoadMaterials();
-	_CreateShaders(pd3dDevice);
+	_CreateShaders();
 
 	/*
 		Mesh, Texture, Material, Shader
@@ -85,13 +85,13 @@ bool CResourceManager::IsMaterialEnable(eResourceType type)
 	return false;
 }
 
-CResourceManager* CResourceManager::GetSingleton(ID3D11Device *pd3dDevice)
+CResourceManager* CResourceManager::GetSingleton()
 {
-	static CResourceManager instance(pd3dDevice);
+	static CResourceManager instance;
 	return &instance;
 }
 
-void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
+void CResourceManager::_LoadMesh()
 {
 	// 0. 메인 캐릭터
 	m_mMesh[0] = new CImportedAnimatingMesh(0, 7);
@@ -115,7 +115,7 @@ void CResourceManager::_LoadMesh(ID3D11Device *pd3dDevice)
 	m_mMesh[6] = new CImportedMesh("Data\\Decoration\\Grass\\grass_Info.txt");
 }
 
-void CResourceManager::_LoadTextures(ID3D11Device *pd3dDevice)
+void CResourceManager::_LoadTextures()
 {
 	CTexture *tempTexture;
 
@@ -175,26 +175,26 @@ void CResourceManager::_LoadMaterials()
 	tempMaterial->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	m_mMaterial[0] = tempMaterial;
 }
-void CResourceManager::_CreateShaders(ID3D11Device *pd3dDevice)
+void CResourceManager::_CreateShaders()
 {
 	CShader *pShader;
 
 	// 0 : Unanimating Mesh. CIlluminatedTexturedShader
 	pShader = new CIlluminatedTexturedShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
+	pShader->CreateShader(gpCommonState->m_pd3dDevice);
+	pShader->CreateShaderVariables(gpCommonState->m_pd3dDevice);
 	m_mShader[0] = pShader;
 
 	// 1 : Animating Mesh. PlayerShader
 	pShader = new CAnimatingShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
+	pShader->CreateShader(gpCommonState->m_pd3dDevice);
+	pShader->CreateShaderVariables(gpCommonState->m_pd3dDevice);
 	m_mShader[1] = pShader;
 
 	// 2 : UI. TextureShader
 	pShader = new CTextureShader();
-	pShader->CreateShader(pd3dDevice);
-	pShader->CreateShaderVariables(pd3dDevice);
+	pShader->CreateShader(gpCommonState->m_pd3dDevice);
+	pShader->CreateShaderVariables(gpCommonState->m_pd3dDevice);
 	m_mShader[2] = pShader;
 }
 
