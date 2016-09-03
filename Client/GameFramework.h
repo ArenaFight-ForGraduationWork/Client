@@ -53,9 +53,6 @@ private:
 	ID3D11DepthStencilState* m_pd3dDepthStencilState;
 	ID3D11DepthStencilState* m_pd3dDepthDisabledStencilState;
 
-	ID3D11BlendState* m_alphaEnableBlendingState;
-	ID3D11BlendState* m_alphaDisableBlendingState;
-
 	// 게임 프레임워크에서 사용할 타이머
 	CGameTimer m_GameTimer;
 

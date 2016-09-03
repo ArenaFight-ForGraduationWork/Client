@@ -22,9 +22,6 @@ CGameFramework::CGameFramework()
 
 	m_pd3dDepthStencilState = nullptr;
 	m_pd3dDepthDisabledStencilState = nullptr;
-
-	m_alphaEnableBlendingState = nullptr;
-	m_alphaDisableBlendingState = nullptr;
 }
 
 CGameFramework::~CGameFramework()
@@ -106,7 +103,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilState(&depthStencilDesc, &m_pd3dDepthStencilState)))	return false;
 	gpCommonState->m_pd3dDeviceContext->OMSetDepthStencilState(m_pd3dDepthStencilState, 1);
 
-	// Create first depth stencil state(unusing depth buffer)
+	// Create second depth stencil state(unusing depth buffer)
 	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
 	ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
 	depthDisabledStencilDesc.DepthEnable = false; /// <<<	only defference from other depth stencil view
@@ -134,21 +131,6 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return false;
 
 	gpCommonState->m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
-
-	// Blend
-	D3D11_BLEND_DESC blendStateDescription;
-	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
-	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
-	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	blendStateDescription.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
-	blendStateDescription.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
-	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingState))) return false;
-	blendStateDescription.RenderTarget[0].BlendEnable = FALSE;
-	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateBlendState(&blendStateDescription, &m_alphaDisableBlendingState))) return false;
 
 	return true;
 }
