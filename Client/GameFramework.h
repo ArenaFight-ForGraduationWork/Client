@@ -50,9 +50,6 @@ private:
 	ID3D11Texture2D *m_pd3dDepthStencilBuffer;
 	ID3D11DepthStencilView *m_pd3dDepthStencilView;
 
-	ID3D11DepthStencilState* m_pd3dDepthStencilState;
-	ID3D11DepthStencilState* m_pd3dDepthDisabledStencilState;
-
 	// 게임 프레임워크에서 사용할 타이머
 	CGameTimer m_GameTimer;
 
@@ -64,10 +61,6 @@ private:
 	CCameraManager *m_pCameraManager;
 
 	UINT m_uiID;
-
-	// turn off z buffer after rendering 3d screen, render 2d screen and turn on z buffer finally
-	void TurnZBufferOn();
-	void TurnZBufferOff();
 };
 
 

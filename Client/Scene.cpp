@@ -352,7 +352,10 @@ void CFirstScene::AnimateObjectsAndRender3D(float time)
 
 void CFirstScene::AnimateObjectsAndRender2D(float time)
 {	
-	// turn off the z buffer ** first **
+	gpCommonState->TurnZBufferOff();
+
+
+
 	if(m_pObjectManager->FindObject(myID))
 	m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint());
 	else
@@ -371,7 +374,9 @@ void CFirstScene::AnimateObjectsAndRender2D(float time)
 
 	CScene::AnimateObjectsAndRender2D(time);
 
-	// turn ** on ** the z buffer
+
+
+	gpCommonState->TurnZBufferOn();
 }
 
 
