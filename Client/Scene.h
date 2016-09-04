@@ -8,7 +8,7 @@
 #include "Fog.h"
 #include "Camera.h"
 #include "Server.h"
-//#include "UserInterface.h"
+#include <SpriteBatch.h>
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
@@ -40,7 +40,9 @@ protected:
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
 
-	//CUserInterface *m_pInterface;
+	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
+	ID3D11ShaderResourceView *m_pTexture;
+
 	ID3D11Buffer *m_pd3dcbCamera;
 
 private:
