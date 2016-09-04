@@ -2,6 +2,9 @@
 #include "Scene.h"
 #include "ResourceManager.h"
 
+#include <SpriteBatch.h>
+
+
 
 
 CScene::CScene()

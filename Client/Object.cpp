@@ -348,7 +348,7 @@ const D3DXVECTOR3* CObject::GetMinVer()
 //		애니메이션 재생에 필요한 함수들
 //
 //===========================================================
-void CObject::SetResult(XMFLOAT4X4*** result)
+void CObject::SetResult(DirectX::XMFLOAT4X4*** result)
 {
 	m_pppResult = result;
 }
@@ -382,7 +382,7 @@ void CObject::SetConstantBuffer()
 	{
 		m_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)d3dMappedResource.pData;
 		for (int i = 0; i < 128; ++i)
-			m_pcbBoneMatrix->m_XMmtxBone[i] = XMMatrixIdentity();
+			m_pcbBoneMatrix->m_XMmtxBone[i] = DirectX::XMMatrixIdentity();
 	}
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbBoneMatrix, NULL);
 }
@@ -423,7 +423,7 @@ void CObject::AnimateAndRender(float& time)
 
 		for (int i = 0; i < m_iAnimationIndexCount; ++i)
 		{
-			XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[static_cast<int>(m_eAnimationType)][static_cast<int>(m_fAnimationPlaytime) / 10][i]);
+			DirectX::XMMATRIX ResultMatrix = DirectX::XMLoadFloat4x4(&m_pppResult[static_cast<int>(m_eAnimationType)][static_cast<int>(m_fAnimationPlaytime) / 10][i]);
 			m_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
 		}
 		if (m_pd3dcbBoneMatrix)

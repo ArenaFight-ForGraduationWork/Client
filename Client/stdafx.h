@@ -14,7 +14,8 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <d3d11.h>
+//#include <d3d11.h>	// d3d11.h does not include XNAMATH, so I changed d3d11.h to d3d11_1.h
+#include <d3d11_1.h>
 #include <d3dx11.h>
 
 #include <Mmsystem.h>
@@ -24,9 +25,16 @@
 #include <D3D9Types.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+/*
+	DirectX Tool Kit uses DirectXMath.h header.
+	And If you use xnamath.h and DirectXMath.h at once, They will collide and you can see lots of errors... ;).	So, Remove xnamath.h.
+	d3d11_1.h includes XNAMATH in the namespace DirectX. You can use like this( DirectX::XMFLOAT4X4 ).
+	Or type using namespace DirectX; (You must write this in .cpp file, NOT a .h file.)
+*/
+//#include <xnamath.h>
+#include <DirectXMath.h>
 #include <vector>
 #include <map>
-#include <xnamath.h>
 #include <string>
 #include <iostream>
 #include <stdio.h>

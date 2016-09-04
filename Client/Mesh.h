@@ -19,7 +19,7 @@ public:
 	virtual void CreateRasterizerState();
 	virtual void Render();
 
-	XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
+	DirectX::XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
 	int* GetAniMaxTime() { return m_iAnimationMaxTime; }
 	unsigned int GetAnimationIndexCnt() { return m_uiAnimationIndexCnt; }
 
@@ -45,7 +45,7 @@ protected:
 	D3DXVECTOR3 *m_pMaxVer;
 	D3DXVECTOR3 *m_pMinVer;
 
-	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
+	DirectX::XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
 	int m_iAnimationMaxTime[ANIMATION_COUNT];
 	unsigned int m_uiAnimationIndexCnt;
 

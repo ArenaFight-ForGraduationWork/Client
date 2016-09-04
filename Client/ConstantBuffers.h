@@ -26,7 +26,7 @@ struct VS_CB_FOG
 };
 struct VS_CB_BONE_MATRIX
 {
-	XMMATRIX m_XMmtxBone[128];
+	DirectX::XMMATRIX m_XMmtxBone[128];
 };
 
 

@@ -127,7 +127,7 @@ public:
 
 	void SetConstantBuffer();
 	void SetAniIndexCount(int);
-	void SetResult(XMFLOAT4X4***);
+	void SetResult(DirectX::XMFLOAT4X4***);
 	void SetTime(int*);
 
 	void PlayAnimation(eAnimationType eType);
@@ -162,7 +162,7 @@ private:
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;
 
-	XMFLOAT4X4 ***m_pppResult;
+	DirectX::XMFLOAT4X4 ***m_pppResult;
 	float m_fAnimationPlaytime;
 	int m_iAniMaxTime[ANIMATION_COUNT];
 	int m_iAnimationIndexCount;
