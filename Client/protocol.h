@@ -17,11 +17,11 @@
 #define A		3
 #define D		4
 
-//// 플레이어 스킬
-//#define NORMAL_ATTACK	1
-//#define PLAYER_SKILL1	2
-//#define PLAYER_SKILL2	3
-//#define PLAYER_SKILL3	4
+// 플레이어 스킬
+#define NORMAL_ATTACK	1
+#define PLAYER_SKILL1	2
+#define PLAYER_SKILL2	3
+#define PLAYER_SKILL3	4
 
 // 서버 -> 클라
 #define LOGIN         1
@@ -187,6 +187,12 @@ struct remove_player {
 	BYTE size;
 	BYTE type;
 	int id;
+};
+struct player_attack {
+	BYTE size;
+	BYTE type;
+	int id;
+	BYTE attack_type;
 };
 #pragma pack (pop)
 #endif

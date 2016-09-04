@@ -292,12 +292,9 @@ void ProcessPacket(char *ptr) {
 	{
 		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
 
-		cout << my_packet->id << endl;
 		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
 		if (pObject)
 		{
-			cout << "myID : " << myID << ", ";
-			cout << "packet_id : " << my_packet->id << my_packet->x << ", " << my_packet->z << endl;
 			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
 			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->direction, 0));
 			if (my_packet->isMoving)
@@ -306,10 +303,37 @@ void ProcessPacket(char *ptr) {
 				pObject->PlayAnimation(CObject::eAnimationType::Idle);
 		}
 		pObject = nullptr;
-	}break;
+	} break;
+	case SC_PLAYER_ATTACK:
+	{
+		player_attack *my_packet = reinterpret_cast<player_attack *>(ptr);
+
+		cout << "receive attack packet : " << my_packet->id << ", " << static_cast<UINT>(my_packet->attack_type) << endl;
+
+		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
+		if (pObject)
+		{
+			switch (my_packet->attack_type)
+			{
+			case NORMAL_ATTACK:
+				pObject->PlayAnimation(CObject::eAnimationType::Attack);
+				break;
+			case PLAYER_SKILL1:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill1);
+				break;
+			case PLAYER_SKILL2:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill2);
+				break;
+			case PLAYER_SKILL3:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill3);
+				break;
+			}
+		}
+		pObject = nullptr;
+	} break;
 	case REMOVE_PLAYER:
 	{	/* 클라이언트를 종료한 사람. 방에 재접속이 안 된다. */
-	}break;
+	} break;
 	// 보류
 	//case BOSS_POS:
 	//{

@@ -131,6 +131,8 @@ public:
 	void SetTime(int*);
 
 	void PlayAnimation(eAnimationType eType);
+	//BYTE GetNowAnimation() { return static_cast<BYTE>(m_eAnimationType); }
+	eAnimationType GetNowAnimation() { return m_eAnimationType; }
 
 	//==============================================================================================
 	//==============================================================================================

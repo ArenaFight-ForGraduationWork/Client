@@ -105,7 +105,94 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 		// 기본공격(space) : VK_SPACE
 		// 스킬 : 0x31, 0x32, 0x33
+		case VK_SPACE :
+		{
+			CObject *pPlayer = m_pObjectManager->FindObject(myID);
+			if (pPlayer)
+			{
+				if ((CObject::eAnimationType::Idle == pPlayer->GetNowAnimation()) | (CObject::eAnimationType::Move == pPlayer->GetNowAnimation()))
+				{
+					cout << "send attack packet" << endl;
 
+					pPlayer->PlayAnimation(CObject::eAnimationType::Attack);
+					player_attack  *pp = reinterpret_cast<player_attack *>(send_buffer);
+
+					pp->size = sizeof(*pp);
+					pp->type = PLAYER_ATTACK;
+					pp->id = myID;
+					pp->attack_type = NORMAL_ATTACK;
+					if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
+						printf("event data send ERROR\n");
+				}
+			}
+			pPlayer = nullptr;
+		} break;
+		case 0x31:
+		{
+			CObject *pPlayer = m_pObjectManager->FindObject(myID);
+			if (pPlayer)
+			{
+				if ((CObject::eAnimationType::Idle == pPlayer->GetNowAnimation()) | (CObject::eAnimationType::Move == pPlayer->GetNowAnimation()))
+				{
+					cout << "send 1 packet" << endl;
+
+					pPlayer->PlayAnimation(CObject::eAnimationType::Skill1);
+					player_attack  *pp = reinterpret_cast<player_attack *>(send_buffer);
+
+					pp->size = sizeof(*pp);
+					pp->type = PLAYER_ATTACK;
+					pp->id = myID;
+					pp->attack_type = PLAYER_SKILL1;
+					if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
+						printf("event data send ERROR\n");
+				}
+			}
+			pPlayer = nullptr;
+		} break;
+		case 0x32:
+		{
+			CObject *pPlayer = m_pObjectManager->FindObject(myID);
+			if (pPlayer)
+			{
+				if ((CObject::eAnimationType::Idle == pPlayer->GetNowAnimation()) | (CObject::eAnimationType::Move == pPlayer->GetNowAnimation()))
+				{
+					cout << "send 2 packet" << endl;
+
+					pPlayer->PlayAnimation(CObject::eAnimationType::Skill2);
+					player_attack  *pp = reinterpret_cast<player_attack *>(send_buffer);
+
+					pp->size = sizeof(*pp);
+					pp->type = PLAYER_ATTACK;
+					pp->id = myID;
+					pp->attack_type = PLAYER_SKILL2;
+					if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
+						printf("event data send ERROR\n");
+				}
+			}
+			pPlayer = nullptr;
+		} break;
+		case 0x33:
+		{
+			CObject *pPlayer = m_pObjectManager->FindObject(myID);
+			if (pPlayer)
+			{
+				if ((CObject::eAnimationType::Idle == pPlayer->GetNowAnimation()) | (CObject::eAnimationType::Move == pPlayer->GetNowAnimation()))
+				{
+					cout << "send 3 packet" << endl;
+
+					pPlayer->PlayAnimation(CObject::eAnimationType::Skill3);
+					player_attack  *pp = reinterpret_cast<player_attack *>(send_buffer);
+
+					pp->size = sizeof(*pp);
+					pp->type = PLAYER_ATTACK;
+					pp->id = myID;
+					pp->attack_type = PLAYER_SKILL3;
+					if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
+						printf("event data send ERROR\n");
+				}
+			}
+			pPlayer = nullptr;
+		} break;
 
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
@@ -153,6 +240,7 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 void CFirstScene::ProcessInput(float fTimeElapsed)
 {
 	CObject *pPlayer = m_pObjectManager->FindObject(myID);
+
 	if (pPlayer)
 	{
 		if (GetKeyboardState(m_pKeyBuffer))
@@ -160,23 +248,26 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 			m_dwDirectionPrev = m_dwDirectionNow;
 			m_dwDirectionNow = 0;
 
-			if (m_pKeyBuffer[VK_SPACE] & 0xF0)	// attack
-			{
-				pPlayer->PlayAnimation(CObject::eAnimationType::Attack);
-			}
-			else if (m_pKeyBuffer[0x31] & 0xF0)	// skill1
-			{
-				pPlayer->PlayAnimation(CObject::eAnimationType::Skill1);
-			}
-			else if (m_pKeyBuffer[0x32] & 0xF0)	// skill2
-			{
-				pPlayer->PlayAnimation(CObject::eAnimationType::Skill2);
-			}
-			else if (m_pKeyBuffer[0x33] & 0xF0)	// skill3
-			{
-				pPlayer->PlayAnimation(CObject::eAnimationType::Skill3);
-			}
-			else
+			//if (m_pKeyBuffer[VK_SPACE] & 0xF0)	// attack
+			//{
+			//	pPlayer->PlayAnimation(CObject::eAnimationType::Attack);
+			//}
+			//else if (m_pKeyBuffer[0x31] & 0xF0)	// skill1
+			//{
+			//	pPlayer->PlayAnimation(CObject::eAnimationType::Skill1);
+			//}
+			//else if (m_pKeyBuffer[0x32] & 0xF0)	// skill2
+			//{
+			//	pPlayer->PlayAnimation(CObject::eAnimationType::Skill2);
+			//}
+			//else if (m_pKeyBuffer[0x33] & 0xF0)	// skill3
+			//{
+			//	pPlayer->PlayAnimation(CObject::eAnimationType::Skill3);
+			//}
+			//else
+			//if ((static_cast<BYTE>(CObject::eAnimationType::Idle) == pPlayer->GetNowAnimation())
+			//	| (static_cast<BYTE>(CObject::eAnimationType::Move) == pPlayer->GetNowAnimation()))
+			if ((CObject::eAnimationType::Idle == pPlayer->GetNowAnimation()) | (CObject::eAnimationType::Move == pPlayer->GetNowAnimation()))
 			{
 				// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
 				D3DXVECTOR2 inputAngle(0, 0);
