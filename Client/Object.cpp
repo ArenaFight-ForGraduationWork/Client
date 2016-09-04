@@ -235,9 +235,9 @@ void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
 }
 void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 {
-	m_pd3dxvDirection->x = fPitch;
-	m_pd3dxvDirection->y = fYaw;
-	m_pd3dxvDirection->z = fRoll;
+	m_pd3dxvDirection->x = 0;
+	m_pd3dxvDirection->y = 0;
+	m_pd3dxvDirection->z = 0;
 
 	//   1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
 	// v 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
@@ -250,9 +250,9 @@ void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 }
 void CObject::SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec)
 {
-	m_pd3dxvDirection->x = d3dxVec->x;
-	m_pd3dxvDirection->y = d3dxVec->y;
-	m_pd3dxvDirection->z = d3dxVec->z;
+	m_pd3dxvDirection->x = 0;
+	m_pd3dxvDirection->y = 0;
+	m_pd3dxvDirection->z = 0;
 
 	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
 	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
