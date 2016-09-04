@@ -54,12 +54,10 @@
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="CommonState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -119,15 +117,13 @@
     <ClInclude Include="Server.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ConstantBuffers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="CommonState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="UserInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameClient.ico">

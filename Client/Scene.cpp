@@ -19,7 +19,7 @@ CScene::CScene()
 
 	m_pObjectManager = CObjectManager::GetSingleton();
 
-	m_pInterface = nullptr;
+	//m_pInterface = nullptr;
 	m_pd3dcbCamera = nullptr;
 }
 CScene::~CScene()
@@ -36,7 +36,7 @@ void CScene::BuildObjects()
 
 	m_pLight->BuildLights();
 
-	m_pInterface = new CUserInterface();
+	//m_pInterface = new CUserInterface();
 }
 
 void CScene::ReleaseObjects()
@@ -63,11 +63,11 @@ void CScene::AnimateObjectsAndRender2D(float time)
 	D3DXMatrixIdentity(&matrix);
 	m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(&matrix);
 
-	for (unsigned int i = 0; i < m_pInterface->GetTexture()->GetNumOfTextures(); ++i)
-	{
-		m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(m_pInterface->GetTexture());
-		m_vShaders[m_vShaders.size() - 1]->AnimateObjectAndRender(static_cast<float>(m_pInterface->GetIndexCount()));
-	}
+	//for (unsigned int i = 0; i < m_pInterface->GetTexture()->GetNumOfTextures(); ++i)
+	//{
+	//	m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(m_pInterface->GetTexture());
+	//	m_vShaders[m_vShaders.size() - 1]->AnimateObjectAndRender(static_cast<float>(m_pInterface->GetIndexCount()));
+	//}
 }
 
 
@@ -328,10 +328,10 @@ void CFirstScene::BuildObjects()
 	m_pFog = new CFog();
 	m_pFog->Initialize();
 
-	// create interface object
-	m_pInterface = new CUserInterface();
-	m_pInterface->Initialize(FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-	m_pInterface->SetTexture(L"./Data/UI/health.png", 20, 20);	// 크기
+	//// create interface object
+	//m_pInterface = new CUserInterface();
+	//m_pInterface->Initialize(FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+	//m_pInterface->SetTexture(L"./Data/UI/health.png", 20, 20);	// 크기
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -352,31 +352,27 @@ void CFirstScene::AnimateObjectsAndRender3D(float time)
 
 void CFirstScene::AnimateObjectsAndRender2D(float time)
 {	
-	gpCommonState->TurnZBufferOff();
+	//gpCommonState->TurnZBufferOff();
 
+	//if(m_pObjectManager->FindObject(myID))
+	//m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint());
+	//else
+	//	m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, 0);
+	//m_pInterface->Render(FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// 위치
 
+	//// set view + projection matrix buffer
+	//D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	//gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	//VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
+	//D3DXMATRIX matrix;	D3DXMatrixIdentity(&matrix);
+	//D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxView, &matrix);
+	//D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxProjection, m_pCameraManager->GetNowCamera()->GetOrthoMatrix());
+	//gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
+	//gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
 
-	if(m_pObjectManager->FindObject(myID))
-	m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint());
-	else
-		m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, 0);
-	m_pInterface->Render(FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// 위치
+	//CScene::AnimateObjectsAndRender2D(time);
 
-	// set view + projection matrix buffer
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
-	D3DXMATRIX matrix;	D3DXMatrixIdentity(&matrix);
-	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxView, &matrix);
-	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxProjection, m_pCameraManager->GetNowCamera()->GetOrthoMatrix());
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
-	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
-
-	CScene::AnimateObjectsAndRender2D(time);
-
-
-
-	gpCommonState->TurnZBufferOn();
+	//gpCommonState->TurnZBufferOn();
 }
 
 

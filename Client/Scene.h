@@ -8,7 +8,7 @@
 #include "Fog.h"
 #include "Camera.h"
 #include "Server.h"
-#include "UserInterface.h"
+//#include "UserInterface.h"
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
@@ -40,7 +40,7 @@ protected:
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
 
-	CUserInterface *m_pInterface;
+	//CUserInterface *m_pInterface;
 	ID3D11Buffer *m_pd3dcbCamera;
 
 private:
