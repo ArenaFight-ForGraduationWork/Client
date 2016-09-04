@@ -2,6 +2,10 @@
 #include "Scene.h"
 #include "ResourceManager.h"
 
+#include <SpriteBatch.h>
+#include <DDSTextureLoader.h>
+
+
 
 
 CScene::CScene()
@@ -19,7 +23,9 @@ CScene::CScene()
 
 	m_pObjectManager = CObjectManager::GetSingleton();
 
-	m_pInterface = nullptr;
+	m_pSpriteBatch = nullptr;
+	m_pTexture = nullptr;
+
 	m_pd3dcbCamera = nullptr;
 }
 CScene::~CScene()
@@ -36,7 +42,7 @@ void CScene::BuildObjects()
 
 	m_pLight->BuildLights();
 
-	m_pInterface = new CUserInterface();
+ 	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
 }
 
 void CScene::ReleaseObjects()
@@ -52,22 +58,9 @@ void CScene::AnimateObjectsAndRender3D(float time)
 	{
 		m_vShaders[i]->AnimateObjectAndRender(time);
 	}
-	//for (auto shader : m_vShaders)
-	//{
-	//	shader->AnimateObjectAndRender(pd3dDeviceContext, time);
-	//}
 }
 void CScene::AnimateObjectsAndRender2D(float time)
 {
-	D3DXMATRIX matrix;
-	D3DXMatrixIdentity(&matrix);
-	m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(&matrix);
-
-	for (unsigned int i = 0; i < m_pInterface->GetTexture()->GetNumOfTextures(); ++i)
-	{
-		m_vShaders[m_vShaders.size() - 1]->UpdateShaderVariables(m_pInterface->GetTexture());
-		m_vShaders[m_vShaders.size() - 1]->AnimateObjectAndRender(static_cast<float>(m_pInterface->GetIndexCount()));
-	}
 }
 
 
@@ -328,10 +321,8 @@ void CFirstScene::BuildObjects()
 	m_pFog = new CFog();
 	m_pFog->Initialize();
 
-	// create interface object
-	m_pInterface = new CUserInterface();
-	m_pInterface->Initialize(FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-	m_pInterface->SetTexture(L"./Data/UI/health.png", 20, 20);	// 크기
+	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &m_pTexture);
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -352,26 +343,15 @@ void CFirstScene::AnimateObjectsAndRender3D(float time)
 
 void CFirstScene::AnimateObjectsAndRender2D(float time)
 {	
-	// turn off the z buffer ** first **
-	if(m_pObjectManager->FindObject(myID))
-	m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint());
-	else
-		m_pInterface->ChangeSize(FRAME_BUFFER_WIDTH / 20, 0);
-	m_pInterface->Render(FRAME_BUFFER_WIDTH / 20 * 18, FRAME_BUFFER_HEIGHT / 20);	// 위치
+	gpCommonState->TurnZBufferOff();
+	m_pSpriteBatch->Begin();
 
-	// set view + projection matrix buffer
-	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
-	D3DXMATRIX matrix;	D3DXMatrixIdentity(&matrix);
-	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxView, &matrix);
-	D3DXMatrixTranspose(&pcbViewProjection->m_d3dxmtxProjection, m_pCameraManager->GetNowCamera()->GetOrthoMatrix());
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
-	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
+	RECT a;
+	a.left = 0;	a.top = 0;	a.right = FRAME_BUFFER_WIDTH;	a.bottom = FRAME_BUFFER_HEIGHT - 20;
+	m_pSpriteBatch->Draw(m_pTexture, a);
 
-	CScene::AnimateObjectsAndRender2D(time);
-
-	// turn ** on ** the z buffer
+	m_pSpriteBatch->End();
+	gpCommonState->TurnZBufferOn();
 }
 
 

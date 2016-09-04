@@ -334,12 +334,14 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->bossid);
 		if (pObject)
 		{	// if boss already exists
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossz));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->bossdis, 0));
+			pObject->SetPositionAbsolute(&D3DXVECTOR3(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz)));
+			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0.0f, static_cast<float>(my_packet->bossdis), 0.0f));
 		}
 		else
 		{	// if boss doesn't exist
-			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, D3DXVECTOR3(my_packet->bossx, 0, my_packet->bossz), D3DXVECTOR3(0, my_packet->bossdis, 0), true);
+			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, 
+				D3DXVECTOR3(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz)), 
+				D3DXVECTOR3(0.0f, static_cast<float>(my_packet->bossdis), 0.0f), true);
 		}
 		pObject = nullptr;
 	}break;

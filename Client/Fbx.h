@@ -18,7 +18,7 @@ public:
 	void ReadTextFile_Weight(int CharNum, CAnimationVertex*);
 
 	int& GetSize() { return m_iSize; }
-	XMFLOAT4X4** GetResult(int i) { return m_ppResult[i]; }
+	DirectX::XMFLOAT4X4** GetResult(int i) { return m_ppResult[i]; }
 
 	int& GetAnimationMaxTime() { return m_iAnimationMaxTime; }
 	int GetAnimationIndexCount() { return m_uiAnimationNodeIndexCount; }
@@ -29,7 +29,7 @@ public:
 private:
 	int m_iSize;
 
-	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
+	DirectX::XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
 
 	int m_iAnimationMaxTime;					// 애니메이션 최대 길이
 	unsigned int m_uiAnimationNodeIndexCount;	//애니메이션 노드 갯수

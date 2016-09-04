@@ -94,7 +94,7 @@ void ServerConnect() {
 				gets_s(pp->room_name);
 				printf("입력한방이름:%s\n", pp->room_name);
 				printf("플레이할 스테이지를 입력해주세요\n");
-				scanf("%d", &pp->stage);
+				scanf("%hhd", &pp->stage);
 				printf("입력한스테이지:%d\n", pp->stage);
 				pp->size = sizeof(*pp);
 				printf("전송하는사이즈:%d\n", pp->size);
