@@ -155,11 +155,11 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 	CObject *pPlayer = m_pObjectManager->FindObject(myID);
 	if (pPlayer)
 	{
-		m_dwDirectionPrev = m_dwDirectionNow;
-		m_dwDirectionNow = 0;
-
 		if (GetKeyboardState(m_pKeyBuffer))
 		{
+			m_dwDirectionPrev = m_dwDirectionNow;
+			m_dwDirectionNow = 0;
+
 			if (m_pKeyBuffer[VK_SPACE] & 0xF0)	// attack
 			{
 				pPlayer->PlayAnimation(CObject::eAnimationType::Attack);
@@ -228,11 +228,16 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 						if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
 							printf("event data send ERROR\n");
 					}
-					else
-					{	/* if ((m_dwDirectionPrev) && (!m_dwDirectionNow)) 
-							this client's player was moving, but now doesn't move */
-						if (m_dwDirectionPrev)
+				}
+				else
+				{
+					if (m_dwDirectionPrev)
+					{	/* if ((m_dwDirectionPrev) && (!m_dwDirectionNow))
+					this client's player was moving, but now doesn't move */
+						if (!m_dwDirectionNow)
 						{
+							m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
+
 							player_position *pp = reinterpret_cast<player_position*>(send_buffer);
 
 							pp->size = sizeof(*pp);
@@ -247,10 +252,9 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 						}
 					}
 				}
-				else
-					m_pObjectManager->FindObject(myID)->PlayAnimation(CObject::eAnimationType::Idle);
 			}
 		}
+
 		// 카메라 좌우회전
 		if (m_pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);	// Q
 		if (m_pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);	// E
