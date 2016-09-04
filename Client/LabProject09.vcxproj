@@ -15,6 +15,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LabProject072</RootNamespace>
     <ProjectName>GameClient</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -43,14 +44,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Client\DirectX_SDK_June2010\Include;DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Client\DirectX_SDK_June2010\Lib_x86;..\Client\DirectX_SDK_June2010\Lib_x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>DirectX_SDK_June2010\Include;DirectXTK\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>DirectX_SDK_June2010\Lib_x86;DirectX_SDK_June2010\Lib_x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>..\Client\DirectX_SDK_June2010\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\Client\DirectX_SDK_June2010\Lib_x86;..\Client\DirectX_SDK_June2010\Lib_x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>DirectX_SDK_June2010\Include;DirectXTK\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>DirectX_SDK_June2010\Lib_x86;DirectX_SDK_June2010\Lib_x64;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
