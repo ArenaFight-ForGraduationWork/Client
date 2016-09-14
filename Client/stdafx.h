@@ -58,10 +58,10 @@ using namespace std;
 #define PS_SHADERRESOURCE_SLOT_TEXTURE	0x00
 #define PS_SAMPLER_SLOT_SAMPLER_STATE	0x00
 
-#define FRAME_BUFFER_WIDTH	800	/* 프레임 버퍼의 너비 */
-#define FRAME_BUFFER_HEIGHT	600	/* 프레임 버퍼의 높이 */
-//#define FRAME_BUFFER_WIDTH	1280	/* 프레임 버퍼의 너비 */
-//#define FRAME_BUFFER_HEIGHT	960	/* 프레임 버퍼의 높이 */
+//#define FRAME_BUFFER_WIDTH	800	/* 프레임 버퍼의 너비 */
+//#define FRAME_BUFFER_HEIGHT	600	/* 프레임 버퍼의 높이 */
+#define FRAME_BUFFER_WIDTH	1280	/* 프레임 버퍼의 너비 */
+#define FRAME_BUFFER_HEIGHT	960	/* 프레임 버퍼의 높이 */
 #define ASPECT_RATIO	(float(FRAME_BUFFER_WIDTH)/float(FRAME_BUFFER_HEIGHT))	/* 프레임 버퍼의 종횡비 */
 
 #define COLORRGB(x) (x/255.0f)

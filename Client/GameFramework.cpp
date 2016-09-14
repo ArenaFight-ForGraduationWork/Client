@@ -100,25 +100,8 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilState(&depthStencilDesc, &gpCommonState->m_pd3dDepthStencilDefault)))	return false;
 	gpCommonState->m_pd3dDeviceContext->OMSetDepthStencilState(gpCommonState->m_pd3dDepthStencilDefault, 1);
 
-	// Create second depth stencil state(unusing depth buffer)gpCommonState->
-	//D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
-	//ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
-	//depthDisabledStencilDesc.DepthEnable = false; /// <<<	only defference from other depth stencil view
-	//depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	//depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	//depthDisabledStencilDesc.StencilEnable = true;
-	//depthDisabledStencilDesc.StencilReadMask = 0xFF;
-	//depthDisabledStencilDesc.StencilWriteMask = 0xFF;
-	//depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	//depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	//depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	//depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	//depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	//depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-	//depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	//depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	//if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilState(&depthDisabledStencilDesc, &m_pd3dDepthDisabledStencilState)))	return false;
-	depthStencilDesc.DepthEnable = false;
+	// Create second depth stencil state(unusing depth buffer)
+	depthStencilDesc.DepthEnable = false;/// <<<	only defference from other depth stencil view
 	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilState(&depthStencilDesc, &gpCommonState->m_pd3dDepthStencilDisable)))	return false;
 
 	// Create the depth stencil view

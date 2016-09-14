@@ -11,11 +11,11 @@
 #define SERVER_PORT  4000
 
 
-// 클라 -> 서버 누른 키확인
-#define W		1
-#define S		2
-#define A		3
-#define D		4
+//// 클라 -> 서버 누른 키확인
+//#define W		1
+//#define S		2
+//#define A		3
+//#define D		4
 
 // 플레이어 스킬
 #define NORMAL_ATTACK	1

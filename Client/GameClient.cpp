@@ -334,11 +334,24 @@ void ProcessPacket(char *ptr) {
 	case REMOVE_PLAYER:
 	{	/* 클라이언트를 종료한 사람. 방에 재접속이 안 된다. */
 	} break;
-	// 보류
-	//case BOSS_POS:
-	//{
-	//	player_position *my_packet = reinterpret_cast<player_position *>(ptr);
-	//}break;
+	case BOSS_POS:
+	{
+		player_position *my_packet = reinterpret_cast<player_position *>(ptr);
+
+		cout << "보스 움직임" << endl;
+		cout << "x:" << my_packet->x << ", " << "y:" << my_packet->z << endl;
+		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
+		if (pObject)
+		{
+			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
+			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->direction, 0));
+			if (my_packet->isMoving)
+				pObject->PlayAnimation(CObject::eAnimationType::Move);
+			else
+				pObject->PlayAnimation(CObject::eAnimationType::Idle);
+		}
+		pObject = nullptr;
+	} break;
 
 
 
