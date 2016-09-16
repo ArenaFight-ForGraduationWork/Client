@@ -352,6 +352,19 @@ void ProcessPacket(char *ptr) {
 		}
 		pObject = nullptr;
 	} break;
+	case STATUS_CHANGE:
+	{
+		status_change *my_packet = reinterpret_cast<status_change *>(ptr);
+
+		printf("플레이어id:%d 스텟 변경\n", my_packet->id);
+		printf("현재 hp:%d\n", my_packet->hp);
+		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
+		if (pObject)
+		{
+			float hp = static_cast<float>(my_packet->hp);
+			pObject->GetComponent()->SetHealthPoint(hp);
+		}
+	} break;
 
 
 

@@ -45,6 +45,7 @@
 #define SC_PLAYER_MOV_END	19
 #define BOSS_DEAD			20
 #define LOBBY_PUT_PLAYER 21
+#define STATUS_CHANGE 22
 
 // 클라 -> 서버
 #define CREATE_ROOM      1
@@ -193,6 +194,12 @@ struct player_attack {
 	BYTE type;
 	int id;
 	BYTE attack_type;
+};
+struct status_change {
+	BYTE size;
+	BYTE type;
+	int id;
+	int hp;
 };
 #pragma pack (pop)
 #endif
