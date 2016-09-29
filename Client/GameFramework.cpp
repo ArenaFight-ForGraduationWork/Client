@@ -47,8 +47,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	// 씬 매니저를 초기화한다
 	m_pSceneManager = CSceneManager::GetSingleton();
 	m_pSceneManager->Initialize();
-	m_pSceneManager->Change(CSceneManager::eSceneType::FIRST);
-	m_pSceneManager->GetNowScene()->BuildObjects();
+	m_pSceneManager->Change(CSceneManager::eSceneType::INTRO);
 
 	return true;
 }
@@ -272,8 +271,7 @@ void CGameFramework::FrameAdvance()
 	if (m_pSceneManager)
 	{
 		m_pSceneManager->GetNowScene()->ProcessInput(m_GameTimer.GetTimeElapsed());
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender3D(m_GameTimer.GetTimeElapsed());
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender2D(m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender(m_GameTimer.GetTimeElapsed());
 	}
 
 	m_pDXGISwapChain->Present(0, 0);

@@ -59,9 +59,17 @@
 #define PLAYER_MOV_END	9
 #define PLAYER_ATTACK	10
 
-#define LOBBY 1
-#define ROOM  2
-#define FIGHT 3
+//#define LOBBY 1
+//#define ROOM  2
+//#define FIGHT 3
+enum class ePlayer_State : BYTE {
+	eSTART = 0,
+	eLOBBY = 0,
+	eROOM,
+	eFight,
+	eEND
+};
+
 
 //// 보스상태
 //#define BOSS_NORMAL	1

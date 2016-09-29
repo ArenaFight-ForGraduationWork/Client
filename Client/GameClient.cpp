@@ -230,12 +230,14 @@ void ProcessPacket(char *ptr) {
 	case CREATE_ROOM_S:
 	{	/* 방 생성 성공시 받는 패킷. 현재 상태(player_status)를 LOBBY > ROOM 으로 변경 */
 		printf("방만들기에 성공했습니다\n");
-		player_status = ROOM;
+		player_status = static_cast<BYTE>(ePlayer_State::eROOM);
+		CSceneManager::GetSingleton()->GetNowScene()->ChangeState();
 	}break;
 	case CREATE_ROOM_F:
 	{	/* 방 생성 실패시 받는 패킷. 현재 상태(player_status)를 유지(LOBBY) */
 		printf("방만들기에 실패했습니다\n");
-		player_status = LOBBY;
+		//player_status = LOBBY;
+		CSceneManager::GetSingleton()->GetNowScene()->ChangeState();
 	}break;
 	case JOIN_ROOM_S:
 	{	/* 방 접속 성공시 받는 패킷.
@@ -252,12 +254,12 @@ void ProcessPacket(char *ptr) {
 			}
 		}
 		printf("방입장에 성공했습니다\n");
-		player_status = ROOM;
+		player_status = static_cast<BYTE>(ePlayer_State::eROOM);
 	}break;
 	case JOIN_ROOM_F:
 	{	/* 방 입장 실패시 받는 패킷. 현재 상태(player_status)를 유지(LOBBY)	*/
 		printf("방입장에 실패했습니다\n");
-		player_status = LOBBY;
+		player_status = static_cast<BYTE>(ePlayer_State::eLOBBY);
 	}break;
 	case ROOM_PUT_PLAYER:
 	{	/* 내가 접속한 방에 내가 접속한 뒤에 들어온 사람 정보를 받는 패킷.
@@ -375,7 +377,8 @@ void ProcessPacket(char *ptr) {
 		game_start_s *my_packet = reinterpret_cast<game_start_s *>(ptr);
 
 		printf("게임을 시작합니다\n");
-		player_status = FIGHT;
+		player_status = static_cast<BYTE>(ePlayer_State::eFight);
+		CSceneManager::GetSingleton()->Change(CSceneManager::eSceneType::FIRST);
 
 		pObjectManager->Insert((UINT)myID, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
 
@@ -428,7 +431,7 @@ void ProcessPacket(char *ptr) {
 			}
 		}
 		printf("게임을 끝납니다\n");
-		player_status = ROOM;
+		player_status = static_cast<BYTE>(ePlayer_State::eROOM);
 	}break;
 
 
