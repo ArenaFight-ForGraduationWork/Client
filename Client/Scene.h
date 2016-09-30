@@ -10,6 +10,7 @@
 #include "Server.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
+#include "ParticleSystem.h"
 
 #define MODE_MOUSE		0x01
 #define MODE_KEYBOARD	0x02
@@ -123,6 +124,11 @@ private:
 	DWORD m_dwDirectionNow;
 
 	CFog *m_pFog;
+
+	ID3D11ShaderResourceView* mFlareTexSRV;
+	ID3D11ShaderResourceView* mRandomTexSRV;
+
+	ParticleSystem mFire;
 };
 
 

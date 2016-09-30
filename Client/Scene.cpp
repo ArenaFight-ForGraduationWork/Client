@@ -6,6 +6,9 @@
 #include <DDSTextureLoader.h>
 #include <SpriteFont.h>
 
+#include "Effects.h"
+#include "RenderStates.h"
+
 
 
 
@@ -105,47 +108,6 @@ void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wPar
 	{
 		switch (wParam)
 		{
-		//case VK_RETURN:
-		//{
-		//	if (1==m_bButton)
-		//	{	// create room > insert room-name
-		//		if (m_pTempString->length() > 0)
-		//		{	// 입력이 뭔가 들어와있긴 함
-		//			m_vStrings.push_back(*m_pTempString);
-		//			m_pTempString = new string();
-		//			m_pTempString->clear();
-
-		//			m_bButton = 2;
-		//		}
-		//	}
-		//	else if (2==m_bButton)
-		//	{	// create room > insert stage-number
-		//		if (m_pTempString->length() > 0)
-		//		{
-		//			m_vStrings.push_back(*m_pTempString);
-		//			m_pTempString = new string();
-		//			m_pTempString->clear();
-
-		//			create_room* pp = reinterpret_cast<create_room*>(send_buffer);
-		//			pp->type = CREATE_ROOM;
-		//			pp->id = myID;
-		//			//gets_s(pp->room_name);
-		//			//gets_s(pp->room_name);
-		//			//printf("입력한방이름:%s\n", pp->room_name);
-		//			strcpy_s(pp->room_name, sizeof(pp->room_name), m_vStrings[0].c_str());
-		//			//printf("플레이할 스테이지를 입력해주세요\n");
-		//			//scanf("%hhd", &pp->stage);
-		//			//printf("입력한스테이지:%d\n", pp->stage);
-		//			pp->stage = static_cast<BYTE>(atoi(m_vStrings[1].c_str()));
-		//			pp->size = sizeof(*pp);
-		//			printf("전송하는사이즈:%d\n", pp->size);
-		//			if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
-		//				printf("send ERROR\n");
-
-		//			Sleep(100);
-		//		}
-		//	}
-		//}break;
 		// case0x30~case0x39: 0~9, case0x41~case0x5A: A~Z
 		case 0x30:case 0x31:case 0x32:case 0x33:case 0x34:case 0x35:case 0x36:case 0x37:case 0x38:case 0x39:
 		{
@@ -716,7 +678,8 @@ void CFirstScene::BuildObjects()
 {
 	CScene::BuildObjects();
 
-	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
+	ID3D11Device *temp = gpCommonState->m_pd3dDevice;
+	//gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
 
 	m_pCameraManager = CCameraManager::GetSingleton();
 	if (m_pObjectManager->FindObject(myID))
@@ -768,8 +731,33 @@ void CFirstScene::BuildObjects()
 	m_pFog = new CFog();
 	m_pFog->Initialize();
 
+
+
 	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &m_pTexture);
+	m_vTextures.clear();
+	ID3D11ShaderResourceView *pTexture;
+
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	Effects::InitAll(gpCommonState->m_pd3dDevice);
+	InputLayouts::InitAll(gpCommonState->m_pd3dDevice);
+	RenderStates::InitAll(gpCommonState->m_pd3dDevice);
+
+	mRandomTexSRV = d3dHelper::CreateRandomTexture1DSRV(gpCommonState->m_pd3dDevice);
+
+	std::vector<std::wstring> flares;
+	//flares.push_back(L"./Data/Textures/flare0.dds");
+	flares.push_back(L"Data\\Textures\\flare0.dds");
+	mFlareTexSRV = d3dHelper::CreateTexture2DArraySRV(gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext, flares);
+
+	mFire.Init(gpCommonState->m_pd3dDevice, Effects::FireFX, mFlareTexSRV, mRandomTexSRV, 500);
+	mFire.SetEmitPos(XMFLOAT3(0.0f, 1.0f, 120.0f));
 }
 
 void CFirstScene::AnimateObjectsAndRender(float time)
@@ -780,13 +768,32 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 
 	CScene::AnimateObjectsAndRender(time);
 
+	//mFire.Update(time, gpCommonState->m_pTimer->GetNowTime());
+	//// Draw particle systems last so it is blended with scene.
+	//XMFLOAT3 eyePos;
+	//eyePos.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
+	//eyePos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
+	//eyePos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
+	//mFire.SetEyePos(eyePos);
+	//D3DXMATRIX d3dViewProj = *(m_pCameraManager->GetNowCamera()->GetViewMatrix()) * *(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+	//D3DXMatrixTranspose(&d3dViewProj, &d3dViewProj);
+	//XMMATRIX xmViewProj = static_cast<XMMATRIX>(d3dViewProj);
+	//mFire.Draw(gpCommonState->m_pd3dDeviceContext, &xmViewProj);
+
+	//float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	//gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
+
 	// 2D
 	gpCommonState->TurnZBufferOff();
 	m_pSpriteBatch->Begin();
 
 	RECT a;
 	a.left = 0;	a.top = 0;	a.right = FRAME_BUFFER_WIDTH;	a.bottom = FRAME_BUFFER_HEIGHT - 20;
-	m_pSpriteBatch->Draw(m_pTexture, a);
+	m_pSpriteBatch->Draw(m_vTextures[0], a);
+
+	a.left = FRAME_BUFFER_WIDTH / 8; a.top = FRAME_BUFFER_HEIGHT / 16 * 14;
+	a.right = a.left + (m_pObjectManager->FindObject(myID)->GetComponent()->GetHealthPoint() * 4); a.bottom = FRAME_BUFFER_HEIGHT / 16 * 15;
+	m_pSpriteBatch->Draw(m_vTextures[1], a);
 
 	m_pSpriteBatch->End();
 	gpCommonState->TurnZBufferOn();

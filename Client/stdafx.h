@@ -14,7 +14,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-//#include <d3d11.h>	// d3d11.h does not include XNAMATH, so I changed d3d11.h to d3d11_1.h
+//#include <d3d11.h>	// d3d11.h does not include XNAMATH, so I replaced d3d11.h with d3d11_1.h
 #include <d3d11_1.h>
 #include <d3dx11.h>
 
@@ -33,6 +33,7 @@
 */
 //#include <xnamath.h>
 #include <DirectXMath.h>
+#include <DirectXPackedVector.h>
 #include <vector>
 #include <map>
 #include <string>
