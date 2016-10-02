@@ -11,8 +11,6 @@ CCommonState::CCommonState()
 
 	m_pd3dDepthStencilDefault = nullptr;
 	m_pd3dDepthStencilDisable = nullptr;
-
-	m_pTimer = nullptr;
 }
 CCommonState::~CCommonState()
 {

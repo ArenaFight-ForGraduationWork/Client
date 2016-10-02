@@ -2,7 +2,6 @@
 #define COMMONSTATE_H_
 
 #include "stdafx.h"
-#include "Timer.h"
 
 
 
@@ -27,8 +26,6 @@ public:
 
 	ID3D11DepthStencilState* m_pd3dDepthStencilDefault;
 	ID3D11DepthStencilState* m_pd3dDepthStencilDisable;
-
-	CGameTimer *m_pTimer;
 
 	// turn off z buffer after rendering 3d screen, render 2d screen and turn on z buffer finally
 	void TurnZBufferOn();
