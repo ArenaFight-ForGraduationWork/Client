@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Object.h"
 
+#include <DDSTextureLoader.h>
 
 
 CMaterial::CMaterial()
@@ -81,7 +82,8 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 	d3dSamplerDesc.MaxLOD = 0;
 	gpCommonState->m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
 
-	D3DX11CreateShaderResourceViewFromFile(gpCommonState->m_pd3dDevice, textureAddress, NULL, NULL, &pd3dsrvTexture, NULL);
+	ID3D11Resource *pTexResource = nullptr;
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, textureAddress, &pTexResource, &pd3dsrvTexture);
 
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
 	if (m_ppd3dSamplerStates[nIndex]) m_ppd3dSamplerStates[nIndex]->Release();
