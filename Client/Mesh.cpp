@@ -84,54 +84,56 @@ CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(float fWidth, float f
 
 	CTexturedNormalVertex pVertices[36];
 	int i = 0;
+	//XMLoadFloat3(&XMFLOAT3
+	//XMLoadFloat2(&XMFLOAT2
 	//직육면체의 한 면에 텍스쳐 전체가 맵핑되도록 텍스쳐 좌표를 설정한다.
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(-fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(-fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
 
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, +fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, +fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedNormalVertex(D3DXVECTOR3(+fx, -fy, -fz), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, +fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 0.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, +fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(1.0f, 1.0f)));
+	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 1.0f)));
 
 	//각 정점의 법선벡터를 계산한다.
 	CalculateVertexNormal((BYTE *)pVertices, NULL);
@@ -204,7 +206,7 @@ void CCubeMeshIlluminatedTextured::CalculateVertexNormal(BYTE *pVertices, WORD *
 
 void CCubeMeshIlluminatedTextured::SetTriAngleListVertexNormal(BYTE *pVertices)
 {	// 인덱스 버퍼를 사용하지 않는 삼각형 리스트에 대하여 정점의 법선 벡터를 계산
-	D3DXVECTOR3 d3dxvNormal;
+	XMVECTOR d3dxvNormal;
 	CNormalVertex *pVertex = NULL;
 	/*삼각형(프리미티브)의 개수를 구하고 각 삼각형의 법선 벡터를 계산하고 삼각형을 구성하는 각 정점의 법선 벡터로 지정한다.*/
 	int nPrimitives = m_nVertices / 3;
@@ -222,13 +224,13 @@ void CCubeMeshIlluminatedTextured::SetTriAngleListVertexNormal(BYTE *pVertices)
 
 void CCubeMeshIlluminatedTextured::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
 {
-	D3DXVECTOR3 d3dxvSumOfNormal(0.0f, 0.0f, 0.0f);
+	XMVECTOR d3dxvSumOfNormal = DirectX::XMVectorZero();
 	CNormalVertex *pVertex = NULL;
 	USHORT nIndex0, nIndex1, nIndex2;
 
 	for (UINT j = 0; j < m_nVertices; j++)
 	{
-		d3dxvSumOfNormal = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		d3dxvSumOfNormal = DirectX::XMVectorZero();
 		for (int i = 0; i < nPrimitives; i++)
 		{
 			nIndex0 = (bStrip) ? (((i % 2) == 0) ? (i*nOffset + 0) : (i*nOffset + 1)) : (i*nOffset + 0);
@@ -236,25 +238,29 @@ void CCubeMeshIlluminatedTextured::SetAverageVertexNormal(BYTE *pVertices, WORD 
 			nIndex1 = (bStrip) ? (((i % 2) == 0) ? (i*nOffset + 1) : (i*nOffset + 0)) : (i*nOffset + 1);
 			if (pIndices) nIndex1 = pIndices[nIndex1];
 			nIndex2 = (pIndices) ? pIndices[i*nOffset + 2] : (i*nOffset + 2);
-			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j)) d3dxvSumOfNormal += CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2);
+			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j))
+			{
+				d3dxvSumOfNormal = DirectX::XMVectorAdd(d3dxvSumOfNormal, CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2));
+			}
 		}
-		D3DXVec3Normalize(&d3dxvSumOfNormal, &d3dxvSumOfNormal);
+		DirectX::XMVector3Normalize(d3dxvSumOfNormal);
 		pVertex = (CNormalVertex *)(pVertices + (j * m_nStride));
 		pVertex->SetNormal(d3dxvSumOfNormal);
 	}
 }
 
-D3DXVECTOR3 CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
+XMVECTOR CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
 {	// 삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산
-	D3DXVECTOR3 d3dxvNormal(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 d3dxvP0 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex0)));
-	D3DXVECTOR3 d3dxvP1 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex1)));
-	D3DXVECTOR3 d3dxvP2 = *((D3DXVECTOR3 *)(pVertices + (m_nStride * nIndex2)));
-	D3DXVECTOR3 d3dxvEdge1 = d3dxvP1 - d3dxvP0;
-	D3DXVECTOR3 d3dxvEdge2 = d3dxvP2 - d3dxvP0;
-	D3DXVec3Cross(&d3dxvNormal, &d3dxvEdge1, &d3dxvEdge2);
-	D3DXVec3Normalize(&d3dxvNormal, &d3dxvNormal);
-	return(d3dxvNormal);
+	XMVECTOR d3dxvNormal = DirectX::XMVectorZero();
+	XMVECTOR d3dxvP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
+	XMVECTOR d3dxvP1 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex1)));
+	XMVECTOR d3dxvP2 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex2)));
+	XMVECTOR d3dxvEdge1 = DirectX::XMVectorSubtract(d3dxvP1, d3dxvP0);
+	XMVECTOR d3dxvEdge2 = DirectX::XMVectorSubtract(d3dxvP2, d3dxvP0);
+	d3dxvNormal = DirectX::XMVector3Cross(d3dxvEdge1, d3dxvEdge2);
+	DirectX::XMVector3Normalize(d3dxvNormal);
+
+	return d3dxvNormal;
 }
 
 

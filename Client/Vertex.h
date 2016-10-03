@@ -1,124 +1,117 @@
 #ifndef VERTEX_H_
 #define VERTEX_H_
 
-
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+using namespace DirectX;
+using namespace DirectX::PackedVector;
 
 
 class CVertex
 {
 public:
-	CVertex() { m_d3dxvPosition = D3DXVECTOR3(0, 0, 0); }
-	CVertex(D3DXVECTOR3 d3dxvPosition) { m_d3dxvPosition = d3dxvPosition; }
-	~CVertex() { }
-	D3DXVECTOR3 GetPosition()
-	{
-		return m_d3dxvPosition;
-	}
+	CVertex();
+	CVertex(CXMVECTOR position);
+	CVertex(CVertex& ref) {}
+	~CVertex() {}
+
+	CXMVECTOR GetPosition();
 
 private:
-	D3DXVECTOR3 m_d3dxvPosition;
+	XMFLOAT3 m_d3dxvPosition;
 };
 
 class CDiffusedVertex
 {
 public:
 	CDiffusedVertex();
-	CDiffusedVertex(float x, float y, float z, D3DXCOLOR d3dxcDiffuse);
-	CDiffusedVertex(D3DXVECTOR3 d3dxvPosition, D3DXCOLOR d3dxcDiffuse);
-	~CDiffusedVertex();
+	CDiffusedVertex(CXMVECTOR position, CXMVECTOR color);
+	CDiffusedVertex(CDiffusedVertex& ref) {}
+	~CDiffusedVertex() {}
 
 private:
-	D3DXVECTOR3 m_d3dxvPosition;
-	D3DXCOLOR m_d3dxcDiffuse;
+	XMFLOAT3 m_d3dxvPosition;
+	XMCOLOR m_d3dxcDiffuse;
 };
 
 class CNormalVertex
 {
 public:
-	CNormalVertex(float x, float y, float z, float nx, float ny, float nz) { m_d3dxvPosition = D3DXVECTOR3(x, y, z); m_d3dxvNormal = D3DXVECTOR3(nx, ny, nz); }
-	CNormalVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal) { m_d3dxvPosition = d3dxvPosition; m_d3dxvNormal = d3dxvNormal; }
-	CNormalVertex() { m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f); m_d3dxvNormal = D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
-	~CNormalVertex() { }
+	CNormalVertex();
+	CNormalVertex(CXMVECTOR position, CXMVECTOR normal);
+	CNormalVertex(CNormalVertex& ref) {}
+	~CNormalVertex() {}
 
-	void SetNormal(D3DXVECTOR3 d3dxvNormal) { m_d3dxvNormal = d3dxvNormal; }
+	void SetNormal(CXMVECTOR normal);
 
 private:
-	D3DXVECTOR3 m_d3dxvPosition;
-	D3DXVECTOR3 m_d3dxvNormal;
+	XMFLOAT3 m_d3dxvPosition;
+	XMFLOAT3 m_d3dxvNormal;
 };
 
 class CTexturedVertex
 {
 public:
-	CTexturedVertex() { m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f); m_d3dxvTexCoord = D3DXVECTOR2(0.0f, 0.0f); }
-	CTexturedVertex(float x, float y, float z, float u, float v) { m_d3dxvPosition = D3DXVECTOR3(x, y, z); m_d3dxvTexCoord = D3DXVECTOR2(u, v); }
-	CTexturedVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR2 d3dxvTexture) { m_d3dxvPosition = d3dxvPosition; m_d3dxvTexCoord = d3dxvTexture; }
-	~CTexturedVertex() { }
+	CTexturedVertex();
+	CTexturedVertex(CXMVECTOR position, CXMVECTOR uv);
+	CTexturedVertex(CTexturedVertex& ref) {}
+	~CTexturedVertex() {}
 
-	void SetPosition(float x, float y, float z) { m_d3dxvPosition.x = x; m_d3dxvPosition.y = y; m_d3dxvPosition.z = z; }
-	void SetTexCoord(float u, float v) { m_d3dxvTexCoord.x = u; m_d3dxvTexCoord.y = v; }
+	void SetPosition(float x, float y, float z);
+	void SetTexCoord(float u, float v);
 
 private:
-	D3DXVECTOR3 m_d3dxvPosition;
-	D3DXVECTOR2 m_d3dxvTexCoord;
+	XMFLOAT3 m_d3dxvPosition;
+	XMFLOAT2 m_d3dxvTexCoord;
 };
 
 class CTexturedNormalVertex
 {
-private:
-	D3DXVECTOR3 m_d3dxvPosition;
-	D3DXVECTOR3 m_d3dxvNormal;
-	D3DXVECTOR2 m_d3dxvTexCoord;
-
 public:
-	CTexturedNormalVertex(float x, float y, float z, float nx, float ny, float nz, float u, float v) { m_d3dxvPosition = D3DXVECTOR3(x, y, z); m_d3dxvNormal = D3DXVECTOR3(nx, ny, nz); m_d3dxvTexCoord = D3DXVECTOR2(u, v); }
-	CTexturedNormalVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal, D3DXVECTOR2 d3dxvTexCoord) { m_d3dxvPosition = d3dxvPosition; m_d3dxvNormal = d3dxvNormal; m_d3dxvTexCoord = d3dxvTexCoord; }
-	CTexturedNormalVertex() { m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f); m_d3dxvNormal = D3DXVECTOR3(0.0f, 0.0f, 0.0f); m_d3dxvTexCoord = D3DXVECTOR2(0.0f, 0.0f); }
-	~CTexturedNormalVertex() { }
+	CTexturedNormalVertex();
+	CTexturedNormalVertex(CXMVECTOR position, CXMVECTOR normal, CXMVECTOR uv);
+	CTexturedNormalVertex(CTexturedNormalVertex& ref) {}
+	~CTexturedNormalVertex() {}
 
-	D3DXVECTOR3 GetPosition(){ return m_d3dxvPosition; }
-	D3DXVECTOR3 GetNormal()  { return m_d3dxvNormal; }
-	D3DXVECTOR2 GetUV()	{ return m_d3dxvTexCoord; }
+	CXMVECTOR GetPosition();
+	CXMVECTOR GetNormal();
+	CXMVECTOR GetUV();
 
-	void SetPosition(D3DXVECTOR3 d3dxvPosition) { m_d3dxvPosition = d3dxvPosition; }
-	void SetNormal(D3DXVECTOR3 d3dxvNormal) { m_d3dxvNormal = d3dxvNormal; }
-	void SetUV(D3DXVECTOR2 d3dxvTexCoord) { m_d3dxvTexCoord = d3dxvTexCoord; }
+	void SetPosition(float x, float y, float z);
+	void SetNormal(float x, float y, float z);
+	void SetUV(float u, float v);
+
+private:
+	XMFLOAT3 m_d3dxvPosition;
+	XMFLOAT3 m_d3dxvNormal;
+	XMFLOAT2 m_d3dxvTexCoord;
 };
 
 class CAnimationVertex
 {
 public:
-	D3DXVECTOR3 m_d3dxvPosition;
-	D3DXVECTOR3 m_d3dxvNormal;
-	D3DXVECTOR2 m_d3dxvTexCoord;
-
+	XMFLOAT3 m_d3dxvPosition;
+	XMFLOAT3 m_d3dxvNormal;
+	XMFLOAT2 m_d3dxvTexCoord;
 	int BoneIndexArr[8];
 	float BoneWeightArr[8];
 
-	CAnimationVertex()
-	{
-		m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_d3dxvNormal = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		for (int i = 0; i < 8; ++i)
-		{
-			BoneIndexArr[i] = 0;
-			BoneWeightArr[i] = -1.0f;
-		}
-	}
+	CAnimationVertex();
+	CAnimationVertex(CAnimationVertex& ref) {}
 
-	CAnimationVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal)
-	{
-		m_d3dxvPosition = d3dxvPosition;
-		m_d3dxvNormal = d3dxvNormal;
-	}
-
-	CAnimationVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal, D3DXVECTOR2 d3dxvUV)
-	{
-		m_d3dxvPosition = d3dxvPosition;
-		m_d3dxvNormal = d3dxvNormal;
-		m_d3dxvTexCoord = d3dxvUV;
-	}
+	//CAnimationVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal)
+	//{
+	//	m_d3dxvPosition = d3dxvPosition;
+	//	m_d3dxvNormal = d3dxvNormal;
+	//}
+	//CAnimationVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal, D3DXVECTOR2 d3dxvUV)
+	//{
+	//	m_d3dxvPosition = d3dxvPosition;
+	//	m_d3dxvNormal = d3dxvNormal;
+	//	m_d3dxvTexCoord = d3dxvUV;
+	//}
 	~CAnimationVertex(){}
+
 	void AddBone(int index, float Weight);
 };
 

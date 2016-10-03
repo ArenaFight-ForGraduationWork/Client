@@ -40,13 +40,13 @@ void CFbx::ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v)
 	{
 		//정점데이터 얻어오기
 		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
-		v[i].SetPosition(D3DXVECTOR3(outTemp.x, outTemp.z, -outTemp.y));
+		v[i].SetPosition(outTemp.x, outTemp.z, -outTemp.y);
 
 		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
-		v[i].SetNormal(D3DXVECTOR3(outTemp.x, outTemp.z, -outTemp.y));
+		v[i].SetNormal(outTemp.x, outTemp.z, -outTemp.y);
 
 		fscanf_s(fp, "%f %f\n", &outTemp.x, &outTemp.y);
-		v[i].SetUV(D3DXVECTOR2(outTemp.x, outTemp.y));
+		v[i].SetUV(outTemp.x, outTemp.y);
 	}
 
 	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));

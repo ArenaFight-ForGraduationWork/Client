@@ -25,14 +25,8 @@
 #include <D3D9Types.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
-/*
-	DirectX Tool Kit uses DirectXMath.h header.
-	And If you use xnamath.h and DirectXMath.h at once, They will collide and you can see lots of errors... ;).	So, Remove xnamath.h.
-	DirectXMath.h includes XNAMATH in the namespace DirectX. You can use like this( DirectX::XMFLOAT4X4 ).
-	Or type using namespace DirectX; (You must write this in .cpp file, NOT a .h file.)
-*/
-//#include <xnamath.h>
 #include <DirectXMath.h>
+#include <DirectXPackedVector.h>
 #include <vector>
 #include <map>
 #include <string>
