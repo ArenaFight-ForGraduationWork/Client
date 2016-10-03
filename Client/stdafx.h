@@ -28,7 +28,7 @@
 /*
 	DirectX Tool Kit uses DirectXMath.h header.
 	And If you use xnamath.h and DirectXMath.h at once, They will collide and you can see lots of errors... ;).	So, Remove xnamath.h.
-	d3d11_1.h includes XNAMATH in the namespace DirectX. You can use like this( DirectX::XMFLOAT4X4 ).
+	DirectXMath.h includes XNAMATH in the namespace DirectX. You can use like this( DirectX::XMFLOAT4X4 ).
 	Or type using namespace DirectX; (You must write this in .cpp file, NOT a .h file.)
 */
 //#include <xnamath.h>
