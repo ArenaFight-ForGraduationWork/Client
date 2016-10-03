@@ -265,7 +265,7 @@ void CObject::SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec)
 
 const D3DXVECTOR3* CObject::GetPosition()
 {
-	return  new D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
+	return new D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
 }
 const D3DXVECTOR3* CObject::GetDirection()
 {

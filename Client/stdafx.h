@@ -18,7 +18,6 @@
 #include <d3dx11.h>
 
 #include <Mmsystem.h>
-#include <math.h>
 #include <d3dcompiler.h>  	//쉐이더 컴파일 함수를 사용하기 위한 헤더 파일
 #include <D3DX10Math.h>		//Direct3D 수학 함수를 사용하기 위한 헤더 파일
 #include <D3D9Types.h>
@@ -30,7 +29,6 @@
 #include <map>
 #include <string>
 #include <iostream>
-#include <stdio.h>
 #include <assert.h>
 
 #include <thread>

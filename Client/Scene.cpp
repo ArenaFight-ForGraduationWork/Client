@@ -384,7 +384,8 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 		m_pSpriteBatch->Draw(m_vTextures[1], rButton1pos);
 		m_pSpriteBatch->Draw(m_vTextures[2], rButton2pos);
 
-		m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Create Room", DirectX::XMFLOAT2(rButton1pos.left, rButton1pos.top));
+		m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Create Room",
+			DirectX::XMFLOAT2(static_cast<float>(rButton1pos.left), static_cast<float>(rButton1pos.top)));
 
 		switch (m_bButton)
 		{
@@ -393,7 +394,8 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name", DirectX::XMFLOAT2(rInputWindowPos.left + 10, rInputWindowPos.top + 10));
+			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
+				DirectX::XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
 			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 
@@ -403,7 +405,8 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Stage Number (1 ~ 3)", DirectX::XMFLOAT2(rInputWindowPos.left + 10, rInputWindowPos.top + 10));
+			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Stage Number (1 ~ 3)",
+				DirectX::XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
 			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
@@ -412,7 +415,8 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name", DirectX::XMFLOAT2(rInputWindowPos.left + 10, rInputWindowPos.top + 10));
+			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
+				DirectX::XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
 			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
