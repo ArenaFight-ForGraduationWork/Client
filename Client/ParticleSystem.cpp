@@ -78,8 +78,6 @@ void ParticleSystem::Update(float dt, float gameTime)
 
 void ParticleSystem::Draw(ID3D11DeviceContext* dc, CXMMATRIX cameraViewProjection)
 {
-	//XMMATRIX VP = cam.ViewProj();
-
 	//
 	// Set constants.
 	//

@@ -50,9 +50,6 @@ private:
 	ID3D11Texture2D *m_pd3dDepthStencilBuffer;
 	ID3D11DepthStencilView *m_pd3dDepthStencilView;
 
-	// 게임 프레임워크에서 사용할 타이머
-	CGameTimer m_GameTimer;
-
 	// 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열
 	_TCHAR m_pszBuffer[50];
 

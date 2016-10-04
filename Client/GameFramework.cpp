@@ -32,7 +32,6 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_hWnd = hMainWnd;
 
 	gpCommonState = CCommonState::GetSingleton();
-	gpCommonState->m_pTimer = &m_GameTimer;
 
 	// Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다
 	if (!CreateDirect3DDisplay()) return false;
@@ -226,11 +225,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
 	case WM_MOUSEWHEEL:
-		m_pSceneManager->GetNowScene()->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam, m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam, gpCommonState->m_pTimer->GetTimeElapsed());
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		m_pSceneManager->GetNowScene()->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam, m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam, gpCommonState->m_pTimer->GetTimeElapsed());
 		break;
 	}
 	return(0);
@@ -260,24 +259,24 @@ void CGameFramework::ReleaseObjects()
 
 void CGameFramework::FrameAdvance()
 {
-	m_GameTimer.Tick(60.0f);
+	gpCommonState->m_pTimer->Tick(60.0f);
 
 	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
 	if (m_pd3dRenderTargetView) gpCommonState->m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-	if (m_pd3dDepthStencilView) gpCommonState->m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	if (m_pd3dDepthStencilView) gpCommonState->m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	if (m_pCameraManager)
 		m_pCameraManager->GetNowCamera()->UpdateShaderVariables();
 
 	if (m_pSceneManager)
 	{
-		m_pSceneManager->GetNowScene()->ProcessInput(m_GameTimer.GetTimeElapsed());
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender(m_GameTimer.GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->ProcessInput(gpCommonState->m_pTimer->GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender(gpCommonState->m_pTimer->GetTimeElapsed());
 	}
 
 	m_pDXGISwapChain->Present(0, 0);
 
-	m_GameTimer.GetFrameRate(m_pszBuffer + 12, 37);
+	gpCommonState->m_pTimer->GetFrameRate(m_pszBuffer + 12, 37);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
 
