@@ -36,6 +36,12 @@
 
 #include "CommonState.h"
 
+//#include "Common\d3dUtil.h"
+//#include "Common\d3dx11effect.h"
+//#include "Common\dxerr.h"
+//#include "Common\LightHelper.h"
+//#include "Common\MathHelper.h"
+
 using namespace std;
 
 #define VS_SLOT_VIEWPROJECTION_MATRIX	0x00

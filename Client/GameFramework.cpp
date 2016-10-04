@@ -32,6 +32,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	m_hWnd = hMainWnd;
 
 	gpCommonState = CCommonState::GetSingleton();
+	gpCommonState->m_pTimer = &m_GameTimer;
 
 	// Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다
 	if (!CreateDirect3DDisplay()) return false;

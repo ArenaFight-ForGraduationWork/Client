@@ -6,6 +6,11 @@
 #include <DDSTextureLoader.h>
 #include <SpriteFont.h>
 
+#include "Effects.h"
+#include "InputLayout.h"
+#include "RenderStates.h"
+//#include "ParticleSystem.h"
+
 
 
 
@@ -451,6 +456,9 @@ CFirstScene::CFirstScene()
 	m_dwDirectionNow = 0;
 
 	m_pFog = nullptr;
+
+	mFire = nullptr;
+	mRain = nullptr;
 }
 CFirstScene::~CFirstScene()
 {
@@ -774,6 +782,27 @@ void CFirstScene::BuildObjects()
 
 	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
 	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &m_pTexture);
+
+	// Must init Effects first since InputLayouts depend on shader signatures.
+	Effects::InitAll(gpCommonState->m_pd3dDevice);
+	InputLayouts::InitAll(gpCommonState->m_pd3dDevice);
+	RenderStates::InitAll(gpCommonState->m_pd3dDevice);
+
+	mRandomTexSRV = d3dHelper::CreateRandomTexture1DSRV(gpCommonState->m_pd3dDevice);
+
+	std::vector<std::wstring> flares;
+	flares.push_back(L"Textures\\flare0.dds");
+	mFlareTexSRV = d3dHelper::CreateTexture2DArraySRV(gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext, flares);
+
+	mFire = new ParticleSystem();
+	mFire->Init(gpCommonState->m_pd3dDevice, Effects::FireFX, mFlareTexSRV, mRandomTexSRV, 500);
+	mFire->SetEmitPos(XMFLOAT3(0.0f, 1.0f, 120.0f));
+
+	//std::vector<std::wstring> raindrops;
+	//raindrops.push_back(L"Textures\\raindrop.dds");
+	//mRainTexSRV = d3dHelper::CreateTexture2DArraySRV(gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext, raindrops);
+
+	//mRain.Init(gpCommonState->m_pd3dDevice, Effects::RainFX, mRainTexSRV, mRandomTexSRV, 10000);
 }
 
 void CFirstScene::AnimateObjectsAndRender(float time)
@@ -783,6 +812,61 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 		m_pFog->Update();
 
 	CScene::AnimateObjectsAndRender(time);
+
+	if (mFire)
+	{
+		gpCommonState->m_pd3dDeviceContext->IASetInputLayout(InputLayouts::Basic32);
+		gpCommonState->m_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		gpCommonState->m_pd3dDeviceContext->RSSetState(0);
+
+		mFire->Update(time, gpCommonState->m_pTimer->GetNowTime());
+
+		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+		// Draw particle systems last so it is blended with scene.
+		XMFLOAT3 cameraPos;
+		cameraPos.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
+		cameraPos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
+		cameraPos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
+		mFire->SetEyePos(cameraPos);
+	/*	D3DXMATRIX cameraViewProjection;
+		D3DXMatrixMultiply(&cameraViewProjection, m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+		D3DXMatrixTranspose(&cameraViewProjection, &cameraViewProjection);
+		XMMATRIX VP;
+		for (short i = 0; i < 4; ++i)
+		{
+			VP.r[i] = { cameraViewProjection.m[i][0], cameraViewProjection.m[i][1], cameraViewProjection.m[i][2], cameraViewProjection.m[i][3] };
+		}*/
+		XMMATRIX VP = DirectX::XMMatrixIdentity();
+		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, VP);
+		gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
+	}
+
+	//mFire.Update(time, gpCommonState->m_pTimer->GetNowTime());
+	//mRain.Update(time, gpCommonState->m_pTimer->GetNowTime());
+
+	//float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	//// Draw particle systems last so it is blended with scene.
+	//XMFLOAT3 cameraPos;
+	//cameraPos.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
+	//cameraPos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
+	//cameraPos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
+	//mFire.SetEyePos(cameraPos);
+	//D3DXMATRIX cameraViewProjection;
+	//D3DXMatrixMultiply(&cameraViewProjection, m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+	//D3DXMatrixTranspose(&cameraViewProjection, &cameraViewProjection);
+	//XMMATRIX VP;
+	//for (short i = 0; i < 4; ++i)
+	//{
+	//	VP.r[i] = { cameraViewProjection.m[i][0], cameraViewProjection.m[i][1], cameraViewProjection.m[i][2], cameraViewProjection.m[i][3] };
+	//}
+	//mFire.Draw(gpCommonState->m_pd3dDeviceContext, VP);
+	//gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
+
+	//mRain.SetEyePos(cameraPos);
+	//mRain.SetEmitPos(cameraPos);
+	//mRain.Draw(gpCommonState->m_pd3dDeviceContext, VP);
 
 	// 2D
 	gpCommonState->TurnZBufferOff();
