@@ -60,6 +60,12 @@ public:
 
 	void Zoom(const float fZoom);
 
+	// private∑Œ ¿Ãµø
+	float m_fNearPlaneDistance;
+	float m_fFarPlaneDistance;
+	float m_fAspectRatio;
+	float m_fFOVAngle;
+
 protected:
 	D3DXVECTOR3 *m_pd3dxvPosition;
 

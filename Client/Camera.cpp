@@ -89,6 +89,11 @@ void CCamera::RegenerateViewMatrix()
 
 void CCamera::GenerateProjectionMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance, const float fAspectRatio, const float fFOVAngle)
 {
+	m_fNearPlaneDistance = fNearPlaneDistance;
+	m_fFarPlaneDistance = fFarPlaneDistance;
+	m_fAspectRatio = fAspectRatio;
+	m_fFOVAngle = static_cast<float>(D3DXToRadian(fFOVAngle));
+
 	D3DXMatrixPerspectiveFovLH(m_pd3dxmtxProjection, (float)D3DXToRadian(fFOVAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance);
 }
 

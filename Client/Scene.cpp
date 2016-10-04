@@ -829,16 +829,26 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 		cameraPos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
 		cameraPos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
 		mFire->SetEyePos(cameraPos);
-	/*	D3DXMATRIX cameraViewProjection;
-		D3DXMatrixMultiply(&cameraViewProjection, m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
-		D3DXMatrixTranspose(&cameraViewProjection, &cameraViewProjection);
-		XMMATRIX VP;
-		for (short i = 0; i < 4; ++i)
-		{
-			VP.r[i] = { cameraViewProjection.m[i][0], cameraViewProjection.m[i][1], cameraViewProjection.m[i][2], cameraViewProjection.m[i][3] };
-		}*/
-		XMMATRIX VP = DirectX::XMMatrixIdentity();
-		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, VP);
+		XMMATRIX cameraV, cameraP, cameraVP;
+		XMFLOAT3 P, L, U;
+		P.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
+		P.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
+		P.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
+		L.x = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->x;
+		L.y = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->y;
+		L.z = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->z;
+		U.x = m_pCameraManager->GetNowCamera()->GetUpVector()->x;
+		U.y = m_pCameraManager->GetNowCamera()->GetUpVector()->y;
+		U.z = m_pCameraManager->GetNowCamera()->GetUpVector()->z;
+		cameraV = XMMatrixLookAtLH(XMLoadFloat3(&P), XMLoadFloat3(&L), XMLoadFloat3(&U));
+
+		cameraP = XMMatrixPerspectiveFovLH(m_pCameraManager->GetNowCamera()->m_fFOVAngle, m_pCameraManager->GetNowCamera()->m_fAspectRatio,
+			m_pCameraManager->GetNowCamera()->m_fNearPlaneDistance, m_pCameraManager->GetNowCamera()->m_fFarPlaneDistance);
+
+		cameraVP = XMMatrixMultiply(cameraV, cameraP);
+
+		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraVP);
+
 		gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
 	}
 
