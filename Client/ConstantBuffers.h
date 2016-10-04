@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 
+using namespace DirectX;
 
 
 #define VS_SLOT_VIEWPROJECTION_MATRIX	0x00
@@ -12,8 +13,8 @@
 
 struct VS_CB_VIEWPROJECTION_MATRIX
 {
-	D3DXMATRIX m_d3dxmtxView;
-	D3DXMATRIX m_d3dxmtxProjection;
+	XMFLOAT4X4 m_d3dxmtxView;
+	XMFLOAT4X4 m_d3dxmtxProjection;
 };
 struct VS_CB_WORLD_MATRIX
 {

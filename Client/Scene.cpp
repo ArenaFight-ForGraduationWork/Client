@@ -824,30 +824,38 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 		// Draw particle systems last so it is blended with scene.
-		XMFLOAT3 cameraPos;
-		cameraPos.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
-		cameraPos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
-		cameraPos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
-		mFire->SetEyePos(cameraPos);
-		XMMATRIX cameraV, cameraP, cameraVP;
-		XMFLOAT3 P, L, U;
-		P.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
-		P.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
-		P.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
-		L.x = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->x;
-		L.y = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->y;
-		L.z = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->z;
-		U.x = m_pCameraManager->GetNowCamera()->GetUpVector()->x;
-		U.y = m_pCameraManager->GetNowCamera()->GetUpVector()->y;
-		U.z = m_pCameraManager->GetNowCamera()->GetUpVector()->z;
-		cameraV = XMMatrixLookAtLH(XMLoadFloat3(&P), XMLoadFloat3(&L), XMLoadFloat3(&U));
+		//XMFLOAT3 cameraPos;
+		//cameraPos.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
+		//cameraPos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
+		//cameraPos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
+		//mFire->SetEyePos(cameraPos);
+		//XMMATRIX cameraV, cameraP, cameraVP;
+		//XMFLOAT3 P, L, U;
+		//P.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
+		//P.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
+		//P.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
+		//L.x = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->x;
+		//L.y = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->y;
+		//L.z = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->z;
+		//U.x = m_pCameraManager->GetNowCamera()->GetUpVector()->x;
+		//U.y = m_pCameraManager->GetNowCamera()->GetUpVector()->y;
+		//U.z = m_pCameraManager->GetNowCamera()->GetUpVector()->z;
+		//cameraV = XMMatrixLookAtLH(XMLoadFloat3(&P), XMLoadFloat3(&L), XMLoadFloat3(&U));
 
-		cameraP = XMMatrixPerspectiveFovLH(m_pCameraManager->GetNowCamera()->m_fFOVAngle, m_pCameraManager->GetNowCamera()->m_fAspectRatio,
-			m_pCameraManager->GetNowCamera()->m_fNearPlaneDistance, m_pCameraManager->GetNowCamera()->m_fFarPlaneDistance);
+		//cameraP = XMMatrixPerspectiveFovLH(m_pCameraManager->GetNowCamera()->m_fFOVAngle, m_pCameraManager->GetNowCamera()->m_fAspectRatio,
+		//	m_pCameraManager->GetNowCamera()->m_fNearPlaneDistance, m_pCameraManager->GetNowCamera()->m_fFarPlaneDistance);
 
-		cameraVP = XMMatrixMultiply(cameraV, cameraP);
+		//cameraVP = XMMatrixMultiply(cameraV, cameraP);
 
 		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraVP);
+
+		XMFLOAT3 cameraPos;
+		XMStoreFloat3(&cameraPos, m_pCameraManager->GetNowCamera()->GetPosition());
+		mFire->SetEyePos(cameraPos);
+
+		//XMMATRIX cameraViewProjection;
+		//cameraViewProjection = XMMatrixMultiply(m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraViewProjection);
 
 		gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
 	}
