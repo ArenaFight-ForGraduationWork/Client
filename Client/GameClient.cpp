@@ -354,6 +354,37 @@ void ProcessPacket(char *ptr) {
 		}
 		pObject = nullptr;
 	} break;
+	case SC_BOSS_ATTACK:
+	{
+		player_attack *my_packet = reinterpret_cast<player_attack *>(ptr);
+
+		//cout << "receive attack packet : " << my_packet->id << ", " << static_cast<UINT>(my_packet->attack_type) << endl;
+
+		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
+		if (pObject)
+		{
+			switch (my_packet->attack_type)
+			{
+			case BOSS_NORMAL_ATTACK:
+				pObject->PlayAnimation(CObject::eAnimationType::Attack);
+				break;
+			case BOSS_SKILL1:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill1);
+				break;
+			case BOSS_SKILL2:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill2);
+				break;
+			case BOSS_SKILL3:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill3);
+				break;
+			}
+		}
+		pObject = nullptr;
+	} break;
+	case BOSS_DEAD:
+	{
+		cout << "º¸½º »ç¸Á" << endl;
+	}
 	case STATUS_CHANGE:
 	{
 		status_change *my_packet = reinterpret_cast<status_change *>(ptr);

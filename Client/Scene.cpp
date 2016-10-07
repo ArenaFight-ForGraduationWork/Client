@@ -348,11 +348,11 @@ void CIntroScene::BuildObjects()
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/button1.dds", nullptr, &pTexture);
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton1.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/button2.dds", nullptr, &pTexture);
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton2.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
@@ -360,11 +360,15 @@ void CIntroScene::BuildObjects()
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/button3.dds", nullptr, &pTexture);
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton3.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
 	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/background.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton4.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
@@ -389,8 +393,8 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 		m_pSpriteBatch->Draw(m_vTextures[1], rButton1pos);
 		m_pSpriteBatch->Draw(m_vTextures[2], rButton2pos);
 
-		m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Create Room",
-			DirectX::XMFLOAT2(static_cast<float>(rButton1pos.left), static_cast<float>(rButton1pos.top)));
+		//m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Create Room",
+		//	DirectX::XMFLOAT2(static_cast<float>(rButton1pos.left), static_cast<float>(rButton1pos.top)));
 
 		switch (m_bButton)
 		{
@@ -430,7 +434,7 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 	}break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
 	{
-		m_pSpriteBatch->Draw(m_vTextures[1], rButton2pos);
+		m_pSpriteBatch->Draw(m_vTextures[6], rButton2pos);
 	}break;
 	default: break;
 	}
@@ -781,9 +785,19 @@ void CFirstScene::BuildObjects()
 	m_pFog->Initialize();
 
 	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &m_pTexture);
+	m_vTextures.clear();
+	ID3D11ShaderResourceView *pTexture;
 
-	// Must init Effects first since InputLayouts depend on shader signatures.
+	// 0: frame
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 1: hp
+	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
 	Effects::InitAll(gpCommonState->m_pd3dDevice);
 	InputLayouts::InitAll(gpCommonState->m_pd3dDevice);
 	RenderStates::InitAll(gpCommonState->m_pd3dDevice);
@@ -792,17 +806,12 @@ void CFirstScene::BuildObjects()
 
 	std::vector<std::wstring> flares;
 	flares.push_back(L"Textures\\flare0.dds");
+	flares.push_back(L"./Textures/flare0.dds");
 	mFlareTexSRV = d3dHelper::CreateTexture2DArraySRV(gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext, flares);
 
 	mFire = new ParticleSystem();
 	mFire->Init(gpCommonState->m_pd3dDevice, Effects::FireFX, mFlareTexSRV, mRandomTexSRV, 500);
-	mFire->SetEmitPos(XMFLOAT3(0.0f, 1.0f, 120.0f));
-
-	//std::vector<std::wstring> raindrops;
-	//raindrops.push_back(L"Textures\\raindrop.dds");
-	//mRainTexSRV = d3dHelper::CreateTexture2DArraySRV(gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext, raindrops);
-
-	//mRain.Init(gpCommonState->m_pd3dDevice, Effects::RainFX, mRainTexSRV, mRandomTexSRV, 10000);
+	mFire->SetEmitPos(XMFLOAT3(0.0f, 100.0f, 0.0f));
 }
 
 void CFirstScene::AnimateObjectsAndRender(float time)
@@ -813,86 +822,47 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 
 	CScene::AnimateObjectsAndRender(time);
 
+	static int aa = 0;
+	if (aa > 1)
+	{
+		int b = 1 + 1;
+	}
+	else
+		aa += 1;
+
 	if (mFire)
 	{
-		gpCommonState->m_pd3dDeviceContext->IASetInputLayout(InputLayouts::Basic32);
-		gpCommonState->m_pd3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		gpCommonState->m_pd3dDeviceContext->RSSetState(0);
-
-		mFire->Update(time, gpCommonState->m_pTimer->GetNowTime());
-
 		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-		// Draw particle systems last so it is blended with scene.
-		//XMFLOAT3 cameraPos;
-		//cameraPos.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
-		//cameraPos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
-		//cameraPos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
-		//mFire->SetEyePos(cameraPos);
-		//XMMATRIX cameraV, cameraP, cameraVP;
-		//XMFLOAT3 P, L, U;
-		//P.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
-		//P.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
-		//P.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
-		//L.x = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->x;
-		//L.y = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->y;
-		//L.z = m_pCameraManager->GetNowCamera()->GetLookAtPosition()->z;
-		//U.x = m_pCameraManager->GetNowCamera()->GetUpVector()->x;
-		//U.y = m_pCameraManager->GetNowCamera()->GetUpVector()->y;
-		//U.z = m_pCameraManager->GetNowCamera()->GetUpVector()->z;
-		//cameraV = XMMatrixLookAtLH(XMLoadFloat3(&P), XMLoadFloat3(&L), XMLoadFloat3(&U));
-
-		//cameraP = XMMatrixPerspectiveFovLH(m_pCameraManager->GetNowCamera()->m_fFOVAngle, m_pCameraManager->GetNowCamera()->m_fAspectRatio,
-		//	m_pCameraManager->GetNowCamera()->m_fNearPlaneDistance, m_pCameraManager->GetNowCamera()->m_fFarPlaneDistance);
-
-		//cameraVP = XMMatrixMultiply(cameraV, cameraP);
-
-		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraVP);
+		mFire->Update(gpCommonState->m_pTimer->GetTimeElapsed(), gpCommonState->m_pTimer->GetNowTime());
 
 		XMFLOAT3 cameraPos;
 		XMStoreFloat3(&cameraPos, m_pCameraManager->GetNowCamera()->GetPosition());
+		XMMATRIX cameraViewProjection;
+		cameraViewProjection = XMMatrixMultiply(m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+
 		mFire->SetEyePos(cameraPos);
-
-		//XMMATRIX cameraViewProjection;
-		//cameraViewProjection = XMMatrixMultiply(m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
 		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraViewProjection);
-
 		gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
 	}
-
-	//mFire.Update(time, gpCommonState->m_pTimer->GetNowTime());
-	//mRain.Update(time, gpCommonState->m_pTimer->GetNowTime());
-
-	//float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-	//// Draw particle systems last so it is blended with scene.
-	//XMFLOAT3 cameraPos;
-	//cameraPos.x = m_pCameraManager->GetNowCamera()->GetPosition()->x;
-	//cameraPos.y = m_pCameraManager->GetNowCamera()->GetPosition()->y;
-	//cameraPos.z = m_pCameraManager->GetNowCamera()->GetPosition()->z;
-	//mFire.SetEyePos(cameraPos);
-	//D3DXMATRIX cameraViewProjection;
-	//D3DXMatrixMultiply(&cameraViewProjection, m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
-	//D3DXMatrixTranspose(&cameraViewProjection, &cameraViewProjection);
-	//XMMATRIX VP;
-	//for (short i = 0; i < 4; ++i)
-	//{
-	//	VP.r[i] = { cameraViewProjection.m[i][0], cameraViewProjection.m[i][1], cameraViewProjection.m[i][2], cameraViewProjection.m[i][3] };
-	//}
-	//mFire.Draw(gpCommonState->m_pd3dDeviceContext, VP);
-	//gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
-
-	//mRain.SetEyePos(cameraPos);
-	//mRain.SetEmitPos(cameraPos);
-	//mRain.Draw(gpCommonState->m_pd3dDeviceContext, VP);
 
 	// 2D
 	gpCommonState->TurnZBufferOff();
 	m_pSpriteBatch->Begin();
 
-	RECT a;
-	a.left = 0;	a.top = 0;	a.right = FRAME_BUFFER_WIDTH;	a.bottom = FRAME_BUFFER_HEIGHT - 20;
-	m_pSpriteBatch->Draw(m_pTexture, a);
+	// frame
+	m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
+
+	// hp
+	CObject *pObject = m_pObjectManager->FindObject(myID);
+	if (pObject)
+	{
+		rHpPos.right = rHpPos.left + pObject->GetComponent()->GetHealthPoint() * 3;
+		m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
+	}
+
+
+
 
 	m_pSpriteBatch->End();
 	gpCommonState->TurnZBufferOn();
