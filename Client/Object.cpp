@@ -114,7 +114,7 @@ CObject::CObject(UINT id)
 
 	m_id = id;
 
-	m_pd3dxvDirection = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_pd3dxvDirection = XMFLOAT3(0, 0, 0);
 
 	m_pd3dcbBoneMatrix = nullptr;
 	m_pcbBoneMatrix = nullptr;
@@ -217,9 +217,9 @@ void CObject::MoveForward(float& fVar)
 
 void CObject::SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll)
 {
-	m_pd3dxvDirection->x += fPitch;
-	m_pd3dxvDirection->y += fYaw;
-	m_pd3dxvDirection->z += fRoll;
+	m_pd3dxvDirection.x += fPitch;
+	m_pd3dxvDirection.y += fYaw;
+	m_pd3dxvDirection.z += fRoll;
 
 	D3DXMATRIX mtxRotate;
 	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(fYaw), (float)D3DXToRadian(fPitch), (float)D3DXToRadian(fRoll));
@@ -227,9 +227,9 @@ void CObject::SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll)
 }
 void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
 {
-	m_pd3dxvDirection->x += d3dxVec->x;
-	m_pd3dxvDirection->y += d3dxVec->y;
-	m_pd3dxvDirection->z += d3dxVec->z;
+	m_pd3dxvDirection.x += d3dxVec->x;
+	m_pd3dxvDirection.y += d3dxVec->y;
+	m_pd3dxvDirection.z += d3dxVec->z;
 
 	D3DXMATRIX mtxRotate;
 	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(d3dxVec->y), (float)D3DXToRadian(d3dxVec->x), (float)D3DXToRadian(d3dxVec->z));
@@ -237,9 +237,7 @@ void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
 }
 void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 {
-	m_pd3dxvDirection->x = 0;
-	m_pd3dxvDirection->y = 0;
-	m_pd3dxvDirection->z = 0;
+	m_pd3dxvDirection = XMFLOAT3(0, 0, 0);
 
 	//   1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
 	// v 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
@@ -252,9 +250,7 @@ void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 }
 void CObject::SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec)
 {
-	m_pd3dxvDirection->x = 0;
-	m_pd3dxvDirection->y = 0;
-	m_pd3dxvDirection->z = 0;
+	m_pd3dxvDirection = XMFLOAT3(0, 0, 0);
 
 	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
 	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
@@ -269,7 +265,7 @@ const D3DXVECTOR3* CObject::GetPosition()
 }
 const D3DXVECTOR3* CObject::GetDirection()
 {
-	return m_pd3dxvDirection;
+	return new D3DXVECTOR3(m_pd3dxvDirection.x, m_pd3dxvDirection.y, m_pd3dxvDirection.z);
 }
 
 const D3DXVECTOR3* CObject::GetRight()

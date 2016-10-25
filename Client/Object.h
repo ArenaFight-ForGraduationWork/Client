@@ -155,7 +155,7 @@ public:
 private:
 	UINT m_id;
 
-	D3DXVECTOR3 *m_pd3dxvDirection;
+	XMFLOAT3 m_pd3dxvDirection;
 
 	int m_iSourceType;
 	CMesh *m_pMesh;
@@ -181,7 +181,7 @@ private:
 class CUnitComponent
 {
 public:
-	CUnitComponent() : m_fStrikingPower(10), m_fDefensivePower(10), m_fMovingSpeed(300), m_fHp(1000) {}
+	CUnitComponent() : m_fStrikingPower(10), m_fDefensivePower(10), m_fMovingSpeed(300), m_fHp(100) {}
 	~CUnitComponent() {}
 
 	void SetStrikingPower(float& fSp) { m_fStrikingPower = fSp; }
