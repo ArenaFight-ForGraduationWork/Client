@@ -99,17 +99,6 @@ public:
 	CAnimationVertex();
 	CAnimationVertex(CAnimationVertex& ref) {}
 
-	//CAnimationVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal)
-	//{
-	//	m_d3dxvPosition = d3dxvPosition;
-	//	m_d3dxvNormal = d3dxvNormal;
-	//}
-	//CAnimationVertex(D3DXVECTOR3 d3dxvPosition, D3DXVECTOR3 d3dxvNormal, D3DXVECTOR2 d3dxvUV)
-	//{
-	//	m_d3dxvPosition = d3dxvPosition;
-	//	m_d3dxvNormal = d3dxvNormal;
-	//	m_d3dxvTexCoord = d3dxvUV;
-	//}
 	~CAnimationVertex(){}
 
 	void AddBone(int index, float Weight);

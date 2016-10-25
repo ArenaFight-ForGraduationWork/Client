@@ -6,6 +6,9 @@
 #include "Mesh.h"
 #include "ConstantBuffers.h"
 
+#include <DirectXMath.h>
+using namespace DirectX;
+
 
 /* 재질 관련 정보를 표현 */
 struct MATERIAL

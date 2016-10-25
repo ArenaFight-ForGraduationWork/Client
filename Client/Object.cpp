@@ -301,8 +301,20 @@ void CObject::SetBoundingBox()
 {
 	if (m_pMaxVer)	delete m_pMaxVer;
 	if (m_pMinVer)	delete m_pMinVer;
-	m_pMaxVer = &(m_pMesh->GetMaxVer());
-	m_pMinVer = &(m_pMesh->GetMinVer());
+
+	XMFLOAT3 tempfloat3;
+
+	XMStoreFloat3(&tempfloat3, m_pMesh->GetMaxVer());
+	m_pMaxVer = new D3DXVECTOR3();
+	m_pMaxVer->x = tempfloat3.x;
+	m_pMaxVer->y = tempfloat3.y;
+	m_pMaxVer->z = tempfloat3.z;
+
+	XMStoreFloat3(&tempfloat3, m_pMesh->GetMinVer());
+	m_pMinVer = new D3DXVECTOR3();
+	m_pMinVer->x = tempfloat3.x;
+	m_pMinVer->y = tempfloat3.y;
+	m_pMinVer->z = tempfloat3.z;
 
 	if (m_pMaxVer->x < m_pMinVer->x)
 	{
