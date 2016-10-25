@@ -92,7 +92,18 @@ public:
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
-	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
+	D3DXMATRIX* GetWorldMatrix() { 
+		//return m_pd3dxWorldMatrix;
+		D3DXMATRIX *pMatrix = new D3DXMATRIX();
+		for (unsigned int i = 0; i < 4; ++i)
+		{
+			for (unsigned int j = 0; j < 4; ++j)
+			{
+				pMatrix->m[i][j] = m_pd3dxWorldMatrix.m[i][j];
+			}
+		}
+		return pMatrix;
+	}
 
 	const UINT& GetId() { return m_id; }
 
@@ -162,7 +173,7 @@ private:
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
 
-	D3DXMATRIX *m_pd3dxWorldMatrix;
+	XMFLOAT4X4 m_pd3dxWorldMatrix;
 
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;

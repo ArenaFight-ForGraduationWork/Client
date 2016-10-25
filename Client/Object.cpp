@@ -108,8 +108,9 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 
 CObject::CObject(UINT id)
 {
-	m_pd3dxWorldMatrix = new D3DXMATRIX();
-	D3DXMatrixIdentity(m_pd3dxWorldMatrix);
+	//m_pd3dxWorldMatrix = new D3DXMATRIX();
+	//D3DXMatrixIdentity(m_pd3dxWorldMatrix);
+	XMStoreFloat4x4(&m_pd3dxWorldMatrix, XMMatrixIdentity());
 
 	m_pMesh = nullptr;
 	m_pMaterial = nullptr;
@@ -198,15 +199,15 @@ void CObject::SetPositionRelative(D3DXVECTOR3 *d3dxVec)
 }
 void CObject::SetPositionAbsolute(float& fx, float& fy, float& fz)
 {
-	m_pd3dxWorldMatrix->_41 = fx;
-	m_pd3dxWorldMatrix->_42 = fy;
-	m_pd3dxWorldMatrix->_43 = fz;
+	m_pd3dxWorldMatrix._41 = fx;
+	m_pd3dxWorldMatrix._42 = fy;
+	m_pd3dxWorldMatrix._43 = fz;
 }
 void CObject::SetPositionAbsolute(D3DXVECTOR3 *d3dxVec)
 {
-	m_pd3dxWorldMatrix->_41 = d3dxVec->x;
-	m_pd3dxWorldMatrix->_42 = d3dxVec->y;
-	m_pd3dxWorldMatrix->_43 = d3dxVec->z;
+	m_pd3dxWorldMatrix._41 = d3dxVec->x;
+	m_pd3dxWorldMatrix._42 = d3dxVec->y;
+	m_pd3dxWorldMatrix._43 = d3dxVec->z;
 }
 void CObject::MoveForward(float& fVar)
 {
@@ -226,19 +227,26 @@ void CObject::SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll)
 
 	XMMATRIX mRotate;
 	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
-	XMFLOAT4X4 f4x4Rotate;
-	XMStoreFloat4x4(&f4x4Rotate, mRotate);
 
-	D3DXMATRIX d3dxRotate;
-	for (unsigned int i = 0; i < 4; ++i)
-	{
-		for (unsigned int j = 0; j < 4; ++j)
-		{
-			d3dxRotate.m[i][j] = f4x4Rotate.m[i][j];
-		}
-	}
+	//XMFLOAT4X4 f4x4Rotate;
+	//XMStoreFloat4x4(&f4x4Rotate, mRotate);
 
-	(*m_pd3dxWorldMatrix) = d3dxRotate * (*m_pd3dxWorldMatrix);
+	//D3DXMATRIX d3dxRotate;
+	//for (unsigned int i = 0; i < 4; ++i)
+	//{
+	//	for (unsigned int j = 0; j < 4; ++j)
+	//	{
+	//		d3dxRotate.m[i][j] = f4x4Rotate.m[i][j];
+	//	}
+	//}
+	//(*m_pd3dxWorldMatrix) = d3dxRotate * (*m_pd3dxWorldMatrix);
+
+	XMMATRIX mWorld;
+	mWorld = XMLoadFloat4x4(&m_pd3dxWorldMatrix);
+
+	mWorld = XMMatrixMultiply(mRotate, mWorld);
+
+	XMStoreFloat4x4(&m_pd3dxWorldMatrix, mWorld);
 }
 void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
 {
@@ -248,19 +256,26 @@ void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
 
 	XMMATRIX mRotate;
 	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(d3dxVec->x), XMConvertToRadians(d3dxVec->y), XMConvertToRadians(d3dxVec->z));
-	XMFLOAT4X4 f4x4Rotate;
-	XMStoreFloat4x4(&f4x4Rotate, mRotate);
+	//XMFLOAT4X4 f4x4Rotate;
+	//XMStoreFloat4x4(&f4x4Rotate, mRotate);
 
-	D3DXMATRIX d3dxRotate;
-	for (unsigned int i = 0; i < 4; ++i)
-	{
-		for (unsigned int j = 0; j < 4; ++j)
-		{
-			d3dxRotate.m[i][j] = f4x4Rotate.m[i][j];
-		}
-	}
+	//D3DXMATRIX d3dxRotate;
+	//for (unsigned int i = 0; i < 4; ++i)
+	//{
+	//	for (unsigned int j = 0; j < 4; ++j)
+	//	{
+	//		d3dxRotate.m[i][j] = f4x4Rotate.m[i][j];
+	//	}
+	//}
 
-	(*m_pd3dxWorldMatrix) = d3dxRotate * (*m_pd3dxWorldMatrix);
+	//(*m_pd3dxWorldMatrix) = d3dxRotate * (*m_pd3dxWorldMatrix);
+
+	XMMATRIX mWorld;
+	mWorld = XMLoadFloat4x4(&m_pd3dxWorldMatrix);
+
+	mWorld = XMMatrixMultiply(mRotate, mWorld);
+
+	XMStoreFloat4x4(&m_pd3dxWorldMatrix, mWorld);
 }
 void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 {
@@ -268,9 +283,9 @@ void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 
 	//   1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
 	// v 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
-	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
-	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
-	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
+	m_pd3dxWorldMatrix._11 = 1;	m_pd3dxWorldMatrix._12 = 0;	m_pd3dxWorldMatrix._13 = 0;
+	m_pd3dxWorldMatrix._21 = 0;	m_pd3dxWorldMatrix._22 = 1;	m_pd3dxWorldMatrix._23 = 0;
+	m_pd3dxWorldMatrix._31 = 0;	m_pd3dxWorldMatrix._32 = 0;	m_pd3dxWorldMatrix._33 = 1;
 
 	// 2) fPitch, fYaw, fRoll로 회전하기
 	SetDirectionRelative(fPitch, fYaw, fRoll);
@@ -279,16 +294,16 @@ void CObject::SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec)
 {
 	m_pd3dxvDirection = XMFLOAT3(0, 0, 0);
 
-	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
-	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
-	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
+	m_pd3dxWorldMatrix._11 = 1;	m_pd3dxWorldMatrix._12 = 0;	m_pd3dxWorldMatrix._13 = 0;
+	m_pd3dxWorldMatrix._21 = 0;	m_pd3dxWorldMatrix._22 = 1;	m_pd3dxWorldMatrix._23 = 0;
+	m_pd3dxWorldMatrix._31 = 0;	m_pd3dxWorldMatrix._32 = 0;	m_pd3dxWorldMatrix._33 = 1;
 
 	SetDirectionRelative(d3dxVec);
 }
 
 const D3DXVECTOR3* CObject::GetPosition()
 {
-	return new D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
+	return new D3DXVECTOR3(m_pd3dxWorldMatrix._41, m_pd3dxWorldMatrix._42, m_pd3dxWorldMatrix._43);
 }
 const D3DXVECTOR3* CObject::GetDirection()
 {
@@ -297,21 +312,21 @@ const D3DXVECTOR3* CObject::GetDirection()
 
 const D3DXVECTOR3* CObject::GetRight()
 {
-	D3DXVECTOR3 *pd3dxvRight = new D3DXVECTOR3(m_pd3dxWorldMatrix->_11, m_pd3dxWorldMatrix->_12, m_pd3dxWorldMatrix->_13);
+	D3DXVECTOR3 *pd3dxvRight = new D3DXVECTOR3(m_pd3dxWorldMatrix._11, m_pd3dxWorldMatrix._12, m_pd3dxWorldMatrix._13);
 	D3DXVec3Normalize(pd3dxvRight, pd3dxvRight);
 	return pd3dxvRight;
 }
 
 const D3DXVECTOR3* CObject::GetUp()
 {
-	D3DXVECTOR3 *pd3dxvUp = new D3DXVECTOR3(m_pd3dxWorldMatrix->_21, m_pd3dxWorldMatrix->_22, m_pd3dxWorldMatrix->_23);
+	D3DXVECTOR3 *pd3dxvUp = new D3DXVECTOR3(m_pd3dxWorldMatrix._21, m_pd3dxWorldMatrix._22, m_pd3dxWorldMatrix._23);
 	D3DXVec3Normalize(pd3dxvUp, pd3dxvUp);
 	return pd3dxvUp;
 }
 
 const D3DXVECTOR3* CObject::GetLookAt()
 {
-	D3DXVECTOR3 *pd3dxvLookAt = new D3DXVECTOR3(m_pd3dxWorldMatrix->_31, m_pd3dxWorldMatrix->_32, m_pd3dxWorldMatrix->_33);
+	D3DXVECTOR3 *pd3dxvLookAt = new D3DXVECTOR3(m_pd3dxWorldMatrix._31, m_pd3dxWorldMatrix._32, m_pd3dxWorldMatrix._33);
 	D3DXVec3Normalize(pd3dxvLookAt, pd3dxvLookAt);
 	return pd3dxvLookAt;
 }
@@ -352,17 +367,23 @@ void CObject::SetBoundingBox()
 
 const D3DXVECTOR3* CObject::GetMaxVer()
 {
-	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVECTOR3 maxVer(m_pMaxVer.x, m_pMaxVer.y, m_pMaxVer.z);
-	D3DXVec3TransformCoord(pVertex, &maxVer, m_pd3dxWorldMatrix);
-	return pVertex;
+	XMVECTOR vVertex;
+	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMaxVer), XMLoadFloat4x4(&m_pd3dxWorldMatrix));
+
+	XMFLOAT3 f3Vertex;
+	XMStoreFloat3(&f3Vertex, vVertex);
+
+	return new D3DXVECTOR3(f3Vertex.x, f3Vertex.y, f3Vertex.z);
 }
 const D3DXVECTOR3* CObject::GetMinVer()
 {
-	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVECTOR3 minVer(m_pMinVer.x, m_pMinVer.y, m_pMinVer.z);
-	D3DXVec3TransformCoord(pVertex, &minVer, m_pd3dxWorldMatrix);
-	return pVertex;
+	XMVECTOR vVertex;
+	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMinVer), XMLoadFloat4x4(&m_pd3dxWorldMatrix));
+
+	XMFLOAT3 f3Vertex;
+	XMStoreFloat3(&f3Vertex, vVertex);
+
+	return new D3DXVECTOR3(f3Vertex.x, f3Vertex.y, f3Vertex.z);
 }
 
 
