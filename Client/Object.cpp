@@ -83,7 +83,7 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 	gpCommonState->m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
 
 	ID3D11Resource *pTexResource = nullptr;
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, textureAddress, &pTexResource, &pd3dsrvTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, textureAddress, &pTexResource, &pd3dsrvTexture);
 
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
 	if (m_ppd3dSamplerStates[nIndex]) m_ppd3dSamplerStates[nIndex]->Release();
@@ -126,8 +126,8 @@ CObject::CObject(UINT id)
 
 	m_eAnimationType = eAnimationType::Idle;
 
-	m_pMaxVer = nullptr;
-	m_pMinVer = nullptr;
+	m_pMaxVer = XMFLOAT3(0, 0, 0);
+	m_pMinVer = XMFLOAT3(0, 0, 0);
 	m_fRadius = 0.0;
 
 	m_pUnitComponent = nullptr;
@@ -299,58 +299,46 @@ const D3DXVECTOR3* CObject::GetLookAt()
 
 void CObject::SetBoundingBox()
 {
-	if (m_pMaxVer)	delete m_pMaxVer;
-	if (m_pMinVer)	delete m_pMinVer;
+	XMStoreFloat3(&m_pMaxVer, m_pMesh->GetMaxVer());
+	XMStoreFloat3(&m_pMinVer, m_pMesh->GetMinVer());
 
-	XMFLOAT3 tempfloat3;
-
-	XMStoreFloat3(&tempfloat3, m_pMesh->GetMaxVer());
-	m_pMaxVer = new D3DXVECTOR3();
-	m_pMaxVer->x = tempfloat3.x;
-	m_pMaxVer->y = tempfloat3.y;
-	m_pMaxVer->z = tempfloat3.z;
-
-	XMStoreFloat3(&tempfloat3, m_pMesh->GetMinVer());
-	m_pMinVer = new D3DXVECTOR3();
-	m_pMinVer->x = tempfloat3.x;
-	m_pMinVer->y = tempfloat3.y;
-	m_pMinVer->z = tempfloat3.z;
-
-	if (m_pMaxVer->x < m_pMinVer->x)
+	if (m_pMaxVer.x < m_pMinVer.x)
 	{
 		float temp;
-		temp = m_pMaxVer->x;
-		m_pMaxVer->x = m_pMinVer->x;
-		m_pMinVer->x = temp;
+		temp = m_pMaxVer.x;
+		m_pMaxVer.x = m_pMinVer.x;
+		m_pMinVer.x = temp;
 	}
-	if (m_pMaxVer->y < m_pMinVer->y)
+	if (m_pMaxVer.y < m_pMinVer.y)
 	{
 		float temp;
-		temp = m_pMaxVer->y;
-		m_pMaxVer->y = m_pMinVer->y;
-		m_pMinVer->y = temp;
+		temp = m_pMaxVer.y;
+		m_pMaxVer.y = m_pMinVer.y;
+		m_pMinVer.y = temp;
 	}
-	if (m_pMaxVer->z < m_pMinVer->z)
+	if (m_pMaxVer.z < m_pMinVer.z)
 	{
 		float temp;
-		temp = m_pMaxVer->z;
-		m_pMaxVer->z = m_pMinVer->z;
-		m_pMinVer->z = temp;
+		temp = m_pMaxVer.z;
+		m_pMaxVer.z = m_pMinVer.z;
+		m_pMinVer.z = temp;
 	}
 
-	m_fRadius = static_cast<float>(sqrt((m_pMinVer->x * m_pMinVer->x) + (m_pMinVer->z * m_pMinVer->z)));
+	m_fRadius = static_cast<float>(sqrt((m_pMinVer.x * m_pMinVer.x) + (m_pMinVer.z * m_pMinVer.z)));
 }
 
 const D3DXVECTOR3* CObject::GetMaxVer()
 {
 	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVec3TransformCoord(pVertex, m_pMaxVer, m_pd3dxWorldMatrix);
+	D3DXVECTOR3 maxVer(m_pMaxVer.x, m_pMaxVer.y, m_pMaxVer.z);
+	D3DXVec3TransformCoord(pVertex, &maxVer, m_pd3dxWorldMatrix);
 	return pVertex;
 }
 const D3DXVECTOR3* CObject::GetMinVer()
 {
 	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVec3TransformCoord(pVertex, m_pMinVer, m_pd3dxWorldMatrix);
+	D3DXVECTOR3 minVer(m_pMinVer.x, m_pMinVer.y, m_pMinVer.z);
+	D3DXVec3TransformCoord(pVertex, &minVer, m_pd3dxWorldMatrix);
 	return pVertex;
 }
 
@@ -362,7 +350,7 @@ const D3DXVECTOR3* CObject::GetMinVer()
 //		애니메이션 재생에 필요한 함수들
 //
 //===========================================================
-void CObject::SetResult(DirectX::XMFLOAT4X4*** result)
+void CObject::SetResult(XMFLOAT4X4*** result)
 {
 	m_pppResult = result;
 }
@@ -396,7 +384,7 @@ void CObject::SetConstantBuffer()
 	{
 		m_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)d3dMappedResource.pData;
 		for (int i = 0; i < 128; ++i)
-			m_pcbBoneMatrix->m_XMmtxBone[i] = DirectX::XMMatrixIdentity();
+			m_pcbBoneMatrix->m_XMmtxBone[i] = XMMatrixIdentity();
 	}
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbBoneMatrix, NULL);
 }
@@ -437,7 +425,7 @@ void CObject::AnimateAndRender(float& time)
 
 		for (int i = 0; i < m_iAnimationIndexCount; ++i)
 		{
-			DirectX::XMMATRIX ResultMatrix = DirectX::XMLoadFloat4x4(&m_pppResult[static_cast<int>(m_eAnimationType)][static_cast<int>(m_fAnimationPlaytime) / 10][i]);
+			XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[static_cast<int>(m_eAnimationType)][static_cast<int>(m_fAnimationPlaytime) / 10][i]);
 			m_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
 		}
 		if (m_pd3dcbBoneMatrix)
@@ -445,7 +433,7 @@ void CObject::AnimateAndRender(float& time)
 			gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
 		}
 	}
-	
+
 	if (m_pMesh) m_pMesh->Render();
 }
 
@@ -475,7 +463,7 @@ void CObject::PlayAnimation(eAnimationType eType)
 
 void CObject::SetComponent()
 {
-	m_pUnitComponent = new CUnitComponet();
+	m_pUnitComponent = new CUnitComponent();
 }
 
 
@@ -483,18 +471,3 @@ void CObject::SetComponent()
 
 
 
-
-
-
-//CUnit::CUnit(UINT id) : CObject(id)
-//{
-//	m_fStrikingPower = 10;
-//	m_fDefensivePower = 10;
-//	m_fMovingSpeed = 500;
-//	m_fHp = 100;
-//}
-//CUnit::~CUnit()
-//{
-//}
-//
-//

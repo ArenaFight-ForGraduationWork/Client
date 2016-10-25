@@ -1,5 +1,4 @@
-#ifndef OBJECT_H_
-#define OBJECT_H_
+#pragma once
 
 
 
@@ -67,7 +66,7 @@ private:
 
 
 
-class CUnitComponet;
+class CUnitComponent;
 class CObject
 {
 public:
@@ -110,7 +109,7 @@ public:
 	void AnimateAndRender(float& time);
 
 	void SetComponent();
-	CUnitComponet* GetComponent() { return m_pUnitComponent; }
+	CUnitComponent* GetComponent() { return m_pUnitComponent; }
 
 	//==============================================================================================
 	//==============================================================================================
@@ -130,19 +129,18 @@ public:
 
 	void SetConstantBuffer();
 	void SetAniIndexCount(int);
-	void SetResult(DirectX::XMFLOAT4X4***);
+	void SetResult(XMFLOAT4X4***);
 	void SetTime(int*);
 
 	void PlayAnimation(eAnimationType eType);
-	//BYTE GetNowAnimation() { return static_cast<BYTE>(m_eAnimationType); }
 	eAnimationType GetNowAnimation() { return m_eAnimationType; }
 
 	//==============================================================================================
 	//==============================================================================================
 	/* Collision Detection */
 private:
-	D3DXVECTOR3 *m_pMaxVer;
-	D3DXVECTOR3 *m_pMinVer;
+	XMFLOAT3 m_pMaxVer;
+	XMFLOAT3 m_pMinVer;
 	float m_fRadius;
 
 public:
@@ -151,6 +149,8 @@ public:
 	const D3DXVECTOR3* GetMaxVer();
 	const D3DXVECTOR3* GetMinVer();
 	const float& GetRadius() { return m_fRadius; }
+	//==============================================================================================
+	//==============================================================================================
 
 private:
 	UINT m_id;
@@ -167,22 +167,22 @@ private:
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;
 
-	DirectX::XMFLOAT4X4 ***m_pppResult;
+	XMFLOAT4X4 ***m_pppResult;
 	float m_fAnimationPlaytime;
 	int m_iAniMaxTime[ANIMATION_COUNT];
 	int m_iAnimationIndexCount;
 	eAnimationType m_eAnimationType;
 
-	CUnitComponet *m_pUnitComponent;
+	CUnitComponent *m_pUnitComponent;
 };
 
 
 
-class CUnitComponet
+class CUnitComponent
 {
 public:
-	CUnitComponet() : m_fStrikingPower(10), m_fDefensivePower(10), m_fMovingSpeed(200), m_fHp(100) {}
-	~CUnitComponet() {}
+	CUnitComponent() : m_fStrikingPower(10), m_fDefensivePower(10), m_fMovingSpeed(300), m_fHp(1000) {}
+	~CUnitComponent() {}
 
 	void SetStrikingPower(float& fSp) { m_fStrikingPower = fSp; }
 	void SetDefensivePower(float& fDp) { m_fDefensivePower = fDp; }
@@ -204,7 +204,3 @@ private:
 
 
 
-
-
-
-#endif
