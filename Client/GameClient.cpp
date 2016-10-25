@@ -273,8 +273,9 @@ void ProcessPacket(char *ptr) {
 		}
 		else
 		{ //  해당 id가 존재하면
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(0, 0, 0));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, 0, 0));
+			XMFLOAT3 zero(0, 0, 0);
+			pObject->SetPositionAbsolute(XMLoadFloat3(&zero));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&zero));
 		}
 		printf("플레이어id:%d님이 방에 오셨습니다\n", my_packet->id);
 		pObject = nullptr;
@@ -297,8 +298,11 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
 		if (pObject)
 		{
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->direction, 0));
+			XMFLOAT3 position(my_packet->x, 0, my_packet->z);
+			XMFLOAT3 direction(0, my_packet->direction, 0);
+
+			pObject->SetPositionAbsolute(XMLoadFloat3(&position));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&direction));
 			if (my_packet->isMoving)
 				pObject->PlayAnimation(CObject::eAnimationType::Move);
 			else
@@ -345,8 +349,11 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
 		if (pObject)
 		{
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->direction, 0));
+			XMFLOAT3 position(my_packet->x, 0, my_packet->z);
+			XMFLOAT3 direction(0, my_packet->direction, 0);
+
+			pObject->SetPositionAbsolute(XMLoadFloat3(&position));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&direction));
 			if (my_packet->isMoving)
 				pObject->PlayAnimation(CObject::eAnimationType::Move);
 			else
@@ -418,8 +425,11 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->bossid);
 		if (pObject)
 		{	// if boss already exists
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz)));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0.0f, static_cast<float>(my_packet->bossdis), 0.0f));
+			XMFLOAT3 position(my_packet->bossx, 0, my_packet->bossz);
+			XMFLOAT3 direction(0, my_packet->bossdis, 0);
+
+			pObject->SetPositionAbsolute(XMLoadFloat3(&position));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&direction));
 		}
 		else
 		{	// if boss doesn't exist

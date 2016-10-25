@@ -74,23 +74,23 @@ public:
 	virtual ~CObject();
 
 	void SetPositionRelative(float& fx, float& fy, float& fz);
-	void SetPositionRelative(D3DXVECTOR3 *d3dxVec);
+	void SetPositionRelative(CXMVECTOR d3dxVec);
 	void SetPositionAbsolute(float& fx, float& fy, float& fz);
-	void SetPositionAbsolute(D3DXVECTOR3 *d3dxVec);
+	void SetPositionAbsolute(CXMVECTOR d3dxVec);
 	/* 로컬 Z축 방향으로 이동한다. 속력이 있으면 속력*시간(fVar), 없으면 거리(fVar)만큼 움직인다  */
 	virtual void MoveForward(float& fVar);
 
 	void SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll);
-	void SetDirectionRelative(D3DXVECTOR3 *d3dxVec);
+	void SetDirectionRelative(CXMVECTOR d3dxVec);
 	void SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll);
-	void SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec);
+	void SetDirectionAbsolute(CXMVECTOR d3dxVec);
 
 	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환
-	const D3DXVECTOR3* GetPosition();
-	const D3DXVECTOR3* GetDirection();
-	const D3DXVECTOR3* GetRight();
-	const D3DXVECTOR3* GetUp();
-	const D3DXVECTOR3* GetLookAt();
+	CXMVECTOR GetPosition();
+	CXMVECTOR GetDirection();
+	CXMVECTOR GetRight();
+	CXMVECTOR GetUp();
+	CXMVECTOR GetLookAt();
 
 	CXMMATRIX GetWorldMatrix() { return XMLoadFloat4x4(&m_pd3dxWorldMatrix); }
 
@@ -146,8 +146,8 @@ private:
 public:
 	void SetBoundingBox();
 
-	const D3DXVECTOR3* GetMaxVer();
-	const D3DXVECTOR3* GetMinVer();
+	CXMVECTOR GetMaxVer();
+	CXMVECTOR GetMinVer();
 	const float& GetRadius() { return m_fRadius; }
 	//==============================================================================================
 	//==============================================================================================

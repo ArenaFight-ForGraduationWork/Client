@@ -667,7 +667,8 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 					fAngle = static_cast<float>(D3DXToDegree(fAngle));
 					fAngle = ((defaultAngle.x* inputAngle.y - defaultAngle.y*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
 
-					pPlayer->SetDirectionAbsolute(&D3DXVECTOR3(0, m_pCameraManager->GetNowCamera()->GetYaw() + fAngle, 0));
+					XMFLOAT3 cameraAngle(0, m_pCameraManager->GetNowCamera()->GetYaw() + fAngle, 0);
+					pPlayer->SetDirectionAbsolute(XMLoadFloat3(&cameraAngle));
 
 					// 2) 로컬 z축으로 속도 * 시간만큼 이동
 					pPlayer->MoveForward(fTimeElapsed);
@@ -680,9 +681,9 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 						pp->size = sizeof(*pp);
 						pp->type = PLAYER_MOV;	// herehere
 						pp->id = myID;
-						pp->x = pPlayer->GetPosition()->x;
-						pp->z = pPlayer->GetPosition()->z;
-						pp->direction = pPlayer->GetDirection()->y;
+						pp->x = XMVectorGetX(pPlayer->GetPosition());
+						pp->z = XMVectorGetZ(pPlayer->GetPosition());
+						pp->direction = XMVectorGetY(pPlayer->GetDirection());
 						pp->isMoving = true;
 						if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
 							printf("event data send ERROR\n");
@@ -702,9 +703,9 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 							pp->size = sizeof(*pp);
 							pp->type = PLAYER_MOV;	// herehere
 							pp->id = myID;
-							pp->x = pPlayer->GetPosition()->x;
-							pp->z = pPlayer->GetPosition()->z;
-							pp->direction = pPlayer->GetDirection()->y;
+							pp->x = XMVectorGetX(pPlayer->GetPosition());
+							pp->z = XMVectorGetZ(pPlayer->GetPosition());
+							pp->direction = XMVectorGetY(pPlayer->GetDirection());
 							pp->isMoving = false;
 							if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
 								printf("event data send ERROR\n");
@@ -723,7 +724,13 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 	}
 
 	if (pPlayer)
-		m_pCameraManager->GetNowCamera()->Update(pPlayer->GetPosition());
+	{
+		D3DXVECTOR3 position;
+		position.x = XMVectorGetX(pPlayer->GetPosition());
+		position.y = XMVectorGetY(pPlayer->GetPosition());
+		position.z = XMVectorGetZ(pPlayer->GetPosition());
+		m_pCameraManager->GetNowCamera()->Update(&position);
+	}
 	else
 		m_pCameraManager->GetNowCamera()->Update(new D3DXVECTOR3(0, 0, 0));
 }
@@ -736,7 +743,14 @@ void CFirstScene::BuildObjects()
 
 	m_pCameraManager = CCameraManager::GetSingleton();
 	if (m_pObjectManager->FindObject(myID))
-		m_pCameraManager->GetNowCamera()->SetLookAt(m_pObjectManager->FindObject(myID)->GetPosition());
+	{
+		D3DXVECTOR3 d3dxPos;
+		XMVECTOR vPos;
+		vPos = m_pObjectManager->FindObject(myID)->GetPosition();
+		d3dxPos = D3DXVECTOR3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos));
+
+		m_pCameraManager->GetNowCamera()->SetLookAt(&d3dxPos);
+	}
 	else
 		m_pCameraManager->GetNowCamera()->SetLookAt(new D3DXVECTOR3(0, 0, 0));
 

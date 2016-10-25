@@ -48,8 +48,8 @@ CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, D3DXVECTO
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType(static_cast<int>(eType));
 
-	pObject->SetPositionAbsolute(&position);
-	pObject->SetDirectionAbsolute(&direction);
+	pObject->SetPositionAbsolute(position.x, position.y, position.z);
+	pObject->SetDirectionAbsolute(direction.x, direction.y, direction.z);
 
 	pObject->PlayAnimation(CObject::eAnimationType::None);
 	pObject->SetBoundingBox();
@@ -89,8 +89,8 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, D3DXVECTO
 	pObject->SetResult(pResourceManager->GetMesh(eType)->GetResultMatrix());
 	pObject->SetConstantBuffer();
 	
-	pObject->SetPositionAbsolute(&position);
-	pObject->SetDirectionAbsolute(&direction);
+	pObject->SetPositionAbsolute(position.x, position.y, position.z);
+	pObject->SetDirectionAbsolute(direction.x, direction.y, direction.z);
 
 	pObject->SetBoundingBox();
 	pObject->PlayAnimation(CObject::eAnimationType::Idle);
@@ -179,8 +179,13 @@ bool CObjectManager::CheckCollision()
 
 	for (auto monster : m_mObjects[eObjectType::MONSTER])
 	{
-		float distance = ((FindObject(myID)->GetPosition()->x - monster->GetPosition()->x)*(FindObject(myID)->GetPosition()->x - monster->GetPosition()->x))
-			+ ((FindObject(myID)->GetPosition()->z - monster->GetPosition()->z)*(FindObject(myID)->GetPosition()->z - monster->GetPosition()->z));
+		XMFLOAT3 myPosition;
+		XMStoreFloat3(&myPosition, FindObject(myID)->GetPosition());
+		XMFLOAT3 monsterPosition;
+		XMStoreFloat3(&monsterPosition, monster->GetPosition());
+
+		float distance = ((myPosition.x - monsterPosition.x)*(myPosition.x - monsterPosition.x))
+			+ ((myPosition.z - monsterPosition.z)*(myPosition.z - monsterPosition.z));
 		if (sqrt(distance) <= FindObject(myID)->GetRadius() + monster->GetRadius())
 		{
 			return true;
