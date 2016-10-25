@@ -107,13 +107,14 @@ void CShader::CreateShaderVariables()
 	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbWorldMatrix);
 }
 
-void CShader::UpdateShaderVariables(D3DXMATRIX *pd3dxmtxWorld)
+void CShader::UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbWorldMatrix, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_WORLD_MATRIX *pcbWorldMatrix = (VS_CB_WORLD_MATRIX *)d3dMappedResource.pData;
-	D3DXMatrixTranspose(&pcbWorldMatrix->m_d3dxmtxWorld, pd3dxmtxWorld);
+	pcbWorldMatrix->m_d3dxmtxWorld = XMMatrixTranspose(pd3dxmtxWorld);
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbWorldMatrix, 0);
+
 	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);
 }
 void CShader::UpdateShaderVariables(CMaterial *pMaterial)
@@ -136,7 +137,13 @@ void CShader::AnimateObjectAndRender(float time)
 
 	for (auto obj : m_vObjects)
 	{
-		UpdateShaderVariables(obj->GetWorldMatrix());
+		// 왜 값이 지 혼자 쓰레기값으로 바뀌냐
+		// UpdateShaderVariables(obj->GetWorldMatrix());
+		// 혼자 값이 바껴대서 그냥 중간에 한 번 해줌
+		XMFLOAT4X4 temp;
+		XMStoreFloat4x4(&temp, obj->GetWorldMatrix());
+		UpdateShaderVariables(XMLoadFloat4x4(&temp));
+
 		if (obj->GetMaterial())
 			UpdateShaderVariables(obj->GetMaterial());
 		if (obj->GetTexture())

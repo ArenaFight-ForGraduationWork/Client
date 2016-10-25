@@ -1,5 +1,4 @@
-#ifndef SHADER_H_
-#define SHADER_H_
+#pragma once
 
 #include "Object.h"
 
@@ -13,7 +12,7 @@ public:
 
 	virtual void CreateShader();
 	virtual void CreateShaderVariables();
-	virtual void UpdateShaderVariables(D3DXMATRIX *pd3dxmtxWorld = nullptr);
+	virtual void UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld);
 	virtual void UpdateShaderVariables(CMaterial *pMaterial = nullptr);
 	virtual void UpdateShaderVariables(CTexture *pTexture);
 
@@ -90,5 +89,3 @@ public:
 
 
 
-
-#endif

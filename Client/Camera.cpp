@@ -145,8 +145,8 @@ void CCamera::UpdateShaderVariables()
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
-	XMStoreFloat4x4(&pcbViewProjection->m_d3dxmtxView, XMMatrixTranspose(XMLoadFloat4x4(m_pd3dxmtxView)));
-	XMStoreFloat4x4(&pcbViewProjection->m_d3dxmtxProjection, XMMatrixTranspose(XMLoadFloat4x4(m_pd3dxmtxProjection)));
+	pcbViewProjection->m_d3dxmtxView = XMMatrixTranspose(XMLoadFloat4x4(m_pd3dxmtxView));
+	pcbViewProjection->m_d3dxmtxProjection = XMMatrixTranspose(XMLoadFloat4x4(m_pd3dxmtxProjection));
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
 
 	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);

@@ -92,18 +92,7 @@ public:
 	const D3DXVECTOR3* GetUp();
 	const D3DXVECTOR3* GetLookAt();
 
-	D3DXMATRIX* GetWorldMatrix() { 
-		//return m_pd3dxWorldMatrix;
-		D3DXMATRIX *pMatrix = new D3DXMATRIX();
-		for (unsigned int i = 0; i < 4; ++i)
-		{
-			for (unsigned int j = 0; j < 4; ++j)
-			{
-				pMatrix->m[i][j] = m_pd3dxWorldMatrix.m[i][j];
-			}
-		}
-		return pMatrix;
-	}
+	CXMMATRIX GetWorldMatrix() { return XMLoadFloat4x4(&m_pd3dxWorldMatrix); }
 
 	const UINT& GetId() { return m_id; }
 
