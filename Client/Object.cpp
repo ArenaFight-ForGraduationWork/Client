@@ -4,6 +4,9 @@
 #include <DDSTextureLoader.h>
 
 
+
+
+
 CMaterial::CMaterial()
 {
 	m_nReferences = 1;
@@ -221,9 +224,21 @@ void CObject::SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll)
 	m_pd3dxvDirection.y += fYaw;
 	m_pd3dxvDirection.z += fRoll;
 
-	D3DXMATRIX mtxRotate;
-	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(fYaw), (float)D3DXToRadian(fPitch), (float)D3DXToRadian(fRoll));
-	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
+	XMMATRIX mRotate;
+	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
+	XMFLOAT4X4 f4x4Rotate;
+	XMStoreFloat4x4(&f4x4Rotate, mRotate);
+
+	D3DXMATRIX d3dxRotate;
+	for (unsigned int i = 0; i < 4; ++i)
+	{
+		for (unsigned int j = 0; j < 4; ++j)
+		{
+			d3dxRotate.m[i][j] = f4x4Rotate.m[i][j];
+		}
+	}
+
+	(*m_pd3dxWorldMatrix) = d3dxRotate * (*m_pd3dxWorldMatrix);
 }
 void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
 {
@@ -231,9 +246,21 @@ void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
 	m_pd3dxvDirection.y += d3dxVec->y;
 	m_pd3dxvDirection.z += d3dxVec->z;
 
-	D3DXMATRIX mtxRotate;
-	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(d3dxVec->y), (float)D3DXToRadian(d3dxVec->x), (float)D3DXToRadian(d3dxVec->z));
-	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
+	XMMATRIX mRotate;
+	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(d3dxVec->x), XMConvertToRadians(d3dxVec->y), XMConvertToRadians(d3dxVec->z));
+	XMFLOAT4X4 f4x4Rotate;
+	XMStoreFloat4x4(&f4x4Rotate, mRotate);
+
+	D3DXMATRIX d3dxRotate;
+	for (unsigned int i = 0; i < 4; ++i)
+	{
+		for (unsigned int j = 0; j < 4; ++j)
+		{
+			d3dxRotate.m[i][j] = f4x4Rotate.m[i][j];
+		}
+	}
+
+	(*m_pd3dxWorldMatrix) = d3dxRotate * (*m_pd3dxWorldMatrix);
 }
 void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 {
