@@ -15,12 +15,11 @@
 #include <memory.h>
 #include <tchar.h>
 #include <d3d11_1.h>
-#include <d3dx11.h>
 
 #include <Mmsystem.h>
 #include <d3dcompiler.h>  	//쉐이더 컴파일 함수를 사용하기 위한 헤더 파일
-#include <D3DX10Math.h>		//Direct3D 수학 함수를 사용하기 위한 헤더 파일
-#include <D3D9Types.h>
+//#include <D3DX10Math.h>		//Direct3D 수학 함수를 사용하기 위한 헤더 파일
+//#include <D3D9Types.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 #include <DirectXMath.h>

@@ -44,8 +44,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>DirectX_SDK_June2010\Include;DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>DirectX_SDK_June2010\Lib_x86;DirectX_SDK_June2010\Lib_x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>DirectXTK\Inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -65,7 +65,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dx11d.lib;d3dcompiler.lib;d3dx9d.lib;dxguid.lib;dinput8.lib;winmm.lib;ws2_32.lib;Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;dinput8.lib;winmm.lib;ws2_32.lib;Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,7 +83,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;d3dx11d.lib;d3dcompiler.lib;d3dx9d.lib;dxerr.lib;dxguid.lib;dinput8.lib;winmm.lib;ws2_32.lib;Effects11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxerr.lib;dxguid.lib;dinput8.lib;winmm.lib;ws2_32.lib;Effects11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

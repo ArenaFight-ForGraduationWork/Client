@@ -63,7 +63,7 @@ void CShader::CreateVertexShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderNam
 
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	/*파일(pszFileName)에서 쉐이더 함수(pszShaderName)를 컴파일하여 컴파일된 쉐이더 코드의 메모리 주소(pd3dShaderBlob)를 반환한다.*/
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DCompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, NULL, NULL, &pd3dShaderBlob, NULL)))
 	{
 		//컴파일된 쉐이더 코드의 메모리 주소에서 정점-쉐이더를 생성한다. 
 		gpCommonState->m_pd3dDevice->CreateVertexShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader);
@@ -84,7 +84,7 @@ void CShader::CreatePixelShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName
 
 	ID3DBlob *pd3dShaderBlob = NULL, *pd3dErrorBlob = NULL;
 	/*파일(pszFileName)에서 쉐이더 함수(pszShaderName)를 컴파일하여 컴파일된 쉐이더 코드의 메모리 주소(pd3dShaderBlob)를 반환한다.*/
-	if (SUCCEEDED(hResult = D3DX11CompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, dwShaderFlags, 0, NULL, &pd3dShaderBlob, &pd3dErrorBlob, NULL)))
+	if (SUCCEEDED(hResult = D3DCompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, NULL, NULL, &pd3dShaderBlob, NULL)))
 	{
 		//컴파일된 쉐이더 코드의 메모리 주소에서 픽셀-쉐이더를 생성한다. 
 		gpCommonState->m_pd3dDevice->CreatePixelShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader);
