@@ -9,16 +9,15 @@
 #include "Effects.h"
 #include "InputLayout.h"
 #include "RenderStates.h"
-//#include "ParticleSystem.h"
 
+
+ParticleSystem *mFire;
 
 
 
 CScene::CScene()
 {
 	m_pLight = new CLight();
-
-	m_OperationMode = MODE_KEYBOARD;
 
 	m_pCameraManager = nullptr;
 
@@ -30,8 +29,8 @@ CScene::CScene()
 	m_pObjectManager = CObjectManager::GetSingleton();
 
 	m_pSpriteBatch = nullptr;
-	m_pTexture = nullptr;
 	m_vTextures.clear();
+	m_pSpriteFont = nullptr;
 }
 CScene::~CScene()
 {
@@ -94,15 +93,15 @@ void CIntroScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	switch (player_status)
 	{
 	case static_cast<BYTE>(ePlayer_State::eLOBBY) :
-		KeyboardMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_KeyboardMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
 		break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
-		KeyboardMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_KeyboardMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
 		break;
 	default: break;
 	}
 }
-void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
 	switch (nMessageID)
 	{
@@ -110,47 +109,6 @@ void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wPar
 	{
 		switch (wParam)
 		{
-			//case VK_RETURN:
-			//{
-			//	if (1==m_bButton)
-			//	{	// create room > insert room-name
-			//		if (m_pTempString->length() > 0)
-			//		{	// 입력이 뭔가 들어와있긴 함
-			//			m_vStrings.push_back(*m_pTempString);
-			//			m_pTempString = new string();
-			//			m_pTempString->clear();
-
-			//			m_bButton = 2;
-			//		}
-			//	}
-			//	else if (2==m_bButton)
-			//	{	// create room > insert stage-number
-			//		if (m_pTempString->length() > 0)
-			//		{
-			//			m_vStrings.push_back(*m_pTempString);
-			//			m_pTempString = new string();
-			//			m_pTempString->clear();
-
-			//			create_room* pp = reinterpret_cast<create_room*>(send_buffer);
-			//			pp->type = CREATE_ROOM;
-			//			pp->id = myID;
-			//			//gets_s(pp->room_name);
-			//			//gets_s(pp->room_name);
-			//			//printf("입력한방이름:%s\n", pp->room_name);
-			//			strcpy_s(pp->room_name, sizeof(pp->room_name), m_vStrings[0].c_str());
-			//			//printf("플레이할 스테이지를 입력해주세요\n");
-			//			//scanf("%hhd", &pp->stage);
-			//			//printf("입력한스테이지:%d\n", pp->stage);
-			//			pp->stage = static_cast<BYTE>(atoi(m_vStrings[1].c_str()));
-			//			pp->size = sizeof(*pp);
-			//			printf("전송하는사이즈:%d\n", pp->size);
-			//			if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
-			//				printf("send ERROR\n");
-
-			//			Sleep(100);
-			//		}
-			//	}
-			//}break;
 			// case0x30~case0x39: 0~9, case0x41~case0x5A: A~Z
 		case 0x30:case 0x31:case 0x32:case 0x33:case 0x34:case 0x35:case 0x36:case 0x37:case 0x38:case 0x39:
 		{
@@ -172,7 +130,7 @@ void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wPar
 	default:break;
 	}
 }
-void CIntroScene::KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
 }
 
@@ -181,15 +139,15 @@ void CIntroScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 	switch (player_status)
 	{
 	case static_cast<BYTE>(ePlayer_State::eLOBBY) :
-		MouseMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_MouseMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
 		break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
-		MouseMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_MouseMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
 		break;
 	default: break;
 	}
 }
-void CIntroScene::MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
 	if (WM_LBUTTONUP == nMessageID)
 	{
@@ -298,7 +256,7 @@ void CIntroScene::MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam,
 		}
 	}
 }
-void CIntroScene::MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
 	if (WM_LBUTTONUP == nMessageID)
 	{
@@ -317,7 +275,7 @@ void CIntroScene::MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, 
 		}
 	}
 }
-bool CIntroScene::_CheckDestination(POINT * pMousePos, const RECT* pDestination)
+bool CIntroScene::_CheckDestination(POINT *pMousePos, const RECT *pDestination)
 {
 	if (pMousePos->x >= pDestination->left)
 	{
@@ -393,9 +351,6 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 		m_pSpriteBatch->Draw(m_vTextures[1], rButton1pos);
 		m_pSpriteBatch->Draw(m_vTextures[2], rButton2pos);
 
-		//m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Create Room",
-		//	DirectX::XMFLOAT2(static_cast<float>(rButton1pos.left), static_cast<float>(rButton1pos.top)));
-
 		switch (m_bButton)
 		{
 		case 1:
@@ -407,7 +362,6 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 				DirectX::XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
 			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
-
 		}break;
 		case 2:
 		{
@@ -460,9 +414,6 @@ CFirstScene::CFirstScene()
 	m_dwDirectionNow = 0;
 
 	m_pFog = nullptr;
-
-	mFire = nullptr;
-	mRain = nullptr;
 }
 CFirstScene::~CFirstScene()
 {
@@ -479,16 +430,9 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		switch (wParam)
 		{
 		case VK_F1:
-			m_OperationMode = MODE_MOUSE;
-			break;
-		case VK_F2:
-			m_OperationMode = MODE_KEYBOARD;
-			break;
-
-		case VK_F3:
 			m_pFog->Expand(0, 0, 0);
 			break;
-		case VK_F4:
+		case VK_F2:
 			m_pFog->Contract();
 			break;
 
@@ -592,37 +536,27 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 }
 void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
 {
-	switch (m_OperationMode)
-	{
-	case MODE_MOUSE:
-	{
-		switch (nMessageID)
-		{
-		case WM_MOUSEMOVE:
-			m_ptOldCursorPos.x = m_ptNewCursorPos.x;
-			m_ptOldCursorPos.y = m_ptNewCursorPos.y;
-			m_ptNewCursorPos.x = LOWORD(lParam);
-			m_ptNewCursorPos.y = HIWORD(lParam);
+	//switch (nMessageID)
+	//{
+	//case WM_MOUSEMOVE:
+	//	m_ptOldCursorPos.x = m_ptNewCursorPos.x;
+	//	m_ptOldCursorPos.y = m_ptNewCursorPos.y;
+	//	m_ptNewCursorPos.x = LOWORD(lParam);
+	//	m_ptNewCursorPos.y = HIWORD(lParam);
 
-			if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
-				m_pCameraManager->GetNowCamera()->RotatebyYaw(-350 * fTimeElapsed);
-			else
-				m_pCameraManager->GetNowCamera()->RotatebyYaw(350 * fTimeElapsed);
-			break;
-		case WM_MOUSEWHEEL:
-			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-				m_pCameraManager->GetNowCamera()->Zoom(200 * fTimeElapsed);
-			else
-				m_pCameraManager->GetNowCamera()->Zoom(-200 * fTimeElapsed);
-			break;
-		default: break;
-		}
-	}	break;
-	case MODE_KEYBOARD:
-	{
-	}	break;
-	default: break;
-	}
+	//	if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
+	//		m_pCameraManager->GetNowCamera()->RotatebyYaw(-350 * fTimeElapsed);
+	//	else
+	//		m_pCameraManager->GetNowCamera()->RotatebyYaw(350 * fTimeElapsed);
+	//	break;
+	//case WM_MOUSEWHEEL:
+	//	if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+	//		m_pCameraManager->GetNowCamera()->Zoom(200 * fTimeElapsed);
+	//	else
+	//		m_pCameraManager->GetNowCamera()->Zoom(-200 * fTimeElapsed);
+	//	break;
+	//default: break;
+	//}
 }
 void CFirstScene::ProcessInput(float fTimeElapsed)
 {
@@ -665,9 +599,6 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 				vInputAngle = XMLoadFloat2(&f2InputAngle);
 				if (!XMVector2Equal(vInputAngle, XMVectorZero()))
 				{
-					// X, Z
-					//XMVECTOR vDefaultAngle;
-					//vDefaultAngle = XMVectorZero();	XMVectorSetX(vDefaultAngle, 0); XMVectorSetY(vDefaultAngle, 1);
 					XMFLOAT2 f2DefaultAngle = XMFLOAT2(0, 1);	// X, Z
 					XMVECTOR vDefaultAngle;
 					vDefaultAngle = XMLoadFloat2(&f2DefaultAngle);
@@ -849,7 +780,7 @@ void CFirstScene::BuildObjects()
 
 	std::vector<std::wstring> flares;
 	flares.push_back(L"Textures\\flare0.dds");
-	flares.push_back(L"./Textures/flare0.dds");
+	//flares.push_back(L"./Textures/flare0.dds");
 	mFlareTexSRV = d3dHelper::CreateTexture2DArraySRV(gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext, flares);
 
 	mFire = new ParticleSystem();
@@ -865,28 +796,27 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 
 	CScene::AnimateObjectsAndRender(time);
 
-	static int aa = 0;
-	if (aa > 1)
-	{
-		int b = 1 + 1;
-	}
-	else
-		aa += 1;
-
 	if (mFire)
 	{
 		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
-		mFire->Update(gpCommonState->m_pTimer->GetTimeElapsed(), gpCommonState->m_pTimer->GetNowTime());
+		mFire->Update(gpCommonState->m_pTimer->GetTimeElapsed(), static_cast<float>(gpCommonState->m_pTimer->GetNowTime()));
 
 		XMFLOAT3 cameraPos;
 		XMStoreFloat3(&cameraPos, m_pCameraManager->GetNowCamera()->GetPosition());
+		XMMATRIX view;
+		view = m_pCameraManager->GetNowCamera()->GetViewMatrix();
+		XMMATRIX projection;
+		projection = m_pCameraManager->GetNowCamera()->GetProjectionMatrix();
 		XMMATRIX cameraViewProjection;
-		cameraViewProjection = XMMatrixMultiply(m_pCameraManager->GetNowCamera()->GetViewMatrix(), m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+		cameraViewProjection = XMMatrixMultiply(view, projection);
 
 		mFire->SetEyePos(cameraPos);
-		//mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraViewProjection);
-		gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff); // restore default
+		mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraViewProjection);
+
+		gpCommonState->m_pd3dDeviceContext->RSSetState(0);
+		gpCommonState->m_pd3dDeviceContext->OMSetDepthStencilState(0, 0);
+		gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff);
 	}
 
 	// 2D
@@ -900,12 +830,9 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 	CObject *pObject = m_pObjectManager->FindObject(myID);
 	if (pObject)
 	{
-		rHpPos.right = rHpPos.left + pObject->GetComponent()->GetHealthPoint() * 3;
+		rHpPos.right = rHpPos.left + static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * 3;
 		m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
 	}
-
-
-
 
 	m_pSpriteBatch->End();
 	gpCommonState->TurnZBufferOn();
@@ -941,7 +868,6 @@ void CSceneManager::Destroy()
 
 void CSceneManager::Change(eSceneType eType)
 {
-	//m_mScenes[m_eNow]->Destroy();
 	m_eNow = eType;
 	m_mScenes[m_eNow]->BuildObjects();
 }

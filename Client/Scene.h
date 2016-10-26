@@ -1,5 +1,4 @@
-#ifndef SCENE_H_
-#define SCENE_H_
+#pragma once
 
 #include "Object.h"
 #include "Shader.h"
@@ -12,8 +11,6 @@
 #include <SpriteFont.h>
 #include "ParticleSystem.h"
 
-#define MODE_MOUSE		0x01
-#define MODE_KEYBOARD	0x02
 
 
 
@@ -35,8 +32,6 @@ public:
 	virtual void ChangeState() {}
 
 protected:
-	DWORD m_OperationMode;
-
 	POINT	m_ptOldCursorPos;
 	POINT	m_ptNewCursorPos;
 
@@ -46,9 +41,7 @@ protected:
 	CCameraManager *m_pCameraManager;
 
 	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
-	ID3D11ShaderResourceView *m_pTexture;							// 삭제 예정
-	std::vector<ID3D11ShaderResourceView*> m_vTextures;				// m_pTexture 대신 쓸 거
-
+	std::vector<ID3D11ShaderResourceView*> m_vTextures;
 	std::unique_ptr<DirectX::SpriteFont> m_pSpriteFont;
 
 private:
@@ -95,11 +88,11 @@ private:
 
 	bool _CheckDestination(POINT * pMousePos, const RECT* pDestination);
 
-	void KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	void KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
 
-	void MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	void MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
 };
 
 
@@ -126,11 +119,8 @@ private:
 	CFog *m_pFog;
 
 	ID3D11ShaderResourceView* mFlareTexSRV;
-	ID3D11ShaderResourceView* mRainTexSRV;
 	ID3D11ShaderResourceView* mRandomTexSRV;
-
-	ParticleSystem *mFire;
-	ParticleSystem *mRain;
+	//ParticleSystem *mFire;
 
 	const RECT rFramePos = { 0,0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT - 20 };
 
@@ -172,5 +162,3 @@ private:
 };
 
 
-
-#endif

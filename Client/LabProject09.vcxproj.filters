@@ -4,6 +4,24 @@
     <FxCompile Include="Animating.fx" />
     <FxCompile Include="NonAnimating.fx" />
     <FxCompile Include="Texture.fx" />
+    <FxCompile Include="FX\Basic.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\Fire.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\LightHelper.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\Rain.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\Sky.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\Terrain.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -202,7 +220,7 @@
       <UniqueIdentifier>{f9744a25-bda5-4832-86a8-21202b77c4fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="FX">
-      <UniqueIdentifier>{1916e906-7782-4ab3-b814-b118869fb728}</UniqueIdentifier>
+      <UniqueIdentifier>{1d63c70b-e6d2-4f0a-b2ab-e993014d430e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

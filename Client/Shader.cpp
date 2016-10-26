@@ -140,9 +140,9 @@ void CShader::AnimateObjectAndRender(float time)
 		// 왜 값이 지 혼자 쓰레기값으로 바뀌냐
 		// UpdateShaderVariables(obj->GetWorldMatrix());
 		// 혼자 값이 바껴대서 그냥 중간에 한 번 해줌
-		XMFLOAT4X4 temp;
-		XMStoreFloat4x4(&temp, obj->GetWorldMatrix());
-		UpdateShaderVariables(XMLoadFloat4x4(&temp));
+		XMMATRIX temp;
+		temp = obj->GetWorldMatrix();
+		UpdateShaderVariables(temp);
 
 		if (obj->GetMaterial())
 			UpdateShaderVariables(obj->GetMaterial());
@@ -276,14 +276,6 @@ void CTextureShader::CreateShader()
 void CTextureShader::CreateShaderVariables()
 {
 	CShader::CreateShaderVariables();
-
-	//D3D11_BUFFER_DESC d3dBufferDesc;
-	//ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	//d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	//d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//d3dBufferDesc.ByteWidth = sizeof(MATERIAL);
-	//pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
 void CTextureShader::AnimateObjectAndRender(float indexCount)

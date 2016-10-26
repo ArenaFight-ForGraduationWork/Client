@@ -425,8 +425,8 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->bossid);
 		if (pObject)
 		{	// if boss already exists
-			XMFLOAT3 position(my_packet->bossx, 0, my_packet->bossz);
-			XMFLOAT3 direction(0, my_packet->bossdis, 0);
+			XMFLOAT3 position(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz));
+			XMFLOAT3 direction(0.0f, static_cast<float>(my_packet->bossdis), 0.0f);
 
 			pObject->SetPositionAbsolute(XMLoadFloat3(&position));
 			pObject->SetDirectionAbsolute(XMLoadFloat3(&direction));

@@ -24,6 +24,8 @@ CGameTimer::CGameTimer()
 	m_nCurrentFrameRate = 0;
 	m_FramePerSecond = 0;
 	m_fFPSTimeElapsed = 0.0f;
+
+	ProgressTime = 0;
 }
 
 void CGameTimer::Tick(float fLockFPS)

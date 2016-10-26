@@ -14,7 +14,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <Mmsystem.h>
+#include <Mmsystem.h> 
 
 #include <d3d11_1.h>
 #include <d3dcompiler.h>  	//쉐이더 컴파일 함수를 사용하기 위한 헤더 파일
@@ -31,12 +31,6 @@
 #include <WinSock2.h>
 
 #include "CommonState.h"
-
-//#include "Common\d3dUtil.h"
-//#include "Common\d3dx11effect.h"
-//#include "Common\dxerr.h"
-//#include "Common\LightHelper.h"
-//#include "Common\MathHelper.h"
 
 using namespace std;
 
