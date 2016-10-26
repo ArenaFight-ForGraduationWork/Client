@@ -12,10 +12,11 @@ using namespace DirectX;
 /* 재질 관련 정보를 표현 */
 struct MATERIAL
 {
-	D3DXCOLOR m_d3dxcAmbient;
-	D3DXCOLOR m_d3dxcDiffuse;
-	D3DXCOLOR m_d3dxcSpecular; //(r,g,b,a=power)
-	D3DXCOLOR m_d3dxcEmissive;
+	// R, G, B, A
+	float m_fAmbient[4];
+	float m_fDiffuse[4];
+	float m_fSpecular[4]; // a = power
+	float m_fEmissive[4];
 };
 
 class CMaterial

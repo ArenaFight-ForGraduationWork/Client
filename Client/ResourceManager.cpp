@@ -169,10 +169,27 @@ void CResourceManager::_LoadMaterials()
 	CMaterial *tempMaterial;
 
 	tempMaterial = new CMaterial();
-	tempMaterial->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	tempMaterial->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	tempMaterial->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 5.0f);
-	tempMaterial->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+
+	tempMaterial->GetMaterial()->m_fDiffuse[0] = 1.0f;
+	tempMaterial->GetMaterial()->m_fDiffuse[1] = 1.0f;
+	tempMaterial->GetMaterial()->m_fDiffuse[2] = 1.0f;
+	tempMaterial->GetMaterial()->m_fDiffuse[3] = 1.0f;
+
+	tempMaterial->GetMaterial()->m_fAmbient[0] = 1.0f;
+	tempMaterial->GetMaterial()->m_fAmbient[1] = 1.0f;
+	tempMaterial->GetMaterial()->m_fAmbient[2] = 1.0f;
+	tempMaterial->GetMaterial()->m_fAmbient[3] = 1.0f;
+
+	tempMaterial->GetMaterial()->m_fSpecular[0] = 0.5f;
+	tempMaterial->GetMaterial()->m_fSpecular[1] = 0.5f;
+	tempMaterial->GetMaterial()->m_fSpecular[2] = 0.5f;
+	tempMaterial->GetMaterial()->m_fSpecular[3] = 5.0f;
+
+	tempMaterial->GetMaterial()->m_fEmissive[0] = 0.0f;
+	tempMaterial->GetMaterial()->m_fEmissive[1] = 0.0f;
+	tempMaterial->GetMaterial()->m_fEmissive[2] = 0.0f;
+	tempMaterial->GetMaterial()->m_fEmissive[3] = 1.0f;
+
 	m_mMaterial[0] = tempMaterial;
 }
 void CResourceManager::_CreateShaders()
