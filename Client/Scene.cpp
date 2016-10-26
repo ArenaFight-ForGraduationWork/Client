@@ -47,7 +47,7 @@ void CScene::BuildObjects()
 
 	m_pLight->BuildLights();
 
- 	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
 }
 
 void CScene::ReleaseObjects()
@@ -110,48 +110,48 @@ void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wPar
 	{
 		switch (wParam)
 		{
-		//case VK_RETURN:
-		//{
-		//	if (1==m_bButton)
-		//	{	// create room > insert room-name
-		//		if (m_pTempString->length() > 0)
-		//		{	// 입력이 뭔가 들어와있긴 함
-		//			m_vStrings.push_back(*m_pTempString);
-		//			m_pTempString = new string();
-		//			m_pTempString->clear();
+			//case VK_RETURN:
+			//{
+			//	if (1==m_bButton)
+			//	{	// create room > insert room-name
+			//		if (m_pTempString->length() > 0)
+			//		{	// 입력이 뭔가 들어와있긴 함
+			//			m_vStrings.push_back(*m_pTempString);
+			//			m_pTempString = new string();
+			//			m_pTempString->clear();
 
-		//			m_bButton = 2;
-		//		}
-		//	}
-		//	else if (2==m_bButton)
-		//	{	// create room > insert stage-number
-		//		if (m_pTempString->length() > 0)
-		//		{
-		//			m_vStrings.push_back(*m_pTempString);
-		//			m_pTempString = new string();
-		//			m_pTempString->clear();
+			//			m_bButton = 2;
+			//		}
+			//	}
+			//	else if (2==m_bButton)
+			//	{	// create room > insert stage-number
+			//		if (m_pTempString->length() > 0)
+			//		{
+			//			m_vStrings.push_back(*m_pTempString);
+			//			m_pTempString = new string();
+			//			m_pTempString->clear();
 
-		//			create_room* pp = reinterpret_cast<create_room*>(send_buffer);
-		//			pp->type = CREATE_ROOM;
-		//			pp->id = myID;
-		//			//gets_s(pp->room_name);
-		//			//gets_s(pp->room_name);
-		//			//printf("입력한방이름:%s\n", pp->room_name);
-		//			strcpy_s(pp->room_name, sizeof(pp->room_name), m_vStrings[0].c_str());
-		//			//printf("플레이할 스테이지를 입력해주세요\n");
-		//			//scanf("%hhd", &pp->stage);
-		//			//printf("입력한스테이지:%d\n", pp->stage);
-		//			pp->stage = static_cast<BYTE>(atoi(m_vStrings[1].c_str()));
-		//			pp->size = sizeof(*pp);
-		//			printf("전송하는사이즈:%d\n", pp->size);
-		//			if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
-		//				printf("send ERROR\n");
+			//			create_room* pp = reinterpret_cast<create_room*>(send_buffer);
+			//			pp->type = CREATE_ROOM;
+			//			pp->id = myID;
+			//			//gets_s(pp->room_name);
+			//			//gets_s(pp->room_name);
+			//			//printf("입력한방이름:%s\n", pp->room_name);
+			//			strcpy_s(pp->room_name, sizeof(pp->room_name), m_vStrings[0].c_str());
+			//			//printf("플레이할 스테이지를 입력해주세요\n");
+			//			//scanf("%hhd", &pp->stage);
+			//			//printf("입력한스테이지:%d\n", pp->stage);
+			//			pp->stage = static_cast<BYTE>(atoi(m_vStrings[1].c_str()));
+			//			pp->size = sizeof(*pp);
+			//			printf("전송하는사이즈:%d\n", pp->size);
+			//			if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
+			//				printf("send ERROR\n");
 
-		//			Sleep(100);
-		//		}
-		//	}
-		//}break;
-		// case0x30~case0x39: 0~9, case0x41~case0x5A: A~Z
+			//			Sleep(100);
+			//		}
+			//	}
+			//}break;
+			// case0x30~case0x39: 0~9, case0x41~case0x5A: A~Z
 		case 0x30:case 0x31:case 0x32:case 0x33:case 0x34:case 0x35:case 0x36:case 0x37:case 0x38:case 0x39:
 		{
 			char temp[2] = { static_cast<char>(wParam) };
@@ -177,7 +177,7 @@ void CIntroScene::KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wPara
 }
 
 void CIntroScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
-{ 
+{
 	switch (player_status)
 	{
 	case static_cast<BYTE>(ePlayer_State::eLOBBY) :
@@ -492,7 +492,7 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			m_pFog->Contract();
 			break;
 
-		case VK_SPACE :
+		case VK_SPACE:
 		{
 			CObject *pPlayer = m_pObjectManager->FindObject(myID);
 			if (pPlayer)
@@ -638,34 +638,46 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 			if ((CObject::eAnimationType::Idle == pPlayer->GetNowAnimation()) | (CObject::eAnimationType::Move == pPlayer->GetNowAnimation()))
 			{
 				// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
-				D3DXVECTOR2 inputAngle(0, 0);
+				XMFLOAT2 f2InputAngle = XMFLOAT2(0, 0);
+				XMVECTOR vInputAngle;
+
 				if (m_pKeyBuffer[VK_UP] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_FORWARD;
-					inputAngle.y += 1;
+					f2InputAngle.y += 1;
 				}
 				if (m_pKeyBuffer[VK_DOWN] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_BACKWARD;
-					inputAngle.y -= 1;
+					f2InputAngle.y -= 1;
 				}
 				if (m_pKeyBuffer[VK_LEFT] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_LEFT;
-					inputAngle.x += 1;
+					f2InputAngle.x += 1;
 				}
 				if (m_pKeyBuffer[VK_RIGHT] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_RIGHT;
-					inputAngle.x -= 1;
+					f2InputAngle.x -= 1;
 				}
 
-				if (D3DXVECTOR2(0, 0) != inputAngle) // inputAngle==(0,0)이면 어느 방향으로든 움직이지 않는다 => 이동 계산X
+				vInputAngle = XMLoadFloat2(&f2InputAngle);
+				if (!XMVector2Equal(vInputAngle, XMVectorZero()))
 				{
-					D3DXVECTOR2 defaultAngle(0, 1);	// X, Z
-					float fAngle = acosf(D3DXVec2Dot(&defaultAngle, &inputAngle) / (D3DXVec2Length(&defaultAngle) * D3DXVec2Length(&inputAngle)));
-					fAngle = static_cast<float>(D3DXToDegree(fAngle));
-					fAngle = ((defaultAngle.x* inputAngle.y - defaultAngle.y*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
+					// X, Z
+					//XMVECTOR vDefaultAngle;
+					//vDefaultAngle = XMVectorZero();	XMVectorSetX(vDefaultAngle, 0); XMVectorSetY(vDefaultAngle, 1);
+					XMFLOAT2 f2DefaultAngle = XMFLOAT2(0, 1);	// X, Z
+					XMVECTOR vDefaultAngle;
+					vDefaultAngle = XMLoadFloat2(&f2DefaultAngle);
+
+					float dotDI = XMVectorGetX(XMVector2Dot(vDefaultAngle, vInputAngle));
+					float lengthD = XMVectorGetX(XMVector2Length(vDefaultAngle));
+					float lengthI = XMVectorGetX(XMVector2Length(vInputAngle));
+					float fAngle = acosf(dotDI / (lengthD * lengthI));
+					fAngle = XMConvertToDegrees(fAngle);
+					fAngle = (((XMVectorGetX(vDefaultAngle) * XMVectorGetY(vInputAngle)) - (XMVectorGetY(vDefaultAngle) * XMVectorGetX(vInputAngle))) > 0.0f) ? fAngle : -fAngle;
 
 					XMFLOAT3 cameraAngle(0, m_pCameraManager->GetNowCamera()->GetYaw() + fAngle, 0);
 					pPlayer->SetDirectionAbsolute(XMLoadFloat3(&cameraAngle));
