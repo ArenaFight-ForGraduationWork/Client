@@ -1,33 +1,30 @@
-﻿#ifndef STDAFX_H_
-#define STDAFX_H_
+﻿#pragma once
 
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "targetver.h"
 
+
+
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일:
 #include <windows.h>
-
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <d3d11_1.h>
-
 #include <Mmsystem.h>
+
+#include <d3d11_1.h>
 #include <d3dcompiler.h>  	//쉐이더 컴파일 함수를 사용하기 위한 헤더 파일
-//#include <D3DX10Math.h>		//Direct3D 수학 함수를 사용하기 위한 헤더 파일
-//#include <D3D9Types.h>
+#include <DirectXMath.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
 #include <vector>
 #include <map>
 #include <string>
-#include <iostream>
+#include <iostream> 
 #include <assert.h>
 
 #include <thread>
@@ -67,12 +64,9 @@ using namespace std;
 #define DIR_BACKWARD	0x02	// 0000 0010
 #define DIR_LEFT		0x04	// 0000 0100
 #define DIR_RIGHT		0x08	// 0000 1000
-//#define DIR_UP			0x10	// 0001 0000
-//#define DIR_DOWN		0x20	// 0010 0000
 
-
+// animation
 #define ANIMATION_COUNT	7		// 오브젝트가 행동하는 애니메이션의 개수 :: idle, run, dead, attack, skill1, skill2 , skill3
 #define ATTACK_COUNT	4		// 공격모션 개수 :: attack, skill1, skill2, skill3 , 히트박스 읽어올때 개수좀 쓸라고!!
 
 
-#endif

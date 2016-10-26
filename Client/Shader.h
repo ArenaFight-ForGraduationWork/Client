@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Object.h"
-#include <d3dcompiler.h>
 
 
 

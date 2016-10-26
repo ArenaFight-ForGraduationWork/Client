@@ -75,7 +75,6 @@ HRESULT WINAPI DXTraceW( _In_z_ const WCHAR* strFile, _In_ DWORD dwLine, _In_ HR
 #define DXTRACE_ERR_MSGBOX(str,hr)    (hr)
 #endif
 
-//이 부분은 내가 추가함
 #define WIDE2(x) L##x
 #define WIDE1(x) WIDE2(x)
 #define WFILE WIDE1(__FILE__)
