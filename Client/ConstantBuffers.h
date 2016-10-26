@@ -26,8 +26,8 @@ struct VS_CB_WORLD_MATRIX
 };
 struct VS_CB_FOG
 {
-	D3DXVECTOR3 m_d3dxvCenter;
-	float m_fRange;					// if m_fRange < 0, fog is enable.
+	float m_fCenter[3];	// x, y, z
+	float m_fRange;		// if m_fRange < 0, fog is enable.
 };
 struct VS_CB_BONE_MATRIX
 {

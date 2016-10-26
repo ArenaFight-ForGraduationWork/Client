@@ -9,7 +9,7 @@ CFog::CFog()
 {
 	m_eState = eState::DISABLE;
 
-	m_pd3dxvCenter = new D3DXVECTOR3(0, 0, 0);
+	m_f3Center = XMFLOAT3(0, 0, 0);
 
 	m_fNowRange = 0;
 	m_fMinRange = 100;
@@ -75,12 +75,12 @@ void CFog::Update()
 
 	UpdateShaderVariables();
 }
-void CFog::Expand(D3DXVECTOR3 *pd3dvCenter)
+void CFog::Expand(float x, float y, float z)
 {
 	if (eState::DISABLE == m_eState)
 	{
 		m_eState = eState::EXPAND;
-		m_pd3dxvCenter = pd3dvCenter;
+		m_f3Center = XMFLOAT3(x, y, z);
 		m_fNowRange = m_fMinRange;
 	}
 }
@@ -100,7 +100,9 @@ void CFog::UpdateShaderVariables()
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbFog, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	{
 		VS_CB_FOG *pcbFog = (VS_CB_FOG *)d3dMappedResource.pData;
-		pcbFog->m_d3dxvCenter = *m_pd3dxvCenter;
+		pcbFog->m_fCenter[0] = m_f3Center.x;
+		pcbFog->m_fCenter[1] = m_f3Center.y;
+		pcbFog->m_fCenter[2] = m_f3Center.z;
 		pcbFog->m_fRange = m_fNowRange;
 	}
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbFog, 0);

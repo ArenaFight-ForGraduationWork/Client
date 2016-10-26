@@ -486,7 +486,7 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			break;
 
 		case VK_F3:
-			m_pFog->Expand(&D3DXVECTOR3(0, 0, 0));
+			m_pFog->Expand(0, 0, 0);
 			break;
 		case VK_F4:
 			m_pFog->Contract();
