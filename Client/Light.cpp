@@ -17,38 +17,102 @@ void CLight::BuildLights()
 	ZeroMemory(m_pLights, sizeof(LIGHTS));
 
 	// 게임 월드 전체를 비추는 주변조명을 설정한다.
-	m_pLights->m_d3dxcGlobalAmbient = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pLights->m_f4GlobalAmbient[0] = 1.0f;
+	m_pLights->m_f4GlobalAmbient[1] = 1.0f;
+	m_pLights->m_f4GlobalAmbient[2] = 1.0f;
+	m_pLights->m_f4GlobalAmbient[3] = 1.0f;
 
 	//3개의 조명(점 광원, 스팟 광원, 방향성 광원)을 설정한다.
-	m_pLights->m_pLights[0].m_bEnable = 1.0f;
-	m_pLights->m_pLights[0].m_nType = POINT_LIGHT;
-	m_pLights->m_pLights[0].m_fRange = 40.0f;
-	m_pLights->m_pLights[0].m_d3dxcAmbient = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcDiffuse = D3DXCOLOR(0.3f, 0.3f, 0.0f, 1.0f);
-	m_pLights->m_pLights[0].m_d3dxcSpecular = D3DXCOLOR(0.1f, 0.1f, 0.1f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvPosition = D3DXVECTOR3(0.0f, 100.0f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[0].m_d3dxvAttenuation = D3DXVECTOR3(1.0f, 0.001f, 0.0001f);
-
-	m_pLights->m_pLights[1].m_bEnable = 1.0f;
-	m_pLights->m_pLights[1].m_nType = SPOT_LIGHT;
-	m_pLights->m_pLights[1].m_fRange = 100.0f;
-	m_pLights->m_pLights[1].m_d3dxcAmbient = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxcDiffuse = D3DXCOLOR(0.3f, 0.3f, 0.0f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxcSpecular = D3DXCOLOR(0.1f, 0.1f, 0.1f, 0.0f);
-	m_pLights->m_pLights[1].m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[1].m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-	m_pLights->m_pLights[1].m_d3dxvAttenuation = D3DXVECTOR3(1.0f, 0.01f, 0.0001f);
-	m_pLights->m_pLights[1].m_fFalloff = 8.0f;
-	m_pLights->m_pLights[1].m_fPhi = (float)cos(D3DXToRadian(40.0f));
-	m_pLights->m_pLights[1].m_fTheta = (float)cos(D3DXToRadian(20.0f));
-
-	m_pLights->m_pLights[2].m_bEnable = 1.0f;
-	m_pLights->m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
-	m_pLights->m_pLights[2].m_d3dxcAmbient = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcDiffuse = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
-	m_pLights->m_pLights[2].m_d3dxcSpecular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
-	m_pLights->m_pLights[2].m_d3dxvDirection = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
+	{
+		m_pLights->m_pLights[0].m_bEnable = FALSE;
+		m_pLights->m_pLights[0].m_nType = POINT_LIGHT;
+		m_pLights->m_pLights[0].m_fRange = 40.0f;
+		// ambient
+		m_pLights->m_pLights[0].m_f4Ambient[0] = 0.8f;
+		m_pLights->m_pLights[0].m_f4Ambient[1] = 0.5f;
+		m_pLights->m_pLights[0].m_f4Ambient[2] = 0.5f;
+		m_pLights->m_pLights[0].m_f4Ambient[3] = 1.0f;
+		// diffuse
+		m_pLights->m_pLights[0].m_f4Diffuse[0] = 0.3f;
+		m_pLights->m_pLights[0].m_f4Diffuse[1] = 0.3f;
+		m_pLights->m_pLights[0].m_f4Diffuse[2] = 0.0f;
+		m_pLights->m_pLights[0].m_f4Diffuse[3] = 1.0f;
+		// specular
+		m_pLights->m_pLights[0].m_f4Specular[0] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Specular[1] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Specular[2] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Specular[3] = 0.0f;
+		// position
+		m_pLights->m_pLights[0].m_f3Position[0] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Position[1] = 200.0f;
+		m_pLights->m_pLights[0].m_f3Position[2] = 0.0f;
+		// direction
+		m_pLights->m_pLights[0].m_f3Direction[0] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Direction[1] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Direction[2] = 0.0f;
+		// attenuation
+		m_pLights->m_pLights[0].m_f3Attenuation[0] = 1.0f;
+		m_pLights->m_pLights[0].m_f3Attenuation[1] = 0.001f;
+		m_pLights->m_pLights[0].m_f3Attenuation[2] = 0.0001f;
+	}
+	{
+		m_pLights->m_pLights[1].m_bEnable = FALSE;
+		m_pLights->m_pLights[1].m_nType = SPOT_LIGHT;
+		m_pLights->m_pLights[1].m_fRange = 100.0f;
+		// ambient
+		m_pLights->m_pLights[0].m_f4Ambient[0] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Ambient[1] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Ambient[2] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Ambient[3] = 1.0f;
+		// diffuse
+		m_pLights->m_pLights[0].m_f4Diffuse[0] = 0.3f;
+		m_pLights->m_pLights[0].m_f4Diffuse[1] = 0.3f;
+		m_pLights->m_pLights[0].m_f4Diffuse[2] = 0.0f;
+		m_pLights->m_pLights[0].m_f4Diffuse[3] = 1.0f;
+		// specular
+		m_pLights->m_pLights[0].m_f4Specular[0] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Specular[1] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Specular[2] = 0.1f;
+		m_pLights->m_pLights[0].m_f4Specular[3] = 0.0f;
+		// position
+		m_pLights->m_pLights[0].m_f3Position[0] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Position[1] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Position[2] = 0.0f;
+		// direction
+		m_pLights->m_pLights[0].m_f3Direction[0] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Direction[1] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Direction[2] = 1.0f;
+		// attenuation
+		m_pLights->m_pLights[0].m_f3Attenuation[0] = 1.0f;
+		m_pLights->m_pLights[0].m_f3Attenuation[1] = 0.01f;
+		m_pLights->m_pLights[0].m_f3Attenuation[2] = 0.0001f;
+		m_pLights->m_pLights[1].m_fFalloff = 8.0f;
+		m_pLights->m_pLights[1].m_fPhi = cos(XMConvertToRadians(40.0f));
+		m_pLights->m_pLights[1].m_fTheta = cos(XMConvertToRadians(20.0f));
+	}
+	{
+		m_pLights->m_pLights[2].m_bEnable = TRUE;
+		m_pLights->m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
+		// ambient
+		m_pLights->m_pLights[0].m_f4Ambient[0] = 0.6f;
+		m_pLights->m_pLights[0].m_f4Ambient[1] = 1.0f;
+		m_pLights->m_pLights[0].m_f4Ambient[2] = 0.6f;
+		m_pLights->m_pLights[0].m_f4Ambient[3] = 1.0f;
+		// diffuse
+		m_pLights->m_pLights[0].m_f4Diffuse[0] = 0.5f;
+		m_pLights->m_pLights[0].m_f4Diffuse[1] = 0.5f;
+		m_pLights->m_pLights[0].m_f4Diffuse[2] = 0.5f;
+		m_pLights->m_pLights[0].m_f4Diffuse[3] = 1.0f;
+		// specular
+		m_pLights->m_pLights[0].m_f4Specular[0] = 0.0f;
+		m_pLights->m_pLights[0].m_f4Specular[1] = 0.0f;
+		m_pLights->m_pLights[0].m_f4Specular[2] = 0.0f;
+		m_pLights->m_pLights[0].m_f4Specular[3] = 0.0f;
+		// direction
+		m_pLights->m_pLights[0].m_f3Direction[0] = 0.0f;
+		m_pLights->m_pLights[0].m_f3Direction[1] = -1.0f;
+		m_pLights->m_pLights[0].m_f3Direction[2] = 0.0f;
+	}
 
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));

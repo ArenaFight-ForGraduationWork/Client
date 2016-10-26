@@ -204,31 +204,31 @@ void CCubeMeshIlluminatedTextured::CalculateVertexNormal(BYTE *pVertices, WORD *
 
 void CCubeMeshIlluminatedTextured::SetTriAngleListVertexNormal(BYTE *pVertices)
 {	// 인덱스 버퍼를 사용하지 않는 삼각형 리스트에 대하여 정점의 법선 벡터를 계산
-	XMVECTOR d3dxvNormal;
+	XMVECTOR vNormal;
 	CNormalVertex *pVertex = NULL;
 	/*삼각형(프리미티브)의 개수를 구하고 각 삼각형의 법선 벡터를 계산하고 삼각형을 구성하는 각 정점의 법선 벡터로 지정한다.*/
 	int nPrimitives = m_nVertices / 3;
 	for (int i = 0; i < nPrimitives; i++)
 	{
-		d3dxvNormal = CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
+		vNormal = CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 0) * m_nStride));
-		pVertex->SetNormal(d3dxvNormal);
+		pVertex->SetNormal(vNormal);
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 1) * m_nStride));
-		pVertex->SetNormal(d3dxvNormal);
+		pVertex->SetNormal(vNormal);
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 2) * m_nStride));
-		pVertex->SetNormal(d3dxvNormal);
+		pVertex->SetNormal(vNormal);
 	}
 }
 
 void CCubeMeshIlluminatedTextured::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
 {
-	XMVECTOR d3dxvSumOfNormal = XMVectorZero();
+	XMVECTOR vSumOfNormal = XMVectorZero();
 	CNormalVertex *pVertex = NULL;
 	USHORT nIndex0, nIndex1, nIndex2;
 
 	for (UINT j = 0; j < m_nVertices; j++)
 	{
-		d3dxvSumOfNormal = XMVectorZero();
+		vSumOfNormal = XMVectorZero();
 		for (int i = 0; i < nPrimitives; i++)
 		{
 			nIndex0 = (bStrip) ? (((i % 2) == 0) ? (i*nOffset + 0) : (i*nOffset + 1)) : (i*nOffset + 0);
@@ -238,27 +238,27 @@ void CCubeMeshIlluminatedTextured::SetAverageVertexNormal(BYTE *pVertices, WORD 
 			nIndex2 = (pIndices) ? pIndices[i*nOffset + 2] : (i*nOffset + 2);
 			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j))
 			{
-				d3dxvSumOfNormal = XMVectorAdd(d3dxvSumOfNormal, CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2));
+				vSumOfNormal = XMVectorAdd(vSumOfNormal, CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2));
 			}
 		}
-		XMVector3Normalize(d3dxvSumOfNormal);
+		XMVector3Normalize(vSumOfNormal);
 		pVertex = (CNormalVertex *)(pVertices + (j * m_nStride));
-		pVertex->SetNormal(d3dxvSumOfNormal);
+		pVertex->SetNormal(vSumOfNormal);
 	}
 }
 
 XMVECTOR CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
 {	// 삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산
-	XMVECTOR d3dxvNormal = XMVectorZero();
-	XMVECTOR d3dxvP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
-	XMVECTOR d3dxvP1 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex1)));
-	XMVECTOR d3dxvP2 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex2)));
-	XMVECTOR d3dxvEdge1 = XMVectorSubtract(d3dxvP1, d3dxvP0);
-	XMVECTOR d3dxvEdge2 = XMVectorSubtract(d3dxvP2, d3dxvP0);
-	d3dxvNormal = XMVector3Cross(d3dxvEdge1, d3dxvEdge2);
-	XMVector3Normalize(d3dxvNormal);
+	XMVECTOR vNormal = XMVectorZero();
+	XMVECTOR vP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
+	XMVECTOR vP1 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex1)));
+	XMVECTOR vP2 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex2)));
+	XMVECTOR vEdge1 = XMVectorSubtract(vP1, vP0);
+	XMVECTOR vEdge2 = XMVectorSubtract(vP2, vP0);
+	vNormal = XMVector3Cross(vEdge1, vEdge2);
+	XMVector3Normalize(vNormal);
 
-	return d3dxvNormal;
+	return vNormal;
 }
 
 

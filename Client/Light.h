@@ -3,6 +3,9 @@
 
 #include "stdafx.h"
 
+#include <DirectXMath.h>
+using namespace DirectX;
+
 #define MAX_LIGHTS			4
 #define POINT_LIGHT			1.0f
 #define SPOT_LIGHT			2.0f
@@ -10,17 +13,17 @@
 
 struct LIGHT
 {
-	D3DXCOLOR m_d3dxcAmbient;
-	D3DXCOLOR m_d3dxcDiffuse;
-	D3DXCOLOR m_d3dxcSpecular;
-	D3DXVECTOR3 m_d3dxvPosition;
+	float m_f4Ambient[4];
+	float m_f4Diffuse[4];
+	float m_f4Specular[4];
+	float m_f3Position[3];
 	float m_fRange;
-	D3DXVECTOR3 m_d3dxvDirection;
+	float m_f3Direction[3];
 	float m_nType;
-	D3DXVECTOR3 m_d3dxvAttenuation;
+	float m_f3Attenuation[3];
 	float m_fFalloff;
-	float m_fTheta; //cos(m_fTheta)
-	float m_fPhi;	//cos(m_fPhi)
+	float m_fTheta; // cos(m_fTheta)
+	float m_fPhi;	// cos(m_fPhi)
 	float m_bEnable;
 	float padding;
 };
@@ -29,8 +32,8 @@ struct LIGHTS
 {
 	// 상수 버퍼는 크기가 16의 배수가 되어야 한다. 
 	LIGHT m_pLights[MAX_LIGHTS];
-	D3DXCOLOR m_d3dxcGlobalAmbient;
-	D3DXVECTOR4 m_d3dxvCameraPosition;
+	float m_f4GlobalAmbient[4];
+	float m_f4CameraPosition[4];
 };
 
 

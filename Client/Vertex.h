@@ -18,7 +18,7 @@ public:
 	CXMVECTOR GetPosition();
 
 private:
-	XMFLOAT3 m_d3dxvPosition;
+	XMFLOAT3 m_f3Position;
 };
 
 class CDiffusedVertex
@@ -30,8 +30,8 @@ public:
 	~CDiffusedVertex() {}
 
 private:
-	XMFLOAT3 m_d3dxvPosition;
-	XMCOLOR m_d3dxcDiffuse;
+	XMFLOAT3 m_f3Position;
+	XMCOLOR m_cDiffuse;
 };
 
 class CNormalVertex
@@ -45,8 +45,8 @@ public:
 	void SetNormal(CXMVECTOR normal);
 
 private:
-	XMFLOAT3 m_d3dxvPosition;
-	XMFLOAT3 m_d3dxvNormal;
+	XMFLOAT3 m_f3Position;
+	XMFLOAT3 m_f3Normal;
 };
 
 class CTexturedVertex
@@ -61,8 +61,8 @@ public:
 	void SetTexCoord(float u, float v);
 
 private:
-	XMFLOAT3 m_d3dxvPosition;
-	XMFLOAT2 m_d3dxvTexCoord;
+	XMFLOAT3 m_f3Position;
+	XMFLOAT2 m_f2TexCoord;
 };
 
 class CTexturedNormalVertex
@@ -82,19 +82,19 @@ public:
 	void SetUV(float u, float v);
 
 private:
-	XMFLOAT3 m_d3dxvPosition;
-	XMFLOAT3 m_d3dxvNormal;
-	XMFLOAT2 m_d3dxvTexCoord;
+	XMFLOAT3 m_f3Position;
+	XMFLOAT3 m_f3Normal;
+	XMFLOAT2 m_f2TexCoord;
 };
 
 class CAnimationVertex
 {
 public:
-	XMFLOAT3 m_d3dxvPosition;
-	XMFLOAT3 m_d3dxvNormal;
-	XMFLOAT2 m_d3dxvTexCoord;
-	int BoneIndexArr[8];
-	float BoneWeightArr[8];
+	XMFLOAT3 m_f3Position;
+	XMFLOAT3 m_f3Normal;
+	XMFLOAT2 m_f2TexCoord;
+	int iBoneIndex[8];
+	float fBoneWeight[8];
 
 	CAnimationVertex();
 	CAnimationVertex(CAnimationVertex& ref) {}

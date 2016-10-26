@@ -5,15 +5,15 @@
 
 CVertex::CVertex()
 {
-	m_d3dxvPosition = XMFLOAT3(0, 0, 0);
+	m_f3Position = XMFLOAT3(0, 0, 0);
 }
 CVertex::CVertex(CXMVECTOR position)
 {
-	XMStoreFloat3(&m_d3dxvPosition, position);
+	XMStoreFloat3(&m_f3Position, position);
 }
 CXMVECTOR CVertex::GetPosition()
 {
-	return XMLoadFloat3(&m_d3dxvPosition);
+	return XMLoadFloat3(&m_f3Position);
 }
 
 
@@ -22,13 +22,13 @@ CXMVECTOR CVertex::GetPosition()
 
 CDiffusedVertex::CDiffusedVertex()
 {
-	m_d3dxvPosition = XMFLOAT3(0, 0, 0);
-	m_d3dxcDiffuse = XMCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
+	m_f3Position = XMFLOAT3(0, 0, 0);
+	m_cDiffuse = XMCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
 }
 CDiffusedVertex::CDiffusedVertex(CXMVECTOR position, CXMVECTOR color)
 {
-	XMStoreFloat3(&m_d3dxvPosition, position);
-	XMStoreColor(&m_d3dxcDiffuse, color);
+	XMStoreFloat3(&m_f3Position, position);
+	XMStoreColor(&m_cDiffuse, color);
 }
 
 
@@ -37,17 +37,17 @@ CDiffusedVertex::CDiffusedVertex(CXMVECTOR position, CXMVECTOR color)
 
 CNormalVertex::CNormalVertex()
 {
-	m_d3dxvPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_d3dxvNormal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_f3Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 CNormalVertex::CNormalVertex(CXMVECTOR position, CXMVECTOR normal)
 {
-	XMStoreFloat3(&m_d3dxvPosition, position);
-	XMStoreFloat3(&m_d3dxvNormal, normal);
+	XMStoreFloat3(&m_f3Position, position);
+	XMStoreFloat3(&m_f3Normal, normal);
 }
 void CNormalVertex::SetNormal(CXMVECTOR normal)
 {
-	XMStoreFloat3(&m_d3dxvNormal, normal);
+	XMStoreFloat3(&m_f3Normal, normal);
 }
 
 
@@ -56,24 +56,24 @@ void CNormalVertex::SetNormal(CXMVECTOR normal)
 
 CTexturedVertex::CTexturedVertex()
 {
-	m_d3dxvPosition = XMFLOAT3(0.0f, 0.0f, 0.0f); 
-	m_d3dxvTexCoord = XMFLOAT2(0.0f, 0.0f); 
+	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_f2TexCoord = XMFLOAT2(0.0f, 0.0f);
 }
 CTexturedVertex::CTexturedVertex(CXMVECTOR position, CXMVECTOR uv)
 { 
-	XMStoreFloat3(&m_d3dxvPosition, position);
-	XMStoreFloat2(&m_d3dxvTexCoord, uv);
+	XMStoreFloat3(&m_f3Position, position);
+	XMStoreFloat2(&m_f2TexCoord, uv);
 }
 void CTexturedVertex::SetPosition(float x, float y, float z)
 {
-	m_d3dxvPosition.x = x;
-	m_d3dxvPosition.y = y; 
-	m_d3dxvPosition.z = z; 
+	m_f3Position.x = x;
+	m_f3Position.y = y;
+	m_f3Position.z = z;
 }
 void CTexturedVertex::SetTexCoord(float u, float v)
 {
-	m_d3dxvTexCoord.x = u; 
-	m_d3dxvTexCoord.y = v;
+	m_f2TexCoord.x = u;
+	m_f2TexCoord.y = v;
 }
 
 
@@ -82,39 +82,39 @@ void CTexturedVertex::SetTexCoord(float u, float v)
 
 CTexturedNormalVertex::CTexturedNormalVertex()
 {
-	m_d3dxvPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_d3dxvNormal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_d3dxvTexCoord = XMFLOAT2(0.0f, 0.0f);
+	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_f3Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_f2TexCoord = XMFLOAT2(0.0f, 0.0f);
 }
 CTexturedNormalVertex::CTexturedNormalVertex(CXMVECTOR position, CXMVECTOR normal, CXMVECTOR uv)
 {
-	XMStoreFloat3(&m_d3dxvPosition, position);
-	XMStoreFloat3(&m_d3dxvNormal, normal);
-	XMStoreFloat2(&m_d3dxvTexCoord, uv);
+	XMStoreFloat3(&m_f3Position, position);
+	XMStoreFloat3(&m_f3Normal, normal);
+	XMStoreFloat2(&m_f2TexCoord, uv);
 }
 CXMVECTOR CTexturedNormalVertex::GetPosition()
 {
-	return XMLoadFloat3(&m_d3dxvPosition);
+	return XMLoadFloat3(&m_f3Position);
 }
 CXMVECTOR CTexturedNormalVertex::GetNormal()
 {
-	return XMLoadFloat3(&m_d3dxvNormal);
+	return XMLoadFloat3(&m_f3Normal);
 }
 CXMVECTOR CTexturedNormalVertex::GetUV()
 {
-	return XMLoadFloat2(&m_d3dxvTexCoord);
+	return XMLoadFloat2(&m_f2TexCoord);
 }
 void CTexturedNormalVertex::SetPosition(float x, float y, float z)
 {
-	m_d3dxvPosition = XMFLOAT3(x, y, z);
+	m_f3Position = XMFLOAT3(x, y, z);
 }
 void CTexturedNormalVertex::SetNormal(float x, float y, float z)
 {
-	m_d3dxvNormal = XMFLOAT3(x, y, z);
+	m_f3Normal = XMFLOAT3(x, y, z);
 }
 void CTexturedNormalVertex::SetUV(float u, float v)
 {
-	m_d3dxvTexCoord = XMFLOAT2(u, v);
+	m_f2TexCoord = XMFLOAT2(u, v);
 }
 
 
@@ -123,29 +123,29 @@ void CTexturedNormalVertex::SetUV(float u, float v)
 
 CAnimationVertex::CAnimationVertex()
 {
-	m_d3dxvPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_d3dxvNormal = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_d3dxvTexCoord = XMFLOAT2(0.0f, 0.0f);
+	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_f3Normal = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_f2TexCoord = XMFLOAT2(0.0f, 0.0f);
 	for (int i = 0; i < 8; ++i)
 	{
-		BoneIndexArr[i] = 0;
-		BoneWeightArr[i] = -1.0f;
+		iBoneIndex[i] = 0;
+		fBoneWeight[i] = -1.0f;
 	}
 }
 void CAnimationVertex::AddBone(int index, float weight)
 {
 	for (int i = 0; i < 8; ++i)
 	{
-		if (BoneWeightArr[i] <= 0.0f)
+		if (fBoneWeight[i] <= 0.0f)
 		{
-			BoneIndexArr[i] = index;
-			BoneWeightArr[i] = weight;
+			iBoneIndex[i] = index;
+			fBoneWeight[i] = weight;
 			return;
 		}
 	}
 
 	//만약 배열을 벗어나면 첫번째 인덱스에 다 더한다.
-	BoneWeightArr[0] += weight;
+	fBoneWeight[0] += weight;
 }
 
 

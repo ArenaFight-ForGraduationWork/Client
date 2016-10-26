@@ -35,7 +35,7 @@ void CFbx::ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v)
 
 	v = new CTexturedNormalVertex[m_iSize];
 
-	D3DXVECTOR3 outTemp;
+	XMFLOAT3 outTemp;
 	for (int i = 0; i < m_iSize; ++i)
 	{
 		//정점데이터 얻어오기
@@ -74,9 +74,9 @@ void CFbx::ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 
 	for (int i = 0; i < m_iSize; ++i)
 	{
-		fscanf_s(fp, "%f %f %f\n", &(v[i].m_d3dxvPosition.x), &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
-		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvNormal.x, &v[i].m_d3dxvNormal.y, &v[i].m_d3dxvNormal.z);
-		fscanf_s(fp, "%f %f\n", &v[i].m_d3dxvTexCoord.x, &v[i].m_d3dxvTexCoord.y);
+		fscanf_s(fp, "%f %f %f\n", &(v[i].m_f3Position.x), &v[i].m_f3Position.y, &v[i].m_f3Position.z);
+		fscanf_s(fp, "%f %f %f\n", &v[i].m_f3Normal.x, &v[i].m_f3Normal.y, &v[i].m_f3Normal.z);
+		fscanf_s(fp, "%f %f\n", &v[i].m_f2TexCoord.x, &v[i].m_f2TexCoord.y);
 	}
 
 	fscanf_s(fp, "%f %f %f\n", &m_pMaxVer.x, &m_pMaxVer.y, &m_pMaxVer.z);
