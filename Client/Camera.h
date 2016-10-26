@@ -34,27 +34,27 @@ public:
 	void SetViewport(DWORD xStart, DWORD yStart, DWORD nWidth, DWORD nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
 	const D3D11_VIEWPORT* GetViewport() { return m_pd3dViewport; }
 
-	CXMMATRIX GetViewMatrix() { return  XMLoadFloat4x4(m_pd3dxmtxView); }
-	CXMMATRIX GetProjectionMatrix() { return  XMLoadFloat4x4(m_pd3dxmtxProjection); }
+	CXMMATRIX GetViewMatrix() { return  XMLoadFloat4x4(m_f4x4View); }
+	CXMMATRIX GetProjectionMatrix() { return  XMLoadFloat4x4(m_f4x4Projection); }
 	ID3D11Buffer* GetCameraConstantBuffer() { return m_pd3dcbCamera; }
 
 	void SetPosition(D3DXVECTOR3 d3dxvPosition) {
-		m_pd3dxvPosition->x = d3dxvPosition.x;
-		m_pd3dxvPosition->y = d3dxvPosition.y;
-		m_pd3dxvPosition->z = d3dxvPosition.z;
+		m_f3Position->x = d3dxvPosition.x;
+		m_f3Position->y = d3dxvPosition.y;
+		m_f3Position->z = d3dxvPosition.z;
 	}
-	CXMVECTOR GetPosition() { return  XMLoadFloat3(m_pd3dxvPosition); }
+	CXMVECTOR GetPosition() { return  XMLoadFloat3(m_f3Position); }
 
 	void SetLookAtPosition(D3DXVECTOR3 d3dxvLookAtWorld) {
-		m_pd3dxvLookAtWorld->x = d3dxvLookAtWorld.x;
-		m_pd3dxvLookAtWorld->y = d3dxvLookAtWorld.y;
-		m_pd3dxvLookAtWorld->z = d3dxvLookAtWorld.z;
+		m_f3LookAtWorld->x = d3dxvLookAtWorld.x;
+		m_f3LookAtWorld->y = d3dxvLookAtWorld.y;
+		m_f3LookAtWorld->z = d3dxvLookAtWorld.z;
 	}
-	CXMVECTOR GetLookAtPosition() { return  XMLoadFloat3(m_pd3dxvLookAtWorld); }
+	CXMVECTOR GetLookAtPosition() { return  XMLoadFloat3(m_f3LookAtWorld); }
 
-	CXMVECTOR GetRightVector() { return  XMLoadFloat3(m_pd3dxvRight); }
-	CXMVECTOR GetUpVector() { return  XMLoadFloat3(m_pd3dxvUp); }
-	CXMVECTOR GetLookVector() { return  XMLoadFloat3(m_pd3dxvLook); }
+	CXMVECTOR GetRightVector() { return  XMLoadFloat3(m_f3Right); }
+	CXMVECTOR GetUpVector() { return  XMLoadFloat3(m_f3Up); }
+	CXMVECTOR GetLookVector() { return  XMLoadFloat3(m_f3Look); }
 
 	const float GetYaw();
 
@@ -69,18 +69,12 @@ public:
 
 	void Zoom(const float fZoom);
 
-	// private로 이동
-	float m_fNearPlaneDistance;
-	float m_fFarPlaneDistance;
-	float m_fAspectRatio;
-	float m_fFOVAngle;
-
 protected:
-	XMFLOAT3 *m_pd3dxvPosition;
+	XMFLOAT3 *m_f3Position;
 
-	XMFLOAT3 *m_pd3dxvRight;
-	XMFLOAT3 *m_pd3dxvUp;
-	XMFLOAT3 *m_pd3dxvLook;
+	XMFLOAT3 *m_f3Right;
+	XMFLOAT3 *m_f3Up;
+	XMFLOAT3 *m_f3Look;
 
 	float m_fTheta;
 	float m_fDistanceFromObject;
@@ -89,17 +83,15 @@ protected:
 	eCameraType m_eMode;
 
 	/* 월드좌표계에서 카메라가 바라보는 점 */
-	XMFLOAT3 *m_pd3dxvLookAtWorld;
+	XMFLOAT3 *m_f3LookAtWorld;
 
 	/* 플레이어의 이동에서 카메라의 이동까지의 시간 */
 	float m_fTimeLag;
 
 	/* 카메라 변환행렬 */
-	XMFLOAT4X4 *m_pd3dxmtxView;
+	XMFLOAT4X4 *m_f4x4View;
 	/* 투영 변환행렬 */
-	XMFLOAT4X4 *m_pd3dxmtxProjection;
-	///* 카메라 월드변환 행렬 */
-	//XMFLOAT4X4 *m_pd3dxmtxWorld;
+	XMFLOAT4X4 *m_f4x4Projection;
 
 	// 뷰-포트를 나타내는 멤버 변수를 선언한다.
 	D3D11_VIEWPORT *m_pd3dViewport;
