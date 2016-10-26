@@ -112,7 +112,7 @@ void CShader::UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld)
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbWorldMatrix, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_WORLD_MATRIX *pcbWorldMatrix = (VS_CB_WORLD_MATRIX *)d3dMappedResource.pData;
-	pcbWorldMatrix->m_d3dxmtxWorld = XMMatrixTranspose(pd3dxmtxWorld);
+	pcbWorldMatrix->m_mtxWorld = XMMatrixTranspose(pd3dxmtxWorld);
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbWorldMatrix, 0);
 
 	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);

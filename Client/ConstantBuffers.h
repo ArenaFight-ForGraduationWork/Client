@@ -17,12 +17,12 @@ using namespace DirectX;
 
 struct VS_CB_VIEWPROJECTION_MATRIX
 {
-	XMMATRIX m_d3dxmtxView;
-	XMMATRIX m_d3dxmtxProjection;
+	XMMATRIX m_mtxView;
+	XMMATRIX m_mtxProjection;
 };
 struct VS_CB_WORLD_MATRIX
 {
-	XMMATRIX m_d3dxmtxWorld;
+	XMMATRIX m_mtxWorld;
 };
 struct VS_CB_FOG
 {
@@ -31,7 +31,7 @@ struct VS_CB_FOG
 };
 struct VS_CB_BONE_MATRIX
 {
-	XMMATRIX m_XMmtxBone[128];
+	XMMATRIX m_mtxBone[128];
 };
 
 

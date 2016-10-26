@@ -23,7 +23,7 @@ public:
 	eCameraType GetMode() { return m_eMode; }
 
 	void GenerateViewMatrix();
-	void GenerateViewMatrix(const D3DXVECTOR3 *pd3dxvEyePosition, const D3DXVECTOR3 *pd3dxvLookAt, const D3DXVECTOR3 *pd3dxvUp);
+	void GenerateViewMatrix(CXMVECTOR vEyePosition, CXMVECTOR vLookAt, CXMVECTOR vUp);
 	void RegenerateViewMatrix();
 
 	void GenerateProjectionMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance, const float fAspectRatio, const float fFOVAngle);
@@ -38,18 +38,10 @@ public:
 	CXMMATRIX GetProjectionMatrix() { return  XMLoadFloat4x4(m_f4x4Projection); }
 	ID3D11Buffer* GetCameraConstantBuffer() { return m_pd3dcbCamera; }
 
-	void SetPosition(D3DXVECTOR3 d3dxvPosition) {
-		m_f3Position->x = d3dxvPosition.x;
-		m_f3Position->y = d3dxvPosition.y;
-		m_f3Position->z = d3dxvPosition.z;
-	}
+	void SetPosition(CXMVECTOR vPosition) {	XMStoreFloat3(m_f3Position, vPosition);	}
 	CXMVECTOR GetPosition() { return  XMLoadFloat3(m_f3Position); }
 
-	void SetLookAtPosition(D3DXVECTOR3 d3dxvLookAtWorld) {
-		m_f3LookAtWorld->x = d3dxvLookAtWorld.x;
-		m_f3LookAtWorld->y = d3dxvLookAtWorld.y;
-		m_f3LookAtWorld->z = d3dxvLookAtWorld.z;
-	}
+	void SetLookAtPosition(CXMVECTOR vLookAtWorld) { XMStoreFloat3(m_f3LookAtWorld, vLookAtWorld); }
 	CXMVECTOR GetLookAtPosition() { return  XMLoadFloat3(m_f3LookAtWorld); }
 
 	CXMVECTOR GetRightVector() { return  XMLoadFloat3(m_f3Right); }
@@ -63,9 +55,9 @@ public:
 
 	virtual void RotatebyYaw(const float fYaw = 0.0f) = 0;
 	//카메라의 이동, 회전에 따라 카메라의 정보를 갱신하는 가상함수이다.
-	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition) = 0;
+	virtual void Update(CXMVECTOR vPosition) = 0;
 	/*3인칭 카메라에서 카메라가 바라보는 지점을 설정하는 가상함수이다. 일반적으로 플레이어를 바라보도록 설정한다.*/
-	virtual void SetLookAt(const D3DXVECTOR3 *vLookAt) = 0;
+	virtual void SetLookAt(CXMVECTOR vLookAt) = 0;
 
 	void Zoom(const float fZoom);
 
@@ -109,8 +101,8 @@ public:
 	CThirdPersonCamera();
 
 	virtual void RotatebyYaw(const float fYaw = 0.0f);
-	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition);
-	virtual void SetLookAt(const D3DXVECTOR3 *vLookAt);
+	virtual void Update(CXMVECTOR vPosition);
+	virtual void SetLookAt(CXMVECTOR vLookAt);
 };
 
 

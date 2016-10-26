@@ -725,14 +725,14 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 
 	if (pPlayer)
 	{
-		D3DXVECTOR3 position;
-		position.x = XMVectorGetX(pPlayer->GetPosition());
-		position.y = XMVectorGetY(pPlayer->GetPosition());
-		position.z = XMVectorGetZ(pPlayer->GetPosition());
-		m_pCameraManager->GetNowCamera()->Update(&position);
+		XMVECTOR position = pPlayer->GetPosition();
+		m_pCameraManager->GetNowCamera()->Update(position);
 	}
 	else
-		m_pCameraManager->GetNowCamera()->Update(new D3DXVECTOR3(0, 0, 0));
+	{
+		XMFLOAT3 position = XMFLOAT3(0, 0, 0);
+		m_pCameraManager->GetNowCamera()->Update(XMLoadFloat3(&position));
+	}
 }
 
 void CFirstScene::BuildObjects()
@@ -744,15 +744,16 @@ void CFirstScene::BuildObjects()
 	m_pCameraManager = CCameraManager::GetSingleton();
 	if (m_pObjectManager->FindObject(myID))
 	{
-		D3DXVECTOR3 d3dxPos;
 		XMVECTOR vPos;
 		vPos = m_pObjectManager->FindObject(myID)->GetPosition();
-		d3dxPos = D3DXVECTOR3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos));
 
-		m_pCameraManager->GetNowCamera()->SetLookAt(&d3dxPos);
+		m_pCameraManager->GetNowCamera()->SetLookAt(vPos);
 	}
 	else
-		m_pCameraManager->GetNowCamera()->SetLookAt(new D3DXVECTOR3(0, 0, 0));
+	{
+		XMFLOAT3 lookAt = XMFLOAT3(0, 0, 0);
+		m_pCameraManager->GetNowCamera()->SetLookAt(XMLoadFloat3(&lookAt));
+	}
 
 	///* 아이템 설정 */
 	//for (int i = 0; i < 10; ++i)

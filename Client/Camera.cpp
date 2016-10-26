@@ -58,22 +58,10 @@ void CCamera::GenerateViewMatrix()
 	// generate camera view matrix
 	XMStoreFloat4x4(m_f4x4View, XMMatrixLookAtLH(P, L, U));
 }
-void CCamera::GenerateViewMatrix(const D3DXVECTOR3 *pd3dxvEyePosition, const D3DXVECTOR3 *pd3dxvLookAt, const D3DXVECTOR3 *pd3dxvUp)
+void CCamera::GenerateViewMatrix(CXMVECTOR vEyePosition, CXMVECTOR vLookAt, CXMVECTOR vUp)
 {
-	// convert D3DXVECTOR3 to XMFLOAT3
-	XMFLOAT3 pos, lookAt, up;
-	pos.x = pd3dxvEyePosition->x;	pos.y = pd3dxvEyePosition->y;	pos.z = pd3dxvEyePosition->z;
-	lookAt.x = pd3dxvLookAt->x;	lookAt.y = pd3dxvLookAt->y;	lookAt.z = pd3dxvLookAt->z;
-	up.x = pd3dxvUp->x;	up.y = pd3dxvUp->y;	up.z = pd3dxvUp->z;
-
-	// convert XMFLOAT3 to XMVECTOR
-	XMVECTOR P, L, U;
-	P = XMLoadFloat3(&pos);
-	L = XMLoadFloat3(&lookAt);
-	U = XMLoadFloat3(&up);
-
 	// generate camera view matrix
-	XMStoreFloat4x4(m_f4x4View, XMMatrixLookAtLH(P, L, U));
+	XMStoreFloat4x4(m_f4x4View, XMMatrixLookAtLH(vEyePosition, vLookAt, vUp));
 }
 void CCamera::RegenerateViewMatrix()
 {
@@ -118,7 +106,7 @@ void CCamera::GenerateProjectionMatrix(const float fNearPlaneDistance, const flo
 	XMMATRIX projection;
 
 	// generate camera projection matrix
-	projection = XMMatrixPerspectiveFovLH(static_cast<float>(D3DXToRadian(fFOVAngle)), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance);
+	projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(fFOVAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance);
 
 	// convert XMMATRIX to XMFLOAT4X4
 	XMStoreFloat4x4(m_f4x4Projection, projection);
@@ -140,8 +128,8 @@ void CCamera::UpdateShaderVariables()
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
-	pcbViewProjection->m_d3dxmtxView = XMMatrixTranspose(XMLoadFloat4x4(m_f4x4View));
-	pcbViewProjection->m_d3dxmtxProjection = XMMatrixTranspose(XMLoadFloat4x4(m_f4x4Projection));
+	pcbViewProjection->m_mtxView = XMMatrixTranspose(XMLoadFloat4x4(m_f4x4View));
+	pcbViewProjection->m_mtxProjection = XMMatrixTranspose(XMLoadFloat4x4(m_f4x4Projection));
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
 
 	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
@@ -177,38 +165,35 @@ CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 	m_eMode = eCameraType::THIRD_PERSON_CAMERA;
 }
 
-void CThirdPersonCamera::Update(const D3DXVECTOR3 *pd3dxvPosition)
+void CThirdPersonCamera::Update(CXMVECTOR vPosition)
 {
-	double theta = D3DXToRadian(m_fTheta);
-	m_f3Position->x = pd3dxvPosition->x + (m_fDistanceFromObject * static_cast<float>(cos(theta)));
-	m_f3Position->y = pd3dxvPosition->y + m_fHeight;
-	m_f3Position->z = pd3dxvPosition->z + (m_fDistanceFromObject * static_cast<float>(sin(theta)));
+	float theta = XMConvertToRadians(m_fTheta);
+	m_f3Position->x = XMVectorGetX(vPosition) + (m_fDistanceFromObject * cos(theta));
+	m_f3Position->y = XMVectorGetY(vPosition) + m_fHeight;
+	m_f3Position->z = XMVectorGetZ(vPosition) + (m_fDistanceFromObject * sin(theta));
 
-	D3DXVECTOR3 d3dxvLookAtPosition = D3DXVECTOR3(pd3dxvPosition->x, pd3dxvPosition->y + 170, pd3dxvPosition->z);
-	SetLookAtPosition(d3dxvLookAtPosition);
-
-	//D3DXVECTOR3 *pTemp = new D3DXVECTOR3(XMVectorGetX(GetLookAtPosition()), XMVectorGetY(GetLookAtPosition()), XMVectorGetZ(GetLookAtPosition()));
-	//SetLookAt(pTemp);
-	SetLookAt(&d3dxvLookAtPosition);
+	XMFLOAT3 f3LookAt = XMFLOAT3(XMVectorGetX(vPosition), XMVectorGetY(vPosition) + 170, XMVectorGetZ(vPosition));
+	XMVECTOR vLookAt;
+	vLookAt = XMLoadFloat3(&f3LookAt);
+	SetLookAtPosition(vLookAt);
+	SetLookAt(vLookAt);
 
 	RegenerateViewMatrix();
 }
 
-void CThirdPersonCamera::SetLookAt(const D3DXVECTOR3 *pd3dxvLookAt)
+void CThirdPersonCamera::SetLookAt(CXMVECTOR vLookAt)
 {
 	XMFLOAT4X4 mtx;
-	XMVECTOR P, L, U;
-	XMFLOAT3 lookAt, up, temp;
+	XMVECTOR P, U;
+	XMFLOAT3 up, temp;
 
 	// convert XMFLOAT3 to XMVECTOR
 	P = XMLoadFloat3(m_f3Position);
-	lookAt.x = pd3dxvLookAt->x;	lookAt.y = pd3dxvLookAt->y;	lookAt.z = pd3dxvLookAt->z;
-	L = XMLoadFloat3(&lookAt);
 	up = XMFLOAT3(0, 1, 0);
 	U = XMLoadFloat3(&up);
 
 	// caculate lookAt matrix
-	XMStoreFloat4x4(&mtx, XMMatrixLookAtLH(P, L, U));
+	XMStoreFloat4x4(&mtx, XMMatrixLookAtLH(P, vLookAt, U));
 
 	temp = XMFLOAT3(mtx._11, mtx._21, mtx._31);
 	if (!XMVector3Equal(XMLoadFloat3(&XMFLOAT3(0, 0, 0)), XMLoadFloat3(&temp)))
@@ -265,7 +250,8 @@ void CCameraManager::Initialize()
 
 	pCamera = new CThirdPersonCamera();
 	pCamera->CreateShaderVariables();
-	pCamera->SetLookAt(new D3DXVECTOR3(0, 0, 0));
+	XMFLOAT3 lookAt = XMFLOAT3(0, 0, 0);
+	pCamera->SetLookAt(XMLoadFloat3(&lookAt));
 	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
 	pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	pCamera->GenerateProjectionMatrix(1.01f, 10000.0f, ASPECT_RATIO, 60.0f);
