@@ -30,7 +30,7 @@ void CObjectManager::Initialize()
 	pResourceManager = CResourceManager::GetSingleton();
 }
 
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction, bool isAnimating)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction, bool isAnimating)
 {
 	if (isAnimating)
 		 return _InsertAnimateT(id, eType, position, direction);
@@ -39,17 +39,21 @@ CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 positi
 }
 
 
-CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
+	float x, y, z;
 	CObject *pObject = new CObject(id);
+
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType(static_cast<int>(eType));
 
-	pObject->SetPositionAbsolute(position.x, position.y, position.z);
-	pObject->SetDirectionAbsolute(direction.x, direction.y, direction.z);
+	x = XMVectorGetX(position);	y = XMVectorGetY(position);	z = XMVectorGetZ(position);
+	pObject->SetPositionAbsolute(x, y, z);
+	x = XMVectorGetX(direction); y = XMVectorGetY(direction); z = XMVectorGetZ(direction);
+	pObject->SetDirectionAbsolute(x, y, z);
 
 	pObject->PlayAnimation(CObject::eAnimationType::None);
 	pObject->SetBoundingBox();
@@ -61,8 +65,9 @@ CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, D3DXVECTO
 
 	return pObject;
 }
-CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction)
 {	// 애니메이션 데이터 전용
+	float x, y, z;
 	CObject *pObject = new CObject(id);
 
 	switch (eType)
@@ -89,8 +94,10 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, D3DXVECTO
 	pObject->SetResult(pResourceManager->GetMesh(eType)->GetResultMatrix());
 	pObject->SetConstantBuffer();
 	
-	pObject->SetPositionAbsolute(position.x, position.y, position.z);
-	pObject->SetDirectionAbsolute(direction.x, direction.y, direction.z);
+	x = XMVectorGetX(position);	y = XMVectorGetY(position);	z = XMVectorGetZ(position);
+	pObject->SetPositionAbsolute(x, y, z);
+	x = XMVectorGetX(direction); y = XMVectorGetY(direction); z = XMVectorGetZ(direction);
+	pObject->SetDirectionAbsolute(x, y, z);
 
 	pObject->SetBoundingBox();
 	pObject->PlayAnimation(CObject::eAnimationType::Idle);

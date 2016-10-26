@@ -32,8 +32,7 @@ public:
 	~CObjectManager();
 	void Initialize();
 
-	/* ~데이터를 가진 오브젝트를 추가 */
-	CObject* Insert(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0), bool isAnimating = false);
+	CObject* Insert(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction, bool isAnimating = false);
 
 	CObject* FindObject(UINT id);
 	/*
@@ -62,8 +61,8 @@ private:
 
 	CObjectManager();
 
-	CObject* _InsertAnimateF(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
-	CObject* _InsertAnimateT(UINT id, eResourceType eType, D3DXVECTOR3 position = D3DXVECTOR3(0, 0, 0), D3DXVECTOR3 direction = D3DXVECTOR3(0, 0, 0));
+	CObject* _InsertAnimateF(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction);
+	CObject* _InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction);
 };
 
 

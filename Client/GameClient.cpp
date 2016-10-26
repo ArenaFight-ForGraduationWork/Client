@@ -249,7 +249,7 @@ void ProcessPacket(char *ptr) {
 		{
 			if (my_packet->id[i] != -1) {
 				if (myID != my_packet->id[i])	/* 방에 이미 들어와있는 사람 정보 중에 myID도 포함이므로 제외한다 */
-					pObjectManager->Insert(my_packet->id[i], eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
+					pObjectManager->Insert(my_packet->id[i], eResourceType::User, XMVectorZero(), XMVectorZero(), true);
 				printf("룸에 있는 플레이어 id:%d\n", my_packet->id[i]);
 			}
 		}
@@ -269,7 +269,7 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (!pObject)
 		{	// 해당 id가 존재하지 않으면
-			pObjectManager->Insert(my_packet->id, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
+			pObjectManager->Insert(my_packet->id, eResourceType::User, XMVectorZero(), XMVectorZero(), true);
 		}
 		else
 		{ //  해당 id가 존재하면
@@ -418,7 +418,7 @@ void ProcessPacket(char *ptr) {
 		player_status = static_cast<BYTE>(ePlayer_State::eFight);
 		CSceneManager::GetSingleton()->Change(CSceneManager::eSceneType::FIRST);
 
-		pObjectManager->Insert((UINT)myID, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
+		pObjectManager->Insert((UINT)myID, eResourceType::User, XMVectorZero(), XMVectorZero(), true);
 
 		printf("보스 ID:%d\n", my_packet->bossid);
 
@@ -433,9 +433,9 @@ void ProcessPacket(char *ptr) {
 		}
 		else
 		{	// if boss doesn't exist
-			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, 
-				D3DXVECTOR3(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz)), 
-				D3DXVECTOR3(0.0f, static_cast<float>(my_packet->bossdis), 0.0f), true);
+			XMFLOAT3 pos(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz));
+			XMFLOAT3 dir(0.0f, static_cast<float>(my_packet->bossdis), 0.0f);
+			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, XMLoadFloat3(&pos), XMLoadFloat3(&dir), true);
 		}
 		pObject = nullptr;
 	}break;

@@ -776,36 +776,52 @@ void CFirstScene::BuildObjects()
 
 	/* 맵 꾸미기 */
 	{
+		XMFLOAT3 f3VectorPos, f3VectorDir;
+		//XMVECTOR vVector;
+
 		// 바닥
-		m_pObjectManager->Insert(3000, eResourceType::Floor, D3DXVECTOR3(0, 0, 0));
+		m_pObjectManager->Insert(3000, eResourceType::Floor, XMVectorZero(), XMVectorZero());
 
 		// 벽. 한 면에 두개씩 들어간다
-		D3DXVECTOR3 WallPos[8];
-		WallPos[0] = D3DXVECTOR3(-1250, 500, 2500);
-		WallPos[1] = D3DXVECTOR3(1250, 500, 2500);
-		WallPos[2] = D3DXVECTOR3(-1250, 500, -2500);
-		WallPos[3] = D3DXVECTOR3(1250, 500, -2500);
-
-		WallPos[4] = D3DXVECTOR3(2500, 500, 1250);
-		WallPos[5] = D3DXVECTOR3(2500, 500, -1250);
-		WallPos[6] = D3DXVECTOR3(-2500, 500, 1250);
-		WallPos[7] = D3DXVECTOR3(-2500, 500, -1250);
+		XMFLOAT3 WallPos[8];
+		XMFLOAT3 f3WallDir;
+		WallPos[0] = XMFLOAT3(-1250, 500, 2500);
+		WallPos[1] = XMFLOAT3(1250, 500, 2500);
+		WallPos[2] = XMFLOAT3(-1250, 500, -2500);
+		WallPos[3] = XMFLOAT3(1250, 500, -2500);
+		WallPos[4] = XMFLOAT3(2500, 500, 1250);
+		WallPos[5] = XMFLOAT3(2500, 500, -1250);
+		WallPos[6] = XMFLOAT3(-2500, 500, 1250);
+		WallPos[7] = XMFLOAT3(-2500, 500, -1250);
 		for (int i = 0; i < 8; ++i)
 		{
 			if (i < 4)
-				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, WallPos[i]);	// ㅡ
+			{
+				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, XMLoadFloat3(&WallPos[i]), XMVectorZero());	// ㅡ
+			}
 			else
-				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, WallPos[i], D3DXVECTOR3(0, 90, 0));  // ㅣ
+			{
+				f3WallDir = XMFLOAT3(0, 90, 0);
+				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, XMLoadFloat3(&WallPos[i]), XMLoadFloat3(&f3WallDir));  // ㅣ
+			}
 		}
 
 		// 나무
-		m_pObjectManager->Insert(4010, eResourceType::Tree, D3DXVECTOR3(-2000, 0, 1900), D3DXVECTOR3(0, 90, 0));
-		m_pObjectManager->Insert(4011, eResourceType::Tree, D3DXVECTOR3(-1800, 0, -1900));
-		m_pObjectManager->Insert(4012, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
-		m_pObjectManager->Insert(4013, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
+		f3VectorPos = XMFLOAT3(-2000, 0, 1900); f3VectorDir = XMFLOAT3(0, 90, 0);
+		m_pObjectManager->Insert(4010, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		f3VectorPos = XMFLOAT3(-1800, 0, -1900); f3VectorDir = XMFLOAT3(0, 0, 0);
+		m_pObjectManager->Insert(4011, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		f3VectorPos = XMFLOAT3(2200, 0, 1900); f3VectorDir = XMFLOAT3(0, 60, 0);
+		m_pObjectManager->Insert(4012, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		f3VectorPos = XMFLOAT3(2100, 0, -1900); f3VectorDir = XMFLOAT3(0, 0, 0);
+		m_pObjectManager->Insert(4013, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
 
 		for (short i = 0; i < 20; ++i)
-			m_pObjectManager->Insert(4020 + i, eResourceType::grass, D3DXVECTOR3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000)));
+		{
+			f3VectorPos = XMFLOAT3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000));
+			f3VectorDir = XMFLOAT3(0, 0, 0);
+			m_pObjectManager->Insert(4020 + i, eResourceType::grass, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		}
 	}
 
 	m_pFog = new CFog();
