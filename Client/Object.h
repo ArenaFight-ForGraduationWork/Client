@@ -74,16 +74,16 @@ public:
 	virtual ~CObject();
 
 	void SetPositionRelative(float& fx, float& fy, float& fz);
-	void SetPositionRelative(CXMVECTOR d3dxVec);
+	void SetPositionRelative(CXMVECTOR vec);
 	void SetPositionAbsolute(float& fx, float& fy, float& fz);
-	void SetPositionAbsolute(CXMVECTOR d3dxVec);
+	void SetPositionAbsolute(CXMVECTOR vec);
 	/* 로컬 Z축 방향으로 이동한다. 속력이 있으면 속력*시간(fVar), 없으면 거리(fVar)만큼 움직인다  */
 	virtual void MoveForward(float& fVar);
 
 	void SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll);
-	void SetDirectionRelative(CXMVECTOR d3dxVec);
+	void SetDirectionRelative(CXMVECTOR vec);
 	void SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll);
-	void SetDirectionAbsolute(CXMVECTOR d3dxVec);
+	void SetDirectionAbsolute(CXMVECTOR vec);
 
 	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환
 	CXMVECTOR GetPosition();
@@ -92,7 +92,7 @@ public:
 	CXMVECTOR GetUp();
 	CXMVECTOR GetLookAt();
 
-	CXMMATRIX GetWorldMatrix() { return XMLoadFloat4x4(&m_pd3dxWorldMatrix); }
+	CXMMATRIX GetWorldMatrix() { return XMLoadFloat4x4(&m_f4x4WorldMatrix); }
 
 	const UINT& GetId() { return m_id; }
 
@@ -155,14 +155,14 @@ public:
 private:
 	UINT m_id;
 
-	XMFLOAT3 m_pd3dxvDirection;
+	XMFLOAT3 m_f3Direction;
 
 	int m_iSourceType;
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
 
-	XMFLOAT4X4 m_pd3dxWorldMatrix;
+	XMFLOAT4X4 m_f4x4WorldMatrix;
 
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;

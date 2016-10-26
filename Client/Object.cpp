@@ -108,7 +108,7 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 
 CObject::CObject(UINT id)
 {
-	XMStoreFloat4x4(&m_pd3dxWorldMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_f4x4WorldMatrix, XMMatrixIdentity());
 
 	m_pMesh = nullptr;
 	m_pMaterial = nullptr;
@@ -116,7 +116,7 @@ CObject::CObject(UINT id)
 
 	m_id = id;
 
-	m_pd3dxvDirection = XMFLOAT3(0, 0, 0);
+	m_f3Direction = XMFLOAT3(0, 0, 0);
 
 	m_pd3dcbBoneMatrix = nullptr;
 	m_pcbBoneMatrix = nullptr;
@@ -178,28 +178,28 @@ void CObject::SetPositionRelative(float& fx, float& fy, float& fz)
 
 	SetPositionAbsolute(position);
 }
-void CObject::SetPositionRelative(CXMVECTOR d3dxVec)
+void CObject::SetPositionRelative(CXMVECTOR vec)
 {
 	XMVECTOR position;
 	position = GetPosition();
 
-	position += XMVectorGetX(d3dxVec) * GetRight();
-	position += XMVectorGetY(d3dxVec) * GetUp();
-	position += XMVectorGetZ(d3dxVec) * GetLookAt();
+	position += XMVectorGetX(vec) * GetRight();
+	position += XMVectorGetY(vec) * GetUp();
+	position += XMVectorGetZ(vec) * GetLookAt();
 
 	SetPositionAbsolute(position);
 }
 void CObject::SetPositionAbsolute(float& fx, float& fy, float& fz)
 {
-	m_pd3dxWorldMatrix._41 = fx;
-	m_pd3dxWorldMatrix._42 = fy;
-	m_pd3dxWorldMatrix._43 = fz;
+	m_f4x4WorldMatrix._41 = fx;
+	m_f4x4WorldMatrix._42 = fy;
+	m_f4x4WorldMatrix._43 = fz;
 }
-void CObject::SetPositionAbsolute(CXMVECTOR d3dxVec)
+void CObject::SetPositionAbsolute(CXMVECTOR vec)
 {
-	m_pd3dxWorldMatrix._41 = XMVectorGetX(d3dxVec);
-	m_pd3dxWorldMatrix._42 = XMVectorGetY(d3dxVec);
-	m_pd3dxWorldMatrix._43 = XMVectorGetZ(d3dxVec);
+	m_f4x4WorldMatrix._41 = XMVectorGetX(vec);
+	m_f4x4WorldMatrix._42 = XMVectorGetY(vec);
+	m_f4x4WorldMatrix._43 = XMVectorGetZ(vec);
 }
 void CObject::MoveForward(float& fVar)
 {
@@ -214,76 +214,76 @@ void CObject::MoveForward(float& fVar)
 
 void CObject::SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll)
 {
-	m_pd3dxvDirection.x += fPitch;
-	m_pd3dxvDirection.y += fYaw;
-	m_pd3dxvDirection.z += fRoll;
+	m_f3Direction.x += fPitch;
+	m_f3Direction.y += fYaw;
+	m_f3Direction.z += fRoll;
 
 	XMMATRIX mRotate;
 	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
 
 	XMMATRIX mWorld;
-	mWorld = XMLoadFloat4x4(&m_pd3dxWorldMatrix);
+	mWorld = XMLoadFloat4x4(&m_f4x4WorldMatrix);
 
 	mWorld = XMMatrixMultiply(mRotate, mWorld);
 
-	XMStoreFloat4x4(&m_pd3dxWorldMatrix, mWorld);
+	XMStoreFloat4x4(&m_f4x4WorldMatrix, mWorld);
 }
-void CObject::SetDirectionRelative(CXMVECTOR d3dxVec)
+void CObject::SetDirectionRelative(CXMVECTOR vec)
 {
-	m_pd3dxvDirection.x += XMVectorGetX(d3dxVec);
-	m_pd3dxvDirection.y += XMVectorGetY(d3dxVec);
-	m_pd3dxvDirection.z += XMVectorGetZ(d3dxVec);
+	m_f3Direction.x += XMVectorGetX(vec);
+	m_f3Direction.y += XMVectorGetY(vec);
+	m_f3Direction.z += XMVectorGetZ(vec);
 
 	XMMATRIX mRotate;
-	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(XMVectorGetX(d3dxVec)), XMConvertToRadians(XMVectorGetY(d3dxVec)), XMConvertToRadians(XMVectorGetZ(d3dxVec)));
+	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(XMVectorGetX(vec)), XMConvertToRadians(XMVectorGetY(vec)), XMConvertToRadians(XMVectorGetZ(vec)));
 
 	XMMATRIX mWorld;
-	mWorld = XMLoadFloat4x4(&m_pd3dxWorldMatrix);
+	mWorld = XMLoadFloat4x4(&m_f4x4WorldMatrix);
 
 	mWorld = XMMatrixMultiply(mRotate, mWorld);
 
-	XMStoreFloat4x4(&m_pd3dxWorldMatrix, mWorld);
+	XMStoreFloat4x4(&m_f4x4WorldMatrix, mWorld);
 }
 void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 {
-	m_pd3dxvDirection = XMFLOAT3(0, 0, 0);
+	m_f3Direction = XMFLOAT3(0, 0, 0);
 
 	//   1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
 	// v 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
-	m_pd3dxWorldMatrix._11 = 1;	m_pd3dxWorldMatrix._12 = 0;	m_pd3dxWorldMatrix._13 = 0;
-	m_pd3dxWorldMatrix._21 = 0;	m_pd3dxWorldMatrix._22 = 1;	m_pd3dxWorldMatrix._23 = 0;
-	m_pd3dxWorldMatrix._31 = 0;	m_pd3dxWorldMatrix._32 = 0;	m_pd3dxWorldMatrix._33 = 1;
+	m_f4x4WorldMatrix._11 = 1;	m_f4x4WorldMatrix._12 = 0;	m_f4x4WorldMatrix._13 = 0;
+	m_f4x4WorldMatrix._21 = 0;	m_f4x4WorldMatrix._22 = 1;	m_f4x4WorldMatrix._23 = 0;
+	m_f4x4WorldMatrix._31 = 0;	m_f4x4WorldMatrix._32 = 0;	m_f4x4WorldMatrix._33 = 1;
 
 	// 2) fPitch, fYaw, fRoll로 회전하기
 	SetDirectionRelative(fPitch, fYaw, fRoll);
 }
-void CObject::SetDirectionAbsolute(CXMVECTOR d3dxVec)
+void CObject::SetDirectionAbsolute(CXMVECTOR vec)
 {
-	m_pd3dxvDirection = XMFLOAT3(0, 0, 0);
+	m_f3Direction = XMFLOAT3(0, 0, 0);
 
-	m_pd3dxWorldMatrix._11 = 1;	m_pd3dxWorldMatrix._12 = 0;	m_pd3dxWorldMatrix._13 = 0;
-	m_pd3dxWorldMatrix._21 = 0;	m_pd3dxWorldMatrix._22 = 1;	m_pd3dxWorldMatrix._23 = 0;
-	m_pd3dxWorldMatrix._31 = 0;	m_pd3dxWorldMatrix._32 = 0;	m_pd3dxWorldMatrix._33 = 1;
+	m_f4x4WorldMatrix._11 = 1;	m_f4x4WorldMatrix._12 = 0;	m_f4x4WorldMatrix._13 = 0;
+	m_f4x4WorldMatrix._21 = 0;	m_f4x4WorldMatrix._22 = 1;	m_f4x4WorldMatrix._23 = 0;
+	m_f4x4WorldMatrix._31 = 0;	m_f4x4WorldMatrix._32 = 0;	m_f4x4WorldMatrix._33 = 1;
 
-	SetDirectionRelative(d3dxVec);
+	SetDirectionRelative(vec);
 }
 
 CXMVECTOR CObject::GetPosition()
 {
 	XMFLOAT3 position;
-	position = XMFLOAT3(m_pd3dxWorldMatrix._41, m_pd3dxWorldMatrix._42, m_pd3dxWorldMatrix._43);
+	position = XMFLOAT3(m_f4x4WorldMatrix._41, m_f4x4WorldMatrix._42, m_f4x4WorldMatrix._43);
 
 	return XMLoadFloat3(&position);
 }
 CXMVECTOR CObject::GetDirection()
 {
-	return XMLoadFloat3(&m_pd3dxvDirection);
+	return XMLoadFloat3(&m_f3Direction);
 }
 
 CXMVECTOR CObject::GetRight()
 {
 	XMFLOAT3 f3Right;
-	f3Right = XMFLOAT3(m_pd3dxWorldMatrix._11, m_pd3dxWorldMatrix._12, m_pd3dxWorldMatrix._13);
+	f3Right = XMFLOAT3(m_f4x4WorldMatrix._11, m_f4x4WorldMatrix._12, m_f4x4WorldMatrix._13);
 
 	XMVECTOR vRight;
 	vRight = XMLoadFloat3(&f3Right);
@@ -295,7 +295,7 @@ CXMVECTOR CObject::GetRight()
 CXMVECTOR CObject::GetUp()
 {
 	XMFLOAT3 f3Up;
-	f3Up = XMFLOAT3(m_pd3dxWorldMatrix._21, m_pd3dxWorldMatrix._22, m_pd3dxWorldMatrix._23);
+	f3Up = XMFLOAT3(m_f4x4WorldMatrix._21, m_f4x4WorldMatrix._22, m_f4x4WorldMatrix._23);
 
 	XMVECTOR vUp;
 	vUp = XMLoadFloat3(&f3Up);
@@ -307,7 +307,7 @@ CXMVECTOR CObject::GetUp()
 CXMVECTOR CObject::GetLookAt()
 {
 	XMFLOAT3 f3Look;
-	f3Look = XMFLOAT3(m_pd3dxWorldMatrix._31, m_pd3dxWorldMatrix._32, m_pd3dxWorldMatrix._33);
+	f3Look = XMFLOAT3(m_f4x4WorldMatrix._31, m_f4x4WorldMatrix._32, m_f4x4WorldMatrix._33);
 
 	XMVECTOR vLook;
 	vLook = XMLoadFloat3(&f3Look);
@@ -353,14 +353,14 @@ void CObject::SetBoundingBox()
 CXMVECTOR CObject::GetMaxVer()
 {
 	XMVECTOR vVertex;
-	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMaxVer), XMLoadFloat4x4(&m_pd3dxWorldMatrix));
+	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMaxVer), XMLoadFloat4x4(&m_f4x4WorldMatrix));
 
 	return vVertex;
 }
 CXMVECTOR CObject::GetMinVer()
 {
 	XMVECTOR vVertex;
-	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMinVer), XMLoadFloat4x4(&m_pd3dxWorldMatrix));
+	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMinVer), XMLoadFloat4x4(&m_f4x4WorldMatrix));
 
 	return vVertex;
 }
