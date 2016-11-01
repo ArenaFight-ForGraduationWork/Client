@@ -174,8 +174,8 @@ void CIlluminatedTexturedShader::CreateShader()
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(L"NonAnimating.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(L"NonAnimating.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(L"FX/NonAnimating.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(L"FX/NonAnimating.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
 void CIlluminatedTexturedShader::CreateShaderVariables()
@@ -232,8 +232,8 @@ void CAnimatingShader::CreateShader()
 		{ "WEIGHTS", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 72, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(L"Animating.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(L"Animating.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(L"FX/Animating.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(L"FX/Animating.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
 void CAnimatingShader::CreateShaderVariables()
@@ -269,8 +269,8 @@ void CTextureShader::CreateShader()
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(L"Texture.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(L"Texture.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(L"FX/Texture.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(L"FX/Texture.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
 }
 
 void CTextureShader::CreateShaderVariables()
