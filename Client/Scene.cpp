@@ -6,13 +6,6 @@
 #include <DDSTextureLoader.h>
 #include <SpriteFont.h>
 
-#include "Effects.h"
-#include "InputLayout.h"
-#include "RenderStates.h"
-
-
-ParticleSystem *mFire;
-
 
 
 CScene::CScene()
@@ -771,21 +764,6 @@ void CFirstScene::BuildObjects()
 	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/hp.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
-
-	Effects::InitAll(gpCommonState->m_pd3dDevice);
-	InputLayouts::InitAll(gpCommonState->m_pd3dDevice);
-	RenderStates::InitAll(gpCommonState->m_pd3dDevice);
-
-	mRandomTexSRV = d3dHelper::CreateRandomTexture1DSRV(gpCommonState->m_pd3dDevice);
-
-	std::vector<std::wstring> flares;
-	flares.push_back(L"Textures\\flare0.dds");
-	//flares.push_back(L"./Textures/flare0.dds");
-	mFlareTexSRV = d3dHelper::CreateTexture2DArraySRV(gpCommonState->m_pd3dDevice, gpCommonState->m_pd3dDeviceContext, flares);
-
-	mFire = new ParticleSystem();
-	mFire->Init(gpCommonState->m_pd3dDevice, Effects::FireFX, mFlareTexSRV, mRandomTexSRV, 500);
-	mFire->SetEmitPos(XMFLOAT3(0.0f, 100.0f, 0.0f));
 }
 
 void CFirstScene::AnimateObjectsAndRender(float time)
@@ -795,29 +773,6 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 		m_pFog->Update();
 
 	CScene::AnimateObjectsAndRender(time);
-
-	if (mFire)
-	{
-		float blendFactor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-		mFire->Update(gpCommonState->m_pTimer->GetTimeElapsed(), static_cast<float>(gpCommonState->m_pTimer->GetNowTime()));
-
-		XMFLOAT3 cameraPos;
-		XMStoreFloat3(&cameraPos, m_pCameraManager->GetNowCamera()->GetPosition());
-		XMMATRIX view;
-		view = m_pCameraManager->GetNowCamera()->GetViewMatrix();
-		XMMATRIX projection;
-		projection = m_pCameraManager->GetNowCamera()->GetProjectionMatrix();
-		XMMATRIX cameraViewProjection;
-		cameraViewProjection = XMMatrixMultiply(view, projection);
-
-		mFire->SetEyePos(cameraPos);
-		mFire->Draw(gpCommonState->m_pd3dDeviceContext, cameraViewProjection);
-
-		gpCommonState->m_pd3dDeviceContext->RSSetState(0);
-		gpCommonState->m_pd3dDeviceContext->OMSetDepthStencilState(0, 0);
-		gpCommonState->m_pd3dDeviceContext->OMSetBlendState(0, blendFactor, 0xffffffff);
-	}
 
 	// 2D
 	gpCommonState->TurnZBufferOff();

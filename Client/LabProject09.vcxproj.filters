@@ -4,24 +4,6 @@
     <FxCompile Include="Animating.fx" />
     <FxCompile Include="NonAnimating.fx" />
     <FxCompile Include="Texture.fx" />
-    <FxCompile Include="FX\Basic.fx">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="FX\Fire.fx">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="FX\LightHelper.fx">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="FX\Rain.fx">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="FX\Sky.fx">
-      <Filter>FX</Filter>
-    </FxCompile>
-    <FxCompile Include="FX\Terrain.fx">
-      <Filter>FX</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -75,31 +57,7 @@
     <ClCompile Include="CommonState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Effects.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="d3dUtil.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="dxerr.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="LightHelper.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MathHelper.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="InputLayout.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderStates.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleSystem.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureMgr.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,34 +125,7 @@
     <ClInclude Include="CommonState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Effects.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dUtil.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="dxerr.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LightHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MathHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="d3dx11effect.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="InputLayout.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderStates.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleSystem.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureMgr.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -218,9 +149,6 @@
     </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{f9744a25-bda5-4832-86a8-21202b77c4fe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FX">
-      <UniqueIdentifier>{1d63c70b-e6d2-4f0a-b2ab-e993014d430e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

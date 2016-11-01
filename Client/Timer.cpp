@@ -8,7 +8,8 @@
 CGameTimer::CGameTimer()
 {
 	if (QueryPerformanceFrequency((LARGE_INTEGER *)&m_PerformanceFrequency))
-	{
+	{	// QueryPerformanceFrequency ==false: 컴퓨터에서 타이머 지원X. !=false: 컴퓨터에서 타이머 지원
+		// m_PerformanceFrequency: 타이머 주기
 		m_bHardwareHasPerformanceCounter = TRUE;
 		QueryPerformanceCounter((LARGE_INTEGER *)&m_nLastTime);
 		m_fTimeScale = 1.0f / m_PerformanceFrequency;
