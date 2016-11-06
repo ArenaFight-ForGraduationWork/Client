@@ -23,7 +23,7 @@ public:
 	virtual void AnimateObjectAndRender();
 
 protected:
-	std::vector<CObject*> m_vObjects;
+	vector<CObject*> m_vObjects;
 
 	ID3D11VertexShader *m_pd3dVertexShader;
 	ID3D11InputLayout *m_pd3dVertexLayout;

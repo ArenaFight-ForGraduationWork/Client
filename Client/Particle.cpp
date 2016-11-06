@@ -15,7 +15,7 @@ CParticle::CParticle()
 	mEmitPosW = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mEmitDirW = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-	std::vector<std::wstring> vFlare;
+	vector<wstring> vFlare;
 
 	m_pShader = new CParticleShader("Fire.fxo");
 	m_pShader->CreateShader();
@@ -30,11 +30,11 @@ CParticle::CParticle()
 	//
 	UINT size = vFlare.size();
 
-	std::vector<ID3D11Resource*> srcTex(size);
+	vector<ID3D11Resource*> srcTex(size);
 	for (UINT i = 0; i < size; ++i)
 	{
 		ID3D11ShaderResourceView* shaderResourceView;
-		HR(CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, vFlare[i].c_str(),	&srcTex[i],	&shaderResourceView));
+		HR(CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, vFlare[i].c_str(), &srcTex[i], &shaderResourceView));
 		shaderResourceView->Release();
 	}
 
@@ -262,7 +262,7 @@ void CParticle::Draw(CXMMATRIX viewMatrix, CXMMATRIX projectionMatrix)
 	gpCommonState->m_pd3dDeviceContext->SOSetTargets(1, bufferArray, &offset);
 
 	// ping-pong the vertex buffers
-	std::swap(mDrawVB, mStreamOutVB);
+	swap(mDrawVB, mStreamOutVB);
 
 	//
 	// Draw the updated particle system we just streamed-out. 

@@ -38,7 +38,7 @@ public:
 	CXMMATRIX GetProjectionMatrix() { return  XMLoadFloat4x4(m_f4x4Projection); }
 	ID3D11Buffer* GetCameraConstantBuffer() { return m_pd3dcbCamera; }
 
-	void SetPosition(CXMVECTOR vPosition) {	XMStoreFloat3(m_f3Position, vPosition);	}
+	void SetPosition(CXMVECTOR vPosition) { XMStoreFloat3(m_f3Position, vPosition); }
 	CXMVECTOR GetPosition() { return  XMLoadFloat3(m_f3Position); }
 
 	void SetLookAtPosition(CXMVECTOR vLookAtWorld) { XMStoreFloat3(m_f3LookAtWorld, vLookAtWorld); }
@@ -122,7 +122,7 @@ public:
 	void ChangeCamera(eCameraType eType);
 
 private:
-	std::map<eCameraType, CCamera*> m_mCameras;
+	map<eCameraType, CCamera*> m_mCameras;
 
 	eCameraType m_eNow;
 

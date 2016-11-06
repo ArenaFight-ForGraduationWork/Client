@@ -39,7 +39,7 @@ void CScene::BuildObjects()
 
 	m_pLight->BuildLights();
 
-	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->m_pd3dDeviceContext));
 }
 
 void CScene::ReleaseObjects()
@@ -291,39 +291,39 @@ void CIntroScene::BuildObjects()
 {
 	CScene::BuildObjects();
 
-	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->m_pd3dDeviceContext));
 	m_vTextures.clear();
 	ID3D11ShaderResourceView *pTexture;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton1.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton1.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton2.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton2.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/InputWindow.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/InputWindow.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton3.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton3.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/background.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/background.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton4.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton4.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	m_pSpriteFont.reset(new DirectX::SpriteFont(gpCommonState->m_pd3dDevice, L"./Data/Font/Arial18.spritefont"));
+	m_pSpriteFont.reset(new  SpriteFont(gpCommonState->m_pd3dDevice, L"./Data/Font/Arial18.spritefont"));
 }
 
 void CIntroScene::AnimateObjectsAndRender()
@@ -352,9 +352,9 @@ void CIntroScene::AnimateObjectsAndRender()
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
 			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
-				DirectX::XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
+				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		case 2:
 		{
@@ -362,9 +362,9 @@ void CIntroScene::AnimateObjectsAndRender()
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
 			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Stage Number (1 ~ 3)",
-				DirectX::XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
+				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		case 3:
 		{
@@ -372,9 +372,9 @@ void CIntroScene::AnimateObjectsAndRender()
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
 			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
-				DirectX::XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
+				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		default:break;
 		}
@@ -710,7 +710,6 @@ void CFirstScene::BuildObjects()
 	/* ¸Ê ²Ù¹Ì±â */
 	{
 		XMFLOAT3 f3VectorPos, f3VectorDir;
-		//XMVECTOR vVector;
 
 		// ¹Ù´Ú
 		m_pObjectManager->Insert(3000, eResourceType::Floor, XMVectorZero(), XMVectorZero());
@@ -760,17 +759,17 @@ void CFirstScene::BuildObjects()
 	m_pFog = new CFog();
 	m_pFog->Initialize();
 
-	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->m_pd3dDeviceContext));
 	m_vTextures.clear();
 	ID3D11ShaderResourceView *pTexture;
 
 	// 0: frame
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
 	// 1: hp
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/hp.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/hp.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 }
@@ -806,7 +805,7 @@ void CFirstScene::AnimateObjectsAndRender()
 	//
 	//	Sprite
 	//
-	//RenderParticle(time);
+	//RenderParticle();
 }
 
 void CFirstScene::RenderParticle()

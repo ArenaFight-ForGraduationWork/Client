@@ -24,6 +24,8 @@ CObjectManager* CObjectManager::GetSingleton()
 void CObjectManager::Initialize()
 {
 	pResourceManager = CResourceManager::GetSingleton();
+
+	m_mObjects.clear();
 }
 
 CObject* CObjectManager::Insert(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction, bool isAnimating)
@@ -108,30 +110,19 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR
 
 CObject* CObjectManager::FindObject(UINT id)
 {
-	if (m_mObjects[id])
+	for (auto obj : m_mObjects)
 	{
-		return m_mObjects[id];
+		if (id == obj.first)
+			return m_mObjects[id];
 	}
 	return nullptr;
 }
 
-//UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iSize)
-//{
-//	iSize = m_mObjects[eType].size();
-//	UINT *puiObjects = new UINT[iSize];
-//	for (int i = 0; i < iSize; ++i)
-//	{
-//		puiObjects[i] = m_mObjects[eType][i]->GetId();
-//	}
-//
-//	return puiObjects;
-//}
-
 void CObjectManager::DeleteObject(UINT id)
 {
-	for (unsigned short i = 0; i < m_mObjects.size(); ++i)
+	for (auto obj : m_mObjects)
 	{
-		if (id == m_mObjects[id]->GetId())
+		if (id == obj.first)
 		{
 			// 1) 쉐이더와의 연결 해제
 			CShader *pShader;
@@ -158,18 +149,17 @@ void CObjectManager::DeleteObjectAll()
 	for (BYTE i = (BYTE)CResourceManager::eShaderType::START; i < (BYTE)CResourceManager::eShaderType::END; ++i)
 	{
 		pShader = pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i);
-		if (pShader)	pShader->ReleaseAllObjects();
+		if (pShader)
+			pShader->ReleaseAllObjects();
 	}
 
 	// 2) 해당 오브젝트 해제 후 삭제
-	for (BYTE i = 0; i < m_mObjects.size(); ++i)
+	for (auto obj : m_mObjects)
 	{
-		for (auto obj : m_mObjects)
-		{
+		if (obj.second)
 			obj.second->~CObject();
-		}
-		m_mObjects.clear();
 	}
+	m_mObjects.clear();
 }
 
 

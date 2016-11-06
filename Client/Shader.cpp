@@ -149,16 +149,16 @@ void CShader::UpdateShaderVariables(CTexture *pTexture)
 void CShader::AnimateObjectAndRender()
 {
 	// 정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
-	if (m_pd3dVertexLayout) 
+	if (m_pd3dVertexLayout)
 		gpCommonState->m_pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
 	// 정점-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
-	if (m_pd3dVertexShader) 
+	if (m_pd3dVertexShader)
 		gpCommonState->m_pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, NULL, 0);
 	// 픽셀-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
-	if (m_pd3dPixelShader) 
+	if (m_pd3dPixelShader)
 		gpCommonState->m_pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
 	// 기하-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
-	if (m_pd3dGeometryShader) 
+	if (m_pd3dGeometryShader)
 		gpCommonState->m_pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, NULL, 0);;
 
 	for (auto obj : m_vObjects)
@@ -290,12 +290,12 @@ void CAnimatingShader::CreateShaderVariables()
 //
 CParticleEffect::CParticleEffect(char *pFilename)
 {
-	std::ifstream fin(pFilename, std::ios::binary);
+	ifstream fin(pFilename, ios::binary);
 
-	fin.seekg(0, std::ios_base::end);
+	fin.seekg(0, ios_base::end);
 	int size = (int)fin.tellg();
-	fin.seekg(0, std::ios_base::beg);
-	std::vector<char> compiledShader(size);
+	fin.seekg(0, ios_base::beg);
+	vector<char> compiledShader(size);
 
 	fin.read(&compiledShader[0], size);
 	fin.close();

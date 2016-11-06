@@ -99,7 +99,7 @@ public:
 	CAnimationVertex();
 	CAnimationVertex(CAnimationVertex& ref) {}
 
-	~CAnimationVertex(){}
+	~CAnimationVertex() {}
 
 	void AddBone(int index, float Weight);
 };

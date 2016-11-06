@@ -41,12 +41,12 @@ protected:
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
 
-	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
-	std::vector<ID3D11ShaderResourceView*> m_vTextures;
-	std::unique_ptr<DirectX::SpriteFont> m_pSpriteFont;
+	unique_ptr<SpriteBatch> m_pSpriteBatch;
+	vector<ID3D11ShaderResourceView*> m_vTextures;
+	unique_ptr<SpriteFont> m_pSpriteFont;
 
 private:
-	std::vector<CShader*> m_vShaders;
+	vector<CShader*> m_vShaders;
 
 	CLight *m_pLight;
 };
@@ -72,7 +72,7 @@ public:
 private:
 	BYTE m_bButton;	// 0=아무것도 안 눌림, 1=방 생성(방이름 입력), 2=방 생성(스테이지 입력), 3=방 입장(방이름 입력)
 
-	std::vector<string> m_vStrings;
+	vector<string> m_vStrings;
 	string *m_pTempString;
 
 	const RECT rFramePos = { 0,0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT - 20 };
@@ -155,7 +155,7 @@ public:
 	CScene* GetNowScene();
 
 private:
-	std::map<eSceneType, CScene*> m_mScenes;
+	map<eSceneType, CScene*> m_mScenes;
 
 	eSceneType m_eNow;
 
