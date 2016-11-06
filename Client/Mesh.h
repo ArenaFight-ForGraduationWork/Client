@@ -16,7 +16,7 @@ public:
 	void AddRef();
 	void Release();
 
-	virtual void CreateRasterizerState();
+	virtual void CreateRasterizerState() {}
 	virtual void Render();
 
 	XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
@@ -55,20 +55,22 @@ private:
 
 
 
-class CCubeMeshIlluminatedTextured : public CMesh
+class CCubeMesh : public CMesh
 {
 public:
-	CCubeMeshIlluminatedTextured(float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
-	virtual ~CCubeMeshIlluminatedTextured();
+	CCubeMesh(float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+	virtual ~CCubeMesh();
 
 	virtual void SetRasterizerState();
 	virtual void Render();
 
 private:
-	XMVECTOR CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
-	void SetTriAngleListVertexNormal(BYTE *pVertices);	/* 정점의 법선 벡터 계산. 인덱스 버퍼를 쓰지 않는 삼각형 리스트용 */
-	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);	/* 정점의 법선벡터의 평균 계산. 인덱스 버퍼를 사용할 경우 */
-	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
+	void _CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
+
+	// for _CalculateVertexNormal()
+	XMVECTOR _CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
+	void _SetTriAngleListVertexNormal(BYTE *pVertices);	/* 정점의 법선 벡터 계산. 인덱스 버퍼를 쓰지 않는 삼각형 리스트용 */
+	void _SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);	/* 정점의 법선벡터의 평균 계산. 인덱스 버퍼를 사용할 경우 */
 };
 
 
@@ -81,7 +83,6 @@ public:
 	virtual ~CImportedMesh();
 
 	virtual void CreateRasterizerState();
-	virtual void Render();
 
 private:
 	CTexturedNormalVertex* ppVertices;
@@ -99,7 +100,6 @@ public:
 	virtual ~CImportedAnimatingMesh();
 
 	virtual void CreateRasterizerState();
-	virtual void Render();
 
 private:
 	CAnimationVertex* ppVertices;

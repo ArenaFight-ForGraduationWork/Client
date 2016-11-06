@@ -6,6 +6,9 @@
 
 
 
+//
+//	Mesh
+//
 CMesh::CMesh()
 {
 	m_nStride = sizeof(CDiffusedVertex);
@@ -66,11 +69,19 @@ void CMesh::Render()
 		gpCommonState->m_pd3dDeviceContext->Draw(m_nVertices, m_nOffset);
 }
 
-void CMesh::CreateRasterizerState()
-{
-}
 
-CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(float fWidth, float fHeight, float fDepth) : CMesh()
+
+
+
+
+
+
+
+
+//
+//	CubeMesh
+//
+CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh()
 {
 	m_nVertices = 36;
 	m_nStride = sizeof(CTexturedNormalVertex);
@@ -134,7 +145,7 @@ CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(float fWidth, float f
 	pVertices[i++] = CTexturedNormalVertex(XMLoadFloat3(&XMFLOAT3(+fx, -fy, -fz)), XMLoadFloat3(&XMFLOAT3(0.0f, 0.0f, 0.0f)), XMLoadFloat2(&XMFLOAT2(0.0f, 1.0f)));
 
 	//각 정점의 법선벡터를 계산한다.
-	CalculateVertexNormal((BYTE *)pVertices, NULL);
+	_CalculateVertexNormal((BYTE *)pVertices, NULL);
 
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -150,11 +161,11 @@ CCubeMeshIlluminatedTextured::CCubeMeshIlluminatedTextured(float fWidth, float f
 	SetRasterizerState();
 }
 
-CCubeMeshIlluminatedTextured::~CCubeMeshIlluminatedTextured()
+CCubeMesh::~CCubeMesh()
 {
 }
 
-void CCubeMeshIlluminatedTextured::SetRasterizerState()
+void CCubeMesh::SetRasterizerState()
 {
 	D3D11_RASTERIZER_DESC d3dRasterizerDesc;
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
@@ -163,7 +174,7 @@ void CCubeMeshIlluminatedTextured::SetRasterizerState()
 	gpCommonState->m_pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
-void CCubeMeshIlluminatedTextured::Render()
+void CCubeMesh::Render()
 {
 	if (m_pd3dVertexBuffer) gpCommonState->m_pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dVertexBuffer, &m_nStride, &m_nOffset);
 	//인덱스 버퍼가 있으면 인덱스 버퍼를 디바이스 컨텍스트에 연결한다.
@@ -180,7 +191,7 @@ void CCubeMeshIlluminatedTextured::Render()
 		gpCommonState->m_pd3dDeviceContext->Draw(m_nVertices, m_nOffset);
 }
 
-void CCubeMeshIlluminatedTextured::CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
+void CCubeMesh::_CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
 {	// 정점 데이터와 인덱스 데이터를 사용하여 정점의 법선 벡터를 계산
 	switch (m_d3dPrimitiveTopology)
 	{
@@ -189,20 +200,20 @@ void CCubeMeshIlluminatedTextured::CalculateVertexNormal(BYTE *pVertices, WORD *
 		인덱스 버퍼를 사용하는 경우 각 정점의 법선 벡터는 그 정점이 포함된 삼각형들의 법선 벡터의 평균으로(더하여) 계산한다.*/
 	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
 		if (!pIndices)
-			SetTriAngleListVertexNormal(pVertices);
+			_SetTriAngleListVertexNormal(pVertices);
 		else
-			SetAverageVertexNormal(pVertices, pIndices, (m_nIndices / 3), 3, false);
+			_SetAverageVertexNormal(pVertices, pIndices, (m_nIndices / 3), 3, false);
 		break;
 		/*프리미티브가 삼각형 스트립일 때 각 정점의 법선 벡터는 그 정점이 포함된 삼각형들의 법선 벡터의 평균으로(더하여) 계산한다.*/
 	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
-		SetAverageVertexNormal(pVertices, pIndices, (pIndices) ? (m_nIndices - 2) : (m_nVertices - 2), 1, true);
+		_SetAverageVertexNormal(pVertices, pIndices, (pIndices) ? (m_nIndices - 2) : (m_nVertices - 2), 1, true);
 		break;
 	default:
 		break;
 	}
 }
 
-void CCubeMeshIlluminatedTextured::SetTriAngleListVertexNormal(BYTE *pVertices)
+void CCubeMesh::_SetTriAngleListVertexNormal(BYTE *pVertices)
 {	// 인덱스 버퍼를 사용하지 않는 삼각형 리스트에 대하여 정점의 법선 벡터를 계산
 	XMVECTOR vNormal;
 	CNormalVertex *pVertex = NULL;
@@ -210,7 +221,7 @@ void CCubeMeshIlluminatedTextured::SetTriAngleListVertexNormal(BYTE *pVertices)
 	int nPrimitives = m_nVertices / 3;
 	for (int i = 0; i < nPrimitives; i++)
 	{
-		vNormal = CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
+		vNormal = _CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 0) * m_nStride));
 		pVertex->SetNormal(vNormal);
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 1) * m_nStride));
@@ -219,8 +230,7 @@ void CCubeMeshIlluminatedTextured::SetTriAngleListVertexNormal(BYTE *pVertices)
 		pVertex->SetNormal(vNormal);
 	}
 }
-
-void CCubeMeshIlluminatedTextured::SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
+void CCubeMesh::_SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip)
 {
 	XMVECTOR vSumOfNormal = XMVectorZero();
 	CNormalVertex *pVertex = NULL;
@@ -238,7 +248,7 @@ void CCubeMeshIlluminatedTextured::SetAverageVertexNormal(BYTE *pVertices, WORD 
 			nIndex2 = (pIndices) ? pIndices[i*nOffset + 2] : (i*nOffset + 2);
 			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j))
 			{
-				vSumOfNormal = XMVectorAdd(vSumOfNormal, CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2));
+				vSumOfNormal = XMVectorAdd(vSumOfNormal, _CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2));
 			}
 		}
 		XMVector3Normalize(vSumOfNormal);
@@ -246,8 +256,7 @@ void CCubeMeshIlluminatedTextured::SetAverageVertexNormal(BYTE *pVertices, WORD 
 		pVertex->SetNormal(vSumOfNormal);
 	}
 }
-
-XMVECTOR CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
+XMVECTOR CCubeMesh::_CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
 {	// 삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산
 	XMVECTOR vNormal = XMVectorZero();
 	XMVECTOR vP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
@@ -270,6 +279,9 @@ XMVECTOR CCubeMeshIlluminatedTextured::CalculateTriAngleNormal(BYTE *pVertices, 
 
 
 
+//
+//	ImportedMesh
+//
 CImportedMesh::CImportedMesh(char* ptxtName) : CMesh()
 {
 	CFbx *pFbx = new CFbx();
@@ -316,10 +328,6 @@ void CImportedMesh::CreateRasterizerState()
 	gpCommonState->m_pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
-void CImportedMesh::Render()
-{
-	CMesh::Render();
-}
 
 
 
@@ -329,6 +337,9 @@ void CImportedMesh::Render()
 
 
 
+//
+//	ImportedAnimatingMesh
+//
 CImportedAnimatingMesh::CImportedAnimatingMesh(int CharNum, int StateCnt) : CMesh()
 {
 	CFbx *pFbx = new CFbx();
@@ -382,12 +393,6 @@ void CImportedAnimatingMesh::CreateRasterizerState()
 	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	gpCommonState->m_pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
-
-void CImportedAnimatingMesh::Render()
-{
-	CMesh::Render();
-}
-
 
 
 

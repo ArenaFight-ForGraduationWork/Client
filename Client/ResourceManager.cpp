@@ -103,13 +103,13 @@ void CResourceManager::_LoadMesh()
 	m_mMesh[2] = new CImportedMesh("Data\\Buff_Crystal\\ItemObject_Info.txt");
 
 	// 3. 바닥
-	m_mMesh[3] = new CCubeMeshIlluminatedTextured(5000.0f, 1.0f, 5000.0f);
+	m_mMesh[3] = new CCubeMesh(5000.0f, 1.0f, 5000.0f);
 
 	// 4. 나무
 	m_mMesh[4] = new CImportedMesh("Data\\Decoration\\Tree\\tree_info.txt");
 
 	// 5. 만든 벽
-	m_mMesh[5] = new CCubeMeshIlluminatedTextured(2500.0f, 1500.0f, 200.0f);
+	m_mMesh[5] = new CCubeMesh(2500.0f, 1500.0f, 200.0f);
 
 	// 7. 풀
 	m_mMesh[6] = new CImportedMesh("Data\\Decoration\\Grass\\grass_Info.txt");

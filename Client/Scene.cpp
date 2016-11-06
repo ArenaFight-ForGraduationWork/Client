@@ -805,7 +805,7 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 	//
 	//	Sprite
 	//
-	RenderParticle(time);
+	//RenderParticle(time);
 }
 
 void CFirstScene::RenderParticle(float fTimeElapsed)
