@@ -10,10 +10,6 @@
 
 CObjectManager::CObjectManager()
 {
-	for (BYTE i = (BYTE)eObjectType::START; i < (BYTE)eObjectType::END; ++i)
-	{
-		m_mObjects[(eObjectType)i] = std::vector<CObject*>();
-	}
 }
 CObjectManager::~CObjectManager()
 {
@@ -33,7 +29,7 @@ void CObjectManager::Initialize()
 CObject* CObjectManager::Insert(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction, bool isAnimating)
 {
 	if (isAnimating)
-		 return _InsertAnimateT(id, eType, position, direction);
+		return _InsertAnimateT(id, eType, position, direction);
 	else
 		return _InsertAnimateF(id, eType, position, direction);
 }
@@ -58,7 +54,7 @@ CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, CXMVECTOR
 	pObject->PlayAnimation(CObject::eAnimationType::None);
 	pObject->SetBoundingBox();
 
-	m_mObjects[(eObjectType)static_cast<UINT>(id / ID_DIVIDE)].push_back(pObject);
+	m_mObjects[id] = pObject;
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
@@ -88,12 +84,12 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType(static_cast<int>(eType));
-	
+
 	pObject->SetTime(pResourceManager->GetMesh(eType)->GetAniMaxTime());
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->GetAnimationIndexCnt());
 	pObject->SetResult(pResourceManager->GetMesh(eType)->GetResultMatrix());
 	pObject->SetConstantBuffer();
-	
+
 	x = XMVectorGetX(position);	y = XMVectorGetY(position);	z = XMVectorGetZ(position);
 	pObject->SetPositionAbsolute(x, y, z);
 	x = XMVectorGetX(direction); y = XMVectorGetY(direction); z = XMVectorGetZ(direction);
@@ -102,7 +98,7 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR
 	pObject->SetBoundingBox();
 	pObject->PlayAnimation(CObject::eAnimationType::Idle);
 
-	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
+	m_mObjects[id] = pObject;
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
@@ -112,31 +108,30 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR
 
 CObject* CObjectManager::FindObject(UINT id)
 {
-	for (auto obj : m_mObjects[(eObjectType)(id / ID_DIVIDE)])
+	if (m_mObjects[id])
 	{
-		if (id == obj->GetId())
-			return obj;
+		return m_mObjects[id];
 	}
 	return nullptr;
 }
 
-UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iSize)
-{
-	iSize = m_mObjects[eType].size();
-	UINT *puiObjects = new UINT[iSize];
-	for (int i = 0; i < iSize; ++i)
-	{
-		puiObjects[i] = m_mObjects[eType][i]->GetId();
-	}
-
-	return puiObjects;
-}
+//UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iSize)
+//{
+//	iSize = m_mObjects[eType].size();
+//	UINT *puiObjects = new UINT[iSize];
+//	for (int i = 0; i < iSize; ++i)
+//	{
+//		puiObjects[i] = m_mObjects[eType][i]->GetId();
+//	}
+//
+//	return puiObjects;
+//}
 
 void CObjectManager::DeleteObject(UINT id)
 {
-	for (unsigned short i = 0; i < m_mObjects[(eObjectType)(id / ID_DIVIDE)].size(); ++i)
+	for (unsigned short i = 0; i < m_mObjects.size(); ++i)
 	{
-		if (id == m_mObjects[(eObjectType)(id / ID_DIVIDE)][i]->GetId())
+		if (id == m_mObjects[id]->GetId())
 		{
 			// 1) 쉐이더와의 연결 해제
 			CShader *pShader;
@@ -147,8 +142,8 @@ void CObjectManager::DeleteObject(UINT id)
 			}
 
 			// 2) 오브젝트맵에서 삭제
-			CObject *pObject = m_mObjects[(eObjectType)(id / ID_DIVIDE)][i];
-			m_mObjects[(eObjectType)(id / ID_DIVIDE)].erase(m_mObjects[(eObjectType)(id / ID_DIVIDE)].begin() + i);
+			CObject *pObject = m_mObjects[id];
+			m_mObjects.erase(id);
 
 			// 3) 해당 오브젝트 제거
 			pObject->~CObject();
@@ -169,13 +164,12 @@ void CObjectManager::DeleteObjectAll()
 	// 2) 해당 오브젝트 해제 후 삭제
 	for (BYTE i = 0; i < m_mObjects.size(); ++i)
 	{
-		for (auto obj : m_mObjects[(eObjectType)i])
+		for (auto obj : m_mObjects)
 		{
-			obj->~CObject();
+			obj.second->~CObject();
 		}
-		m_mObjects[(eObjectType)i].clear();
+		m_mObjects.clear();
 	}
-	m_mObjects.clear();
 }
 
 
@@ -184,21 +178,26 @@ bool CObjectManager::CheckCollision()
 	if (!FindObject(myID))
 		return false;
 
-	for (auto monster : m_mObjects[eObjectType::MONSTER])
+	for (auto monster : m_mObjects)
 	{
-		XMFLOAT3 myPosition;
-		XMStoreFloat3(&myPosition, FindObject(myID)->GetPosition());
-		XMFLOAT3 monsterPosition;
-		XMStoreFloat3(&monsterPosition, monster->GetPosition());
+		// 1000 <= monsterID < 2000
+		if (monster.first >= 1000)
+			if (monster.first < 2000)
+			{
+				XMFLOAT3 myPosition;
+				XMStoreFloat3(&myPosition, FindObject(myID)->GetPosition());
+				XMFLOAT3 monsterPosition;
+				XMStoreFloat3(&monsterPosition, monster.second->GetPosition());
 
-		float distance = ((myPosition.x - monsterPosition.x)*(myPosition.x - monsterPosition.x))
-			+ ((myPosition.z - monsterPosition.z)*(myPosition.z - monsterPosition.z));
-		if (sqrt(distance) <= FindObject(myID)->GetRadius() + monster->GetRadius())
-		{
-			return true;
-		}
+				float distance = ((myPosition.x - monsterPosition.x)*(myPosition.x - monsterPosition.x))
+					+ ((myPosition.z - monsterPosition.z)*(myPosition.z - monsterPosition.z));
+				if (sqrt(distance) <= FindObject(myID)->GetRadius() + monster.second->GetRadius())
+				{
+					return true;
+				}
+			}
 	}
-	 
+
 	return false;
 }
 

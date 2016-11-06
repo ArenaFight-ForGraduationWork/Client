@@ -47,7 +47,7 @@ public:
 	UINT *puiTempArray = pObjectManager->FindObjectsInCategory(CObjectManager::eObjectType::MONSTER, iTempSize);
 	이렇게 호출한 뒤, puiTempArray[idx( 0 ~ iTempSize-1 )]로 사용하면 된다.
 	*/
-	UINT* FindObjectsInCategory(eObjectType eType, int& iSize);
+	//UINT* FindObjectsInCategory(eObjectType eType, int& iSize);
 
 	void DeleteObject(UINT id);
 	void DeleteObjectAll();
@@ -55,7 +55,7 @@ public:
 	bool CheckCollision();
 
 private:
-	std::map<eObjectType, std::vector<CObject*>> m_mObjects;
+	std::map<UINT, CObject*> m_mObjects;
 
 	CResourceManager *pResourceManager;
 
