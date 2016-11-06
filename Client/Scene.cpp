@@ -407,6 +407,9 @@ CFirstScene::CFirstScene()
 	m_dwDirectionNow = 0;
 
 	m_pFog = nullptr;
+
+	// Particle
+	m_pFireParticle = new CParticle();
 }
 CFirstScene::~CFirstScene()
 {
@@ -450,6 +453,11 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 				}
 			}
 			pPlayer = nullptr;
+
+			if (isFireParticle)
+				isFireParticle = false;
+			else
+				isFireParticle = true;
 		} break;
 		case 0x31:
 		{
@@ -768,16 +776,19 @@ void CFirstScene::BuildObjects()
 
 void CFirstScene::AnimateObjectsAndRender(float time)
 {
-	// 3D
+	//
+	//	3D
+	//	
 	if (m_pFog->IsInUse())
 		m_pFog->Update();
 
 	CScene::AnimateObjectsAndRender(time);
 
-	// 2D
+	//
+	//	2D
+	//
 	gpCommonState->TurnZBufferOff();
 	m_pSpriteBatch->Begin();
-
 	// frame
 	m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
 
@@ -788,11 +799,54 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 		rHpPos.right = rHpPos.left + static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * 3;
 		m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
 	}
-
 	m_pSpriteBatch->End();
 	gpCommonState->TurnZBufferOn();
+
+	//
+	//	Sprite
+	//
+	RenderParticle(time);
 }
 
+void CFirstScene::RenderParticle(float fTimeElapsed)
+{
+	if (isFireParticle)
+	{
+		fFireParticleTime += 2.0f;
+		if (fFireParticleTime <= 3000.0f)
+		{
+			m_pFireParticle->Update(fTimeElapsed, fTimeElapsed);
+
+			XMVECTOR vEyePosition;
+			if (m_pCameraManager->GetNowCamera())
+				vEyePosition = m_pCameraManager->GetNowCamera()->GetPosition();
+			else
+				vEyePosition = XMVectorZero();
+			m_pFireParticle->SetEyePos(vEyePosition);
+
+			XMVECTOR vPlayerPosition;
+			if (m_pObjectManager->FindObject(myID))
+				vPlayerPosition = m_pObjectManager->FindObject(myID)->GetPosition();
+			else
+				vPlayerPosition = XMVectorZero();
+			m_pFireParticle->SetEmitPos(vPlayerPosition);
+
+			XMMATRIX V = m_pCameraManager->GetNowCamera()->GetViewMatrix();
+			XMMATRIX P = m_pCameraManager->GetNowCamera()->GetProjectionMatrix();
+			m_pFireParticle->Draw(V, P);
+		}
+		else
+		{
+			fFireParticleTime = 0.0f;
+			isFireParticle = false;
+		}
+
+	}
+	else
+	{
+		m_pFireParticle->Reset();
+	}
+}
 
 
 

@@ -8,10 +8,10 @@ using namespace DirectX;
 
 
 
-#define VS_SLOT_VIEWPROJECTION_MATRIX	0x00
-#define VS_SLOT_WORLD_MATRIX			0x01
-#define VS_SLOT_FOG						0x02
-#define VS_SLOT_BONE_MATRIX				0x03
+//#define VS_SLOT_VIEWPROJECTION_MATRIX	0x00
+//#define VS_SLOT_WORLD_MATRIX			0x01
+//#define VS_SLOT_FOG						0x02
+//#define VS_SLOT_BONE_MATRIX				0x03
 
 
 
