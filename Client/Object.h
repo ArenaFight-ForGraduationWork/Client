@@ -107,7 +107,8 @@ public:
 	void SetResourceType(int eType);
 	int& GetResourceType() { return m_iSourceType; }
 
-	void AnimateAndRender(float& time);
+	void Animate();
+	void Render();
 
 	void SetComponent();
 	CUnitComponent* GetComponent() { return m_pUnitComponent; }

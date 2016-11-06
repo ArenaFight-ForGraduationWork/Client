@@ -34,6 +34,11 @@ public:
 	void TurnZBufferOn();
 	void TurnZBufferOff();
 
+	float GetTimeElapsed() { return m_pTimer->GetTimeElapsed(); }
+	int GetNowTime() { return m_pTimer->GetNowTime(); }
+	unsigned long GetFrameRate(LPTSTR lpszString = NULL, int nCharacters = 0) { return m_pTimer->GetFrameRate(lpszString, nCharacters); }
+	void SetTick(float fLockFPS = 0.0f) { m_pTimer->Tick(fLockFPS); }
+
 protected:
 private:
 	CCommonState();

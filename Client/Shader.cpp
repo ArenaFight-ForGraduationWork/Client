@@ -174,7 +174,8 @@ void CShader::AnimateObjectAndRender(float time)
 			UpdateShaderVariables(obj->GetMaterial());
 		if (obj->GetTexture())
 			UpdateShaderVariables(obj->GetTexture());
-		obj->AnimateAndRender(time);
+		obj->Animate();
+		obj->Render();
 	}
 }
 

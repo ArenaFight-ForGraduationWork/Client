@@ -413,11 +413,12 @@ void CObject::SetConstantBuffer()
 }
 
 
-void CObject::AnimateAndRender(float& time)
+void CObject::Animate()
 {
 	if (eAnimationType::None != m_eAnimationType)
 	{
-		m_fAnimationPlaytime += time * 1000;
+		float fTime = gpCommonState->GetTimeElapsed();
+		m_fAnimationPlaytime += fTime * 1000;
 
 		/* 현재 애니메이션을 한 번 완료했을 때 */
 		if ((m_fAnimationPlaytime / 10) >= m_iAniMaxTime[static_cast<int>(m_eAnimationType)] / 10)
@@ -431,7 +432,7 @@ void CObject::AnimateAndRender(float& time)
 			}break;
 			case CObject::eAnimationType::Dead:
 			{
-				m_fAnimationPlaytime -= time * 1000;
+				m_fAnimationPlaytime -= fTime * 1000;
 			} break;
 			case CObject::eAnimationType::Attack:
 			case CObject::eAnimationType::Skill1:
@@ -456,7 +457,9 @@ void CObject::AnimateAndRender(float& time)
 			gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
 		}
 	}
-
+}
+void CObject::Render()
+{
 	if (m_pMesh) m_pMesh->Render();
 }
 
