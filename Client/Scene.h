@@ -21,14 +21,14 @@ public:
 	CScene();
 	~CScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
-	virtual void ProcessInput(float fTimeElapsed) = 0;
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) = 0;
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) = 0;
+	virtual void ProcessInput() = 0;
 
 	virtual void BuildObjects();
 	void ReleaseObjects();
 
-	virtual void AnimateObjectsAndRender(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender();
 
 	virtual void ChangeState() {}
 
@@ -60,12 +60,12 @@ public:
 	CIntroScene();
 	~CIntroScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void ProcessInput(float fTimeElapsed) {}
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void ProcessInput() {}
 
 	virtual void BuildObjects();
-	virtual void AnimateObjectsAndRender(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender();
 
 	virtual void ChangeState();
 
@@ -89,11 +89,11 @@ private:
 
 	bool _CheckDestination(POINT * pMousePos, const RECT* pDestination);
 
-	void _KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	void _KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void _KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	void _MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	void _MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void _MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 };
 
 
@@ -106,12 +106,12 @@ public:
 	CFirstScene();
 	~CFirstScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void ProcessInput(float fTimeElapsed);
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void ProcessInput();
 
 	virtual void BuildObjects();
-	virtual void AnimateObjectsAndRender(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender();
 
 private:
 	DWORD m_dwDirectionPrev;
@@ -124,7 +124,7 @@ private:
 
 	CParticle *m_pFireParticle;
 	bool isFireParticle = false;
-	void RenderParticle(float fTimeElapsed);
+	void RenderParticle();
 	float fFireParticleTime = 0.0f;
 };
 

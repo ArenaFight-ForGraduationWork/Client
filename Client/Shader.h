@@ -20,7 +20,7 @@ public:
 	bool ReleaseObject(UINT id);
 	void ReleaseAllObjects();
 
-	virtual void AnimateObjectAndRender(float time);
+	virtual void AnimateObjectAndRender();
 
 protected:
 	std::vector<CObject*> m_vObjects;
@@ -74,17 +74,7 @@ public:
 
 
 
-class CTextureShader : public CShader
-{
-public:
-	CTextureShader();
-	CTextureShader(const CTextureShader& ref) { }
-	~CTextureShader();
 
-	virtual void CreateShader();
-	virtual void CreateShaderVariables();
-	virtual void AnimateObjectAndRender(float time);
-};
 
 
 class CParticleEffect

@@ -146,7 +146,7 @@ void CShader::UpdateShaderVariables(CTexture *pTexture)
 	gpCommonState->m_pd3dDeviceContext->PSSetSamplers(PS_SAMPLER_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
 }
 
-void CShader::AnimateObjectAndRender(float time)
+void CShader::AnimateObjectAndRender()
 {
 	// 정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
 	if (m_pd3dVertexLayout) 
@@ -279,39 +279,7 @@ void CAnimatingShader::CreateShaderVariables()
 
 
 
-CTextureShader::CTextureShader()
-{
-}
-CTextureShader::~CTextureShader()
-{
-}
 
-void CTextureShader::CreateShader()
-{
-	CShader::CreateShader();
-
-	D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(L"FX/Texture.fx", "VS", "vs_4_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(L"FX/Texture.fx", "PS", "ps_4_0", &m_pd3dPixelShader);
-}
-
-void CTextureShader::CreateShaderVariables()
-{
-	CShader::CreateShaderVariables();
-}
-
-void CTextureShader::AnimateObjectAndRender(float indexCount)
-{
-	CShader::AnimateObjectAndRender(0);
-
-	// Render the triangle
-	gpCommonState->m_pd3dDeviceContext->DrawIndexed(static_cast<int>(indexCount), 0, 0);
-}
 
 
 
@@ -408,7 +376,7 @@ void CParticleShader::UpdateShaderVariables(CTexture *pTexture)
 
 void CParticleShader::Render()
 {
-	CShader::AnimateObjectAndRender(0.0f);
+	CShader::AnimateObjectAndRender();
 }
 
 void CParticleShader::SetInputLayout()

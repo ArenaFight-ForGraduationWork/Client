@@ -47,13 +47,13 @@ void CScene::ReleaseObjects()
 	m_vShaders.clear();
 }
 
-void CScene::AnimateObjectsAndRender(float time)
+void CScene::AnimateObjectsAndRender()
 {
 	m_pLight->UpdateLights();
 
-	for (unsigned int i = 0; i < m_vShaders.size() - 1; ++i)
+	for (unsigned int i = 0; i < m_vShaders.size(); ++i)
 	{
-		m_vShaders[i]->AnimateObjectAndRender(time);
+		m_vShaders[i]->AnimateObjectAndRender();
 	}
 }
 
@@ -81,20 +81,20 @@ void CIntroScene::ChangeState()
 	m_bButton = 0;
 }
 
-void CIntroScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (player_status)
 	{
 	case static_cast<BYTE>(ePlayer_State::eLOBBY) :
-		_KeyboardMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_KeyboardMessageInLobby(hWnd, nMessageID, wParam, lParam);
 		break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
-		_KeyboardMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_KeyboardMessageInRoom(hWnd, nMessageID, wParam, lParam);
 		break;
 	default: break;
 	}
 }
-void CIntroScene::_KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -123,24 +123,24 @@ void CIntroScene::_KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wPa
 	default:break;
 	}
 }
-void CIntroScene::_KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 }
 
-void CIntroScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (player_status)
 	{
 	case static_cast<BYTE>(ePlayer_State::eLOBBY) :
-		_MouseMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_MouseMessageInLobby(hWnd, nMessageID, wParam, lParam);
 		break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
-		_MouseMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_MouseMessageInRoom(hWnd, nMessageID, wParam, lParam);
 		break;
 	default: break;
 	}
 }
-void CIntroScene::_MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	if (WM_LBUTTONUP == nMessageID)
 	{
@@ -249,7 +249,7 @@ void CIntroScene::_MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam
 		}
 	}
 }
-void CIntroScene::_MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	if (WM_LBUTTONUP == nMessageID)
 	{
@@ -326,10 +326,10 @@ void CIntroScene::BuildObjects()
 	m_pSpriteFont.reset(new DirectX::SpriteFont(gpCommonState->m_pd3dDevice, L"./Data/Font/Arial18.spritefont"));
 }
 
-void CIntroScene::AnimateObjectsAndRender(float time)
+void CIntroScene::AnimateObjectsAndRender()
 {
 	// 3D
-	CScene::AnimateObjectsAndRender(time);
+	CScene::AnimateObjectsAndRender();
 
 	// 2D
 	gpCommonState->TurnZBufferOff();
@@ -415,7 +415,7 @@ CFirstScene::~CFirstScene()
 {
 }
 
-void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -535,7 +535,7 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	default:break;
 	}
 }
-void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	//switch (nMessageID)
 	//{
@@ -559,9 +559,10 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 	//default: break;
 	//}
 }
-void CFirstScene::ProcessInput(float fTimeElapsed)
+void CFirstScene::ProcessInput()
 {
 	CObject *pPlayer = m_pObjectManager->FindObject(myID);
+	float fTime = gpCommonState->GetTimeElapsed();
 
 	if (pPlayer)
 	{
@@ -615,7 +616,7 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 					pPlayer->SetDirectionAbsolute(XMLoadFloat3(&cameraAngle));
 
 					// 2) 로컬 z축으로 속도 * 시간만큼 이동
-					pPlayer->MoveForward(fTimeElapsed);
+					pPlayer->MoveForward(fTime);
 					pPlayer->PlayAnimation(CObject::eAnimationType::Move);
 
 					if (m_dwDirectionNow)
@@ -660,11 +661,11 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 		}
 
 		// 카메라 좌우회전
-		if (m_pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);	// Q
-		if (m_pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);	// E
+		if (m_pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTime);	// Q
+		if (m_pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTime);	// E
 		// 카메라 줌
-		if (m_pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);			// Z
-		if (m_pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);			// X
+		if (m_pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTime);		// Z
+		if (m_pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTime);			// X
 	}
 
 	if (pPlayer)
@@ -774,7 +775,7 @@ void CFirstScene::BuildObjects()
 	pTexture = nullptr;
 }
 
-void CFirstScene::AnimateObjectsAndRender(float time)
+void CFirstScene::AnimateObjectsAndRender()
 {
 	//
 	//	3D
@@ -782,7 +783,7 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 	if (m_pFog->IsInUse())
 		m_pFog->Update();
 
-	CScene::AnimateObjectsAndRender(time);
+	CScene::AnimateObjectsAndRender();
 
 	//
 	//	2D
@@ -808,14 +809,14 @@ void CFirstScene::AnimateObjectsAndRender(float time)
 	//RenderParticle(time);
 }
 
-void CFirstScene::RenderParticle(float fTimeElapsed)
+void CFirstScene::RenderParticle()
 {
 	if (isFireParticle)
 	{
 		fFireParticleTime += 2.0f;
 		if (fFireParticleTime <= 3000.0f)
 		{
-			m_pFireParticle->Update(fTimeElapsed, fTimeElapsed);
+			m_pFireParticle->Update(gpCommonState->GetTimeElapsed(), gpCommonState->GetTimeElapsed());
 
 			XMVECTOR vEyePosition;
 			if (m_pCameraManager->GetNowCamera())

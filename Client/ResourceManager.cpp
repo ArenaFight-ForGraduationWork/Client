@@ -207,12 +207,6 @@ void CResourceManager::_CreateShaders()
 	pShader->CreateShader();
 	pShader->CreateShaderVariables();
 	m_mShader[1] = pShader;
-
-	// 2 : UI. TextureShader
-	pShader = new CTextureShader();
-	pShader->CreateShader();
-	pShader->CreateShaderVariables();
-	m_mShader[2] = pShader;
 }
 
 

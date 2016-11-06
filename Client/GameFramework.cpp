@@ -225,11 +225,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
 	case WM_MOUSEWHEEL:
-		m_pSceneManager->GetNowScene()->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam, gpCommonState->m_pTimer->GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		m_pSceneManager->GetNowScene()->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam, gpCommonState->m_pTimer->GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
 	return(0);
@@ -259,7 +259,7 @@ void CGameFramework::ReleaseObjects()
 
 void CGameFramework::FrameAdvance()
 {
-	gpCommonState->m_pTimer->Tick(60.0f);
+	gpCommonState->SetTick(60.0f);
 
 	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
 	if (m_pd3dRenderTargetView) gpCommonState->m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
@@ -270,13 +270,13 @@ void CGameFramework::FrameAdvance()
 
 	if (m_pSceneManager)
 	{
-		m_pSceneManager->GetNowScene()->ProcessInput(gpCommonState->m_pTimer->GetTimeElapsed());
-		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender(gpCommonState->m_pTimer->GetTimeElapsed());
+		m_pSceneManager->GetNowScene()->ProcessInput();
+		m_pSceneManager->GetNowScene()->AnimateObjectsAndRender();
 	}
 
 	m_pDXGISwapChain->Present(0, 0);
 
-	gpCommonState->m_pTimer->GetFrameRate(m_pszBuffer + 12, 37);
+	gpCommonState->GetFrameRate(m_pszBuffer + 12, 37);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
 
