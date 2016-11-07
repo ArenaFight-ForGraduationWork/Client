@@ -71,7 +71,7 @@ class CUnitComponent;
 class CObject
 {
 public:
-	CObject(UINT id);
+	CObject();
 	virtual ~CObject();
 
 	void SetPositionRelative(float& fx, float& fy, float& fz);
@@ -94,8 +94,6 @@ public:
 	CXMVECTOR GetLookAt();
 
 	CXMMATRIX GetWorldMatrix() { return XMLoadFloat4x4(&m_f4x4WorldMatrix); }
-
-	const UINT& GetId() { return m_id; }
 
 	virtual void SetMesh(CMesh *pMesh);
 	CMesh* GetMesh() { return m_pMesh; }
@@ -155,8 +153,6 @@ public:
 	//==============================================================================================
 
 private:
-	UINT m_id;
-
 	XMFLOAT3 m_f3Direction;
 
 	int m_iSourceType;

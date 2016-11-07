@@ -41,7 +41,7 @@ CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, CXMVECTOR
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
 	float x, y, z;
-	CObject *pObject = new CObject(id);
+	CObject *pObject = new CObject();
 
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
@@ -66,7 +66,7 @@ CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, CXMVECTOR
 CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction)
 {	// 애니메이션 데이터 전용
 	float x, y, z;
-	CObject *pObject = new CObject(id);
+	CObject *pObject = new CObject();
 
 	switch (eType)
 	{

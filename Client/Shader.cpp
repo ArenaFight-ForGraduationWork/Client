@@ -35,17 +35,18 @@ void CShader::InsertObject(CObject *pObject)
 
 bool CShader::ReleaseObject(UINT id)
 {
-	for (auto p = m_vObjects.begin(); p != m_vObjects.end();)
-	{
-		if (id == (*p)->GetId())
-		{
-			p = m_vObjects.erase(p);
-			return TRUE;
-		}
-		else
-			++p;
-	}
-	return FALSE;
+	//for (auto p = m_vObjects.begin(); p != m_vObjects.end();)
+	//{
+	//	if (id == (*p)->GetId())
+	//	{
+	//		p = m_vObjects.erase(p);
+	//		return TRUE;
+	//	}
+	//	else
+	//		++p;
+	//}
+	//return FALSE;
+	return TRUE;
 }
 
 void CShader::ReleaseAllObjects()

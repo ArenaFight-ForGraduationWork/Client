@@ -106,15 +106,13 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 
 
 
-CObject::CObject(UINT id)
+CObject::CObject()
 {
 	XMStoreFloat4x4(&m_f4x4WorldMatrix, XMMatrixIdentity());
 
 	m_pMesh = nullptr;
 	m_pMaterial = nullptr;
 	m_pTexture = nullptr;
-
-	m_id = id;
 
 	m_f3Direction = XMFLOAT3(0, 0, 0);
 
