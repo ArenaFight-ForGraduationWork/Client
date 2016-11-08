@@ -8,6 +8,11 @@
 
 
 
+
+
+//
+//	Shader
+//
 CShader::CShader()
 {
 	m_pd3dVertexShader = nullptr;
@@ -113,10 +118,6 @@ void CShader::CreateGeometryShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderN
 	}
 }
 
-void CShader::CreateShader()
-{
-}
-
 void CShader::CreateShaderVariables()
 {
 	D3D11_BUFFER_DESC d3dBufferDesc;
@@ -184,6 +185,9 @@ void CShader::AnimateObjectAndRender()
 
 
 
+//
+//	IllluminatedTexturedShader
+//
 CIlluminatedTexturedShader::CIlluminatedTexturedShader()
 {
 }
@@ -220,6 +224,10 @@ void CIlluminatedTexturedShader::CreateShaderVariables()
 	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
+void CIlluminatedTexturedShader::UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld)
+{
+	CShader::UpdateShaderVariables(pd3dxmtxWorld);
+}
 void CIlluminatedTexturedShader::UpdateShaderVariables(CMaterial *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -229,18 +237,21 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(CMaterial *pMaterial)
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	gpCommonState->m_pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
+void CIlluminatedTexturedShader::UpdateShaderVariables(CTexture *pTexture)
+{
+	CShader::UpdateShaderVariables(pTexture);
+}
 
 
 
 
 
-
-
-
+//
+//	Animating Shader
+//
 CAnimatingShader::CAnimatingShader()
 {
 }
-
 CAnimatingShader::~CAnimatingShader()
 {
 }

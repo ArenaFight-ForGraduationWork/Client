@@ -4,13 +4,19 @@
 #include "d3dx11effect.h"
 
 
+
+
+
+//
+//	Shader - base class
+//
 class CShader
 {
 public:
 	CShader();
 	~CShader();
 
-	virtual void CreateShader();
+	virtual void CreateShader() {}
 	virtual void CreateShaderVariables();
 	virtual void UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld);
 	virtual void UpdateShaderVariables(CMaterial *pMaterial = nullptr);
@@ -44,8 +50,10 @@ protected:
 
 
 
-/* 애니메이션이 없는 물체를 위한 셰이더.
-	텍스처 매핑, 빛 사용						*/
+//
+//	Illuminated Textured Shader
+//	애니메이션이 없는 물체를 위한 셰이더. 텍스처 매핑, 빛 사용
+//
 class CIlluminatedTexturedShader : public CShader
 {
 public:
@@ -54,14 +62,19 @@ public:
 
 	virtual void CreateShader();
 	virtual void CreateShaderVariables();
+	virtual void UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld);
 	virtual void UpdateShaderVariables(CMaterial *pMaterial = nullptr);
+	virtual void UpdateShaderVariables(CTexture *pTexture);
 };
 
 
 
 
-/* 애니메이션이 있는 물체를 위한 셰이더.
-	텍스처 매핑, 빛, 애니메이션 사용			*/
+
+//
+//	Animating Shader
+//	애니메이션이 있는 물체를 위한 셰이더. 텍스처 매핑, 빛, 애니메이션 사용
+//
 class CAnimatingShader : public CShader
 {
 public:

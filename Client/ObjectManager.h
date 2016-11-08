@@ -1,8 +1,9 @@
-#ifndef OBJECTMANAGER_H_
-#define OBJECTMANAGER_H_
+#pragma once
 
 #include "stdafx.h"
 #include "ResourceManager.h"
+
+
 
 extern UINT myID;
 
@@ -42,6 +43,3 @@ private:
 
 
 
-
-
-#endif
