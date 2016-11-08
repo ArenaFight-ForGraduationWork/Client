@@ -34,4 +34,11 @@ struct VS_CB_BONE_MATRIX
 	XMMATRIX m_mtxBone[128];
 };
 
-
+struct PS_CB_MATERIAL
+{
+	// R, G, B, A
+	float m_fAmbient[4];
+	float m_fDiffuse[4];
+	float m_fSpecular[4]; // a = power
+	float m_fEmissive[4];
+};

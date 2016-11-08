@@ -7,6 +7,11 @@ using namespace DirectX;
 
 
 
+
+
+//
+//	Mesh ( base class )
+//
 class CMesh
 {
 public:
@@ -23,10 +28,10 @@ public:
 	int* GetAniMaxTime() { return m_iAnimationMaxTime; }
 	unsigned int GetAnimationIndexCnt() { return m_uiAnimationIndexCnt; }
 
-	void SetMaxVer(CXMVECTOR max) { XMStoreFloat3(&m_pMaxVer, max); }
-	void SetMinVer(CXMVECTOR min) { XMStoreFloat3(&m_pMinVer, min); }
-	XMFLOAT3* GetMaxVer() { return &m_pMaxVer; }
-	XMFLOAT3* GetMinVer() { return &m_pMinVer; }
+	void SetMaxVer(CXMVECTOR max) { XMStoreFloat3(m_pf3MaxVer, max); }
+	void SetMinVer(CXMVECTOR min) { XMStoreFloat3(m_pf3MinVer, min); }
+	XMFLOAT3* GetMaxVer() { return m_pf3MaxVer; }
+	XMFLOAT3* GetMinVer() { return m_pf3MinVer; }
 
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
@@ -42,8 +47,8 @@ protected:
 
 	ID3D11RasterizerState *m_pd3dRasterizerState;
 
-	XMFLOAT3 m_pMaxVer;
-	XMFLOAT3 m_pMinVer;
+	XMFLOAT3 *m_pf3MaxVer;
+	XMFLOAT3 *m_pf3MinVer;
 
 	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
 	int m_iAnimationMaxTime[ANIMATION_COUNT];
@@ -55,6 +60,11 @@ private:
 
 
 
+
+
+//
+//	Cube Mesh
+//
 class CCubeMesh : public CMesh
 {
 public:
@@ -76,6 +86,10 @@ private:
 
 
 
+
+//
+//	Imported Mesh
+//
 class CImportedMesh : public CMesh
 {
 public:
@@ -92,7 +106,9 @@ private:
 
 
 
-
+//
+//	Imported Animating Mesh
+//
 class CImportedAnimatingMesh : public CMesh
 {
 public:

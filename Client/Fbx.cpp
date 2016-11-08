@@ -17,8 +17,8 @@ CFbx::CFbx()
 	m_uiAnimationNodeIndexCount = 0;
 	m_fAnimationPlayTime = 0.0f;
 
-	m_pMaxVer = XMFLOAT3(0, 0, 0);
-	m_pMinVer = XMFLOAT3(0, 0, 0);
+	m_pMaxVer = new XMFLOAT3(0, 0, 0);
+	m_pMinVer = new XMFLOAT3(0, 0, 0);
 
 	m_pAniIndexCount = nullptr;
 }
@@ -49,8 +49,8 @@ void CFbx::ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v)
 		v[i].SetUV(outTemp.x, outTemp.y);
 	}
 
-	fscanf_s(fp, "%f %f %f\n", &m_pMaxVer.x, &m_pMaxVer.y, &m_pMaxVer.z);
-	fscanf_s(fp, "%f %f %f\n", &m_pMinVer.x, &m_pMinVer.y, &m_pMinVer.z);
+	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
+	fscanf_s(fp, "%f %f %f\n", &(m_pMinVer->x), &(m_pMinVer->y), &(m_pMinVer->z));
 
 	fclose(fp);
 }
@@ -79,8 +79,8 @@ void CFbx::ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 		fscanf_s(fp, "%f %f\n", &v[i].m_f2TexCoord.x, &v[i].m_f2TexCoord.y);
 	}
 
-	fscanf_s(fp, "%f %f %f\n", &m_pMaxVer.x, &m_pMaxVer.y, &m_pMaxVer.z);
-	fscanf_s(fp, "%f %f %f\n", &m_pMinVer.x, &m_pMinVer.y, &m_pMinVer.z);
+	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
+	fscanf_s(fp, "%f %f %f\n", &(m_pMinVer->x), &(m_pMinVer->y), &(m_pMinVer->z));
 
 	fclose(fp);
 }

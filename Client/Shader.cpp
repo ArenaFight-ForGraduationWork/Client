@@ -214,7 +214,7 @@ void CIlluminatedTexturedShader::CreateShaderVariables()
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	d3dBufferDesc.ByteWidth = sizeof(MATERIAL);
+	d3dBufferDesc.ByteWidth = sizeof(PS_CB_MATERIAL);
 	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
@@ -226,8 +226,8 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(CMaterial *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbMaterial, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
-	MATERIAL *pcbMaterial = (MATERIAL *)d3dMappedResource.pData;
-	memcpy(pcbMaterial, pMaterial->GetMaterial(), sizeof(MATERIAL));
+	PS_CB_MATERIAL *pcbMaterial = (PS_CB_MATERIAL *)d3dMappedResource.pData;
+	memcpy(pcbMaterial, pMaterial->GetMaterial(), sizeof(PS_CB_MATERIAL));
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
 	gpCommonState->m_pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
@@ -278,7 +278,7 @@ void CAnimatingShader::CreateShaderVariables()
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	d3dBufferDesc.ByteWidth = sizeof(MATERIAL);
+	d3dBufferDesc.ByteWidth = sizeof(PS_CB_MATERIAL);
 	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 

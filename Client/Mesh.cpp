@@ -23,8 +23,8 @@ CMesh::CMesh()
 	m_nStartIndex = 0;
 	m_nBaseVertex = 0;
 
-	m_pMaxVer = XMFLOAT3(0, 0, 0);
-	m_pMinVer = XMFLOAT3(0, 0, 0);
+	m_pf3MaxVer = new XMFLOAT3(0, 0, 0);
+	m_pf3MinVer = new XMFLOAT3(0, 0, 0);
 
 	for (int i = 0; i < ANIMATION_COUNT; ++i)
 	{
@@ -73,11 +73,6 @@ void CMesh::Render()
 
 
 
-
-
-
-
-
 //
 //	CubeMesh
 //
@@ -90,8 +85,8 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh()
 
 	float fx = fWidth*0.5f, fy = fHeight*0.5f, fz = fDepth*0.5f;
 
-	m_pMaxVer = XMFLOAT3(fx, fy, fz);
-	m_pMinVer = XMFLOAT3(-fx, -fy, -fz);
+	*m_pf3MaxVer = XMFLOAT3(fx, fy, fz);
+	*m_pf3MinVer = XMFLOAT3(-fx, -fy, -fz);
 
 	CTexturedNormalVertex pVertices[36];
 	int i = 0;
@@ -274,11 +269,6 @@ XMVECTOR CCubeMesh::_CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, US
 
 
 
-
-
-
-
-
 //
 //	ImportedMesh
 //
@@ -290,8 +280,8 @@ CImportedMesh::CImportedMesh(char* ptxtName) : CMesh()
 
 	m_nVertices = pFbx->GetSize();
 
-	m_pMaxVer = *(pFbx->GetMaxVer());
-	m_pMinVer = *(pFbx->GetMinVer());
+	m_pf3MaxVer = pFbx->GetMaxVer();
+	m_pf3MinVer = pFbx->GetMinVer();
 
 	m_nStride = sizeof(CTexturedNormalVertex);
 	m_nOffset = 0;
@@ -332,11 +322,6 @@ void CImportedMesh::CreateRasterizerState()
 
 
 
-
-
-
-
-
 //
 //	ImportedAnimatingMesh
 //
@@ -356,8 +341,8 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(int CharNum, int StateCnt) : CMes
 
 	m_uiAnimationIndexCnt = pFbx->GetAnimationIndexCount();
 
-	m_pMaxVer = *(pFbx->GetMaxVer());
-	m_pMinVer = *(pFbx->GetMinVer());
+	m_pf3MaxVer = pFbx->GetMaxVer();
+	m_pf3MinVer = pFbx->GetMinVer();
 
 	pFbx->ReadTextFile_Weight(CharNum, ppVertices);
 

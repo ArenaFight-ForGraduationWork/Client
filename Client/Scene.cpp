@@ -779,8 +779,8 @@ void CFirstScene::AnimateObjectsAndRender()
 	//
 	//	3D
 	//	
-	if (m_pFog->IsInUse())
-		m_pFog->Update();
+	//if (m_pFog->IsInUse())
+	//	m_pFog->Update();
 
 	CScene::AnimateObjectsAndRender();
 
@@ -789,15 +789,16 @@ void CFirstScene::AnimateObjectsAndRender()
 	//
 	gpCommonState->TurnZBufferOff();
 	m_pSpriteBatch->Begin();
-	// frame
-	m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
-
-	// hp
-	CObject *pObject = m_pObjectManager->FindObject(myID);
-	if (pObject)
 	{
-		rHpPos.right = rHpPos.left + static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * 3;
-		m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
+		// frame
+		m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
+		// hp
+		CObject *pObject = m_pObjectManager->FindObject(myID);
+		if (pObject)
+		{
+			rHpPos.right = rHpPos.left + static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * 3;
+			m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
+		}
 	}
 	m_pSpriteBatch->End();
 	gpCommonState->TurnZBufferOn();

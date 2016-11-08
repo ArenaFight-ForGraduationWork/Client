@@ -25,8 +25,8 @@ public:
 	int& GetAnimationMaxTime() { return m_iAnimationMaxTime; }
 	int GetAnimationIndexCount() { return m_uiAnimationNodeIndexCount; }
 
-	XMFLOAT3* GetMaxVer() { return &m_pMaxVer; }
-	XMFLOAT3* GetMinVer() { return &m_pMinVer; }
+	XMFLOAT3* GetMaxVer() { return m_pMaxVer; }
+	XMFLOAT3* GetMinVer() { return m_pMinVer; }
 
 private:
 	int m_iSize;
@@ -37,8 +37,8 @@ private:
 	unsigned int m_uiAnimationNodeIndexCount;	//애니메이션 노드 갯수
 	float m_fAnimationPlayTime;					//애니메이션 재생 시간
 
-	XMFLOAT3 m_pMaxVer;	// 최대값
-	XMFLOAT3 m_pMinVer;	// 최소값
+	XMFLOAT3* m_pMaxVer;	// 최대값
+	XMFLOAT3* m_pMinVer;	// 최소값
 
 	unsigned int* m_pAniIndexCount;
 };

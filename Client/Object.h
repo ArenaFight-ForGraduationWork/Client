@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include "Mesh.h"
 #include "ConstantBuffers.h"
 
@@ -9,16 +7,12 @@
 using namespace DirectX;
 
 
-/* 재질 관련 정보를 표현 */
-struct MATERIAL
-{
-	// R, G, B, A
-	float m_fAmbient[4];
-	float m_fDiffuse[4];
-	float m_fSpecular[4]; // a = power
-	float m_fEmissive[4];
-};
 
+
+
+//
+//	Material
+//
 class CMaterial
 {
 public:
@@ -28,14 +22,20 @@ public:
 	void AddRef();
 	void Release();
 
-	MATERIAL* GetMaterial() { return m_pMaterial; }
+	PS_CB_MATERIAL* GetMaterial() { return m_pMaterial; }
 
 private:
 	int m_nReferences;
-	MATERIAL *m_pMaterial;
+	PS_CB_MATERIAL *m_pMaterial;
 };
 
 
+
+
+
+//
+//	Texture
+//
 class CTexture
 {
 public:
@@ -55,18 +55,19 @@ public:
 
 private:
 	int m_nReferences;
+	int m_nTextures;
 
 	ID3D11ShaderResourceView **m_ppd3dsrvTextures;
 	ID3D11SamplerState **m_ppd3dSamplerStates;
-
-	int m_nTextures;
 };
 
 
 
 
 
-
+//
+//	Object ( base class )
+//
 class CUnitComponent;
 class CObject
 {
@@ -93,7 +94,7 @@ public:
 	XMFLOAT3* GetUp();
 	XMFLOAT3* GetLookAt();
 
-	XMFLOAT4X4* GetWorldMatrix() { return &m_f4x4WorldMatrix; }
+	XMFLOAT4X4* GetWorldMatrix() { return m_pf4x4WorldMatrix; }
 
 	virtual void SetMesh(CMesh *pMesh);
 	CMesh* GetMesh() { return m_pMesh; }
@@ -139,8 +140,8 @@ public:
 	//==============================================================================================
 	/* Collision Detection */
 private:
-	XMFLOAT3 m_pMaxVer;
-	XMFLOAT3 m_pMinVer;
+	XMFLOAT3 *m_pf3MaxVer;
+	XMFLOAT3 *m_pf3MinVer;
 	float m_fRadius;
 
 public:
@@ -153,14 +154,14 @@ public:
 	//==============================================================================================
 
 private:
-	XMFLOAT3 m_f3Direction;
+	XMFLOAT3 *m_pf3Direction;
 
 	int m_iSourceType;
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
 
-	XMFLOAT4X4 m_f4x4WorldMatrix;
+	XMFLOAT4X4 *m_pf4x4WorldMatrix;
 
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;
@@ -176,6 +177,11 @@ private:
 
 
 
+
+
+//
+//	Unit Component
+//
 class CUnitComponent
 {
 public:
