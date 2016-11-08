@@ -87,13 +87,13 @@ public:
 	void SetDirectionAbsolute(CXMVECTOR vec);
 
 	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환
-	CXMVECTOR GetPosition();
-	CXMVECTOR GetDirection();
-	CXMVECTOR GetRight();
-	CXMVECTOR GetUp();
-	CXMVECTOR GetLookAt();
+	XMFLOAT3* GetPosition();
+	XMFLOAT3* GetDirection();
+	XMFLOAT3* GetRight();
+	XMFLOAT3* GetUp();
+	XMFLOAT3* GetLookAt();
 
-	CXMMATRIX GetWorldMatrix() { return XMLoadFloat4x4(&m_f4x4WorldMatrix); }
+	XMFLOAT4X4* GetWorldMatrix() { return &m_f4x4WorldMatrix; }
 
 	virtual void SetMesh(CMesh *pMesh);
 	CMesh* GetMesh() { return m_pMesh; }
@@ -146,8 +146,8 @@ private:
 public:
 	void SetBoundingBox();
 
-	CXMVECTOR GetMaxVer();
-	CXMVECTOR GetMinVer();
+	XMFLOAT3* GetMaxVer();
+	XMFLOAT3* GetMinVer();
 	const float& GetRadius() { return m_fRadius; }
 	//==============================================================================================
 	//==============================================================================================

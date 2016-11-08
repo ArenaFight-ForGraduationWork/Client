@@ -3,23 +3,11 @@
 
 
 
-CVertex::CVertex()
-{
-	m_f3Position = XMFLOAT3(0, 0, 0);
-}
-CVertex::CVertex(CXMVECTOR position)
-{
-	XMStoreFloat3(&m_f3Position, position);
-}
-CXMVECTOR CVertex::GetPosition()
-{
-	return XMLoadFloat3(&m_f3Position);
-}
 
 
-
-
-
+//
+//	Diffused Vertex
+//
 CDiffusedVertex::CDiffusedVertex()
 {
 	m_f3Position = XMFLOAT3(0, 0, 0);
@@ -35,6 +23,9 @@ CDiffusedVertex::CDiffusedVertex(CXMVECTOR position, CXMVECTOR color)
 
 
 
+//
+//	Normal Vertex
+//
 CNormalVertex::CNormalVertex()
 {
 	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -54,32 +45,9 @@ void CNormalVertex::SetNormal(CXMVECTOR normal)
 
 
 
-CTexturedVertex::CTexturedVertex()
-{
-	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_f2TexCoord = XMFLOAT2(0.0f, 0.0f);
-}
-CTexturedVertex::CTexturedVertex(CXMVECTOR position, CXMVECTOR uv)
-{ 
-	XMStoreFloat3(&m_f3Position, position);
-	XMStoreFloat2(&m_f2TexCoord, uv);
-}
-void CTexturedVertex::SetPosition(float x, float y, float z)
-{
-	m_f3Position.x = x;
-	m_f3Position.y = y;
-	m_f3Position.z = z;
-}
-void CTexturedVertex::SetTexCoord(float u, float v)
-{
-	m_f2TexCoord.x = u;
-	m_f2TexCoord.y = v;
-}
-
-
-
-
-
+//
+//	Textured Normal Vertex
+//
 CTexturedNormalVertex::CTexturedNormalVertex()
 {
 	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -91,18 +59,6 @@ CTexturedNormalVertex::CTexturedNormalVertex(CXMVECTOR position, CXMVECTOR norma
 	XMStoreFloat3(&m_f3Position, position);
 	XMStoreFloat3(&m_f3Normal, normal);
 	XMStoreFloat2(&m_f2TexCoord, uv);
-}
-CXMVECTOR CTexturedNormalVertex::GetPosition()
-{
-	return XMLoadFloat3(&m_f3Position);
-}
-CXMVECTOR CTexturedNormalVertex::GetNormal()
-{
-	return XMLoadFloat3(&m_f3Normal);
-}
-CXMVECTOR CTexturedNormalVertex::GetUV()
-{
-	return XMLoadFloat2(&m_f2TexCoord);
 }
 void CTexturedNormalVertex::SetPosition(float x, float y, float z)
 {
@@ -121,6 +77,9 @@ void CTexturedNormalVertex::SetUV(float u, float v)
 
 
 
+//
+//	Animation Vertex
+//
 CAnimationVertex::CAnimationVertex()
 {
 	m_f3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);

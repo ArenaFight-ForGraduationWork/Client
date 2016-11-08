@@ -34,12 +34,12 @@ public:
 	void SetViewport(DWORD xStart, DWORD yStart, DWORD nWidth, DWORD nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
 	const D3D11_VIEWPORT* GetViewport() { return m_pd3dViewport; }
 
-	CXMMATRIX GetViewMatrix() { return  XMLoadFloat4x4(m_f4x4View); }
-	CXMMATRIX GetProjectionMatrix() { return  XMLoadFloat4x4(m_f4x4Projection); }
+	XMFLOAT4X4* GetViewMatrix() { return m_f4x4View; }
+	XMFLOAT4X4* GetProjectionMatrix() { return m_f4x4Projection; }
 	ID3D11Buffer* GetCameraConstantBuffer() { return m_pd3dcbCamera; }
 
 	void SetPosition(CXMVECTOR vPosition) { XMStoreFloat3(m_f3Position, vPosition); }
-	CXMVECTOR GetPosition() { return  XMLoadFloat3(m_f3Position); }
+	XMFLOAT3* GetPosition() { return m_f3Position; }
 
 	void SetLookAtPosition(CXMVECTOR vLookAtWorld) { XMStoreFloat3(m_f3LookAtWorld, vLookAtWorld); }
 	CXMVECTOR GetLookAtPosition() { return  XMLoadFloat3(m_f3LookAtWorld); }

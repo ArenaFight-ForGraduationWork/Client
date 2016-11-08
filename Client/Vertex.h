@@ -1,5 +1,4 @@
-#ifndef VERTEX_H_
-#define VERTEX_H_
+#pragma once
 
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
@@ -7,20 +6,12 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 
 
-class CVertex
-{
-public:
-	CVertex();
-	CVertex(CXMVECTOR position);
-	CVertex(CVertex& ref) {}
-	~CVertex() {}
 
-	CXMVECTOR GetPosition();
 
-private:
-	XMFLOAT3 m_f3Position;
-};
 
+//
+//	Diffused Vertex ( Position, color )
+//
 class CDiffusedVertex
 {
 public:
@@ -34,6 +25,13 @@ private:
 	XMCOLOR m_cDiffuse;
 };
 
+
+
+
+
+//
+//	Normal Vertex ( Position, Normal )
+//
 class CNormalVertex
 {
 public:
@@ -49,22 +47,13 @@ private:
 	XMFLOAT3 m_f3Normal;
 };
 
-class CTexturedVertex
-{
-public:
-	CTexturedVertex();
-	CTexturedVertex(CXMVECTOR position, CXMVECTOR uv);
-	CTexturedVertex(CTexturedVertex& ref) {}
-	~CTexturedVertex() {}
 
-	void SetPosition(float x, float y, float z);
-	void SetTexCoord(float u, float v);
 
-private:
-	XMFLOAT3 m_f3Position;
-	XMFLOAT2 m_f2TexCoord;
-};
 
+
+//
+//	Textured Normal Vertex ( Position, Normal, UV )
+//
 class CTexturedNormalVertex
 {
 public:
@@ -72,10 +61,6 @@ public:
 	CTexturedNormalVertex(CXMVECTOR position, CXMVECTOR normal, CXMVECTOR uv);
 	CTexturedNormalVertex(CTexturedNormalVertex& ref) {}
 	~CTexturedNormalVertex() {}
-
-	CXMVECTOR GetPosition();
-	CXMVECTOR GetNormal();
-	CXMVECTOR GetUV();
 
 	void SetPosition(float x, float y, float z);
 	void SetNormal(float x, float y, float z);
@@ -87,6 +72,13 @@ private:
 	XMFLOAT2 m_f2TexCoord;
 };
 
+
+
+
+
+//
+//	Animation Vertex ( Position, Normal, UV, BoneIndex, BoneWeight )
+//
 class CAnimationVertex
 {
 public:
@@ -106,5 +98,3 @@ public:
 
 
 
-
-#endif

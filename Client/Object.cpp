@@ -168,22 +168,22 @@ void CObject::SetTexture(CTexture *pTexture)
 void CObject::SetPositionRelative(float& fx, float& fy, float& fz)
 {
 	XMVECTOR position;
-	position = GetPosition();
+	position = XMLoadFloat3(GetPosition());
 
-	position += fx * GetRight();
-	position += fy * GetUp();
-	position += fz * GetLookAt();
+	position += fx * XMLoadFloat3(GetRight());
+	position += fy * XMLoadFloat3(GetUp());
+	position += fz * XMLoadFloat3(GetLookAt());
 
 	SetPositionAbsolute(position);
 }
 void CObject::SetPositionRelative(CXMVECTOR vec)
 {
 	XMVECTOR position;
-	position = GetPosition();
+	position = XMLoadFloat3(GetPosition());
 
-	position += XMVectorGetX(vec) * GetRight();
-	position += XMVectorGetY(vec) * GetUp();
-	position += XMVectorGetZ(vec) * GetLookAt();
+	position += XMVectorGetX(vec) * XMLoadFloat3(GetRight());
+	position += XMVectorGetY(vec) * XMLoadFloat3(GetUp());
+	position += XMVectorGetZ(vec) * XMLoadFloat3(GetLookAt());
 
 	SetPositionAbsolute(position);
 }
@@ -201,11 +201,13 @@ void CObject::SetPositionAbsolute(CXMVECTOR vec)
 }
 void CObject::MoveForward(float& fVar)
 {
-	XMVECTOR position = GetPosition();
+	XMVECTOR position;
+	position = XMLoadFloat3(GetPosition());
+
 	if (m_pUnitComponent)	// 속력이 존재하면 속력 * 시간(fVar)
-		position += m_pUnitComponent->GetMovingSpeed() * fVar * GetLookAt();
+		position += m_pUnitComponent->GetMovingSpeed() * fVar * XMLoadFloat3(GetLookAt());
 	else // 속력이 없으면 거리(fVar)
-		position += fVar * GetLookAt();
+		position += fVar * XMLoadFloat3(GetLookAt());
 
 	SetPositionAbsolute(position);
 }
@@ -266,52 +268,28 @@ void CObject::SetDirectionAbsolute(CXMVECTOR vec)
 	SetDirectionRelative(vec);
 }
 
-CXMVECTOR CObject::GetPosition()
+XMFLOAT3* CObject::GetPosition()
 {
-	XMFLOAT3 position;
-	position = XMFLOAT3(m_f4x4WorldMatrix._41, m_f4x4WorldMatrix._42, m_f4x4WorldMatrix._43);
-
-	return XMLoadFloat3(&position);
+	return new XMFLOAT3(m_f4x4WorldMatrix._41, m_f4x4WorldMatrix._42, m_f4x4WorldMatrix._43);
 }
-CXMVECTOR CObject::GetDirection()
+XMFLOAT3* CObject::GetDirection()
 {
-	return XMLoadFloat3(&m_f3Direction);
+	return &m_f3Direction;
 }
 
-CXMVECTOR CObject::GetRight()
+XMFLOAT3* CObject::GetRight()
 {
-	XMFLOAT3 f3Right;
-	f3Right = XMFLOAT3(m_f4x4WorldMatrix._11, m_f4x4WorldMatrix._12, m_f4x4WorldMatrix._13);
-
-	XMVECTOR vRight;
-	vRight = XMLoadFloat3(&f3Right);
-	vRight = XMVector3Normalize(vRight);
-
-	return vRight;
+	return new XMFLOAT3(m_f4x4WorldMatrix._11, m_f4x4WorldMatrix._12, m_f4x4WorldMatrix._13);
 }
 
-CXMVECTOR CObject::GetUp()
+XMFLOAT3* CObject::GetUp()
 {
-	XMFLOAT3 f3Up;
-	f3Up = XMFLOAT3(m_f4x4WorldMatrix._21, m_f4x4WorldMatrix._22, m_f4x4WorldMatrix._23);
-
-	XMVECTOR vUp;
-	vUp = XMLoadFloat3(&f3Up);
-	vUp = XMVector3Normalize(vUp);
-
-	return vUp;
+	return new XMFLOAT3(m_f4x4WorldMatrix._21, m_f4x4WorldMatrix._22, m_f4x4WorldMatrix._23);
 }
 
-CXMVECTOR CObject::GetLookAt()
+XMFLOAT3* CObject::GetLookAt()
 {
-	XMFLOAT3 f3Look;
-	f3Look = XMFLOAT3(m_f4x4WorldMatrix._31, m_f4x4WorldMatrix._32, m_f4x4WorldMatrix._33);
-
-	XMVECTOR vLook;
-	vLook = XMLoadFloat3(&f3Look);
-	vLook = XMVector3Normalize(vLook);
-
-	return vLook;
+	return new XMFLOAT3(m_f4x4WorldMatrix._31, m_f4x4WorldMatrix._32, m_f4x4WorldMatrix._33);
 }
 
 
@@ -320,8 +298,8 @@ CXMVECTOR CObject::GetLookAt()
 
 void CObject::SetBoundingBox()
 {
-	XMStoreFloat3(&m_pMaxVer, m_pMesh->GetMaxVer());
-	XMStoreFloat3(&m_pMinVer, m_pMesh->GetMinVer());
+	m_pMaxVer = *(m_pMesh->GetMaxVer());
+	m_pMinVer = *(m_pMesh->GetMinVer());
 
 	if (m_pMaxVer.x < m_pMinVer.x)
 	{
@@ -348,19 +326,25 @@ void CObject::SetBoundingBox()
 	m_fRadius = static_cast<float>(sqrt((m_pMinVer.x * m_pMinVer.x) + (m_pMinVer.z * m_pMinVer.z)));
 }
 
-CXMVECTOR CObject::GetMaxVer()
+XMFLOAT3* CObject::GetMaxVer()
 {
 	XMVECTOR vVertex;
 	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMaxVer), XMLoadFloat4x4(&m_f4x4WorldMatrix));
+	
+	XMFLOAT3* pf3Vertex = new XMFLOAT3();
+	XMStoreFloat3(pf3Vertex, vVertex);
 
-	return vVertex;
+	return pf3Vertex;
 }
-CXMVECTOR CObject::GetMinVer()
+XMFLOAT3* CObject::GetMinVer()
 {
 	XMVECTOR vVertex;
 	vVertex = XMVector3TransformCoord(XMLoadFloat3(&m_pMinVer), XMLoadFloat4x4(&m_f4x4WorldMatrix));
 
-	return vVertex;
+	XMFLOAT3* pf3Vertex = new XMFLOAT3();
+	XMStoreFloat3(pf3Vertex, vVertex);
+
+	return pf3Vertex;
 }
 
 

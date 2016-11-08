@@ -165,13 +165,7 @@ void CShader::AnimateObjectAndRender()
 
 	for (auto obj : m_vObjects)
 	{
-		// 왜 값이 지 혼자 쓰레기값으로 바뀌냐
-		// UpdateShaderVariables(obj->GetWorldMatrix());
-		// 혼자 값이 바껴대서 그냥 중간에 한 번 해줌
-		XMMATRIX temp;
-		temp = obj->GetWorldMatrix();
-		UpdateShaderVariables(temp);
-
+		UpdateShaderVariables(XMLoadFloat4x4(obj->GetWorldMatrix()));
 		if (obj->GetMaterial())
 			UpdateShaderVariables(obj->GetMaterial());
 		if (obj->GetTexture())

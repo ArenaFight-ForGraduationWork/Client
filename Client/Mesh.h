@@ -25,8 +25,8 @@ public:
 
 	void SetMaxVer(CXMVECTOR max) { XMStoreFloat3(&m_pMaxVer, max); }
 	void SetMinVer(CXMVECTOR min) { XMStoreFloat3(&m_pMinVer, min); }
-	CXMVECTOR GetMaxVer() { return XMLoadFloat3(&m_pMaxVer); }
-	CXMVECTOR GetMinVer() { return XMLoadFloat3(&m_pMinVer); }
+	XMFLOAT3* GetMaxVer() { return &m_pMaxVer; }
+	XMFLOAT3* GetMinVer() { return &m_pMinVer; }
 
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */

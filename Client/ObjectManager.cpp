@@ -174,13 +174,13 @@ bool CObjectManager::CheckCollision()
 		if (monster.first >= 1000)
 			if (monster.first < 2000)
 			{
-				XMFLOAT3 myPosition;
-				XMStoreFloat3(&myPosition, FindObject(myID)->GetPosition());
-				XMFLOAT3 monsterPosition;
-				XMStoreFloat3(&monsterPosition, monster.second->GetPosition());
+				XMFLOAT3* pMyPosition;
+				pMyPosition = FindObject(myID)->GetPosition();
+				XMFLOAT3* pMonsterPosition;
+				pMonsterPosition = monster.second->GetPosition();
 
-				float distance = ((myPosition.x - monsterPosition.x)*(myPosition.x - monsterPosition.x))
-					+ ((myPosition.z - monsterPosition.z)*(myPosition.z - monsterPosition.z));
+				float distance = ((pMyPosition->x - pMonsterPosition->x)*(pMyPosition->x - pMonsterPosition->x))
+					+ ((pMyPosition->z - pMonsterPosition->z)*(pMyPosition->z - pMonsterPosition->z));
 				if (sqrt(distance) <= FindObject(myID)->GetRadius() + monster.second->GetRadius())
 				{
 					return true;

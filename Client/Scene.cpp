@@ -626,9 +626,9 @@ void CFirstScene::ProcessInput()
 						pp->size = sizeof(*pp);
 						pp->type = PLAYER_MOV;	// herehere
 						pp->id = myID;
-						pp->x = XMVectorGetX(pPlayer->GetPosition());
-						pp->z = XMVectorGetZ(pPlayer->GetPosition());
-						pp->direction = XMVectorGetY(pPlayer->GetDirection());
+						pp->x = pPlayer->GetPosition()->x;
+						pp->z = pPlayer->GetPosition()->z;
+						pp->direction = pPlayer->GetDirection()->y;
 						pp->isMoving = true;
 						if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
 							printf("event data send ERROR\n");
@@ -648,9 +648,9 @@ void CFirstScene::ProcessInput()
 							pp->size = sizeof(*pp);
 							pp->type = PLAYER_MOV;	// herehere
 							pp->id = myID;
-							pp->x = XMVectorGetX(pPlayer->GetPosition());
-							pp->z = XMVectorGetZ(pPlayer->GetPosition());
-							pp->direction = XMVectorGetY(pPlayer->GetDirection());
+							pp->x = pPlayer->GetPosition()->x;
+							pp->z = pPlayer->GetPosition()->z;
+							pp->direction = pPlayer->GetDirection()->y;
 							pp->isMoving = false;
 							if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
 								printf("event data send ERROR\n");
@@ -670,7 +670,7 @@ void CFirstScene::ProcessInput()
 
 	if (pPlayer)
 	{
-		XMVECTOR position = pPlayer->GetPosition();
+		XMVECTOR position = XMLoadFloat3(pPlayer->GetPosition());
 		m_pCameraManager->GetNowCamera()->Update(position);
 	}
 	else
@@ -690,7 +690,7 @@ void CFirstScene::BuildObjects()
 	if (m_pObjectManager->FindObject(myID))
 	{
 		XMVECTOR vPos;
-		vPos = m_pObjectManager->FindObject(myID)->GetPosition();
+		vPos = XMLoadFloat3(m_pObjectManager->FindObject(myID)->GetPosition());
 
 		m_pCameraManager->GetNowCamera()->SetLookAt(vPos);
 	}
@@ -819,20 +819,20 @@ void CFirstScene::RenderParticle()
 
 			XMVECTOR vEyePosition;
 			if (m_pCameraManager->GetNowCamera())
-				vEyePosition = m_pCameraManager->GetNowCamera()->GetPosition();
+				vEyePosition = XMLoadFloat3(m_pCameraManager->GetNowCamera()->GetPosition());
 			else
 				vEyePosition = XMVectorZero();
 			m_pFireParticle->SetEyePos(vEyePosition);
 
 			XMVECTOR vPlayerPosition;
 			if (m_pObjectManager->FindObject(myID))
-				vPlayerPosition = m_pObjectManager->FindObject(myID)->GetPosition();
+				vPlayerPosition = XMLoadFloat3(m_pObjectManager->FindObject(myID)->GetPosition());
 			else
 				vPlayerPosition = XMVectorZero();
 			m_pFireParticle->SetEmitPos(vPlayerPosition);
 
-			XMMATRIX V = m_pCameraManager->GetNowCamera()->GetViewMatrix();
-			XMMATRIX P = m_pCameraManager->GetNowCamera()->GetProjectionMatrix();
+			XMMATRIX V = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetViewMatrix());
+			XMMATRIX P = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
 			m_pFireParticle->Draw(V, P);
 		}
 		else

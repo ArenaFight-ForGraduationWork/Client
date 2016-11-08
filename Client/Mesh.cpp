@@ -290,8 +290,8 @@ CImportedMesh::CImportedMesh(char* ptxtName) : CMesh()
 
 	m_nVertices = pFbx->GetSize();
 
-	XMStoreFloat3(&m_pMaxVer, pFbx->GetMaxVer());
-	XMStoreFloat3(&m_pMinVer, pFbx->GetMinVer());
+	m_pMaxVer = *(pFbx->GetMaxVer());
+	m_pMinVer = *(pFbx->GetMinVer());
 
 	m_nStride = sizeof(CTexturedNormalVertex);
 	m_nOffset = 0;
@@ -356,8 +356,8 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(int CharNum, int StateCnt) : CMes
 
 	m_uiAnimationIndexCnt = pFbx->GetAnimationIndexCount();
 
-	XMStoreFloat3(&m_pMaxVer, pFbx->GetMaxVer());
-	XMStoreFloat3(&m_pMinVer, pFbx->GetMinVer());
+	m_pMaxVer = *(pFbx->GetMaxVer());
+	m_pMinVer = *(pFbx->GetMinVer());
 
 	pFbx->ReadTextFile_Weight(CharNum, ppVertices);
 

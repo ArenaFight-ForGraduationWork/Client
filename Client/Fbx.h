@@ -25,8 +25,8 @@ public:
 	int& GetAnimationMaxTime() { return m_iAnimationMaxTime; }
 	int GetAnimationIndexCount() { return m_uiAnimationNodeIndexCount; }
 
-	CXMVECTOR GetMaxVer() { return XMLoadFloat3(&m_pMaxVer); }
-	CXMVECTOR GetMinVer() { return XMLoadFloat3(&m_pMinVer); }
+	XMFLOAT3* GetMaxVer() { return &m_pMaxVer; }
+	XMFLOAT3* GetMinVer() { return &m_pMinVer; }
 
 private:
 	int m_iSize;
