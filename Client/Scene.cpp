@@ -1,24 +1,24 @@
 #include "stdafx.h"
 #include "Scene.h"
-#include "ResourceManager.h"
-
-#include <SpriteBatch.h>
 #include <DDSTextureLoader.h>
-#include <SpriteFont.h>
 
 
 
+
+
+//
+//	Scene
+//
 CScene::CScene()
 {
 	m_pLight = new CLight();
-
-	m_pCameraManager = nullptr;
 
 	m_ptOldCursorPos.x = 0;
 	m_ptOldCursorPos.y = 0;
 	m_ptNewCursorPos.x = 0;
 	m_ptNewCursorPos.y = 0;
 
+	m_pCameraManager = nullptr;
 	m_pObjectManager = CObjectManager::GetSingleton();
 
 	m_pSpriteBatch = nullptr;
@@ -61,6 +61,9 @@ void CScene::AnimateObjectsAndRender()
 
 
 
+//
+//	Intro Scene
+//
 CIntroScene::CIntroScene()
 {
 	m_bButton = 0;
@@ -394,13 +397,9 @@ void CIntroScene::AnimateObjectsAndRender()
 
 
 
-
-
-
-
-
-
-
+//
+//	First Scene
+//
 CFirstScene::CFirstScene()
 {
 	m_dwDirectionPrev = 0;
@@ -684,8 +683,6 @@ void CFirstScene::BuildObjects()
 {
 	CScene::BuildObjects();
 
-	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
-
 	m_pCameraManager = CCameraManager::GetSingleton();
 	if (m_pObjectManager->FindObject(myID))
 	{
@@ -748,12 +745,15 @@ void CFirstScene::BuildObjects()
 		f3VectorPos = XMFLOAT3(2100, 0, -1900); f3VectorDir = XMFLOAT3(0, 0, 0);
 		m_pObjectManager->Insert(4013, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
 
-		for (short i = 0; i < 20; ++i)
-		{
-			f3VectorPos = XMFLOAT3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000));
-			f3VectorDir = XMFLOAT3(0, 0, 0);
-			m_pObjectManager->Insert(4020 + i, eResourceType::grass, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
-		}
+		m_pObjectManager->Insert(4020, eResourceType::grass, XMVectorZero(), XMVectorZero());
+
+
+		//for (short i = 0; i < 20; ++i)
+		//{
+		//	f3VectorPos = XMFLOAT3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000));
+		//	f3VectorDir = XMFLOAT3(0, 0, 0);
+		//	m_pObjectManager->Insert(4020 + i, eResourceType::grass, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		//}
 	}
 
 	m_pFog = new CFog();
@@ -776,37 +776,37 @@ void CFirstScene::BuildObjects()
 
 void CFirstScene::AnimateObjectsAndRender()
 {
-	//
-	//	3D
-	//	
-	//if (m_pFog->IsInUse())
-	//	m_pFog->Update();
-
-	CScene::AnimateObjectsAndRender();
-
-	//
-	//	2D
-	//
-	gpCommonState->TurnZBufferOff();
-	m_pSpriteBatch->Begin();
+	// 3D
 	{
-		// frame
-		m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
-		// hp
-		CObject *pObject = m_pObjectManager->FindObject(myID);
-		if (pObject)
-		{
-			rHpPos.right = rHpPos.left + static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * 3;
-			m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
-		}
-	}
-	m_pSpriteBatch->End();
-	gpCommonState->TurnZBufferOn();
+		//if (m_pFog->IsInUse())
+		//	m_pFog->Update();
 
-	//
-	//	Sprite
-	//
-	//RenderParticle();
+		CScene::AnimateObjectsAndRender();
+	}
+
+	// 2D
+	{
+		gpCommonState->TurnZBufferOff();
+		m_pSpriteBatch->Begin();
+		{
+			// frame
+			m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
+			// hp
+			CObject *pObject = m_pObjectManager->FindObject(myID);
+			if (pObject)
+			{
+				rHpPos.right = rHpPos.left + static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * 3;
+				m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
+			}
+		}
+		m_pSpriteBatch->End();
+		gpCommonState->TurnZBufferOn();
+	}
+
+	// particle
+	{
+		RenderParticle();
+	}
 }
 
 void CFirstScene::RenderParticle()
@@ -841,7 +841,6 @@ void CFirstScene::RenderParticle()
 			fFireParticleTime = 0.0f;
 			isFireParticle = false;
 		}
-
 	}
 	else
 	{
@@ -853,6 +852,9 @@ void CFirstScene::RenderParticle()
 
 
 
+//
+//	Scene Manager
+//
 CSceneManager::CSceneManager()
 {
 	m_eNow = eSceneType::FIRST;

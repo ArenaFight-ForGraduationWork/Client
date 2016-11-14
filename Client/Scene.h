@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Object.h"
 #include "Shader.h"
 #include "Light.h"
 #include "ObjectManager.h"
@@ -9,12 +8,15 @@
 #include "Server.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
-
 #include "Particle.h"
 
 
 
 
+
+//
+//	Scene ( base class )
+//
 class CScene
 {
 public:
@@ -54,6 +56,10 @@ private:
 
 
 
+
+//
+//	Intro Scene
+//
 class CIntroScene : public CScene
 {
 public:
@@ -100,6 +106,9 @@ private:
 
 
 
+//
+//	First Scene
+//
 class CFirstScene : public CScene
 {
 public:
@@ -132,9 +141,9 @@ private:
 
 
 
-
-
-
+//
+// Scene Manager
+//
 class CSceneManager
 {
 public:

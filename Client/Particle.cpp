@@ -240,11 +240,7 @@ void CParticle::Draw(CXMMATRIX viewMatrix, CXMMATRIX projectionMatrix)
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		//// herehere
-		CParticleEffect *temp = m_pShader->m_particle;
-		ID3DX11EffectTechnique *temp2 = temp->StreamOutTech;
-		ID3DX11EffectPass *temp3 = temp2->GetPassByIndex(0);
-		HR(temp3->Apply(0, gpCommonState->m_pd3dDeviceContext));
-		//HR(m_pShader->m_particle->StreamOutTech->GetPassByIndex(p)->Apply(0, gpCommonState->m_pd3dDeviceContext));
+		HR(m_pShader->m_particle->StreamOutTech->GetPassByIndex(p)->Apply(0, gpCommonState->m_pd3dDeviceContext));
 
 		if (mFirstRun)
 		{
@@ -273,7 +269,7 @@ void CParticle::Draw(CXMMATRIX viewMatrix, CXMMATRIX projectionMatrix)
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		//// herehere
-		//HR(m_pShader->m_particle->DrawTech->GetPassByIndex(p)->Apply(0, gpCommonState->m_pd3dDeviceContext));
+		HR(m_pShader->m_particle->DrawTech->GetPassByIndex(p)->Apply(0, gpCommonState->m_pd3dDeviceContext));
 		gpCommonState->m_pd3dDeviceContext->DrawAuto();
 	}
 

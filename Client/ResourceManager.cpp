@@ -19,8 +19,7 @@ CResourceManager::CResourceManager()
 	_CreateShaders();
 
 	/*
-		Mesh, Texture, Material, Shader
-											1. object  2. Animation
+		Mesh, Texture, Material, Shader( 0.object  1.Animation )
 	*/
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
@@ -111,7 +110,7 @@ void CResourceManager::_LoadMesh()
 	// 5. 만든 벽
 	m_mMesh[5] = new CCubeMesh(2500.0f, 1500.0f, 200.0f);
 
-	// 7. 풀
+	// 6. 풀
 	m_mMesh[6] = new CImportedMesh("Data\\Decoration\\Grass\\grass_Info.txt");
 }
 
