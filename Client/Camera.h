@@ -1,10 +1,7 @@
-#ifndef CAMERA_H_
-#define CAMERA_H_
+#pragma once
 
 #include <DirectXMath.h>
 using namespace DirectX;
-
-
 
 enum class eCameraType : BYTE {
 	START = 0,
@@ -14,6 +11,11 @@ enum class eCameraType : BYTE {
 
 
 
+
+
+//
+//	Camera ( base class )
+//
 class CCamera
 {
 public:
@@ -95,6 +97,12 @@ protected:
 };
 
 
+
+
+
+//
+//	Third Person Camera
+//
 class CThirdPersonCamera : public CCamera
 {
 public:
@@ -109,6 +117,9 @@ public:
 
 
 
+//
+//	Camera Manager
+//
 class CCameraManager
 {
 public:
@@ -130,4 +141,3 @@ private:
 };
 
 
-#endif

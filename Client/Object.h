@@ -2,7 +2,6 @@
 
 #include "Mesh.h"
 #include "ConstantBuffers.h"
-
 #include <DirectXMath.h>
 using namespace DirectX;
 
@@ -66,7 +65,7 @@ private:
 
 
 //
-//	Object ( base class )
+//	Object
 //
 class CUnitComponent;
 class CObject

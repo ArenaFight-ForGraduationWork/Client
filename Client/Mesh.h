@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Vertex.h"
-
 #include <DirectXMath.h>
 using namespace DirectX;
 

@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "Camera.h"
-
 #include "ConstantBuffers.h"
 
 
 
+
+
+//
+//	Camera
+//
 CCamera::CCamera()
 {
 	m_f3Position = new XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -160,6 +164,10 @@ void CCamera::Zoom(const float fZoom)
 
 
 
+
+//
+//	Third Person Camera
+//
 CThirdPersonCamera::CThirdPersonCamera() : CCamera()
 {
 	m_eMode = eCameraType::THIRD_PERSON_CAMERA;
@@ -228,10 +236,9 @@ void CThirdPersonCamera::RotatebyYaw(const float fYaw)
 
 
 
-
-
-
-
+//
+//	Camera Manager
+//
 CCameraManager::CCameraManager()
 {
 }
@@ -268,8 +275,10 @@ CCamera* CCameraManager::GetNowCamera()
 {
 	return m_mCameras[m_eNow];
 }
+
 void CCameraManager::ChangeCamera(eCameraType eType)
 {
 	m_eNow = eType;
 }
+
 

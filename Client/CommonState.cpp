@@ -1,9 +1,15 @@
 #include "stdafx.h"
 #include "CommonState.h"
 
-
 CCommonState *gpCommonState;
 
+
+
+
+
+//
+//	Common State
+//
 CCommonState::CCommonState()
 {
 	m_pd3dDevice = nullptr;

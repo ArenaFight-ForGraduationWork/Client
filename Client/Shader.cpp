@@ -129,12 +129,12 @@ void CShader::CreateShaderVariables()
 	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbWorldMatrix);
 }
 
-void CShader::UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld)
+void CShader::UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbWorldMatrix, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_WORLD_MATRIX *pcbWorldMatrix = (VS_CB_WORLD_MATRIX *)d3dMappedResource.pData;
-	pcbWorldMatrix->m_mtxWorld = XMMatrixTranspose(pd3dxmtxWorld);
+	pcbWorldMatrix->m_mtxWorld = XMMatrixTranspose(XMLoadFloat4x4(pd3dxmtxWorld));
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbWorldMatrix, 0);
 
 	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);
@@ -165,7 +165,7 @@ void CShader::AnimateObjectAndRender()
 
 	for (auto obj : m_vObjects)
 	{
-		UpdateShaderVariables(XMLoadFloat4x4(obj->GetWorldMatrix()));
+		UpdateShaderVariables(obj->GetWorldMatrix());
 		if (obj->GetMaterial())
 			UpdateShaderVariables(obj->GetMaterial());
 		if (obj->GetTexture())
@@ -218,7 +218,7 @@ void CIlluminatedTexturedShader::CreateShaderVariables()
 	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
-void CIlluminatedTexturedShader::UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld)
+void CIlluminatedTexturedShader::UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld)
 {
 	CShader::UpdateShaderVariables(pd3dxmtxWorld);
 }

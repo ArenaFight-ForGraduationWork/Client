@@ -2,6 +2,12 @@
 #include "Light.h"
 
 
+
+
+
+//
+//	Light
+//
 CLight::CLight()
 {
 	m_pLights = nullptr;
@@ -13,8 +19,8 @@ CLight::~CLight()
 
 void CLight::BuildLights()
 {
-	m_pLights = new LIGHTS();
-	ZeroMemory(m_pLights, sizeof(LIGHTS));
+	m_pLights = new PS_CB_LIGHT();
+	ZeroMemory(m_pLights, sizeof(PS_CB_LIGHT));
 
 	// 게임 월드 전체를 비추는 주변조명을 설정한다.
 	m_pLights->m_f4GlobalAmbient[0] = 1.0f;
@@ -117,7 +123,7 @@ void CLight::BuildLights()
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
 	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	d3dBufferDesc.ByteWidth = sizeof(LIGHTS);
+	d3dBufferDesc.ByteWidth = sizeof(PS_CB_LIGHT);
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	D3D11_SUBRESOURCE_DATA d3dBufferData;
@@ -137,8 +143,8 @@ void CLight::UpdateLights()
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
 	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	{
-		LIGHTS *pcbLight = (LIGHTS*)d3dMappedResource.pData;
-		memcpy(pcbLight, m_pLights, sizeof(LIGHTS));
+		PS_CB_LIGHT *pcbLight = (PS_CB_LIGHT*)d3dMappedResource.pData;
+		memcpy(pcbLight, m_pLights, sizeof(PS_CB_LIGHT));
 	}
 	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
 	gpCommonState->m_pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_LIGHT, 1, &m_pd3dcbLights);

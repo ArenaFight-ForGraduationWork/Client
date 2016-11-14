@@ -562,7 +562,7 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 void CFirstScene::ProcessInput()
 {
 	CObject *pPlayer = m_pObjectManager->FindObject(myID);
-	float fTime = gpCommonState->GetTimeElapsed();
+	float fTime = gpCommonState->m_pTimer->GetTimeElapsed();
 
 	if (pPlayer)
 	{
@@ -816,7 +816,7 @@ void CFirstScene::RenderParticle()
 		fFireParticleTime += 2.0f;
 		if (fFireParticleTime <= 3000.0f)
 		{
-			m_pFireParticle->Update(gpCommonState->GetTimeElapsed(), gpCommonState->GetTimeElapsed());
+			m_pFireParticle->Update(gpCommonState->m_pTimer->GetTimeElapsed(), gpCommonState->m_pTimer->GetTimeElapsed());
 
 			XMVECTOR vEyePosition;
 			if (m_pCameraManager->GetNowCamera())

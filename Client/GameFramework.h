@@ -1,13 +1,16 @@
-#ifndef GAMEFRAMEWORK_H_
-#define GAMEFRAMEWORK_H_
+#pragma once
 
-#include "Timer.h"
+#include "ObjectManager.h"
 #include "Scene.h"
 #include "Camera.h"
-#include "ObjectManager.h"
 
 
 
+
+
+//
+//	Game Framework
+//
 class CGameFramework
 {
 public:
@@ -22,17 +25,11 @@ public:
 	bool CreateRenderTargetView();
 	bool CreateDirect3DDisplay();
 
-	// 렌더링할 메쉬, 객체를 생성하고 소멸하는 함수
-	void ReleaseObjects();
-
 	// 프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수
 	void FrameAdvance();
 
 	//윈도우의 메시지를 처리하는 함수이다. 
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-
-	void SetID(UINT id) { m_uiID = id; }
-	UINT& GetID() { return m_uiID; }
 
 private:
 	HINSTANCE m_hInstance;
@@ -56,10 +53,6 @@ private:
 	CObjectManager *m_pObjectManager;
 	CSceneManager *m_pSceneManager;
 	CCameraManager *m_pCameraManager;
-
-	UINT m_uiID;
 };
 
 
-
-#endif

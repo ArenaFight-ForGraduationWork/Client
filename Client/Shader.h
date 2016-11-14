@@ -18,7 +18,7 @@ public:
 
 	virtual void CreateShader() {}
 	virtual void CreateShaderVariables();
-	virtual void UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld);
+	virtual void UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld);
 	virtual void UpdateShaderVariables(CMaterial *pMaterial = nullptr);
 	virtual void UpdateShaderVariables(CTexture *pTexture);
 
@@ -62,7 +62,7 @@ public:
 
 	virtual void CreateShader();
 	virtual void CreateShaderVariables();
-	virtual void UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld);
+	virtual void UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld);
 	virtual void UpdateShaderVariables(CMaterial *pMaterial = nullptr);
 	virtual void UpdateShaderVariables(CTexture *pTexture);
 };

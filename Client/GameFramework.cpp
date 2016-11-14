@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
-#include "CommonState.h"
 
 
 
 
+//
+//	Game Framework
+//
 CGameFramework::CGameFramework()
 {
 	m_pDXGISwapChain = NULL;
@@ -184,8 +186,8 @@ bool CGameFramework::CreateDirect3DDisplay()
 	for (UINT i = 0; i < nDriverTypes; i++)
 	{
 		nd3dDriverType = d3dDriverTypes[i];
-		if (SUCCEEDED(hResult = D3D11CreateDeviceAndSwapChain(NULL, nd3dDriverType, NULL, 
-			dwCreateDeviceFlags, d3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &dxgiSwapChainDesc, 
+		if (SUCCEEDED(hResult = D3D11CreateDeviceAndSwapChain(NULL, nd3dDriverType, NULL,
+			dwCreateDeviceFlags, d3dFeatureLevels, nFeatureLevels, D3D11_SDK_VERSION, &dxgiSwapChainDesc,
 			&m_pDXGISwapChain, &gpCommonState->m_pd3dDevice, &nd3dFeatureLevel, &gpCommonState->m_pd3dDeviceContext))) break;
 	}
 	if (!m_pDXGISwapChain || !gpCommonState->m_pd3dDevice || !gpCommonState->m_pd3dDeviceContext) return false;
@@ -238,8 +240,6 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 // 다음 함수는 응용 프로그램이 종료될 때 호출된다는 것에 유의하라. 
 void CGameFramework::OnDestroy()
 {
-	ReleaseObjects();
-
 	m_pObjectManager->DeleteObjectAll();
 
 	if (gpCommonState->m_pd3dDeviceContext) gpCommonState->m_pd3dDeviceContext->ClearState();
@@ -253,13 +253,9 @@ void CGameFramework::OnDestroy()
 	if (gpCommonState->m_pd3dDevice) gpCommonState->m_pd3dDevice->Release();
 }
 
-void CGameFramework::ReleaseObjects()
-{
-}
-
 void CGameFramework::FrameAdvance()
 {
-	gpCommonState->SetTick(60.0f);
+	gpCommonState->m_pTimer->Tick(60.0f);
 
 	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
 	if (m_pd3dRenderTargetView) gpCommonState->m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
@@ -276,7 +272,7 @@ void CGameFramework::FrameAdvance()
 
 	m_pDXGISwapChain->Present(0, 0);
 
-	gpCommonState->GetFrameRate(m_pszBuffer + 12, 37);
+	gpCommonState->m_pTimer->GetFrameRate(m_pszBuffer + 12, 37);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
 
