@@ -24,6 +24,8 @@ public:
 	ID3D11Device* GetDevice() { return m_pd3dDevice; }
 	ID3D11DeviceContext* GetDeviceContext() { return m_pd3dDeviceContext; }
 
+	HWND GetWindowHandle() { return m_hWnd; }
+
 	IDXGISwapChain* GetSwapChain() { return m_pDXGISwapChain; }
 
 	ID3D11DepthStencilState* GetDepthStencilDefault() { return m_pd3dDepthStencilDefault; }
@@ -31,11 +33,22 @@ public:
 
 	CGameTimer* GetTimer() { return m_pTimer; }
 
-	// turn off z buffer after rendering 3d screen, render 2d screen and turn on z buffer finally
+	/*
+		for 2d Rendering
+		1) Render 3d screen
+		2) Turn off z-buffer ( TurnZBufferOff()	)
+		3) Render 2d screen
+		4) Turn on z-buffer ( TurnZBufferOn() )
+	*/
 	void TurnZBufferOn();
 	void TurnZBufferOff();
 
-	// Alpha Blending
+	/*
+		for Alpha Blending
+		1) Turn on alpha blending ( EnableAlphaBlending() )
+		2) Render particle system
+		3) Turn off alpha blending ( DisableAlphaBlending() )
+	*/
 	void EnableAlphaBlending();
 	void DisableAlphaBlending();
 
@@ -48,6 +61,8 @@ private:
 	ID3D11Device *m_pd3dDevice;	// 주로 리소스 생성할 때에 사용
 	ID3D11DeviceContext *m_pd3dDeviceContext;	// 주로 파이프라인 설정할 때에 사용
 
+	HWND m_hWnd;
+
 	IDXGISwapChain *m_pDXGISwapChain;	// 주로 디스플레이 제어할 때 사용
 
 	ID3D11DepthStencilState* m_pd3dDepthStencilDefault;
@@ -58,7 +73,7 @@ private:
 
 	CGameTimer *m_pTimer;
 
-	bool _CreateDevices(HWND hWnd);
+	bool _CreateDevices();
 	bool _CreateDepthStencilState();
 	bool _CreateBlendState();
 };

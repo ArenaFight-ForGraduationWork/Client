@@ -181,7 +181,7 @@ void CGameFramework::FrameAdvance()
 {
 	gpCommonState->GetTimer()->Tick(60.0f);
 
-	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
+	float fClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	if (m_pd3dRenderTargetView) gpCommonState->GetDeviceContext()->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 	if (m_pd3dDepthStencilView) gpCommonState->GetDeviceContext()->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 

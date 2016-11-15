@@ -29,7 +29,9 @@ CCommonState::~CCommonState()
 
 void CCommonState::Initialize(HWND hWnd)
 {
-	if (!_CreateDevices(hWnd))
+	m_hWnd = hWnd;
+
+	if (!_CreateDevices())
 	{
 		cout << "creating device & device context failed" << endl;
 	}
@@ -96,7 +98,7 @@ void CCommonState::DisableAlphaBlending()
 	m_pd3dDeviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 }
 
-bool CCommonState::_CreateDevices(HWND hWnd)
+bool CCommonState::_CreateDevices()
 {
 	UINT dwCreateDeviceFlags = 0;
 
@@ -128,7 +130,7 @@ bool CCommonState::_CreateDevices(HWND hWnd)
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	dxgiSwapChainDesc.OutputWindow = hWnd;
+	dxgiSwapChainDesc.OutputWindow = m_hWnd;
 	dxgiSwapChainDesc.SampleDesc.Count = 1;
 	dxgiSwapChainDesc.SampleDesc.Quality = 0;
 	dxgiSwapChainDesc.Windowed = TRUE;
