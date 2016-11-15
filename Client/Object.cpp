@@ -409,7 +409,7 @@ void CObject::Animate()
 {
 	if (eAnimationType::None != m_eAnimationType)
 	{
-		float fTime = gpCommonState->m_pTimer->GetTimeElapsed();
+		float fTime = gpCommonState->GetTimer()->GetTimeElapsed();
 		m_fAnimationPlaytime += fTime * 1000;
 
 		/* 현재 애니메이션을 한 번 완료했을 때 */

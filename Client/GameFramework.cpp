@@ -179,7 +179,7 @@ void CGameFramework::OnDestroy()
 
 void CGameFramework::FrameAdvance()
 {
-	gpCommonState->m_pTimer->Tick(60.0f);
+	gpCommonState->GetTimer()->Tick(60.0f);
 
 	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
 	if (m_pd3dRenderTargetView) gpCommonState->GetDeviceContext()->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
@@ -196,7 +196,7 @@ void CGameFramework::FrameAdvance()
 
 	gpCommonState->GetSwapChain()->Present(0, 0);
 
-	gpCommonState->m_pTimer->GetFrameRate(m_pszBuffer + 12, 37);
+	gpCommonState->GetTimer()->GetFrameRate(m_pszBuffer + 12, 37);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
 

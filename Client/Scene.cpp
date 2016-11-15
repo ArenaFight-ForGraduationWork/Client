@@ -553,7 +553,7 @@ void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wP
 void CFirstScene::ProcessInput()
 {
 	CObject *pPlayer = m_pObjectManager->FindObject(myID);
-	float fTime = gpCommonState->m_pTimer->GetTimeElapsed();
+	float fTime = gpCommonState->GetTimer()->GetTimeElapsed();
 
 	if (pPlayer)
 	{

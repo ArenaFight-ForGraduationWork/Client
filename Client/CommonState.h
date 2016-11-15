@@ -21,8 +21,6 @@ public:
 	void Initialize(HWND hWnd);
 	//void Destroy();
 
-	CGameTimer *m_pTimer;
-
 	ID3D11Device* GetDevice() { return m_pd3dDevice; }
 	ID3D11DeviceContext* GetDeviceContext() { return m_pd3dDeviceContext; }
 
@@ -30,6 +28,8 @@ public:
 
 	ID3D11DepthStencilState* GetDepthStencilDefault() { return m_pd3dDepthStencilDefault; }
 	ID3D11DepthStencilState* GetDepthStencilDisable() { return m_pd3dDepthStencilDisable; }
+
+	CGameTimer* GetTimer() { return m_pTimer; }
 
 	// turn off z buffer after rendering 3d screen, render 2d screen and turn on z buffer finally
 	void TurnZBufferOn();
@@ -55,6 +55,8 @@ private:
 
 	ID3D11BlendState* m_alphaEnableBlendingState;
 	ID3D11BlendState* m_alphaDisableBlendingState;
+
+	CGameTimer *m_pTimer;
 
 	bool _CreateDevices(HWND hWnd);
 	bool _CreateDepthStencilState();
