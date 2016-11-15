@@ -54,19 +54,19 @@ void CMesh::Release()
 
 void CMesh::Render()
 {
-	if (m_pd3dVertexBuffer) gpCommonState->m_pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dVertexBuffer, &m_nStride, &m_nOffset);
+	if (m_pd3dVertexBuffer) gpCommonState->GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pd3dVertexBuffer, &m_nStride, &m_nOffset);
 	//인덱스 버퍼가 있으면 인덱스 버퍼를 디바이스 컨텍스트에 연결한다.
-	if (m_pd3dIndexBuffer) gpCommonState->m_pd3dDeviceContext->IASetIndexBuffer(m_pd3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-	gpCommonState->m_pd3dDeviceContext->IASetPrimitiveTopology(
+	if (m_pd3dIndexBuffer) gpCommonState->GetDeviceContext()->IASetIndexBuffer(m_pd3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	gpCommonState->GetDeviceContext()->IASetPrimitiveTopology(
 		m_d3dPrimitiveTopology);
-	if (m_pd3dRasterizerState) gpCommonState->m_pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
+	if (m_pd3dRasterizerState) gpCommonState->GetDeviceContext()->RSSetState(m_pd3dRasterizerState);
 
 	// 인덱스 버퍼가 있으면 인덱스 버퍼를 사용하여 메쉬를 렌더링하고
 	// 없으면 정점 버퍼만을 사용하여 메쉬를 렌더링한다.
 	if (m_pd3dIndexBuffer)
-		gpCommonState->m_pd3dDeviceContext->DrawIndexed(m_nIndices, m_nStartIndex, m_nBaseVertex);
+		gpCommonState->GetDeviceContext()->DrawIndexed(m_nIndices, m_nStartIndex, m_nBaseVertex);
 	else
-		gpCommonState->m_pd3dDeviceContext->Draw(m_nVertices, m_nOffset);
+		gpCommonState->GetDeviceContext()->Draw(m_nVertices, m_nOffset);
 }
 
 
@@ -151,7 +151,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh()
 	D3D11_SUBRESOURCE_DATA d3dBufferData;
 	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	d3dBufferData.pSysMem = pVertices;
-	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
+	gpCommonState->GetDevice()->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
 
 	SetRasterizerState();
 }
@@ -166,24 +166,24 @@ void CCubeMesh::SetRasterizerState()
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 	d3dRasterizerDesc.CullMode = D3D11_CULL_BACK;
 	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	gpCommonState->m_pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
+	gpCommonState->GetDevice()->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
 void CCubeMesh::Render()
 {
-	if (m_pd3dVertexBuffer) gpCommonState->m_pd3dDeviceContext->IASetVertexBuffers(0, 1, &m_pd3dVertexBuffer, &m_nStride, &m_nOffset);
+	if (m_pd3dVertexBuffer) gpCommonState->GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pd3dVertexBuffer, &m_nStride, &m_nOffset);
 	//인덱스 버퍼가 있으면 인덱스 버퍼를 디바이스 컨텍스트에 연결한다.
-	if (m_pd3dIndexBuffer) gpCommonState->m_pd3dDeviceContext->IASetIndexBuffer(m_pd3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-	gpCommonState->m_pd3dDeviceContext->IASetPrimitiveTopology(
+	if (m_pd3dIndexBuffer) gpCommonState->GetDeviceContext()->IASetIndexBuffer(m_pd3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	gpCommonState->GetDeviceContext()->IASetPrimitiveTopology(
 		m_d3dPrimitiveTopology);
-	if (m_pd3dRasterizerState) gpCommonState->m_pd3dDeviceContext->RSSetState(m_pd3dRasterizerState);
+	if (m_pd3dRasterizerState) gpCommonState->GetDeviceContext()->RSSetState(m_pd3dRasterizerState);
 
 	// 인덱스 버퍼가 있으면 인덱스 버퍼를 사용하여 메쉬를 렌더링하고
 	// 없으면 정점 버퍼만을 사용하여 메쉬를 렌더링한다.
 	if (m_pd3dIndexBuffer)
-		gpCommonState->m_pd3dDeviceContext->DrawIndexed(m_nIndices, m_nStartIndex, m_nBaseVertex);
+		gpCommonState->GetDeviceContext()->DrawIndexed(m_nIndices, m_nStartIndex, m_nBaseVertex);
 	else
-		gpCommonState->m_pd3dDeviceContext->Draw(m_nVertices, m_nOffset);
+		gpCommonState->GetDeviceContext()->Draw(m_nVertices, m_nOffset);
 }
 
 void CCubeMesh::_CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
@@ -297,7 +297,7 @@ CImportedMesh::CImportedMesh(char* ptxtName) : CMesh()
 	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	d3dBufferData.pSysMem = ppVertices;
 
-	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
+	gpCommonState->GetDevice()->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
 
 	CreateRasterizerState();
 
@@ -315,7 +315,7 @@ void CImportedMesh::CreateRasterizerState()
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 	d3dRasterizerDesc.CullMode = D3D11_CULL_NONE;
 	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	gpCommonState->m_pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
+	gpCommonState->GetDevice()->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
 
@@ -360,7 +360,7 @@ CImportedAnimatingMesh::CImportedAnimatingMesh(int CharNum, int StateCnt) : CMes
 	D3D11_SUBRESOURCE_DATA d3dBufferData;
 	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	d3dBufferData.pSysMem = ppVertices;
-	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
+	gpCommonState->GetDevice()->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dVertexBuffer);
 
 	CreateRasterizerState();
 }
@@ -376,7 +376,7 @@ void CImportedAnimatingMesh::CreateRasterizerState()
 	ZeroMemory(&d3dRasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 	d3dRasterizerDesc.CullMode = D3D11_CULL_NONE;
 	d3dRasterizerDesc.FillMode = D3D11_FILL_SOLID;
-	gpCommonState->m_pd3dDevice->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
+	gpCommonState->GetDevice()->CreateRasterizerState(&d3dRasterizerDesc, &m_pd3dRasterizerState);
 }
 
 

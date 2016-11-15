@@ -129,7 +129,7 @@ void CLight::BuildLights()
 	D3D11_SUBRESOURCE_DATA d3dBufferData;
 	ZeroMemory(&d3dBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	d3dBufferData.pSysMem = m_pLights;
-	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
+	gpCommonState->GetDevice()->CreateBuffer(&d3dBufferDesc, &d3dBufferData, &m_pd3dcbLights);
 }
 
 void CLight::ReleaseLights()
@@ -141,11 +141,11 @@ void CLight::ReleaseLights()
 void CLight::UpdateLights()
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->GetDeviceContext()->Map(m_pd3dcbLights, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	{
 		PS_CB_LIGHT *pcbLight = (PS_CB_LIGHT*)d3dMappedResource.pData;
 		memcpy(pcbLight, m_pLights, sizeof(PS_CB_LIGHT));
 	}
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbLights, 0);
-	gpCommonState->m_pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_LIGHT, 1, &m_pd3dcbLights);
+	gpCommonState->GetDeviceContext()->Unmap(m_pd3dcbLights, 0);
+	gpCommonState->GetDeviceContext()->PSSetConstantBuffers(PS_SLOT_LIGHT, 1, &m_pd3dcbLights);
 }

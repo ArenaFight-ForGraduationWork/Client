@@ -89,10 +89,10 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	d3dSamplerDesc.MinLOD = 0;
 	d3dSamplerDesc.MaxLOD = 0;
-	gpCommonState->m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
+	gpCommonState->GetDevice()->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
 
 	ID3D11Resource *pTexResource = nullptr;
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, textureAddress, &pTexResource, &pd3dsrvTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), textureAddress, &pTexResource, &pd3dsrvTexture);
 
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
 	if (m_ppd3dSamplerStates[nIndex]) m_ppd3dSamplerStates[nIndex]->Release();
@@ -349,7 +349,7 @@ XMFLOAT3* CObject::GetMaxVer()
 {
 	XMVECTOR vVertex;
 	vVertex = XMVector3TransformCoord(XMLoadFloat3(m_pf3MaxVer), XMLoadFloat4x4(m_pf4x4WorldMatrix));
-	
+
 	XMFLOAT3* pf3Vertex = new XMFLOAT3();
 	XMStoreFloat3(pf3Vertex, vVertex);
 
@@ -395,14 +395,14 @@ void CObject::SetConstantBuffer()
 	BD.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDevice->CreateBuffer(&BD, NULL, &m_pd3dcbBoneMatrix);
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &d3dMappedResource);
+	gpCommonState->GetDevice()->CreateBuffer(&BD, NULL, &m_pd3dcbBoneMatrix);
+	gpCommonState->GetDeviceContext()->Map(m_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &d3dMappedResource);
 	{
 		m_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)d3dMappedResource.pData;
 		for (int i = 0; i < 128; ++i)
 			m_pcbBoneMatrix->m_mtxBone[i] = XMMatrixIdentity();
 	}
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbBoneMatrix, NULL);
+	gpCommonState->GetDeviceContext()->Unmap(m_pd3dcbBoneMatrix, NULL);
 }
 
 void CObject::Animate()
@@ -446,7 +446,7 @@ void CObject::Animate()
 		}
 		if (m_pd3dcbBoneMatrix)
 		{
-			gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
+			gpCommonState->GetDeviceContext()->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
 		}
 	}
 }

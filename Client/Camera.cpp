@@ -48,7 +48,7 @@ void CCamera::SetViewport(DWORD xTopLeft, DWORD yTopLeft, DWORD nWidth, DWORD nH
 	m_pd3dViewport->Height = float(nHeight);
 	m_pd3dViewport->MinDepth = fMinZ;
 	m_pd3dViewport->MaxDepth = fMaxZ;
-	gpCommonState->m_pd3dDeviceContext->RSSetViewports(1, m_pd3dViewport);
+	gpCommonState->GetDeviceContext()->RSSetViewports(1, m_pd3dViewport);
 }
 
 void CCamera::GenerateViewMatrix()
@@ -124,19 +124,19 @@ void CCamera::CreateShaderVariables()
 	bd.ByteWidth = sizeof(VS_CB_VIEWPROJECTION_MATRIX);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	gpCommonState->m_pd3dDevice->CreateBuffer(&bd, NULL, &m_pd3dcbCamera);
+	gpCommonState->GetDevice()->CreateBuffer(&bd, NULL, &m_pd3dcbCamera);
 }
 
 void CCamera::UpdateShaderVariables()
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->GetDeviceContext()->Map(m_pd3dcbCamera, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_VIEWPROJECTION_MATRIX *pcbViewProjection = (VS_CB_VIEWPROJECTION_MATRIX *)d3dMappedResource.pData;
 	pcbViewProjection->m_mtxView = XMMatrixTranspose(XMLoadFloat4x4(m_f4x4View));
 	pcbViewProjection->m_mtxProjection = XMMatrixTranspose(XMLoadFloat4x4(m_f4x4Projection));
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbCamera, 0);
+	gpCommonState->GetDeviceContext()->Unmap(m_pd3dcbCamera, 0);
 
-	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
+	gpCommonState->GetDeviceContext()->VSSetConstantBuffers(VS_SLOT_VIEWPROJECTION_MATRIX, 1, &m_pd3dcbCamera);
 }
 
 const float CCamera::GetYaw()
@@ -259,7 +259,6 @@ void CCameraManager::Initialize()
 	pCamera->CreateShaderVariables();
 	XMFLOAT3 lookAt = XMFLOAT3(0, 0, 0);
 	pCamera->SetLookAt(XMLoadFloat3(&lookAt));
-	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
 	pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	pCamera->GenerateProjectionMatrix(1.01f, 10000.0f, ASPECT_RATIO, 60.0f);
 	pCamera->GenerateViewMatrix();

@@ -21,12 +21,10 @@ public:
 	void Initialize(HWND hWnd);
 	//void Destroy();
 
-	// 디바이스 인터페이스에 대한 포인터이다. 주로 리소스를 생성하기 위하여 필요
-	ID3D11Device *m_pd3dDevice;
-	// 디바이스 컨텍스트에 대한 포인터이다. 주로 파이프라인 설정을 하기 위하여 필요
-	ID3D11DeviceContext *m_pd3dDeviceContext;
-
 	CGameTimer *m_pTimer;
+
+	ID3D11Device* GetDevice() { return m_pd3dDevice; }
+	ID3D11DeviceContext* GetDeviceContext() { return m_pd3dDeviceContext; }
 
 	IDXGISwapChain* GetSwapChain() { return m_pDXGISwapChain; }
 
@@ -46,6 +44,9 @@ private:
 	CCommonState();
 	CCommonState(CCommonState&& ref) {}
 	~CCommonState();
+
+	ID3D11Device *m_pd3dDevice;	// 주로 리소스 생성할 때에 사용
+	ID3D11DeviceContext *m_pd3dDeviceContext;	// 주로 파이프라인 설정할 때에 사용
 
 	IDXGISwapChain *m_pDXGISwapChain;	// 주로 디스플레이 제어할 때 사용
 

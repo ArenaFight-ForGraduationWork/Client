@@ -60,7 +60,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 
 	ID3D11Texture2D *pd3dBackBuffer;
 	if (FAILED(hResult = gpCommonState->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return false;
-	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
+	if (FAILED(hResult = gpCommonState->GetDevice()->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 
 	// Create depth stencil texture
@@ -77,7 +77,7 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	d3dDepthStencilBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	d3dDepthStencilBufferDesc.CPUAccessFlags = 0;
 	d3dDepthStencilBufferDesc.MiscFlags = 0;
-	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateTexture2D(&d3dDepthStencilBufferDesc, NULL, &m_pd3dDepthStencilBuffer))) return false;
+	if (FAILED(hResult = gpCommonState->GetDevice()->CreateTexture2D(&d3dDepthStencilBufferDesc, NULL, &m_pd3dDepthStencilBuffer))) return false;
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
@@ -85,9 +85,9 @@ bool CGameFramework::CreateRenderTargetDepthStencilView()
 	d3dDepthStencilViewDesc.Format = d3dDepthStencilBufferDesc.Format;
 	d3dDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	d3dDepthStencilViewDesc.Texture2D.MipSlice = 0;
-	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return false;
+	if (FAILED(hResult = gpCommonState->GetDevice()->CreateDepthStencilView(m_pd3dDepthStencilBuffer, &d3dDepthStencilViewDesc, &m_pd3dDepthStencilView))) return false;
 
-	gpCommonState->m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
+	gpCommonState->GetDeviceContext()->OMSetRenderTargets(1, &m_pd3dRenderTargetView, m_pd3dDepthStencilView);
 
 	return true;
 }
@@ -100,11 +100,11 @@ bool CGameFramework::CreateRenderTargetView()
 	//스왑 체인의 후면버퍼에 대한 렌더 타겟 뷰를 생성한다.
 	ID3D11Texture2D *pd3dBackBuffer;
 	if (FAILED(hResult = gpCommonState->GetSwapChain()->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID *)&pd3dBackBuffer))) return false;
-	if (FAILED(hResult = gpCommonState->m_pd3dDevice->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
+	if (FAILED(hResult = gpCommonState->GetDevice()->CreateRenderTargetView(pd3dBackBuffer, NULL, &m_pd3dRenderTargetView))) return false;
 	if (pd3dBackBuffer) pd3dBackBuffer->Release();
 
 	//렌더 타겟 뷰를 생성하고 출력-병합 단계에 연결한다.
-	gpCommonState->m_pd3dDeviceContext->OMSetRenderTargets(1, &m_pd3dRenderTargetView, NULL);
+	gpCommonState->GetDeviceContext()->OMSetRenderTargets(1, &m_pd3dRenderTargetView, NULL);
 
 	return true;
 }
@@ -131,7 +131,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		m_nWndClientWidth = LOWORD(lParam);
 		m_nWndClientHeight = HIWORD(lParam);
 
-		gpCommonState->m_pd3dDeviceContext->OMSetRenderTargets(0, NULL, NULL);
+		gpCommonState->GetDeviceContext()->OMSetRenderTargets(0, NULL, NULL);
 
 		if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 		if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
@@ -166,15 +166,15 @@ void CGameFramework::OnDestroy()
 {
 	m_pObjectManager->DeleteObjectAll();
 
-	if (gpCommonState->m_pd3dDeviceContext) gpCommonState->m_pd3dDeviceContext->ClearState();
+	if (gpCommonState->GetDeviceContext()) gpCommonState->GetDeviceContext()->ClearState();
 	if (m_pd3dRenderTargetView) m_pd3dRenderTargetView->Release();
 	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
 	if (m_pd3dDepthStencilView) m_pd3dDepthStencilView->Release();
 	if (gpCommonState->GetDepthStencilDefault()) gpCommonState->GetDepthStencilDefault()->Release();
 	if (gpCommonState->GetDepthStencilDisable()) gpCommonState->GetDepthStencilDisable()->Release();
 	if (gpCommonState->GetSwapChain()) gpCommonState->GetSwapChain()->Release();
-	if (gpCommonState->m_pd3dDeviceContext) gpCommonState->m_pd3dDeviceContext->Release();
-	if (gpCommonState->m_pd3dDevice) gpCommonState->m_pd3dDevice->Release();
+	if (gpCommonState->GetDeviceContext()) gpCommonState->GetDeviceContext()->Release();
+	if (gpCommonState->GetDevice()) gpCommonState->GetDevice()->Release();
 }
 
 void CGameFramework::FrameAdvance()
@@ -182,8 +182,8 @@ void CGameFramework::FrameAdvance()
 	gpCommonState->m_pTimer->Tick(60.0f);
 
 	float fClearColor[4] = { COLORRGB(250), COLORRGB(250), COLORRGB(250), 1.0f };
-	if (m_pd3dRenderTargetView) gpCommonState->m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-	if (m_pd3dDepthStencilView) gpCommonState->m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	if (m_pd3dRenderTargetView) gpCommonState->GetDeviceContext()->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+	if (m_pd3dDepthStencilView) gpCommonState->GetDeviceContext()->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	if (m_pCameraManager)
 		m_pCameraManager->GetNowCamera()->UpdateShaderVariables();

@@ -71,9 +71,9 @@ void CShader::CreateVertexShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderNam
 	if (SUCCEEDED(hResult = D3DCompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, NULL, NULL, &pd3dShaderBlob, NULL)))
 	{
 		//컴파일된 쉐이더 코드의 메모리 주소에서 정점-쉐이더를 생성한다. 
-		gpCommonState->m_pd3dDevice->CreateVertexShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader);
+		gpCommonState->GetDevice()->CreateVertexShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dVertexShader);
 		//컴파일된 쉐이더 코드의 메모리 주소와 입력 레이아웃에서 정점 레이아웃을 생성한다. 
-		gpCommonState->m_pd3dDevice->CreateInputLayout(pd3dInputLayout, nElements, pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), ppd3dVertexLayout);
+		gpCommonState->GetDevice()->CreateInputLayout(pd3dInputLayout, nElements, pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), ppd3dVertexLayout);
 		pd3dShaderBlob->Release();
 	}
 }
@@ -92,7 +92,7 @@ void CShader::CreatePixelShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName
 	if (SUCCEEDED(hResult = D3DCompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, NULL, NULL, &pd3dShaderBlob, NULL)))
 	{
 		//컴파일된 쉐이더 코드의 메모리 주소에서 픽셀-쉐이더를 생성한다. 
-		gpCommonState->m_pd3dDevice->CreatePixelShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader);
+		gpCommonState->GetDevice()->CreatePixelShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dPixelShader);
 		pd3dShaderBlob->Release();
 	}
 }
@@ -111,7 +111,7 @@ void CShader::CreateGeometryShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderN
 	if (SUCCEEDED(hResult = D3DCompileFromFile(pszFileName, NULL, NULL, pszShaderName, pszShaderModel, NULL, NULL, &pd3dShaderBlob, NULL)))
 	{
 		//컴파일된 쉐이더 코드의 메모리 주소에서 픽셀-쉐이더를 생성한다. 
-		gpCommonState->m_pd3dDevice->CreateGeometryShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader);
+		gpCommonState->GetDevice()->CreateGeometryShader(pd3dShaderBlob->GetBufferPointer(), pd3dShaderBlob->GetBufferSize(), NULL, ppd3dGeometryShader);
 		pd3dShaderBlob->Release();
 	}
 }
@@ -124,42 +124,42 @@ void CShader::CreateShaderVariables()
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	d3dBufferDesc.ByteWidth = sizeof(VS_CB_WORLD_MATRIX);
-	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbWorldMatrix);
+	gpCommonState->GetDevice()->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbWorldMatrix);
 }
 
 void CShader::UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbWorldMatrix, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->GetDeviceContext()->Map(m_pd3dcbWorldMatrix, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	VS_CB_WORLD_MATRIX *pcbWorldMatrix = (VS_CB_WORLD_MATRIX *)d3dMappedResource.pData;
 	pcbWorldMatrix->m_mtxWorld = XMMatrixTranspose(XMLoadFloat4x4(pd3dxmtxWorld));
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbWorldMatrix, 0);
+	gpCommonState->GetDeviceContext()->Unmap(m_pd3dcbWorldMatrix, 0);
 
-	gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);
+	gpCommonState->GetDeviceContext()->VSSetConstantBuffers(VS_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);
 }
 void CShader::UpdateShaderVariables(CMaterial *pMaterial)
 {
 }
 void CShader::UpdateShaderVariables(CTexture *pTexture)
 {
-	gpCommonState->m_pd3dDeviceContext->PSSetShaderResources(PS_SHADERRESOURCE_SLOT_TEXTURE, pTexture->GetNumOfTextures(), pTexture->GetShaderResourceViewTextures());
-	gpCommonState->m_pd3dDeviceContext->PSSetSamplers(PS_SAMPLER_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
+	gpCommonState->GetDeviceContext()->PSSetShaderResources(PS_SHADERRESOURCE_SLOT_TEXTURE, pTexture->GetNumOfTextures(), pTexture->GetShaderResourceViewTextures());
+	gpCommonState->GetDeviceContext()->PSSetSamplers(PS_SAMPLER_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
 }
 
 void CShader::AnimateObjectAndRender()
 {
 	// 정점의 입력-레이아웃을 디바이스 컨텍스트에 연결(설정)한다. 
 	if (m_pd3dVertexLayout)
-		gpCommonState->m_pd3dDeviceContext->IASetInputLayout(m_pd3dVertexLayout);
+		gpCommonState->GetDeviceContext()->IASetInputLayout(m_pd3dVertexLayout);
 	// 정점-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
 	if (m_pd3dVertexShader)
-		gpCommonState->m_pd3dDeviceContext->VSSetShader(m_pd3dVertexShader, NULL, 0);
+		gpCommonState->GetDeviceContext()->VSSetShader(m_pd3dVertexShader, NULL, 0);
 	// 픽셀-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
 	if (m_pd3dPixelShader)
-		gpCommonState->m_pd3dDeviceContext->PSSetShader(m_pd3dPixelShader, NULL, 0);
+		gpCommonState->GetDeviceContext()->PSSetShader(m_pd3dPixelShader, NULL, 0);
 	// 기하-쉐이더를 디바이스 컨텍스트에 연결(설정)한다. 
 	if (m_pd3dGeometryShader)
-		gpCommonState->m_pd3dDeviceContext->GSSetShader(m_pd3dGeometryShader, NULL, 0);;
+		gpCommonState->GetDeviceContext()->GSSetShader(m_pd3dGeometryShader, NULL, 0);;
 
 	for (auto obj : m_vObjects)
 	{
@@ -213,7 +213,7 @@ void CIlluminatedTexturedShader::CreateShaderVariables()
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	d3dBufferDesc.ByteWidth = sizeof(PS_CB_MATERIAL);
-	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
+	gpCommonState->GetDevice()->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
 void CIlluminatedTexturedShader::UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld)
@@ -223,11 +223,11 @@ void CIlluminatedTexturedShader::UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmt
 void CIlluminatedTexturedShader::UpdateShaderVariables(CMaterial *pMaterial)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbMaterial, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	gpCommonState->GetDeviceContext()->Map(m_pd3dcbMaterial, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
 	PS_CB_MATERIAL *pcbMaterial = (PS_CB_MATERIAL *)d3dMappedResource.pData;
 	memcpy(pcbMaterial, pMaterial->GetMaterial(), sizeof(PS_CB_MATERIAL));
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbMaterial, 0);
-	gpCommonState->m_pd3dDeviceContext->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
+	gpCommonState->GetDeviceContext()->Unmap(m_pd3dcbMaterial, 0);
+	gpCommonState->GetDeviceContext()->PSSetConstantBuffers(PS_SLOT_MATERIAL, 1, &m_pd3dcbMaterial);
 }
 void CIlluminatedTexturedShader::UpdateShaderVariables(CTexture *pTexture)
 {
@@ -277,7 +277,7 @@ void CAnimatingShader::CreateShaderVariables()
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	d3dBufferDesc.ByteWidth = sizeof(PS_CB_MATERIAL);
-	gpCommonState->m_pd3dDevice->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
+	gpCommonState->GetDevice()->CreateBuffer(&d3dBufferDesc, NULL, &m_pd3dcbMaterial);
 }
 
 

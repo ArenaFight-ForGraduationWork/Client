@@ -39,7 +39,7 @@ void CScene::BuildObjects()
 
 	m_pLight->BuildLights();
 
-	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new SpriteBatch(gpCommonState->GetDeviceContext()));
 }
 
 void CScene::ReleaseObjects()
@@ -294,39 +294,39 @@ void CIntroScene::BuildObjects()
 {
 	CScene::BuildObjects();
 
-	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->GetDeviceContext()));
 	m_vTextures.clear();
 	ID3D11ShaderResourceView *pTexture;
 
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/frame.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton1.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton1.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton2.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton2.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/InputWindow.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/InputWindow.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton3.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton3.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/background.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/background.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/rbutton4.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton4.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	m_pSpriteFont.reset(new  SpriteFont(gpCommonState->m_pd3dDevice, L"./Data/Font/Arial18.spritefont"));
+	m_pSpriteFont.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
 }
 
 void CIntroScene::AnimateObjectsAndRender()
@@ -751,17 +751,17 @@ void CFirstScene::BuildObjects()
 	m_pFog = new CFog();
 	m_pFog->Initialize();
 
-	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->GetDeviceContext()));
 	m_vTextures.clear();
 	ID3D11ShaderResourceView *pTexture;
 
 	// 0: frame
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/frame.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
 	// 1: hp
-	CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/hp.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 }
