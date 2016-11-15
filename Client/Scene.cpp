@@ -406,9 +406,6 @@ CFirstScene::CFirstScene()
 	m_dwDirectionNow = 0;
 
 	m_pFog = nullptr;
-
-	// Particle
-	m_pFireParticle = new CParticle();
 }
 CFirstScene::~CFirstScene()
 {
@@ -452,11 +449,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 				}
 			}
 			pPlayer = nullptr;
-
-			if (isFireParticle)
-				isFireParticle = false;
-			else
-				isFireParticle = true;
 		} break;
 		case 0x31:
 		{
@@ -805,46 +797,7 @@ void CFirstScene::AnimateObjectsAndRender()
 
 	// particle
 	{
-		RenderParticle();
-	}
-}
 
-void CFirstScene::RenderParticle()
-{
-	if (isFireParticle)
-	{
-		fFireParticleTime += 2.0f;
-		if (fFireParticleTime <= 3000.0f)
-		{
-			m_pFireParticle->Update(gpCommonState->m_pTimer->GetTimeElapsed(), gpCommonState->m_pTimer->GetTimeElapsed());
-
-			XMVECTOR vEyePosition;
-			if (m_pCameraManager->GetNowCamera())
-				vEyePosition = XMLoadFloat3(m_pCameraManager->GetNowCamera()->GetPosition());
-			else
-				vEyePosition = XMVectorZero();
-			m_pFireParticle->SetEyePos(vEyePosition);
-
-			XMVECTOR vPlayerPosition;
-			if (m_pObjectManager->FindObject(myID))
-				vPlayerPosition = XMLoadFloat3(m_pObjectManager->FindObject(myID)->GetPosition());
-			else
-				vPlayerPosition = XMVectorZero();
-			m_pFireParticle->SetEmitPos(vPlayerPosition);
-
-			XMMATRIX V = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetViewMatrix());
-			XMMATRIX P = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
-			m_pFireParticle->Draw(V, P);
-		}
-		else
-		{
-			fFireParticleTime = 0.0f;
-			isFireParticle = false;
-		}
-	}
-	else
-	{
-		m_pFireParticle->Reset();
 	}
 }
 

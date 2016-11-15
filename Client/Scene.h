@@ -8,7 +8,6 @@
 #include "Server.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
-#include "Particle.h"
 
 
 
@@ -130,11 +129,6 @@ private:
 
 	const RECT rFramePos = { 0,0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT - 20 };
 	RECT rHpPos = { FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 16 * 14, 0, FRAME_BUFFER_HEIGHT / 16 * 15 };
-
-	CParticle *m_pFireParticle;
-	bool isFireParticle = false;
-	void RenderParticle();
-	float fFireParticleTime = 0.0f;
 };
 
 

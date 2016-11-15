@@ -1,7 +1,4 @@
-#ifndef RESOURCEMANAGER_H_
-#define RESOURCEMANAGER_H_
-
-
+#pragma once
 
 #include "stdafx.h"
 #include "Mesh.h"
@@ -10,6 +7,11 @@
 
 
 
+
+
+//
+//	Resource
+//
 class CResource {
 public:
 	CResource() : m_MeshId(-1), m_TextureId(-1), m_MaterialId(-1), m_ShaderId(-1) {}
@@ -34,6 +36,11 @@ private:
 
 
 
+
+
+//
+//	enum Resource Type
+//
 enum class eResourceType : BYTE {
 	START = 0,
 	User = 0,
@@ -49,6 +56,11 @@ enum class eResourceType : BYTE {
 
 
 
+
+
+//
+//	Resource Manager
+//
 class CResourceManager
 {
 public:
@@ -91,4 +103,3 @@ private:
 
 
 
-#endif

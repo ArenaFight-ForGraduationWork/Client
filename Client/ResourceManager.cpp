@@ -2,6 +2,12 @@
 #include "ResourceManager.h"
 
 
+
+
+
+//
+//	Resource
+//
 void CResource::SetIDs(BYTE meshID, BYTE textureID, BYTE materialID, BYTE shaderID)
 {
 	m_MeshId = meshID;
@@ -11,6 +17,12 @@ void CResource::SetIDs(BYTE meshID, BYTE textureID, BYTE materialID, BYTE shader
 }
 
 
+
+
+
+//
+//	Resource Manager
+//
 CResourceManager::CResourceManager()
 {
 	_LoadMesh();

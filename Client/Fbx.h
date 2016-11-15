@@ -1,13 +1,16 @@
 #pragma once
 
 #include "Vertex.h"
-
 #include <DirectXMath.h>
 using namespace DirectX;
 
 
-/* 문자열 합치기 strcat(a, b) : a와 b를 합침. */
 
+
+
+//
+//	Fbx Importer
+//
 class CFbx
 {
 public:

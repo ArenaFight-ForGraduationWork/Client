@@ -4,6 +4,10 @@
 
 
 
+
+//
+//	Fbx Importer
+//
 CFbx::CFbx()
 {
 	m_iSize = 0;
