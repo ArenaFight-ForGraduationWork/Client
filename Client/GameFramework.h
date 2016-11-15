@@ -38,8 +38,6 @@ private:
 	int m_nWndClientWidth;
 	int m_nWndClientHeight;
 
-	// 스왑 체인 인터페이스에 대한 포인터이다. 주로 디스플레이를 제어하기 위하여 필요
-	IDXGISwapChain *m_pDXGISwapChain;
 	// 렌더 타겟 뷰 인터페이스에 대한 포인터
 	ID3D11RenderTargetView *m_pd3dRenderTargetView;
 
