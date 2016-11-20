@@ -406,6 +406,11 @@ CFirstScene::CFirstScene()
 	m_dwDirectionNow = 0;
 
 	m_pFog = nullptr;
+
+	// Particle
+	m_FireParticle = new CParticle();
+
+	isFireParticle = false;
 }
 CFirstScene::~CFirstScene()
 {
@@ -449,6 +454,11 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 				}
 			}
 			pPlayer = nullptr;
+
+			if (isFireParticle)
+				isFireParticle = false;
+			else
+				isFireParticle = true;
 		} break;
 		case 0x31:
 		{
@@ -776,6 +786,13 @@ void CFirstScene::AnimateObjectsAndRender()
 		CScene::AnimateObjectsAndRender();
 	}
 
+	// particle
+	{
+		gpCommonState->EnableAlphaBlending();
+		RenderParticle();
+		gpCommonState->DisableAlphaBlending();
+	}
+
 	// 2D
 	{
 		gpCommonState->TurnZBufferOff();
@@ -794,10 +811,51 @@ void CFirstScene::AnimateObjectsAndRender()
 		m_pSpriteBatch->End();
 		gpCommonState->TurnZBufferOn();
 	}
+}
 
-	// particle
+void CFirstScene::RenderParticle()
+{
+	if (isFireParticle)
 	{
+		FireParticleTime += 2.0f;
+		if (FireParticleTime <= 3000.0f)
+		{
+			m_FireParticle->Update(gpCommonState->GetTimer()->GetTimeElapsed(), gpCommonState->GetTimer()->GetTimeElapsed());
+			XMVECTOR vEyePosition;
+			if (m_pCameraManager->GetNowCamera())
+				vEyePosition = XMLoadFloat3(m_pCameraManager->GetNowCamera()->GetPosition());
+			else
+				vEyePosition = XMVectorZero();
+			m_FireParticle->SetEyePos(vEyePosition);
 
+			XMVECTOR vPlayerPosition;
+			if (m_pObjectManager->FindObject(myID))
+				vPlayerPosition = XMLoadFloat3(m_pObjectManager->FindObject(myID)->GetPosition());
+			else
+				vPlayerPosition = XMVectorZero();
+			m_FireParticle->SetEmitPos(vPlayerPosition);
+
+			XMMATRIX V = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetViewMatrix());
+			XMMATRIX P = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+			m_FireParticle->Draw(V, P);
+		}
+		else
+		{
+			FireParticleTime = 0.0f;
+			isFireParticle = false;
+		}
+
+		/*
+		*		FIXED BUG ^v^)/
+		*		Bug: Everything disappear when i use particle system.
+		*		Solution: Unbind geometry shader
+		*		http://www.gamedev.net/topic/667068-geometry-shader-blank-screen/
+		*/
+		gpCommonState->GetDeviceContext()->GSSetShader(NULL, 0, 0);
+	}
+	else
+	{
+		m_FireParticle->Reset();
 	}
 }
 

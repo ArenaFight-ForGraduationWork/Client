@@ -283,3 +283,103 @@ void CAnimatingShader::CreateShaderVariables()
 
 
 
+
+//
+//	Particle Effect
+//
+CParticleEffect::CParticleEffect(char *pFilename)
+{
+	ifstream fin(pFilename, ios::binary);
+
+	fin.seekg(0, ios_base::end);
+	int size = (int)fin.tellg();
+	fin.seekg(0, ios_base::beg);
+	vector<char> compiledShader(size);
+
+	fin.read(&compiledShader[0], size);
+	fin.close();
+
+	HR(D3DX11CreateEffectFromMemory(&compiledShader[0], size, 0, gpCommonState->GetDevice(), &mFX));
+
+	StreamOutTech = mFX->GetTechniqueByName("StreamOutTech");
+	DrawTech = mFX->GetTechniqueByName("DrawTech");
+
+	ViewProj = mFX->GetVariableByName("gViewProj")->AsMatrix();
+	GameTime = mFX->GetVariableByName("gGameTime")->AsScalar();
+	TimeStep = mFX->GetVariableByName("gTimeStep")->AsScalar();
+	EyePosW = mFX->GetVariableByName("gEyePosW")->AsVector();
+	EmitPosW = mFX->GetVariableByName("gEmitPosW")->AsVector();
+	EmitDirW = mFX->GetVariableByName("gEmitDirW")->AsVector();
+	TexArray = mFX->GetVariableByName("gTexArray")->AsShaderResource();
+	RandomTex = mFX->GetVariableByName("gRandomTex")->AsShaderResource();
+}
+CParticleEffect::~CParticleEffect()
+{
+}
+
+
+
+
+
+//
+//	Particle Shader
+//
+CParticleShader::CParticleShader(char *pFilename)
+{
+	m_particle = new CParticleEffect(pFilename);
+}
+CParticleShader::~CParticleShader()
+{
+}
+
+void CParticleShader::CreateShader()
+{
+	CShader::CreateShader();
+
+	D3D11_INPUT_ELEMENT_DESC d3dInputLayout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TYPE", 0, DXGI_FORMAT_R32_UINT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	UINT nElements = ARRAYSIZE(d3dInputLayout);
+	CreateVertexShaderFromFile(L"FX/Rain.fx", "DrawVS", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(L"FX/Rain.fx", "DrawPS", "ps_5_0", &m_pd3dPixelShader);
+	CreateGeometryShaderFromFile(L"FX/Rain.fx", "DrawGS", "gs_5_0", &m_pd3dGeometryShader);
+	//CreateVertexShaderFromFile(L"FX/Fire.fx", "DrawVS", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	//CreatePixelShaderFromFile(L"FX/Fire.fx", "DrawPS", "ps_5_0", &m_pd3dPixelShader);
+	//CreateGeometryShaderFromFile(L"FX/Fire.fx", "DrawGS", "gs_5_0", &m_pd3dGeometryShader);
+}
+
+void CParticleShader::CreateShaderVariables()
+{
+	CShader::CreateShaderVariables();
+}
+
+void CParticleShader::UpdateShaderVariables(CXMMATRIX pd3dxmtxWorld)
+{
+	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
+	gpCommonState->GetDeviceContext()->Map(m_pd3dcbWorldMatrix, 0, D3D11_MAP_WRITE_DISCARD, 0, &d3dMappedResource);
+	VS_CB_WORLD_MATRIX *pcbWorldMatrix = (VS_CB_WORLD_MATRIX *)d3dMappedResource.pData;
+	pcbWorldMatrix->m_mtxWorld = XMMatrixTranspose(pd3dxmtxWorld);
+	gpCommonState->GetDeviceContext()->Unmap(m_pd3dcbWorldMatrix, 0);
+	gpCommonState->GetDeviceContext()->VSSetConstantBuffers(VS_SLOT_WORLD_MATRIX, 1, &m_pd3dcbWorldMatrix);
+}
+void CParticleShader::UpdateShaderVariables(CTexture *pTexture)
+{
+	gpCommonState->GetDeviceContext()->PSSetShaderResources(PS_SHADERRESOURCE_SLOT_TEXTURE, pTexture->GetNumOfTextures(), pTexture->GetShaderResourceViewTextures());
+	gpCommonState->GetDeviceContext()->PSSetSamplers(PS_SAMPLER_SLOT_SAMPLER_STATE, pTexture->GetNumOfTextures(), pTexture->GetSamplerState());
+}
+
+void CParticleShader::Render()
+{
+	CShader::AnimateObjectAndRender();
+}
+
+void CParticleShader::SetInputLayout()
+{
+	if (m_pd3dVertexLayout)
+		gpCommonState->GetDeviceContext()->IASetInputLayout(m_pd3dVertexLayout);
+}

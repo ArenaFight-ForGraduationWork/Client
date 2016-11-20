@@ -18,6 +18,12 @@
 
 #include <d3d11_1.h>
 #include <d3dcompiler.h>  	//쉐이더 컴파일 함수를 사용하기 위한 헤더 파일
+/*
+*		FIXED BUG ^v^)/
+*		Bug: lots of header files crash when I include <DirectXMath.h>
+*		Solution: Replace <xnamath.h> with <DirectXMath.h>.
+*				It occurs when I include <DirectXMath.h> and " <xnamath.h> " at the same time.
+*/
 #include <DirectXMath.h>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
@@ -63,6 +69,8 @@ using namespace std;
 // animation
 #define ANIMATION_COUNT	7		// 오브젝트가 행동하는 애니메이션의 개수 :: idle, run, dead, attack, skill1, skill2 , skill3
 #define ATTACK_COUNT	4		// 공격모션 개수 :: attack, skill1, skill2, skill3 , 히트박스 읽어올때 개수좀 쓸라고!!
+
+#include "dxerr.h"
 
 #if defined(DEBUG) | defined(_DEBUG)
 #ifndef HR
