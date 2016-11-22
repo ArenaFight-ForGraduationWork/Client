@@ -456,9 +456,14 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 			pPlayer = nullptr;
 
 			if (isFireParticle)
+			{
 				isFireParticle = false;
+			}
 			else
+			{
+				m_FireParticle->Reset();
 				isFireParticle = true;
+			}
 		} break;
 		case 0x31:
 		{
@@ -774,6 +779,13 @@ void CFirstScene::BuildObjects()
 	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
+
+	m_FireParticle->Initialize("Fire.fxo", L"Data/Effect/SpectacularBurst3.dds", 3);
+	//m_FireParticle->Initialize("Fire.fxo", L"Data/Effect/flare0.dds", 10000);
+	XMFLOAT3 cameralook;
+	XMStoreFloat3(&cameralook, m_pCameraManager->GetNowCamera()->GetLookVector());
+	cameralook.x *= -1;	cameralook.y *= -1;	cameralook.z *= -1;
+	m_FireParticle->SetEmitDir(XMLoadFloat3(&cameralook));
 }
 
 void CFirstScene::AnimateObjectsAndRender()
@@ -818,7 +830,7 @@ void CFirstScene::RenderParticle()
 	if (isFireParticle)
 	{
 		FireParticleTime += 2.0f;
-		if (FireParticleTime <= 3000.0f)
+		if (FireParticleTime <= 200.0f)
 		{
 			m_FireParticle->Update(gpCommonState->GetTimer()->GetTimeElapsed(), gpCommonState->GetTimer()->GetTimeElapsed());
 			XMVECTOR vEyePosition;
@@ -843,19 +855,8 @@ void CFirstScene::RenderParticle()
 		{
 			FireParticleTime = 0.0f;
 			isFireParticle = false;
+			m_FireParticle->Reset();
 		}
-
-		/*
-		*		FIXED BUG ^v^)/
-		*		Bug: Everything disappear when i use particle system.
-		*		Solution: Unbind geometry shader
-		*		http://www.gamedev.net/topic/667068-geometry-shader-blank-screen/
-		*/
-		gpCommonState->GetDeviceContext()->GSSetShader(NULL, 0, 0);
-	}
-	else
-	{
-		m_FireParticle->Reset();
 	}
 }
 

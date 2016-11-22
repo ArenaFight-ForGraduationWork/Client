@@ -345,12 +345,9 @@ void CParticleShader::CreateShader()
 		{ "TYPE", 0, DXGI_FORMAT_R32_UINT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 	UINT nElements = ARRAYSIZE(d3dInputLayout);
-	CreateVertexShaderFromFile(L"FX/Rain.fx", "DrawVS", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(L"FX/Rain.fx", "DrawPS", "ps_5_0", &m_pd3dPixelShader);
-	CreateGeometryShaderFromFile(L"FX/Rain.fx", "DrawGS", "gs_5_0", &m_pd3dGeometryShader);
-	//CreateVertexShaderFromFile(L"FX/Fire.fx", "DrawVS", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
-	//CreatePixelShaderFromFile(L"FX/Fire.fx", "DrawPS", "ps_5_0", &m_pd3dPixelShader);
-	//CreateGeometryShaderFromFile(L"FX/Fire.fx", "DrawGS", "gs_5_0", &m_pd3dGeometryShader);
+	CreateVertexShaderFromFile(L"FX/Fire.fx", "DrawVS", "vs_5_0", &m_pd3dVertexShader, d3dInputLayout, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(L"FX/Fire.fx", "DrawPS", "ps_5_0", &m_pd3dPixelShader);
+	CreateGeometryShaderFromFile(L"FX/Fire.fx", "DrawGS", "gs_5_0", &m_pd3dGeometryShader);
 }
 
 void CParticleShader::CreateShaderVariables()

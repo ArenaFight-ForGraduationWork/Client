@@ -20,13 +20,22 @@ CParticle::CParticle()
 	mEyePosW = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mEmitPosW = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mEmitDirW = XMFLOAT3(0.0f, 1.0f, 0.0f);
+}
+CParticle::~CParticle()
+{
+	if (mInitVB) mInitVB->Release();
+	if (mDrawVB) mDrawVB->Release();
+	if (mStreamOutVB) mStreamOutVB->Release();
+}
 
-	vector<wstring> vFlare;
+void CParticle::Initialize(char *pShaderFileName, wstring DdsFileName, UINT uiMaxParticles)
+{
+	vector<wstring> vDdsFiles;
 
-	m_pShader = new CParticleShader("Fire.fxo");
+	m_pShader = new CParticleShader(pShaderFileName);
 	m_pShader->CreateShader();
-	mMaxParticles = 10000;
-	vFlare.push_back(L"flare0.dds");
+	mMaxParticles = uiMaxParticles;
+	vDdsFiles.push_back(DdsFileName);
 
 	//
 	// Load the texture elements individually from file.  These textures
@@ -34,13 +43,13 @@ CParticle::CParticle()
 	// load the image data from file.  We use the STAGING usage so the
 	// CPU can read the resource.
 	//
-	UINT size = vFlare.size();
+	UINT size = vDdsFiles.size();
 
 	vector<ID3D11Resource*> srcTex(size);
 	for (UINT i = 0; i < size; ++i)
 	{
 		ID3D11ShaderResourceView* shaderResourceView;
-		HR(CreateDDSTextureFromFile(gpCommonState->GetDevice(), vFlare[i].c_str(), &srcTex[i], &shaderResourceView));
+		HR(CreateDDSTextureFromFile(gpCommonState->GetDevice(), vDdsFiles[i].c_str(), &srcTex[i], &shaderResourceView));
 		shaderResourceView->Release();
 	}
 
@@ -156,12 +165,7 @@ CParticle::CParticle()
 
 	BuildVB();
 }
-CParticle::~CParticle()
-{
-	if (mInitVB) mInitVB->Release();
-	if (mDrawVB) mDrawVB->Release();
-	if (mStreamOutVB) mStreamOutVB->Release();
-}
+
 
 float CParticle::GetAge()const
 {
@@ -283,6 +287,15 @@ void CParticle::Draw(CXMMATRIX viewMatrix, CXMMATRIX projectionMatrix)
 	gpCommonState->GetDeviceContext()->RSSetState(0);
 	gpCommonState->GetDeviceContext()->OMSetDepthStencilState(0, 0);
 	gpCommonState->GetDeviceContext()->OMSetBlendState(0, blendFactor, 0xffffffff);
+
+	/*
+	*		FIXED BUG ^v^)/
+	*		Bug: Everything disappear when i use particle system.
+	*		Problem: Geometry Shader wasn't unbinded.
+	*		Solution: Unbind geometry shader
+	*		http://www.gamedev.net/topic/667068-geometry-shader-blank-screen/
+	*/
+	gpCommonState->GetDeviceContext()->GSSetShader(NULL, 0, 0);
 }
 
 void CParticle::BuildVB()

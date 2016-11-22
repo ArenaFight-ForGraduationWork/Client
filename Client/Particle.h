@@ -28,6 +28,8 @@ public:
 	CParticle();
 	~CParticle();
 
+	void Initialize(char *pShaderFileName, wstring DdsFileName, UINT uiMaxParticles);
+
 	float GetAge() const;
 
 	void SetEyePos(const CXMVECTOR eyePosW);
