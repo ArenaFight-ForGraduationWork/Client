@@ -408,8 +408,8 @@ CFirstScene::CFirstScene()
 	m_pFog = nullptr;
 
 	// Particle
-	m_FireParticle = new CParticle();
-
+	for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+		m_vParticles.push_back(new CParticle());
 	isFireParticle = false;
 }
 CFirstScene::~CFirstScene()
@@ -454,16 +454,6 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 				}
 			}
 			pPlayer = nullptr;
-
-			if (isFireParticle)
-			{
-				isFireParticle = false;
-			}
-			else
-			{
-				m_FireParticle->Reset();
-				isFireParticle = true;
-			}
 		} break;
 		case 0x31:
 		{
@@ -780,12 +770,36 @@ void CFirstScene::BuildObjects()
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	m_FireParticle->Initialize("Fire.fxo", L"Data/Effect/SpectacularBurst3.dds", 3);
 	//m_FireParticle->Initialize("Fire.fxo", L"Data/Effect/flare0.dds", 10000);
-	XMFLOAT3 cameralook;
-	XMStoreFloat3(&cameralook, m_pCameraManager->GetNowCamera()->GetLookVector());
-	cameralook.x *= -1;	cameralook.y *= -1;	cameralook.z *= -1;
-	m_FireParticle->SetEmitDir(XMLoadFloat3(&cameralook));
+	for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+	{
+		m_vParticles[i]->Initialize("FX/Fire.fxo", L"Data/Effect/SpectacularBurst3.dds", 5);
+		//m_vParticles[i]->SetEmitDir( default == (0,1,0) );
+	}
+	XMFLOAT3 f3Position;
+	XMVECTOR vPosition;
+	// forward
+	f3Position = XMFLOAT3(-400, 0, -2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[0]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(400, 0, -2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[1]->SetEmitPos(vPosition);
+	// left
+	f3Position = XMFLOAT3(-2000, 0, -400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[2]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(-2000, 0, 400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[3]->SetEmitPos(vPosition);
+	// backward
+	f3Position = XMFLOAT3(-400, 0, 2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[4]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(400, 0, 2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[5]->SetEmitPos(vPosition);
+	// right
+	f3Position = XMFLOAT3(2000, 0, -400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[6]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(2000, 0, 400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[7]->SetEmitPos(vPosition);
+
+	isFireParticle = true;
 }
 
 void CFirstScene::AnimateObjectsAndRender()
@@ -832,30 +846,28 @@ void CFirstScene::RenderParticle()
 		FireParticleTime += 2.0f;
 		if (FireParticleTime <= 200.0f)
 		{
-			m_FireParticle->Update(gpCommonState->GetTimer()->GetTimeElapsed(), gpCommonState->GetTimer()->GetTimeElapsed());
 			XMVECTOR vEyePosition;
 			if (m_pCameraManager->GetNowCamera())
 				vEyePosition = XMLoadFloat3(m_pCameraManager->GetNowCamera()->GetPosition());
 			else
 				vEyePosition = XMVectorZero();
-			m_FireParticle->SetEyePos(vEyePosition);
-
-			XMVECTOR vPlayerPosition;
-			if (m_pObjectManager->FindObject(myID))
-				vPlayerPosition = XMLoadFloat3(m_pObjectManager->FindObject(myID)->GetPosition());
-			else
-				vPlayerPosition = XMVectorZero();
-			m_FireParticle->SetEmitPos(vPlayerPosition);
-
 			XMMATRIX V = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetViewMatrix());
 			XMMATRIX P = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
-			m_FireParticle->Draw(V, P);
+
+			for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+			{
+				m_vParticles[i]->Update(gpCommonState->GetTimer()->GetTimeElapsed(), gpCommonState->GetTimer()->GetTimeElapsed());
+				m_vParticles[i]->SetEyePos(vEyePosition);
+				m_vParticles[i]->Draw(V, P);
+			}
 		}
 		else
 		{
 			FireParticleTime = 0.0f;
-			isFireParticle = false;
-			m_FireParticle->Reset();
+			for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+			{
+				m_vParticles[i]->Reset();
+			}
 		}
 	}
 }

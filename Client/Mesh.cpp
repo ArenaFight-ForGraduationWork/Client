@@ -186,28 +186,22 @@ void CCubeMesh::Render()
 		gpCommonState->GetDeviceContext()->Draw(m_nVertices, m_nOffset);
 }
 
-void CCubeMesh::_CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
-{	// 정점 데이터와 인덱스 데이터를 사용하여 정점의 법선 벡터를 계산
-	switch (m_d3dPrimitiveTopology)
-	{
-		/*프리미티브가 삼각형 리스트일 때 인덱스 버퍼가 있는 경우와 없는 경우를 구분하여 정점의 법선 벡터를 계산한다.
-		인덱스 버퍼를 사용하지 않는 경우 각 정점의 법선 벡터는 그 정점이 포함된 삼각형의 법선 벡터로 계산한다.
-		인덱스 버퍼를 사용하는 경우 각 정점의 법선 벡터는 그 정점이 포함된 삼각형들의 법선 벡터의 평균으로(더하여) 계산한다.*/
-	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
-		if (!pIndices)
-			_SetTriAngleListVertexNormal(pVertices);
-		else
-			_SetAverageVertexNormal(pVertices, pIndices, (m_nIndices / 3), 3, false);
-		break;
-		/*프리미티브가 삼각형 스트립일 때 각 정점의 법선 벡터는 그 정점이 포함된 삼각형들의 법선 벡터의 평균으로(더하여) 계산한다.*/
-	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
-		_SetAverageVertexNormal(pVertices, pIndices, (pIndices) ? (m_nIndices - 2) : (m_nVertices - 2), 1, true);
-		break;
-	default:
-		break;
-	}
-}
+XMFLOAT3* CCubeMesh::_CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
+{	// 삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산
+	XMVECTOR vNormal = XMVectorZero();
+	XMVECTOR vP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
+	XMVECTOR vP1 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex1)));
+	XMVECTOR vP2 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex2)));
+	XMVECTOR vEdge1 = XMVectorSubtract(vP1, vP0);
+	XMVECTOR vEdge2 = XMVectorSubtract(vP2, vP0);
+	vNormal = XMVector3Cross(vEdge1, vEdge2);
+	XMVector3Normalize(vNormal);
 
+	XMFLOAT3 *pf3Normal = new XMFLOAT3();
+	XMStoreFloat3(pf3Normal, vNormal);
+
+	return pf3Normal;
+}
 void CCubeMesh::_SetTriAngleListVertexNormal(BYTE *pVertices)
 {	// 인덱스 버퍼를 사용하지 않는 삼각형 리스트에 대하여 정점의 법선 벡터를 계산
 	XMVECTOR vNormal;
@@ -216,7 +210,7 @@ void CCubeMesh::_SetTriAngleListVertexNormal(BYTE *pVertices)
 	int nPrimitives = m_nVertices / 3;
 	for (int i = 0; i < nPrimitives; i++)
 	{
-		vNormal = _CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2));
+		vNormal = XMLoadFloat3(_CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2)));
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 0) * m_nStride));
 		pVertex->SetNormal(vNormal);
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 1) * m_nStride));
@@ -243,7 +237,7 @@ void CCubeMesh::_SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPr
 			nIndex2 = (pIndices) ? pIndices[i*nOffset + 2] : (i*nOffset + 2);
 			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j))
 			{
-				vSumOfNormal = XMVectorAdd(vSumOfNormal, _CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2));
+				vSumOfNormal = XMVectorAdd(vSumOfNormal, XMLoadFloat3(_CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2)));
 			}
 		}
 		XMVector3Normalize(vSumOfNormal);
@@ -251,18 +245,26 @@ void CCubeMesh::_SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPr
 		pVertex->SetNormal(vSumOfNormal);
 	}
 }
-XMVECTOR CCubeMesh::_CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
-{	// 삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산
-	XMVECTOR vNormal = XMVectorZero();
-	XMVECTOR vP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
-	XMVECTOR vP1 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex1)));
-	XMVECTOR vP2 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex2)));
-	XMVECTOR vEdge1 = XMVectorSubtract(vP1, vP0);
-	XMVECTOR vEdge2 = XMVectorSubtract(vP2, vP0);
-	vNormal = XMVector3Cross(vEdge1, vEdge2);
-	XMVector3Normalize(vNormal);
-
-	return vNormal;
+void CCubeMesh::_CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
+{	// 정점 데이터와 인덱스 데이터를 사용하여 정점의 법선 벡터를 계산
+	switch (m_d3dPrimitiveTopology)
+	{
+		/*프리미티브가 삼각형 리스트일 때 인덱스 버퍼가 있는 경우와 없는 경우를 구분하여 정점의 법선 벡터를 계산한다.
+		인덱스 버퍼를 사용하지 않는 경우 각 정점의 법선 벡터는 그 정점이 포함된 삼각형의 법선 벡터로 계산한다.
+		인덱스 버퍼를 사용하는 경우 각 정점의 법선 벡터는 그 정점이 포함된 삼각형들의 법선 벡터의 평균으로(더하여) 계산한다.*/
+	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
+		if (!pIndices)
+			_SetTriAngleListVertexNormal(pVertices);
+		else
+			_SetAverageVertexNormal(pVertices, pIndices, (m_nIndices / 3), 3, false);
+		break;
+		/*프리미티브가 삼각형 스트립일 때 각 정점의 법선 벡터는 그 정점이 포함된 삼각형들의 법선 벡터의 평균으로(더하여) 계산한다.*/
+	case D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
+		_SetAverageVertexNormal(pVertices, pIndices, (pIndices) ? (m_nIndices - 2) : (m_nVertices - 2), 1, true);
+		break;
+	default:
+		break;
+	}
 }
 
 
