@@ -7,6 +7,7 @@
 bool server_on = false;
 char ip[16];
 UINT myID;
+UINT monsterID;
 SOCKET	sock;
 bool first_login = true;
 BYTE player_status = 0;

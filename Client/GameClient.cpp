@@ -418,6 +418,7 @@ void ProcessPacket(char *ptr) {
 		player_status = static_cast<BYTE>(ePlayer_State::eFight);
 		CSceneManager::GetSingleton()->Change(CSceneManager::eSceneType::FIRST);
 
+		monsterID = my_packet->bossid;
 		pObjectManager->Insert((UINT)myID, eResourceType::User, XMVectorZero(), XMVectorZero(), true);
 
 		printf("º¸½º ID:%d\n", my_packet->bossid);

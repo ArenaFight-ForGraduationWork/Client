@@ -765,10 +765,27 @@ void CFirstScene::BuildObjects()
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	// 1: hp
+	// 1: my hp
 	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
+
+	// 2: monster hp
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/monsterHP.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 3: my hp background
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 4: monster hp background
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	m_pSpriteFont.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
 
 	//m_FireParticle->Initialize("Fire.fxo", L"Data/Effect/flare0.dds", 10000);
 	for (unsigned int i = 0; i < m_uiParticleNum; ++i)
@@ -824,14 +841,37 @@ void CFirstScene::AnimateObjectsAndRender()
 		gpCommonState->TurnZBufferOff();
 		m_pSpriteBatch->Begin();
 		{
-			// frame
+			CObject *pObject;
+
+			// 0: frame
 			m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
-			// hp
-			CObject *pObject = m_pObjectManager->FindObject(myID);
+			// 1: my hp, 3: my hp background
+			pObject = m_pObjectManager->FindObject(myID);
 			if (pObject)
 			{
-				rHpPos.right = rHpPos.left + static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * 3;
+				m_pSpriteBatch->Draw(m_vTextures[3], rMyHpBarBackground);
+				// default health = 100
+				LONG healthLength = pObject->GetComponent()->GetHealthPoint() * FRAME_BUFFER_WIDTH * 3 / 800;
+				rHpPos.right = rHpPos.left + healthLength;
 				m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
+				wstring wstr = L"Hp: ";	// Hp: 
+				wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Hp : n
+				wstr.append(L" / 100");	// n / 100
+				m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(rHpPos.left, rHpPos.top));
+			}
+			// 2: monster hp, 4: monster hp background
+			pObject = m_pObjectManager->FindObject(monsterID);
+			if (pObject)
+			{
+				m_pSpriteBatch->Draw(m_vTextures[4], rMonsterHpBarBackground);
+				// default health = 100
+				LONG healthLength = pObject->GetComponent()->GetHealthPoint() * FRAME_BUFFER_WIDTH / 200;
+				rMonsterHpPos.right = rMonsterHpPos.left + healthLength;
+				m_pSpriteBatch->Draw(m_vTextures[2], rMonsterHpPos);
+				wstring wstr = L"Monster Hp: ";	// Monster Hp: 
+				wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Monster Hp: n
+				wstr.append(L" / 100");	// Monster Hp: n / 100
+				m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(rMonsterHpPos.left, rMonsterHpPos.top));
 			}
 		}
 		m_pSpriteBatch->End();

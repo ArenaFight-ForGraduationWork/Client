@@ -11,6 +11,7 @@
 extern bool		server_on;
 extern char		ip[16];
 extern UINT		myID;
+extern UINT		monsterID;
 extern SOCKET	sock;
 extern bool		first_login;
 extern BYTE		player_status;
