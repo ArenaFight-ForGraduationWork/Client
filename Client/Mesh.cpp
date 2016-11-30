@@ -174,8 +174,7 @@ void CCubeMesh::Render()
 	if (m_pd3dVertexBuffer) gpCommonState->GetDeviceContext()->IASetVertexBuffers(0, 1, &m_pd3dVertexBuffer, &m_nStride, &m_nOffset);
 	//인덱스 버퍼가 있으면 인덱스 버퍼를 디바이스 컨텍스트에 연결한다.
 	if (m_pd3dIndexBuffer) gpCommonState->GetDeviceContext()->IASetIndexBuffer(m_pd3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-	gpCommonState->GetDeviceContext()->IASetPrimitiveTopology(
-		m_d3dPrimitiveTopology);
+	gpCommonState->GetDeviceContext()->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
 	if (m_pd3dRasterizerState) gpCommonState->GetDeviceContext()->RSSetState(m_pd3dRasterizerState);
 
 	// 인덱스 버퍼가 있으면 인덱스 버퍼를 사용하여 메쉬를 렌더링하고
@@ -186,31 +185,15 @@ void CCubeMesh::Render()
 		gpCommonState->GetDeviceContext()->Draw(m_nVertices, m_nOffset);
 }
 
-XMFLOAT3* CCubeMesh::_CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
-{	// 삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산
-	XMVECTOR vNormal = XMVectorZero();
-	XMVECTOR vP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
-	XMVECTOR vP1 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex1)));
-	XMVECTOR vP2 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex2)));
-	XMVECTOR vEdge1 = XMVectorSubtract(vP1, vP0);
-	XMVECTOR vEdge2 = XMVectorSubtract(vP2, vP0);
-	vNormal = XMVector3Cross(vEdge1, vEdge2);
-	XMVector3Normalize(vNormal);
-
-	XMFLOAT3 *pf3Normal = new XMFLOAT3();
-	XMStoreFloat3(pf3Normal, vNormal);
-
-	return pf3Normal;
-}
 void CCubeMesh::_SetTriAngleListVertexNormal(BYTE *pVertices)
 {	// 인덱스 버퍼를 사용하지 않는 삼각형 리스트에 대하여 정점의 법선 벡터를 계산
 	XMVECTOR vNormal;
-	CNormalVertex *pVertex = NULL;
+	CNormalVertex *pVertex = nullptr;
 	/*삼각형(프리미티브)의 개수를 구하고 각 삼각형의 법선 벡터를 계산하고 삼각형을 구성하는 각 정점의 법선 벡터로 지정한다.*/
 	int nPrimitives = m_nVertices / 3;
 	for (int i = 0; i < nPrimitives; i++)
 	{
-		vNormal = XMLoadFloat3(_CalculateTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2)));
+		vNormal = XMLoadFloat3(_SetTriAngleNormal(pVertices, (i * 3 + 0), (i * 3 + 1), (i * 3 + 2)));
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 0) * m_nStride));
 		pVertex->SetNormal(vNormal);
 		pVertex = (CNormalVertex *)(pVertices + ((i * 3 + 1) * m_nStride));
@@ -237,13 +220,29 @@ void CCubeMesh::_SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPr
 			nIndex2 = (pIndices) ? pIndices[i*nOffset + 2] : (i*nOffset + 2);
 			if ((nIndex0 == j) || (nIndex1 == j) || (nIndex2 == j))
 			{
-				vSumOfNormal = XMVectorAdd(vSumOfNormal, XMLoadFloat3(_CalculateTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2)));
+				vSumOfNormal = XMVectorAdd(vSumOfNormal, XMLoadFloat3(_SetTriAngleNormal(pVertices, nIndex0, nIndex1, nIndex2)));
 			}
 		}
 		XMVector3Normalize(vSumOfNormal);
 		pVertex = (CNormalVertex *)(pVertices + (j * m_nStride));
 		pVertex->SetNormal(vSumOfNormal);
 	}
+}
+XMFLOAT3* CCubeMesh::_SetTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2)
+{	// 삼각형의 세 정점을 사용하여 삼각형의 법선 벡터를 계산
+	XMVECTOR vNormal = XMVectorZero();
+	XMVECTOR vP0 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex0)));
+	XMVECTOR vP1 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex1)));
+	XMVECTOR vP2 = *((XMVECTOR *)(pVertices + (m_nStride * nIndex2)));
+	XMVECTOR vEdge1 = XMVectorSubtract(vP1, vP0);
+	XMVECTOR vEdge2 = XMVectorSubtract(vP2, vP0);
+	vNormal = XMVector3Cross(vEdge1, vEdge2);
+	XMVector3Normalize(vNormal);
+
+	XMFLOAT3 *pf3Normal = new XMFLOAT3();
+	XMStoreFloat3(pf3Normal, vNormal);
+
+	return pf3Normal;
 }
 void CCubeMesh::_CalculateVertexNormal(BYTE *pVertices, WORD *pIndices)
 {	// 정점 데이터와 인덱스 데이터를 사용하여 정점의 법선 벡터를 계산

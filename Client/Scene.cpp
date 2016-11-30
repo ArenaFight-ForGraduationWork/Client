@@ -23,7 +23,8 @@ CScene::CScene()
 
 	m_pSpriteBatch = nullptr;
 	m_vTextures.clear();
-	m_pSpriteFont = nullptr;
+	m_pSpriteFont18 = nullptr;
+	m_pSpriteFont14 = nullptr;
 }
 CScene::~CScene()
 {
@@ -326,7 +327,7 @@ void CIntroScene::BuildObjects()
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	m_pSpriteFont.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
+	m_pSpriteFont18.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
 }
 
 void CIntroScene::AnimateObjectsAndRender()
@@ -354,30 +355,30 @@ void CIntroScene::AnimateObjectsAndRender()
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
 				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		case 2:
 		{
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Stage Number (1 ~ 3)",
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), L"Input Stage Number (1 ~ 3)",
 				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		case 3:
 		{
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
 				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		default:break;
 		}
@@ -410,7 +411,7 @@ CFirstScene::CFirstScene()
 	// Particle
 	for (unsigned int i = 0; i < m_uiParticleNum; ++i)
 		m_vParticles.push_back(new CParticle());
-	isFireParticle = false;
+	FinishInitializing = false;
 }
 CFirstScene::~CFirstScene()
 {
@@ -785,7 +786,36 @@ void CFirstScene::BuildObjects()
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	m_pSpriteFont.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
+	// 5-8: party hp background
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 9-12: party hp
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	m_pSpriteFont18.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
+	m_pSpriteFont14.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial14.spritefont"));
 
 	//m_FireParticle->Initialize("Fire.fxo", L"Data/Effect/flare0.dds", 10000);
 	for (unsigned int i = 0; i < m_uiParticleNum; ++i)
@@ -816,98 +846,117 @@ void CFirstScene::BuildObjects()
 	f3Position = XMFLOAT3(2000, 0, 400);	vPosition = XMLoadFloat3(&f3Position);
 	m_vParticles[7]->SetEmitPos(vPosition);
 
-	isFireParticle = true;
+	FinishInitializing = true;
 }
 
 void CFirstScene::AnimateObjectsAndRender()
 {
-	// 3D
+	if (FinishInitializing)
 	{
-		//if (m_pFog->IsInUse())
-		//	m_pFog->Update();
-
-		CScene::AnimateObjectsAndRender();
-	}
-
-	// particle
-	{
-		gpCommonState->EnableAlphaBlending();
-		RenderParticle();
-		gpCommonState->DisableAlphaBlending();
-	}
-
-	// 2D
-	{
-		gpCommonState->TurnZBufferOff();
-		m_pSpriteBatch->Begin();
+		// 3D
 		{
-			CObject *pObject;
+			//if (m_pFog->IsInUse())
+			//	m_pFog->Update();
 
-			// 0: frame
-			m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
-			// 1: my hp, 3: my hp background
-			pObject = m_pObjectManager->FindObject(myID);
-			if (pObject)
-			{
-				m_pSpriteBatch->Draw(m_vTextures[3], rMyHpBarBackground);
-				// default health = 100
-				LONG healthLength = pObject->GetComponent()->GetHealthPoint() * FRAME_BUFFER_WIDTH * 3 / 800;
-				rHpPos.right = rHpPos.left + healthLength;
-				m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
-				wstring wstr = L"Hp: ";	// Hp: 
-				wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Hp : n
-				wstr.append(L" / 100");	// n / 100
-				m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(rHpPos.left, rHpPos.top));
-			}
-			// 2: monster hp, 4: monster hp background
-			pObject = m_pObjectManager->FindObject(monsterID);
-			if (pObject)
-			{
-				m_pSpriteBatch->Draw(m_vTextures[4], rMonsterHpBarBackground);
-				// default health = 100
-				LONG healthLength = pObject->GetComponent()->GetHealthPoint() * FRAME_BUFFER_WIDTH / 200;
-				rMonsterHpPos.right = rMonsterHpPos.left + healthLength;
-				m_pSpriteBatch->Draw(m_vTextures[2], rMonsterHpPos);
-				wstring wstr = L"Monster Hp: ";	// Monster Hp: 
-				wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Monster Hp: n
-				wstr.append(L" / 100");	// Monster Hp: n / 100
-				m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(rMonsterHpPos.left, rMonsterHpPos.top));
-			}
+			CScene::AnimateObjectsAndRender();
 		}
-		m_pSpriteBatch->End();
-		gpCommonState->TurnZBufferOn();
+
+		// particle
+		{
+			gpCommonState->EnableAlphaBlending();
+			RenderParticle();
+			gpCommonState->DisableAlphaBlending();
+		}
+
+		// 2D
+		{
+			gpCommonState->TurnZBufferOff();
+			m_pSpriteBatch->Begin();
+			{
+				CObject *pObject;
+
+				// 0: frame
+				m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
+				// 1: my hp, 3: my hp background
+				pObject = m_pObjectManager->FindObject(myID);
+				if (pObject)
+				{
+					m_pSpriteBatch->Draw(m_vTextures[3], rMyHpBarBackground);
+					// default health = 100
+					LONG healthLength = static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * FRAME_BUFFER_WIDTH * 3 / 800;
+					rHpPos.right = rHpPos.left + healthLength;
+					m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
+					wstring wstr = L"Hp: ";	// Hp: 
+					wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Hp : n
+					wstr.append(L" / 100");	// n / 100
+					m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(static_cast<float>(rHpPos.left), static_cast<float>(rHpPos.top)));
+				}
+				// 2: monster hp, 4: monster hp background
+				pObject = m_pObjectManager->FindObject(monsterID);
+				if (pObject)
+				{
+					m_pSpriteBatch->Draw(m_vTextures[4], rMonsterHpBarBackground);
+					// default health = 100
+					LONG healthLength = static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * FRAME_BUFFER_WIDTH / 200;
+					rMonsterHpPos.right = rMonsterHpPos.left + healthLength;
+					m_pSpriteBatch->Draw(m_vTextures[2], rMonsterHpPos);
+					wstring wstr = L"Monster Hp: ";	// Monster Hp: 
+					wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Monster Hp: n
+					wstr.append(L" / 100");	// Monster Hp: n / 100
+					m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(static_cast<float>(rMonsterHpPos.left), static_cast<float>(rMonsterHpPos.top)));
+				}
+				// 5-8: party hp background, 9-12: party hp
+				for (unsigned int party = 0; party < partyNum; ++party)
+				{
+					pObject = m_pObjectManager->FindObject(partyIDs[party]);
+					if (pObject)
+					{
+						m_pSpriteBatch->Draw(m_vTextures[5 + party], rPartyBackground[party]);
+						LONG healthLength = static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * FRAME_BUFFER_WIDTH / 800;
+						rPartyHp[party].right = rPartyHp[party].left + healthLength;
+						m_pSpriteBatch->Draw(m_vTextures[9 + party], rPartyHp[party]);
+
+						wstring wstr = L"ID: ";	// [ID: ]
+						wstr.append(to_wstring(partyIDs[party]));	// [ID: id]
+						wstr.append(L", ");	// [ID: id, ]
+						wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// [ID: id, hp]
+						wstr.append(L" / 100");	// [ID: id, hp / 100]
+						m_pSpriteFont14->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(static_cast<float>(rPartyHp[party].left), static_cast<float>(rPartyHp[party].top)));
+					}
+				}
+			}
+			m_pSpriteBatch->End();
+			gpCommonState->TurnZBufferOn();
+		}
 	}
 }
 
 void CFirstScene::RenderParticle()
 {
-	if (isFireParticle)
+	FireParticleTime += 2.0f;
+	if (FireParticleTime <= 200.0f)
 	{
-		FireParticleTime += 2.0f;
-		if (FireParticleTime <= 200.0f)
-		{
-			XMVECTOR vEyePosition;
-			if (m_pCameraManager->GetNowCamera())
-				vEyePosition = XMLoadFloat3(m_pCameraManager->GetNowCamera()->GetPosition());
-			else
-				vEyePosition = XMVectorZero();
-			XMMATRIX V = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetViewMatrix());
-			XMMATRIX P = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
-
-			for (unsigned int i = 0; i < m_uiParticleNum; ++i)
-			{
-				m_vParticles[i]->Update(gpCommonState->GetTimer()->GetTimeElapsed(), gpCommonState->GetTimer()->GetTimeElapsed());
-				m_vParticles[i]->SetEyePos(vEyePosition);
-				m_vParticles[i]->Draw(V, P);
-			}
-		}
+		XMVECTOR vEyePosition;
+		if (m_pCameraManager->GetNowCamera())
+			vEyePosition = XMLoadFloat3(m_pCameraManager->GetNowCamera()->GetPosition());
 		else
+			vEyePosition = XMVectorZero();
+		XMMATRIX V = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetViewMatrix());
+		XMMATRIX P = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+
+		for (unsigned int i = 0; i < m_uiParticleNum; ++i)
 		{
-			FireParticleTime = 0.0f;
-			for (unsigned int i = 0; i < m_uiParticleNum; ++i)
-			{
-				m_vParticles[i]->Reset();
-			}
+			m_vParticles[i]->Update(gpCommonState->GetTimer()->GetTimeElapsed(), gpCommonState->GetTimer()->GetTimeElapsed());
+			m_vParticles[i]->SetEyePos(vEyePosition);
+			m_vParticles[i]->Draw(V, P);
+		}
+	}
+	else
+	{
+		FireParticleTime = 0.0f;
+		for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+		{
+			m_vParticles[i]->Reset();
 		}
 	}
 }

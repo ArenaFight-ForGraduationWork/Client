@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameClient", "LabProject09.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2015", "DirectXTK\DirectXTK_Desktop_2015.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ArenaFightSetup", "..\ArenaFightSetup\ArenaFightSetup.vdproj", "{80DD3DEA-365A-451F-8A26-547CC1538983}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -29,6 +31,10 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|Win32.Build.0 = Release|Win32
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.ActiveCfg = Release|x64
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
+		{80DD3DEA-365A-451F-8A26-547CC1538983}.Debug|Win32.ActiveCfg = Debug
+		{80DD3DEA-365A-451F-8A26-547CC1538983}.Debug|x64.ActiveCfg = Debug
+		{80DD3DEA-365A-451F-8A26-547CC1538983}.Release|Win32.ActiveCfg = Release
+		{80DD3DEA-365A-451F-8A26-547CC1538983}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

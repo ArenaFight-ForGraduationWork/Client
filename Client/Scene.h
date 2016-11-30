@@ -45,7 +45,8 @@ protected:
 
 	unique_ptr<SpriteBatch> m_pSpriteBatch;
 	vector<ID3D11ShaderResourceView*> m_vTextures;
-	unique_ptr<SpriteFont> m_pSpriteFont;
+	unique_ptr<SpriteFont> m_pSpriteFont18;
+	unique_ptr<SpriteFont> m_pSpriteFont14;
 
 private:
 	vector<CShader*> m_vShaders;
@@ -133,8 +134,19 @@ private:
 	RECT rHpPos = { FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 28, FRAME_BUFFER_WIDTH / 16 * 7, FRAME_BUFFER_HEIGHT / 32 * 29 };
 	const RECT rMonsterHpBarBackground = { FRAME_BUFFER_WIDTH / 4 - 10, FRAME_BUFFER_HEIGHT / 32 * 3 - 10, FRAME_BUFFER_WIDTH / 4 * 3 + 10, FRAME_BUFFER_HEIGHT / 32 * 4 + 10 };
 	RECT rMonsterHpPos = { FRAME_BUFFER_WIDTH / 4, FRAME_BUFFER_HEIGHT / 32 * 3, FRAME_BUFFER_WIDTH / 4 * 3, FRAME_BUFFER_HEIGHT / 32 * 4 };
-
-	bool isFireParticle;
+	const RECT rPartyBackground[4] = {
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 12 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 13 + 1 },
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 14 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 15 + 1 },
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 16 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 17 + 1 },
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 18 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 19 + 1 },
+	};
+	RECT rPartyHp[4] = {
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 12, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 13 },
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 14, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 15 },
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 16, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 17 },
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 18, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 19 },
+	};
+	bool FinishInitializing;
 	float FireParticleTime = 0.0f;
 
 	vector<CParticle*> m_vParticles;

@@ -215,6 +215,8 @@ void ProcessPacket(char *ptr) {
 		if (first_login) {
 			printf("my id:%d\n", my_packet->id);
 			myID = my_packet->id;
+			partyIDs[0] = myID;
+			partyNum += 1;
 			first_login = false;
 		}
 		else {
@@ -249,7 +251,18 @@ void ProcessPacket(char *ptr) {
 		{
 			if (my_packet->id[i] != -1) {
 				if (myID != my_packet->id[i])	/* 방에 이미 들어와있는 사람 정보 중에 myID도 포함이므로 제외한다 */
+				{
 					pObjectManager->Insert(my_packet->id[i], eResourceType::User, XMVectorZero(), XMVectorZero(), true);
+					for (unsigned int id = 0; id < 4; ++id)
+					{
+						if (-1 == partyIDs[id])
+						{
+							partyIDs[id] = my_packet->id[i];
+							++partyNum;
+							break;
+						}
+					}
+				}
 				printf("룸에 있는 플레이어 id:%d\n", my_packet->id[i]);
 			}
 		}
@@ -270,6 +283,15 @@ void ProcessPacket(char *ptr) {
 		if (!pObject)
 		{	// 해당 id가 존재하지 않으면
 			pObjectManager->Insert(my_packet->id, eResourceType::User, XMVectorZero(), XMVectorZero(), true);
+			for (unsigned int id = 0; id < 4; ++id)
+			{
+				if (-1 == partyIDs[id])
+				{
+					partyIDs[id] = my_packet->id;
+					++partyNum;
+					break;
+				}
+			}
 		}
 		else
 		{ //  해당 id가 존재하면
@@ -452,6 +474,15 @@ void ProcessPacket(char *ptr) {
 		if (pObjectManager->FindObject(my_packet->id))
 		{ //  해당 id가 존재하면
 			pObjectManager->DeleteObject(my_packet->id);
+			for (unsigned int id = 0; id < 4; ++id)
+			{
+				if (my_packet->id == partyIDs[id])
+				{
+					partyIDs[id] = -1;
+					--partyNum;
+					break;
+				}
+			}
 		}
 		printf("플레이어id:%d가 방을 떠났습니다\n", my_packet->id);
 		printf("현재 방장:%d\n", my_packet->room_master);
@@ -470,6 +501,15 @@ void ProcessPacket(char *ptr) {
 			if (pObjectManager->FindObject(my_packet->id[i]))
 			{ //  해당 id가 존재하면
 				pObjectManager->DeleteObject(my_packet->id[i]);
+				for (unsigned int id = 0; id < 4; ++id)
+				{
+					if (my_packet->id[i] == partyIDs[id])
+					{
+						partyIDs[id] = -1;
+						--partyNum;
+						break;
+					}
+				}
 			}
 		}
 		printf("게임을 끝납니다\n");
