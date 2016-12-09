@@ -75,12 +75,12 @@ enum class ePlayer_State : BYTE {
 //#define BOSS_NORMAL	1
 //#define BOSS_MOVE	2
 //#define BOSS_ATTACK	3
-//
-//// 보스공격
-//#define BOSS_NORMAL_ATTACK 1
-//#define BOSS_SKILL1 2
-//#define BOSS_SKILL2 3
-//#define BOSS_SKILL3 4
+
+// 보스공격
+#define BOSS_NORMAL_ATTACK 1
+#define BOSS_SKILL1 2
+#define BOSS_SKILL2 3
+#define BOSS_SKILL3 4
 
 #pragma pack (push, 1)
 struct create_room {

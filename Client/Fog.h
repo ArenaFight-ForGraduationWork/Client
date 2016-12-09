@@ -1,5 +1,8 @@
-#ifndef FOG_H_
-#define FOG_H_
+#pragma once
+
+
+#include <DirectXMath.h>
+using namespace DirectX;
 
 
 
@@ -15,7 +18,7 @@ public:
 
 	/* 반드시 IsInUse()함수로 현재 사용중인지 체크하고 사용할 것. 자세한 것은 Fog.h 헤더파일 아래에. */
 	void Update();
-	void Expand(D3DXVECTOR3 *pd3dvCenter);
+	void Expand(float x, float y, float z);
 	void Contract();
 
 	void UpdateShaderVariables();
@@ -33,7 +36,7 @@ private:
 	};
 	eState m_eState;
 
-	D3DXVECTOR3 *m_pd3dxvCenter;
+	XMFLOAT3 m_f3Center;
 
 	float m_fNowRange;
 	float m_fMinRange;
@@ -79,4 +82,3 @@ private:
 
 
 
-#endif

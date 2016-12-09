@@ -10,10 +10,6 @@
 
 CObjectManager::CObjectManager()
 {
-	for (BYTE i = (BYTE)eObjectType::START; i < (BYTE)eObjectType::END; ++i)
-	{
-		m_mObjects[(eObjectType)i] = std::vector<CObject*>();
-	}
 }
 CObjectManager::~CObjectManager()
 {
@@ -28,42 +24,49 @@ CObjectManager* CObjectManager::GetSingleton()
 void CObjectManager::Initialize()
 {
 	pResourceManager = CResourceManager::GetSingleton();
+
+	m_mObjects.clear();
 }
 
-CObject* CObjectManager::Insert(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction, bool isAnimating)
+CObject* CObjectManager::Insert(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction, bool isAnimating)
 {
 	if (isAnimating)
-		 return _InsertAnimateT(id, eType, position, direction);
+		return _InsertAnimateT(id, eType, position, direction);
 	else
 		return _InsertAnimateF(id, eType, position, direction);
 }
 
 
-CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::_InsertAnimateF(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction)
 {
 	/* id관련 설명은 ObjectManager헤더파일 맨 위를 참고 */
-	CObject *pObject = new CObject(id);
+	float x, y, z;
+	CObject *pObject = new CObject();
+
 	pObject->SetMesh(pResourceManager->GetMesh(eType));
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType(static_cast<int>(eType));
 
-	pObject->SetPositionAbsolute(&position);
-	pObject->SetDirectionAbsolute(&direction);
+	x = XMVectorGetX(position);	y = XMVectorGetY(position);	z = XMVectorGetZ(position);
+	pObject->SetPositionAbsolute(x, y, z);
+	x = XMVectorGetX(direction); y = XMVectorGetY(direction); z = XMVectorGetZ(direction);
+	pObject->SetDirectionAbsolute(x, y, z);
 
 	pObject->PlayAnimation(CObject::eAnimationType::None);
 	pObject->SetBoundingBox();
 
-	m_mObjects[(eObjectType)static_cast<UINT>(id / ID_DIVIDE)].push_back(pObject);
+	m_mObjects[id] = pObject;
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
 
 	return pObject;
 }
-CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, D3DXVECTOR3 position, D3DXVECTOR3 direction)
+CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, CXMVECTOR position, CXMVECTOR direction)
 {	// 애니메이션 데이터 전용
-	CObject *pObject = new CObject(id);
+	float x, y, z;
+	CObject *pObject = new CObject();
 
 	switch (eType)
 	{
@@ -83,19 +86,21 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, D3DXVECTO
 	pObject->SetMaterial(pResourceManager->GetMaterial(eType));
 	pObject->SetTexture(pResourceManager->GetTexture(eType));
 	pObject->SetResourceType(static_cast<int>(eType));
-	
+
 	pObject->SetTime(pResourceManager->GetMesh(eType)->GetAniMaxTime());
 	pObject->SetAniIndexCount(pResourceManager->GetMesh(eType)->GetAnimationIndexCnt());
 	pObject->SetResult(pResourceManager->GetMesh(eType)->GetResultMatrix());
 	pObject->SetConstantBuffer();
-	
-	pObject->SetPositionAbsolute(&position);
-	pObject->SetDirectionAbsolute(&direction);
+
+	x = XMVectorGetX(position);	y = XMVectorGetY(position);	z = XMVectorGetZ(position);
+	pObject->SetPositionAbsolute(x, y, z);
+	x = XMVectorGetX(direction); y = XMVectorGetY(direction); z = XMVectorGetZ(direction);
+	pObject->SetDirectionAbsolute(x, y, z);
 
 	pObject->SetBoundingBox();
 	pObject->PlayAnimation(CObject::eAnimationType::Idle);
 
-	m_mObjects[(eObjectType)(id / ID_DIVIDE)].push_back(pObject);
+	m_mObjects[id] = pObject;
 
 	CShader *pShader = pResourceManager->GetShaderByResourceType(eType);
 	pShader->InsertObject(pObject);
@@ -105,31 +110,19 @@ CObject* CObjectManager::_InsertAnimateT(UINT id, eResourceType eType, D3DXVECTO
 
 CObject* CObjectManager::FindObject(UINT id)
 {
-	for (auto obj : m_mObjects[(eObjectType)(id / ID_DIVIDE)])
+	for (auto obj : m_mObjects)
 	{
-		if (id == obj->GetId())
-			return obj;
+		if (id == obj.first)
+			return m_mObjects[id];
 	}
 	return nullptr;
 }
 
-UINT* CObjectManager::FindObjectsInCategory(eObjectType eType, int& iSize)
-{
-	iSize = m_mObjects[eType].size();
-	UINT *puiObjects = new UINT[iSize];
-	for (int i = 0; i < iSize; ++i)
-	{
-		puiObjects[i] = m_mObjects[eType][i]->GetId();
-	}
-
-	return puiObjects;
-}
-
 void CObjectManager::DeleteObject(UINT id)
 {
-	for (unsigned short i = 0; i < m_mObjects[(eObjectType)(id / ID_DIVIDE)].size(); ++i)
+	for (auto obj : m_mObjects)
 	{
-		if (id == m_mObjects[(eObjectType)(id / ID_DIVIDE)][i]->GetId())
+		if (id == obj.first)
 		{
 			// 1) 쉐이더와의 연결 해제
 			CShader *pShader;
@@ -140,8 +133,8 @@ void CObjectManager::DeleteObject(UINT id)
 			}
 
 			// 2) 오브젝트맵에서 삭제
-			CObject *pObject = m_mObjects[(eObjectType)(id / ID_DIVIDE)][i];
-			m_mObjects[(eObjectType)(id / ID_DIVIDE)].erase(m_mObjects[(eObjectType)(id / ID_DIVIDE)].begin() + i);
+			CObject *pObject = m_mObjects[id];
+			m_mObjects.erase(id);
 
 			// 3) 해당 오브젝트 제거
 			pObject->~CObject();
@@ -156,17 +149,15 @@ void CObjectManager::DeleteObjectAll()
 	for (BYTE i = (BYTE)CResourceManager::eShaderType::START; i < (BYTE)CResourceManager::eShaderType::END; ++i)
 	{
 		pShader = pResourceManager->GetShaderByShaderType((CResourceManager::eShaderType)i);
-		if (pShader)	pShader->ReleaseAllObjects();
+		if (pShader)
+			pShader->ReleaseAllObjects();
 	}
 
 	// 2) 해당 오브젝트 해제 후 삭제
-	for (BYTE i = 0; i < m_mObjects.size(); ++i)
+	for (auto obj : m_mObjects)
 	{
-		for (auto obj : m_mObjects[(eObjectType)i])
-		{
-			obj->~CObject();
-		}
-		m_mObjects[(eObjectType)i].clear();
+		if (obj.second)
+			obj.second->~CObject();
 	}
 	m_mObjects.clear();
 }
@@ -177,16 +168,26 @@ bool CObjectManager::CheckCollision()
 	if (!FindObject(myID))
 		return false;
 
-	for (auto monster : m_mObjects[eObjectType::MONSTER])
+	for (auto monster : m_mObjects)
 	{
-		float distance = ((FindObject(myID)->GetPosition()->x - monster->GetPosition()->x)*(FindObject(myID)->GetPosition()->x - monster->GetPosition()->x))
-			+ ((FindObject(myID)->GetPosition()->z - monster->GetPosition()->z)*(FindObject(myID)->GetPosition()->z - monster->GetPosition()->z));
-		if (sqrt(distance) <= FindObject(myID)->GetRadius() + monster->GetRadius())
-		{
-			return true;
-		}
+		// 1000 <= monsterID < 2000
+		if (monster.first >= 1000)
+			if (monster.first < 2000)
+			{
+				XMFLOAT3* pMyPosition;
+				pMyPosition = FindObject(myID)->GetPosition();
+				XMFLOAT3* pMonsterPosition;
+				pMonsterPosition = monster.second->GetPosition();
+
+				float distance = ((pMyPosition->x - pMonsterPosition->x)*(pMyPosition->x - pMonsterPosition->x))
+					+ ((pMyPosition->z - pMonsterPosition->z)*(pMyPosition->z - pMonsterPosition->z));
+				if (sqrt(distance) <= FindObject(myID)->GetRadius() + monster.second->GetRadius())
+				{
+					return true;
+				}
+			}
 	}
-	 
+
 	return false;
 }
 

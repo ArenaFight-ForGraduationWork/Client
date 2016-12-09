@@ -215,6 +215,8 @@ void ProcessPacket(char *ptr) {
 		if (first_login) {
 			printf("my id:%d\n", my_packet->id);
 			myID = my_packet->id;
+			partyIDs[0] = myID;
+			partyNum += 1;
 			first_login = false;
 		}
 		else {
@@ -249,7 +251,18 @@ void ProcessPacket(char *ptr) {
 		{
 			if (my_packet->id[i] != -1) {
 				if (myID != my_packet->id[i])	/* 방에 이미 들어와있는 사람 정보 중에 myID도 포함이므로 제외한다 */
-					pObjectManager->Insert(my_packet->id[i], eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
+				{
+					pObjectManager->Insert(my_packet->id[i], eResourceType::User, XMVectorZero(), XMVectorZero(), true);
+					for (unsigned int id = 0; id < 4; ++id)
+					{
+						if (-1 == partyIDs[id])
+						{
+							partyIDs[id] = my_packet->id[i];
+							++partyNum;
+							break;
+						}
+					}
+				}
 				printf("룸에 있는 플레이어 id:%d\n", my_packet->id[i]);
 			}
 		}
@@ -269,12 +282,22 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(my_packet->id);
 		if (!pObject)
 		{	// 해당 id가 존재하지 않으면
-			pObjectManager->Insert(my_packet->id, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
+			pObjectManager->Insert(my_packet->id, eResourceType::User, XMVectorZero(), XMVectorZero(), true);
+			for (unsigned int id = 0; id < 4; ++id)
+			{
+				if (-1 == partyIDs[id])
+				{
+					partyIDs[id] = my_packet->id;
+					++partyNum;
+					break;
+				}
+			}
 		}
 		else
 		{ //  해당 id가 존재하면
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(0, 0, 0));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, 0, 0));
+			XMFLOAT3 zero(0, 0, 0);
+			pObject->SetPositionAbsolute(XMLoadFloat3(&zero));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&zero));
 		}
 		printf("플레이어id:%d님이 방에 오셨습니다\n", my_packet->id);
 		pObject = nullptr;
@@ -297,8 +320,11 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
 		if (pObject)
 		{
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->direction, 0));
+			XMFLOAT3 position(my_packet->x, 0, my_packet->z);
+			XMFLOAT3 direction(0, my_packet->direction, 0);
+
+			pObject->SetPositionAbsolute(XMLoadFloat3(&position));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&direction));
 			if (my_packet->isMoving)
 				pObject->PlayAnimation(CObject::eAnimationType::Move);
 			else
@@ -345,8 +371,11 @@ void ProcessPacket(char *ptr) {
 		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
 		if (pObject)
 		{
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(my_packet->x, 0, my_packet->z));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0, my_packet->direction, 0));
+			XMFLOAT3 position(my_packet->x, 0, my_packet->z);
+			XMFLOAT3 direction(0, my_packet->direction, 0);
+
+			pObject->SetPositionAbsolute(XMLoadFloat3(&position));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&direction));
 			if (my_packet->isMoving)
 				pObject->PlayAnimation(CObject::eAnimationType::Move);
 			else
@@ -354,6 +383,37 @@ void ProcessPacket(char *ptr) {
 		}
 		pObject = nullptr;
 	} break;
+	case SC_BOSS_ATTACK:
+	{
+		player_attack *my_packet = reinterpret_cast<player_attack *>(ptr);
+
+		//cout << "receive attack packet : " << my_packet->id << ", " << static_cast<UINT>(my_packet->attack_type) << endl;
+
+		pObject = pObjectManager->FindObject(static_cast<UINT>(my_packet->id));
+		if (pObject)
+		{
+			switch (my_packet->attack_type)
+			{
+			case BOSS_NORMAL_ATTACK:
+				pObject->PlayAnimation(CObject::eAnimationType::Attack);
+				break;
+			case BOSS_SKILL1:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill1);
+				break;
+			case BOSS_SKILL2:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill2);
+				break;
+			case BOSS_SKILL3:
+				pObject->PlayAnimation(CObject::eAnimationType::Skill3);
+				break;
+			}
+		}
+		pObject = nullptr;
+	} break;
+	case BOSS_DEAD:
+	{
+		cout << "보스 사망" << endl;
+	}
 	case STATUS_CHANGE:
 	{
 		status_change *my_packet = reinterpret_cast<status_change *>(ptr);
@@ -380,21 +440,25 @@ void ProcessPacket(char *ptr) {
 		player_status = static_cast<BYTE>(ePlayer_State::eFight);
 		CSceneManager::GetSingleton()->Change(CSceneManager::eSceneType::FIRST);
 
-		pObjectManager->Insert((UINT)myID, eResourceType::User, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), true);
+		monsterID = my_packet->bossid;
+		pObjectManager->Insert((UINT)myID, eResourceType::User, XMVectorZero(), XMVectorZero(), true);
 
 		printf("보스 ID:%d\n", my_packet->bossid);
 
 		pObject = pObjectManager->FindObject(my_packet->bossid);
 		if (pObject)
 		{	// if boss already exists
-			pObject->SetPositionAbsolute(&D3DXVECTOR3(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz)));
-			pObject->SetDirectionAbsolute(&D3DXVECTOR3(0.0f, static_cast<float>(my_packet->bossdis), 0.0f));
+			XMFLOAT3 position(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz));
+			XMFLOAT3 direction(0.0f, static_cast<float>(my_packet->bossdis), 0.0f);
+
+			pObject->SetPositionAbsolute(XMLoadFloat3(&position));
+			pObject->SetDirectionAbsolute(XMLoadFloat3(&direction));
 		}
 		else
 		{	// if boss doesn't exist
-			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, 
-				D3DXVECTOR3(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz)), 
-				D3DXVECTOR3(0.0f, static_cast<float>(my_packet->bossdis), 0.0f), true);
+			XMFLOAT3 pos(static_cast<float>(my_packet->bossx), 0.0f, static_cast<float>(my_packet->bossz));
+			XMFLOAT3 dir(0.0f, static_cast<float>(my_packet->bossdis), 0.0f);
+			pObjectManager->Insert(my_packet->bossid, eResourceType::Monster1, XMLoadFloat3(&pos), XMLoadFloat3(&dir), true);
 		}
 		pObject = nullptr;
 	}break;
@@ -410,6 +474,15 @@ void ProcessPacket(char *ptr) {
 		if (pObjectManager->FindObject(my_packet->id))
 		{ //  해당 id가 존재하면
 			pObjectManager->DeleteObject(my_packet->id);
+			for (unsigned int id = 0; id < 4; ++id)
+			{
+				if (my_packet->id == partyIDs[id])
+				{
+					partyIDs[id] = -1;
+					--partyNum;
+					break;
+				}
+			}
 		}
 		printf("플레이어id:%d가 방을 떠났습니다\n", my_packet->id);
 		printf("현재 방장:%d\n", my_packet->room_master);
@@ -428,6 +501,15 @@ void ProcessPacket(char *ptr) {
 			if (pObjectManager->FindObject(my_packet->id[i]))
 			{ //  해당 id가 존재하면
 				pObjectManager->DeleteObject(my_packet->id[i]);
+				for (unsigned int id = 0; id < 4; ++id)
+				{
+					if (my_packet->id[i] == partyIDs[id])
+					{
+						partyIDs[id] = -1;
+						--partyNum;
+						break;
+					}
+				}
 			}
 		}
 		printf("게임을 끝납니다\n");

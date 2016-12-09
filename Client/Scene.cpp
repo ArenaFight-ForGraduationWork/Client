@@ -1,32 +1,30 @@
 #include "stdafx.h"
 #include "Scene.h"
-#include "ResourceManager.h"
-
-#include <SpriteBatch.h>
 #include <DDSTextureLoader.h>
-#include <SpriteFont.h>
 
 
 
 
+
+//
+//	Scene
+//
 CScene::CScene()
 {
 	m_pLight = new CLight();
-
-	m_OperationMode = MODE_KEYBOARD;
-
-	m_pCameraManager = nullptr;
 
 	m_ptOldCursorPos.x = 0;
 	m_ptOldCursorPos.y = 0;
 	m_ptNewCursorPos.x = 0;
 	m_ptNewCursorPos.y = 0;
 
+	m_pCameraManager = nullptr;
 	m_pObjectManager = CObjectManager::GetSingleton();
 
 	m_pSpriteBatch = nullptr;
-	m_pTexture = nullptr;
 	m_vTextures.clear();
+	m_pSpriteFont18 = nullptr;
+	m_pSpriteFont14 = nullptr;
 }
 CScene::~CScene()
 {
@@ -42,7 +40,7 @@ void CScene::BuildObjects()
 
 	m_pLight->BuildLights();
 
- 	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new SpriteBatch(gpCommonState->GetDeviceContext()));
 }
 
 void CScene::ReleaseObjects()
@@ -50,13 +48,13 @@ void CScene::ReleaseObjects()
 	m_vShaders.clear();
 }
 
-void CScene::AnimateObjectsAndRender(float time)
+void CScene::AnimateObjectsAndRender()
 {
 	m_pLight->UpdateLights();
 
-	for (unsigned int i = 0; i < m_vShaders.size() - 1; ++i)
+	for (unsigned int i = 0; i < m_vShaders.size(); ++i)
 	{
-		m_vShaders[i]->AnimateObjectAndRender(time);
+		m_vShaders[i]->AnimateObjectAndRender();
 	}
 }
 
@@ -64,6 +62,9 @@ void CScene::AnimateObjectsAndRender(float time)
 
 
 
+//
+//	Intro Scene
+//
 CIntroScene::CIntroScene()
 {
 	m_bButton = 0;
@@ -84,20 +85,20 @@ void CIntroScene::ChangeState()
 	m_bButton = 0;
 }
 
-void CIntroScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (player_status)
 	{
 	case static_cast<BYTE>(ePlayer_State::eLOBBY) :
-		KeyboardMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_KeyboardMessageInLobby(hWnd, nMessageID, wParam, lParam);
 		break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
-		KeyboardMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_KeyboardMessageInRoom(hWnd, nMessageID, wParam, lParam);
 		break;
 	default: break;
 	}
 }
-void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -105,48 +106,7 @@ void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wPar
 	{
 		switch (wParam)
 		{
-		//case VK_RETURN:
-		//{
-		//	if (1==m_bButton)
-		//	{	// create room > insert room-name
-		//		if (m_pTempString->length() > 0)
-		//		{	// 입력이 뭔가 들어와있긴 함
-		//			m_vStrings.push_back(*m_pTempString);
-		//			m_pTempString = new string();
-		//			m_pTempString->clear();
-
-		//			m_bButton = 2;
-		//		}
-		//	}
-		//	else if (2==m_bButton)
-		//	{	// create room > insert stage-number
-		//		if (m_pTempString->length() > 0)
-		//		{
-		//			m_vStrings.push_back(*m_pTempString);
-		//			m_pTempString = new string();
-		//			m_pTempString->clear();
-
-		//			create_room* pp = reinterpret_cast<create_room*>(send_buffer);
-		//			pp->type = CREATE_ROOM;
-		//			pp->id = myID;
-		//			//gets_s(pp->room_name);
-		//			//gets_s(pp->room_name);
-		//			//printf("입력한방이름:%s\n", pp->room_name);
-		//			strcpy_s(pp->room_name, sizeof(pp->room_name), m_vStrings[0].c_str());
-		//			//printf("플레이할 스테이지를 입력해주세요\n");
-		//			//scanf("%hhd", &pp->stage);
-		//			//printf("입력한스테이지:%d\n", pp->stage);
-		//			pp->stage = static_cast<BYTE>(atoi(m_vStrings[1].c_str()));
-		//			pp->size = sizeof(*pp);
-		//			printf("전송하는사이즈:%d\n", pp->size);
-		//			if (SOCKET_ERROR == send(sock, (char*)pp, sizeof(*pp), 0))
-		//				printf("send ERROR\n");
-
-		//			Sleep(100);
-		//		}
-		//	}
-		//}break;
-		// case0x30~case0x39: 0~9, case0x41~case0x5A: A~Z
+			// case0x30~case0x39: 0~9, case0x41~case0x5A: A~Z
 		case 0x30:case 0x31:case 0x32:case 0x33:case 0x34:case 0x35:case 0x36:case 0x37:case 0x38:case 0x39:
 		{
 			char temp[2] = { static_cast<char>(wParam) };
@@ -167,24 +127,24 @@ void CIntroScene::KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wPar
 	default:break;
 	}
 }
-void CIntroScene::KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 }
 
-void CIntroScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
-{ 
+void CIntroScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
 	switch (player_status)
 	{
 	case static_cast<BYTE>(ePlayer_State::eLOBBY) :
-		MouseMessageInLobby(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_MouseMessageInLobby(hWnd, nMessageID, wParam, lParam);
 		break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
-		MouseMessageInRoom(hWnd, nMessageID, wParam, lParam, fTimeElapsed);
+		_MouseMessageInRoom(hWnd, nMessageID, wParam, lParam);
 		break;
 	default: break;
 	}
 }
-void CIntroScene::MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	if (WM_LBUTTONUP == nMessageID)
 	{
@@ -293,7 +253,7 @@ void CIntroScene::MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam,
 		}
 	}
 }
-void CIntroScene::MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CIntroScene::_MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	if (WM_LBUTTONUP == nMessageID)
 	{
@@ -312,7 +272,7 @@ void CIntroScene::MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, 
 		}
 	}
 }
-bool CIntroScene::_CheckDestination(POINT * pMousePos, const RECT* pDestination)
+bool CIntroScene::_CheckDestination(POINT *pMousePos, const RECT *pDestination)
 {
 	if (pMousePos->x >= pDestination->left)
 	{
@@ -335,41 +295,45 @@ void CIntroScene::BuildObjects()
 {
 	CScene::BuildObjects();
 
-	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
+	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->GetDeviceContext()));
 	m_vTextures.clear();
 	ID3D11ShaderResourceView *pTexture;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/frame.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/button1.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton1.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/button2.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton2.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/InputWindow.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/InputWindow.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/button3.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton3.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/background.dds", nullptr, &pTexture);
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/background.dds", nullptr, &pTexture);
 	m_vTextures.push_back(pTexture);
 	pTexture = nullptr;
 
-	m_pSpriteFont.reset(new DirectX::SpriteFont(gpCommonState->m_pd3dDevice, L"./Data/Font/Arial18.spritefont"));
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/rbutton4.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	m_pSpriteFont18.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
 }
 
-void CIntroScene::AnimateObjectsAndRender(float time)
+void CIntroScene::AnimateObjectsAndRender()
 {
 	// 3D
-	CScene::AnimateObjectsAndRender(time);
+	CScene::AnimateObjectsAndRender();
 
 	// 2D
 	gpCommonState->TurnZBufferOff();
@@ -384,8 +348,6 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 		m_pSpriteBatch->Draw(m_vTextures[1], rButton1pos);
 		m_pSpriteBatch->Draw(m_vTextures[2], rButton2pos);
 
-		m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Create Room", DirectX::XMFLOAT2(rButton1pos.left, rButton1pos.top));
-
 		switch (m_bButton)
 		{
 		case 1:
@@ -393,35 +355,37 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name", DirectX::XMFLOAT2(rInputWindowPos.left + 10, rInputWindowPos.top + 10));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
+				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
-
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		case 2:
 		{
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Stage Number (1 ~ 3)", DirectX::XMFLOAT2(rInputWindowPos.left + 10, rInputWindowPos.top + 10));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), L"Input Stage Number (1 ~ 3)",
+				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		case 3:
 		{
 			m_pSpriteBatch->Draw(m_vTextures[3], rInputWindowPos);
 			m_pSpriteBatch->Draw(m_vTextures[4], rInputWindowButtonPos);
 
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), L"Input Room Name", DirectX::XMFLOAT2(rInputWindowPos.left + 10, rInputWindowPos.top + 10));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), L"Input Room Name",
+				XMFLOAT2(static_cast<float>(rInputWindowPos.left) + 10, static_cast<float>(rInputWindowPos.top) + 10));
 			wstring wstr = wstring(m_pTempString->begin(), m_pTempString->end());
-			m_pSpriteFont->DrawString(m_pSpriteBatch.get(), wstr.c_str(), DirectX::XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
+			m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(FRAME_BUFFER_WIDTH / 4 + 50, FRAME_BUFFER_HEIGHT / 2 - 20));
 		}break;
 		default:break;
 		}
 	}break;
 	case static_cast<BYTE>(ePlayer_State::eROOM) :
 	{
-		m_pSpriteBatch->Draw(m_vTextures[1], rButton2pos);
+		m_pSpriteBatch->Draw(m_vTextures[6], rButton2pos);
 	}break;
 	default: break;
 	}
@@ -434,25 +398,26 @@ void CIntroScene::AnimateObjectsAndRender(float time)
 
 
 
-
-
-
-
-
-
-
+//
+//	First Scene
+//
 CFirstScene::CFirstScene()
 {
 	m_dwDirectionPrev = 0;
 	m_dwDirectionNow = 0;
 
 	m_pFog = nullptr;
+
+	// Particle
+	for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+		m_vParticles.push_back(new CParticle());
+	FinishInitializing = false;
 }
 CFirstScene::~CFirstScene()
 {
 }
 
-void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -463,20 +428,13 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 		switch (wParam)
 		{
 		case VK_F1:
-			m_OperationMode = MODE_MOUSE;
+			m_pFog->Expand(0, 0, 0);
 			break;
 		case VK_F2:
-			m_OperationMode = MODE_KEYBOARD;
-			break;
-
-		case VK_F3:
-			m_pFog->Expand(&D3DXVECTOR3(0, 0, 0));
-			break;
-		case VK_F4:
 			m_pFog->Contract();
 			break;
 
-		case VK_SPACE :
+		case VK_SPACE:
 		{
 			CObject *pPlayer = m_pObjectManager->FindObject(myID);
 			if (pPlayer)
@@ -574,43 +532,34 @@ void CFirstScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM
 	default:break;
 	}
 }
-void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed)
+void CFirstScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	switch (m_OperationMode)
-	{
-	case MODE_MOUSE:
-	{
-		switch (nMessageID)
-		{
-		case WM_MOUSEMOVE:
-			m_ptOldCursorPos.x = m_ptNewCursorPos.x;
-			m_ptOldCursorPos.y = m_ptNewCursorPos.y;
-			m_ptNewCursorPos.x = LOWORD(lParam);
-			m_ptNewCursorPos.y = HIWORD(lParam);
+	//switch (nMessageID)
+	//{
+	//case WM_MOUSEMOVE:
+	//	m_ptOldCursorPos.x = m_ptNewCursorPos.x;
+	//	m_ptOldCursorPos.y = m_ptNewCursorPos.y;
+	//	m_ptNewCursorPos.x = LOWORD(lParam);
+	//	m_ptNewCursorPos.y = HIWORD(lParam);
 
-			if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
-				m_pCameraManager->GetNowCamera()->RotatebyYaw(-350 * fTimeElapsed);
-			else
-				m_pCameraManager->GetNowCamera()->RotatebyYaw(350 * fTimeElapsed);
-			break;
-		case WM_MOUSEWHEEL:
-			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-				m_pCameraManager->GetNowCamera()->Zoom(200 * fTimeElapsed);
-			else
-				m_pCameraManager->GetNowCamera()->Zoom(-200 * fTimeElapsed);
-			break;
-		default: break;
-		}
-	}	break;
-	case MODE_KEYBOARD:
-	{
-	}	break;
-	default: break;
-	}
+	//	if (m_ptNewCursorPos.x > m_ptOldCursorPos.x)
+	//		m_pCameraManager->GetNowCamera()->RotatebyYaw(-350 * fTimeElapsed);
+	//	else
+	//		m_pCameraManager->GetNowCamera()->RotatebyYaw(350 * fTimeElapsed);
+	//	break;
+	//case WM_MOUSEWHEEL:
+	//	if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
+	//		m_pCameraManager->GetNowCamera()->Zoom(200 * fTimeElapsed);
+	//	else
+	//		m_pCameraManager->GetNowCamera()->Zoom(-200 * fTimeElapsed);
+	//	break;
+	//default: break;
+	//}
 }
-void CFirstScene::ProcessInput(float fTimeElapsed)
+void CFirstScene::ProcessInput()
 {
 	CObject *pPlayer = m_pObjectManager->FindObject(myID);
+	float fTime = gpCommonState->GetTimer()->GetTimeElapsed();
 
 	if (pPlayer)
 	{
@@ -622,39 +571,49 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 			if ((CObject::eAnimationType::Idle == pPlayer->GetNowAnimation()) | (CObject::eAnimationType::Move == pPlayer->GetNowAnimation()))
 			{
 				// 1) 카메라가 바라보는 방향 + 입력받은 방향 = fAngle를 Yaw값으로 회전
-				D3DXVECTOR2 inputAngle(0, 0);
+				XMFLOAT2 f2InputAngle = XMFLOAT2(0, 0);
+				XMVECTOR vInputAngle;
+
 				if (m_pKeyBuffer[VK_UP] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_FORWARD;
-					inputAngle.y += 1;
+					f2InputAngle.y += 1;
 				}
 				if (m_pKeyBuffer[VK_DOWN] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_BACKWARD;
-					inputAngle.y -= 1;
+					f2InputAngle.y -= 1;
 				}
 				if (m_pKeyBuffer[VK_LEFT] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_LEFT;
-					inputAngle.x += 1;
+					f2InputAngle.x += 1;
 				}
 				if (m_pKeyBuffer[VK_RIGHT] & 0xF0)
 				{
 					m_dwDirectionNow |= DIR_RIGHT;
-					inputAngle.x -= 1;
+					f2InputAngle.x -= 1;
 				}
 
-				if (D3DXVECTOR2(0, 0) != inputAngle) // inputAngle==(0,0)이면 어느 방향으로든 움직이지 않는다 => 이동 계산X
+				vInputAngle = XMLoadFloat2(&f2InputAngle);
+				if (!XMVector2Equal(vInputAngle, XMVectorZero()))
 				{
-					D3DXVECTOR2 defaultAngle(0, 1);	// X, Z
-					float fAngle = acosf(D3DXVec2Dot(&defaultAngle, &inputAngle) / (D3DXVec2Length(&defaultAngle) * D3DXVec2Length(&inputAngle)));
-					fAngle = static_cast<float>(D3DXToDegree(fAngle));
-					fAngle = ((defaultAngle.x* inputAngle.y - defaultAngle.y*inputAngle.x) > 0.0f) ? fAngle : -fAngle;
+					XMFLOAT2 f2DefaultAngle = XMFLOAT2(0, 1);	// X, Z
+					XMVECTOR vDefaultAngle;
+					vDefaultAngle = XMLoadFloat2(&f2DefaultAngle);
 
-					pPlayer->SetDirectionAbsolute(&D3DXVECTOR3(0, m_pCameraManager->GetNowCamera()->GetYaw() + fAngle, 0));
+					float dotDI = XMVectorGetX(XMVector2Dot(vDefaultAngle, vInputAngle));
+					float lengthD = XMVectorGetX(XMVector2Length(vDefaultAngle));
+					float lengthI = XMVectorGetX(XMVector2Length(vInputAngle));
+					float fAngle = acosf(dotDI / (lengthD * lengthI));
+					fAngle = XMConvertToDegrees(fAngle);
+					fAngle = (((XMVectorGetX(vDefaultAngle) * XMVectorGetY(vInputAngle)) - (XMVectorGetY(vDefaultAngle) * XMVectorGetX(vInputAngle))) > 0.0f) ? fAngle : -fAngle;
+
+					XMFLOAT3 cameraAngle(0, m_pCameraManager->GetNowCamera()->GetYaw() + fAngle, 0);
+					pPlayer->SetDirectionAbsolute(XMLoadFloat3(&cameraAngle));
 
 					// 2) 로컬 z축으로 속도 * 시간만큼 이동
-					pPlayer->MoveForward(fTimeElapsed);
+					pPlayer->MoveForward(fTime);
 					pPlayer->PlayAnimation(CObject::eAnimationType::Move);
 
 					if (m_dwDirectionNow)
@@ -699,30 +658,42 @@ void CFirstScene::ProcessInput(float fTimeElapsed)
 		}
 
 		// 카메라 좌우회전
-		if (m_pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTimeElapsed);	// Q
-		if (m_pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTimeElapsed);	// E
+		if (m_pKeyBuffer[0x51] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(100 * fTime);	// Q
+		if (m_pKeyBuffer[0x45] & 0xF0) m_pCameraManager->GetNowCamera()->RotatebyYaw(-100 * fTime);	// E
 		// 카메라 줌
-		if (m_pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTimeElapsed);			// Z
-		if (m_pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTimeElapsed);			// X
+		if (m_pKeyBuffer[0x5A] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(-100 * fTime);		// Z
+		if (m_pKeyBuffer[0x58] & 0xF0) m_pCameraManager->GetNowCamera()->Zoom(100 * fTime);			// X
 	}
 
 	if (pPlayer)
-		m_pCameraManager->GetNowCamera()->Update(pPlayer->GetPosition());
+	{
+		XMVECTOR position = XMLoadFloat3(pPlayer->GetPosition());
+		m_pCameraManager->GetNowCamera()->Update(position);
+	}
 	else
-		m_pCameraManager->GetNowCamera()->Update(new D3DXVECTOR3(0, 0, 0));
+	{
+		XMFLOAT3 position = XMFLOAT3(0, 0, 0);
+		m_pCameraManager->GetNowCamera()->Update(XMLoadFloat3(&position));
+	}
 }
 
 void CFirstScene::BuildObjects()
 {
 	CScene::BuildObjects();
 
-	gpCommonState->m_pd3dDevice->GetImmediateContext(&gpCommonState->m_pd3dDeviceContext);
-
 	m_pCameraManager = CCameraManager::GetSingleton();
 	if (m_pObjectManager->FindObject(myID))
-		m_pCameraManager->GetNowCamera()->SetLookAt(m_pObjectManager->FindObject(myID)->GetPosition());
+	{
+		XMVECTOR vPos;
+		vPos = XMLoadFloat3(m_pObjectManager->FindObject(myID)->GetPosition());
+
+		m_pCameraManager->GetNowCamera()->SetLookAt(vPos);
+	}
 	else
-		m_pCameraManager->GetNowCamera()->SetLookAt(new D3DXVECTOR3(0, 0, 0));
+	{
+		XMFLOAT3 lookAt = XMFLOAT3(0, 0, 0);
+		m_pCameraManager->GetNowCamera()->SetLookAt(XMLoadFloat3(&lookAt));
+	}
 
 	///* 아이템 설정 */
 	//for (int i = 0; i < 10; ++i)
@@ -733,70 +704,270 @@ void CFirstScene::BuildObjects()
 
 	/* 맵 꾸미기 */
 	{
+		XMFLOAT3 f3VectorPos, f3VectorDir;
+
 		// 바닥
-		m_pObjectManager->Insert(3000, eResourceType::Floor, D3DXVECTOR3(0, 0, 0));
+		m_pObjectManager->Insert(3000, eResourceType::Floor, XMVectorZero(), XMVectorZero());
 
 		// 벽. 한 면에 두개씩 들어간다
-		D3DXVECTOR3 WallPos[8];
-		WallPos[0] = D3DXVECTOR3(-1250, 500, 2500);
-		WallPos[1] = D3DXVECTOR3(1250, 500, 2500);
-		WallPos[2] = D3DXVECTOR3(-1250, 500, -2500);
-		WallPos[3] = D3DXVECTOR3(1250, 500, -2500);
-
-		WallPos[4] = D3DXVECTOR3(2500, 500, 1250);
-		WallPos[5] = D3DXVECTOR3(2500, 500, -1250);
-		WallPos[6] = D3DXVECTOR3(-2500, 500, 1250);
-		WallPos[7] = D3DXVECTOR3(-2500, 500, -1250);
+		XMFLOAT3 WallPos[8];
+		XMFLOAT3 f3WallDir;
+		WallPos[0] = XMFLOAT3(-1250, 500, 2500);
+		WallPos[1] = XMFLOAT3(1250, 500, 2500);
+		WallPos[2] = XMFLOAT3(-1250, 500, -2500);
+		WallPos[3] = XMFLOAT3(1250, 500, -2500);
+		WallPos[4] = XMFLOAT3(2500, 500, 1250);
+		WallPos[5] = XMFLOAT3(2500, 500, -1250);
+		WallPos[6] = XMFLOAT3(-2500, 500, 1250);
+		WallPos[7] = XMFLOAT3(-2500, 500, -1250);
 		for (int i = 0; i < 8; ++i)
 		{
 			if (i < 4)
-				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, WallPos[i]);	// ㅡ
+			{
+				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, XMLoadFloat3(&WallPos[i]), XMVectorZero());	// ㅡ
+			}
 			else
-				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, WallPos[i], D3DXVECTOR3(0, 90, 0));  // ㅣ
+			{
+				f3WallDir = XMFLOAT3(0, 90, 0);
+				m_pObjectManager->Insert(4000 + i, eResourceType::Wall1, XMLoadFloat3(&WallPos[i]), XMLoadFloat3(&f3WallDir));  // ㅣ
+			}
 		}
 
 		// 나무
-		m_pObjectManager->Insert(4010, eResourceType::Tree, D3DXVECTOR3(-2000, 0, 1900), D3DXVECTOR3(0, 90, 0));
-		m_pObjectManager->Insert(4011, eResourceType::Tree, D3DXVECTOR3(-1800, 0, -1900));
-		m_pObjectManager->Insert(4012, eResourceType::Tree, D3DXVECTOR3(2200, 0, 1900), D3DXVECTOR3(0, 60, 0));
-		m_pObjectManager->Insert(4013, eResourceType::Tree, D3DXVECTOR3(2100, 0, -1900));
+		f3VectorPos = XMFLOAT3(-2000, 0, 1900); f3VectorDir = XMFLOAT3(0, 90, 0);
+		m_pObjectManager->Insert(4010, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		f3VectorPos = XMFLOAT3(-1800, 0, -1900); f3VectorDir = XMFLOAT3(0, 0, 0);
+		m_pObjectManager->Insert(4011, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		f3VectorPos = XMFLOAT3(2200, 0, 1900); f3VectorDir = XMFLOAT3(0, 60, 0);
+		m_pObjectManager->Insert(4012, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		f3VectorPos = XMFLOAT3(2100, 0, -1900); f3VectorDir = XMFLOAT3(0, 0, 0);
+		m_pObjectManager->Insert(4013, eResourceType::Tree, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
 
-		for (short i = 0; i < 20; ++i)
-			m_pObjectManager->Insert(4020 + i, eResourceType::grass, D3DXVECTOR3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000)));
+		m_pObjectManager->Insert(4020, eResourceType::grass, XMVectorZero(), XMVectorZero());
+
+
+		//for (short i = 0; i < 20; ++i)
+		//{
+		//	f3VectorPos = XMFLOAT3(static_cast<float>(rand() % 2000 - 1000), 0, static_cast<float>(rand() % 2000 - 1000));
+		//	f3VectorDir = XMFLOAT3(0, 0, 0);
+		//	m_pObjectManager->Insert(4020 + i, eResourceType::grass, XMLoadFloat3(&f3VectorPos), XMLoadFloat3(&f3VectorDir));
+		//}
 	}
 
 	m_pFog = new CFog();
 	m_pFog->Initialize();
 
-	m_pSpriteBatch.reset(new DirectX::SpriteBatch(gpCommonState->m_pd3dDeviceContext));
-	DirectX::CreateDDSTextureFromFile(gpCommonState->m_pd3dDevice, L"./Data/UI/frame.dds", nullptr, &m_pTexture);
+	m_pSpriteBatch.reset(new  SpriteBatch(gpCommonState->GetDeviceContext()));
+	m_vTextures.clear();
+	ID3D11ShaderResourceView *pTexture;
+
+	// 0: frame
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/frame.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 1: my hp
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 2: monster hp
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/monsterHP.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 3: my hp background
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 4: monster hp background
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 5-8: party hp background
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/HPbackground.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	// 9-12: party hp
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), L"./Data/UI/hp.dds", nullptr, &pTexture);
+	m_vTextures.push_back(pTexture);
+	pTexture = nullptr;
+
+	m_pSpriteFont18.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial18.spritefont"));
+	m_pSpriteFont14.reset(new  SpriteFont(gpCommonState->GetDevice(), L"./Data/Font/Arial14.spritefont"));
+
+	//m_FireParticle->Initialize("Fire.fxo", L"Data/Effect/flare0.dds", 10000);
+	for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+	{
+		m_vParticles[i]->Initialize("FX/Fire.fxo", L"Data/Effect/SpectacularBurst3.dds", 5);
+		//m_vParticles[i]->SetEmitDir( default == (0,1,0) );
+	}
+	XMFLOAT3 f3Position;
+	XMVECTOR vPosition;
+	// forward
+	f3Position = XMFLOAT3(-400, 0, -2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[0]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(400, 0, -2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[1]->SetEmitPos(vPosition);
+	// left
+	f3Position = XMFLOAT3(-2000, 0, -400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[2]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(-2000, 0, 400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[3]->SetEmitPos(vPosition);
+	// backward
+	f3Position = XMFLOAT3(-400, 0, 2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[4]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(400, 0, 2000);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[5]->SetEmitPos(vPosition);
+	// right
+	f3Position = XMFLOAT3(2000, 0, -400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[6]->SetEmitPos(vPosition);
+	f3Position = XMFLOAT3(2000, 0, 400);	vPosition = XMLoadFloat3(&f3Position);
+	m_vParticles[7]->SetEmitPos(vPosition);
+
+	FinishInitializing = true;
 }
 
-void CFirstScene::AnimateObjectsAndRender(float time)
+void CFirstScene::AnimateObjectsAndRender()
 {
-	// 3D
-	if (m_pFog->IsInUse())
-		m_pFog->Update();
+	if (FinishInitializing)
+	{
+		// 3D
+		{
+			//if (m_pFog->IsInUse())
+			//	m_pFog->Update();
 
-	CScene::AnimateObjectsAndRender(time);
+			CScene::AnimateObjectsAndRender();
+		}
 
-	// 2D
-	gpCommonState->TurnZBufferOff();
-	m_pSpriteBatch->Begin();
+		// particle
+		{
+			gpCommonState->EnableAlphaBlending();
+			RenderParticle();
+			gpCommonState->DisableAlphaBlending();
+		}
 
-	RECT a;
-	a.left = 0;	a.top = 0;	a.right = FRAME_BUFFER_WIDTH;	a.bottom = FRAME_BUFFER_HEIGHT - 20;
-	m_pSpriteBatch->Draw(m_pTexture, a);
+		// 2D
+		{
+			gpCommonState->TurnZBufferOff();
+			m_pSpriteBatch->Begin();
+			{
+				CObject *pObject;
 
-	m_pSpriteBatch->End();
-	gpCommonState->TurnZBufferOn();
+				// 0: frame
+				m_pSpriteBatch->Draw(m_vTextures[0], rFramePos);
+				// 1: my hp, 3: my hp background
+				pObject = m_pObjectManager->FindObject(myID);
+				if (pObject)
+				{
+					m_pSpriteBatch->Draw(m_vTextures[3], rMyHpBarBackground);
+					// default health = 100
+					LONG healthLength = static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * FRAME_BUFFER_WIDTH * 3 / 800;
+					rHpPos.right = rHpPos.left + healthLength;
+					m_pSpriteBatch->Draw(m_vTextures[1], rHpPos);
+					wstring wstr = L"Hp: ";	// Hp: 
+					wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Hp : n
+					wstr.append(L" / 100");	// n / 100
+					m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(static_cast<float>(rHpPos.left), static_cast<float>(rHpPos.top)));
+				}
+				// 2: monster hp, 4: monster hp background
+				pObject = m_pObjectManager->FindObject(monsterID);
+				if (pObject)
+				{
+					m_pSpriteBatch->Draw(m_vTextures[4], rMonsterHpBarBackground);
+					// default health = 100
+					LONG healthLength = static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * FRAME_BUFFER_WIDTH / 200;
+					rMonsterHpPos.right = rMonsterHpPos.left + healthLength;
+					m_pSpriteBatch->Draw(m_vTextures[2], rMonsterHpPos);
+					wstring wstr = L"Monster Hp: ";	// Monster Hp: 
+					wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// Monster Hp: n
+					wstr.append(L" / 100");	// Monster Hp: n / 100
+					m_pSpriteFont18->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(static_cast<float>(rMonsterHpPos.left), static_cast<float>(rMonsterHpPos.top)));
+				}
+				// 5-8: party hp background, 9-12: party hp
+				for (unsigned int party = 0; party < partyNum; ++party)
+				{
+					pObject = m_pObjectManager->FindObject(partyIDs[party]);
+					if (pObject)
+					{
+						m_pSpriteBatch->Draw(m_vTextures[5 + party], rPartyBackground[party]);
+						LONG healthLength = static_cast<LONG>(pObject->GetComponent()->GetHealthPoint()) * FRAME_BUFFER_WIDTH / 800;
+						rPartyHp[party].right = rPartyHp[party].left + healthLength;
+						m_pSpriteBatch->Draw(m_vTextures[9 + party], rPartyHp[party]);
+
+						wstring wstr = L"ID: ";	// [ID: ]
+						wstr.append(to_wstring(partyIDs[party]));	// [ID: id]
+						wstr.append(L", ");	// [ID: id, ]
+						wstr.append(to_wstring(static_cast<int>(pObject->GetComponent()->GetHealthPoint())));	// [ID: id, hp]
+						wstr.append(L" / 100");	// [ID: id, hp / 100]
+						m_pSpriteFont14->DrawString(m_pSpriteBatch.get(), wstr.c_str(), XMFLOAT2(static_cast<float>(rPartyHp[party].left), static_cast<float>(rPartyHp[party].top)));
+					}
+				}
+			}
+			m_pSpriteBatch->End();
+			gpCommonState->TurnZBufferOn();
+		}
+	}
+}
+
+void CFirstScene::RenderParticle()
+{
+	FireParticleTime += 2.0f;
+	if (FireParticleTime <= 200.0f)
+	{
+		XMVECTOR vEyePosition;
+		if (m_pCameraManager->GetNowCamera())
+			vEyePosition = XMLoadFloat3(m_pCameraManager->GetNowCamera()->GetPosition());
+		else
+			vEyePosition = XMVectorZero();
+		XMMATRIX V = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetViewMatrix());
+		XMMATRIX P = XMLoadFloat4x4(m_pCameraManager->GetNowCamera()->GetProjectionMatrix());
+
+		for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+		{
+			m_vParticles[i]->Update(gpCommonState->GetTimer()->GetTimeElapsed(), gpCommonState->GetTimer()->GetTimeElapsed());
+			m_vParticles[i]->SetEyePos(vEyePosition);
+			m_vParticles[i]->Draw(V, P);
+		}
+	}
+	else
+	{
+		FireParticleTime = 0.0f;
+		for (unsigned int i = 0; i < m_uiParticleNum; ++i)
+		{
+			m_vParticles[i]->Reset();
+		}
+	}
 }
 
 
 
 
 
-
+//
+//	Scene Manager
+//
 CSceneManager::CSceneManager()
 {
 	m_eNow = eSceneType::FIRST;
@@ -822,7 +993,6 @@ void CSceneManager::Destroy()
 
 void CSceneManager::Change(eSceneType eType)
 {
-	//m_mScenes[m_eNow]->Destroy();
 	m_eNow = eType;
 	m_mScenes[m_eNow]->BuildObjects();
 }

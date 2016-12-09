@@ -1,12 +1,16 @@
-#ifndef MESH_H_
-#define MESH_H_
+#pragma once
 
 #include "Vertex.h"
+#include <DirectXMath.h>
+using namespace DirectX;
 
 
 
 
 
+//
+//	Mesh ( base class )
+//
 class CMesh
 {
 public:
@@ -16,17 +20,17 @@ public:
 	void AddRef();
 	void Release();
 
-	virtual void CreateRasterizerState();
+	virtual void CreateRasterizerState() {}
 	virtual void Render();
 
-	DirectX::XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
+	XMFLOAT4X4*** GetResultMatrix() { return m_ppResult; }
 	int* GetAniMaxTime() { return m_iAnimationMaxTime; }
 	unsigned int GetAnimationIndexCnt() { return m_uiAnimationIndexCnt; }
 
-	void SetMaxVer(D3DXVECTOR3 *max) { m_pMaxVer = max; }
-	void SetMinVer(D3DXVECTOR3 *min) { m_pMinVer = min; }
-	D3DXVECTOR3& GetMaxVer() { return *m_pMaxVer; }
-	D3DXVECTOR3& GetMinVer() { return *m_pMinVer; }
+	void SetMaxVer(CXMVECTOR max) { XMStoreFloat3(m_pf3MaxVer, max); }
+	void SetMinVer(CXMVECTOR min) { XMStoreFloat3(m_pf3MinVer, min); }
+	XMFLOAT3* GetMaxVer() { return m_pf3MaxVer; }
+	XMFLOAT3* GetMinVer() { return m_pf3MinVer; }
 
 protected:
 	ID3D11Buffer *m_pd3dVertexBuffer;	/* 정점 버퍼 인터페이스 포인터. 정점 데이터 저장용 */
@@ -42,10 +46,10 @@ protected:
 
 	ID3D11RasterizerState *m_pd3dRasterizerState;
 
-	D3DXVECTOR3 *m_pMaxVer;
-	D3DXVECTOR3 *m_pMinVer;
+	XMFLOAT3 *m_pf3MaxVer;
+	XMFLOAT3 *m_pf3MinVer;
 
-	DirectX::XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
+	XMFLOAT4X4** m_ppResult[ANIMATION_COUNT];
 	int m_iAnimationMaxTime[ANIMATION_COUNT];
 	unsigned int m_uiAnimationIndexCnt;
 
@@ -55,25 +59,36 @@ private:
 
 
 
-class CCubeMeshIlluminatedTextured : public CMesh
+
+
+//
+//	Cube Mesh
+//
+class CCubeMesh : public CMesh
 {
 public:
-	CCubeMeshIlluminatedTextured(float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
-	virtual ~CCubeMeshIlluminatedTextured();
+	CCubeMesh(float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+	virtual ~CCubeMesh();
 
 	virtual void SetRasterizerState();
 	virtual void Render();
 
 private:
-	D3DXVECTOR3 CalculateTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
-	void SetTriAngleListVertexNormal(BYTE *pVertices);	/* 정점의 법선 벡터 계산. 인덱스 버퍼를 쓰지 않는 삼각형 리스트용 */
-	void SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);	/* 정점의 법선벡터의 평균 계산. 인덱스 버퍼를 사용할 경우 */
-	void CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
+	// for _CalculateVertexNormal()
+	void _SetTriAngleListVertexNormal(BYTE *pVertices);	/* 정점의 법선 벡터 계산. 인덱스 버퍼를 쓰지 않는 삼각형 리스트용 */
+	void _SetAverageVertexNormal(BYTE *pVertices, WORD *pIndices, int nPrimitives, int nOffset, bool bStrip);	/* 정점의 법선벡터의 평균 계산. 인덱스 버퍼를 사용할 경우 */
+	XMFLOAT3* _SetTriAngleNormal(BYTE *pVertices, USHORT nIndex0, USHORT nIndex1, USHORT nIndex2);	/* 삼각형의 법선 벡터 계산. 삼각형의 세 정점을 사용 */
+
+	void _CalculateVertexNormal(BYTE *pVertices, WORD *pIndices);
 };
 
 
 
 
+
+//
+//	Imported Mesh
+//
 class CImportedMesh : public CMesh
 {
 public:
@@ -81,7 +96,6 @@ public:
 	virtual ~CImportedMesh();
 
 	virtual void CreateRasterizerState();
-	virtual void Render();
 
 private:
 	CTexturedNormalVertex* ppVertices;
@@ -91,7 +105,9 @@ private:
 
 
 
-
+//
+//	Imported Animating Mesh
+//
 class CImportedAnimatingMesh : public CMesh
 {
 public:
@@ -99,13 +115,9 @@ public:
 	virtual ~CImportedAnimatingMesh();
 
 	virtual void CreateRasterizerState();
-	virtual void Render();
 
 private:
 	CAnimationVertex* ppVertices;
 };
 
 
-
-
-#endif

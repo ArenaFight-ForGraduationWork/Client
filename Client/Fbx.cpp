@@ -4,6 +4,10 @@
 
 
 
+
+//
+//	Fbx Importer
+//
 CFbx::CFbx()
 {
 	m_iSize = 0;
@@ -17,8 +21,8 @@ CFbx::CFbx()
 	m_uiAnimationNodeIndexCount = 0;
 	m_fAnimationPlayTime = 0.0f;
 
-	m_pMaxVer = new D3DXVECTOR3();
-	m_pMinVer = new D3DXVECTOR3();
+	m_pMaxVer = new XMFLOAT3(0, 0, 0);
+	m_pMinVer = new XMFLOAT3(0, 0, 0);
 
 	m_pAniIndexCount = nullptr;
 }
@@ -35,18 +39,18 @@ void CFbx::ReadTextFile_Mesh(char *fileName, CTexturedNormalVertex* &v)
 
 	v = new CTexturedNormalVertex[m_iSize];
 
-	D3DXVECTOR3 outTemp;
+	XMFLOAT3 outTemp;
 	for (int i = 0; i < m_iSize; ++i)
 	{
 		//정점데이터 얻어오기
 		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
-		v[i].SetPosition(D3DXVECTOR3(outTemp.x, outTemp.z, -outTemp.y));
+		v[i].SetPosition(outTemp.x, outTemp.z, -outTemp.y);
 
 		fscanf_s(fp, "%f %f %f\n", &outTemp.x, &outTemp.y, &outTemp.z);
-		v[i].SetNormal(D3DXVECTOR3(outTemp.x, outTemp.z, -outTemp.y));
+		v[i].SetNormal(outTemp.x, outTemp.z, -outTemp.y);
 
 		fscanf_s(fp, "%f %f\n", &outTemp.x, &outTemp.y);
-		v[i].SetUV(D3DXVECTOR2(outTemp.x, outTemp.y));
+		v[i].SetUV(outTemp.x, outTemp.y);
 	}
 
 	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
@@ -74,9 +78,9 @@ void CFbx::ReadTextFile_Mesh(int CharNum, CAnimationVertex* &v)
 
 	for (int i = 0; i < m_iSize; ++i)
 	{
-		fscanf_s(fp, "%f %f %f\n", &(v[i].m_d3dxvPosition.x), &v[i].m_d3dxvPosition.y, &v[i].m_d3dxvPosition.z);
-		fscanf_s(fp, "%f %f %f\n", &v[i].m_d3dxvNormal.x, &v[i].m_d3dxvNormal.y, &v[i].m_d3dxvNormal.z);
-		fscanf_s(fp, "%f %f\n", &v[i].m_d3dxvTexCoord.x, &v[i].m_d3dxvTexCoord.y);
+		fscanf_s(fp, "%f %f %f\n", &(v[i].m_f3Position.x), &v[i].m_f3Position.y, &v[i].m_f3Position.z);
+		fscanf_s(fp, "%f %f %f\n", &v[i].m_f3Normal.x, &v[i].m_f3Normal.y, &v[i].m_f3Normal.z);
+		fscanf_s(fp, "%f %f\n", &v[i].m_f2TexCoord.x, &v[i].m_f2TexCoord.y);
 	}
 
 	fscanf_s(fp, "%f %f %f\n", &(m_pMaxVer->x), &(m_pMaxVer->y), &(m_pMaxVer->z));
@@ -104,7 +108,7 @@ void CFbx::ReadTextFile_Ani(int CharNum, int StateCnt)
 		fopen_s(&fMonA[0], "Data\\Slime\\M_matrix_idle.txt", "rt");
 		fopen_s(&fMonA[1], "Data\\Slime\\M_matrix_move.txt", "rt");
 		fopen_s(&fMonA[2], "Data\\Slime\\M_matrix_dead.txt", "rt");		//아직 dead가 없음
-		fopen_s(&fMonA[3], "Data\\Slime\\M_matrix_attack.txt", "rt");		//평타 : 물기
+		fopen_s(&fMonA[3], "Data\\Slime\\M_matrix_attack.txt", "rt");	//평타 : 물기
 		fopen_s(&fMonA[4], "Data\\Slime\\M_matrix_dash.txt", "rt");		//스킬 1 : 돌진
 		fopen_s(&fMonA[5], "Data\\Slime\\M_matrix_jump.txt", "rt");		//스킬 2 : 충격파
 		fopen_s(&fMonA[6], "Data\\Slime\\M_matrix_jumpjump.txt", "rt");	//스킬 3:  쿵쿵쿵
@@ -113,11 +117,11 @@ void CFbx::ReadTextFile_Ani(int CharNum, int StateCnt)
 
 	fscanf_s(fMonA[StateCnt], "%d %d\n", &m_iAnimationMaxTime, &m_uiAnimationNodeIndexCount);
 
-	m_ppResult[StateCnt] = new DirectX::XMFLOAT4X4*[static_cast<unsigned int>(m_iAnimationMaxTime) / 10];
+	m_ppResult[StateCnt] = new  XMFLOAT4X4*[static_cast<unsigned int>(m_iAnimationMaxTime) / 10];
 
 	for (long long i = 0; i < m_iAnimationMaxTime / 10; ++i)
 	{
-		m_ppResult[StateCnt][i] = new DirectX::XMFLOAT4X4[m_uiAnimationNodeIndexCount];
+		m_ppResult[StateCnt][i] = new  XMFLOAT4X4[m_uiAnimationNodeIndexCount];
 	}
 
 	for (long long i = 0; i < m_iAnimationMaxTime / 10; ++i)

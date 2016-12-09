@@ -1,7 +1,4 @@
-#ifndef RESOURCEMANAGER_H_
-#define RESOURCEMANAGER_H_
-
-
+#pragma once
 
 #include "stdafx.h"
 #include "Mesh.h"
@@ -10,7 +7,12 @@
 
 
 
-class CResource{
+
+
+//
+//	Resource
+//
+class CResource {
 public:
 	CResource() : m_MeshId(-1), m_TextureId(-1), m_MaterialId(-1), m_ShaderId(-1) {}
 	~CResource() {}
@@ -34,7 +36,12 @@ private:
 
 
 
-enum class eResourceType : BYTE{
+
+
+//
+//	enum Resource Type
+//
+enum class eResourceType : BYTE {
 	START = 0,
 	User = 0,
 	Monster1,
@@ -49,14 +56,18 @@ enum class eResourceType : BYTE{
 
 
 
+
+
+//
+//	Resource Manager
+//
 class CResourceManager
 {
 public:
-	enum class eShaderType : BYTE{
+	enum class eShaderType : BYTE {
 		START = 0,
 		IlluminatedTextured = 0,
 		Player,
-		UI,
 		END
 	};
 
@@ -75,12 +86,12 @@ public:
 private:
 	CResourceManager();
 
-	std::vector<CResource*> m_vResources;
+	vector<CResource*> m_vResources;
 
-	std::map<BYTE, CMesh*> m_mMesh;
-	std::map<BYTE, CTexture*> m_mTexture;
-	std::map<BYTE, CMaterial*> m_mMaterial;
-	std::map<BYTE, CShader*> m_mShader;
+	map<BYTE, CMesh*> m_mMesh;
+	map<BYTE, CTexture*> m_mTexture;
+	map<BYTE, CMaterial*> m_mMaterial;
+	map<BYTE, CShader*> m_mShader;
 
 	void _LoadMesh();
 	void _LoadTextures();
@@ -92,4 +103,3 @@ private:
 
 
 
-#endif

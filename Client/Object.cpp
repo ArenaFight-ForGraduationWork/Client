@@ -1,12 +1,19 @@
 #include "stdafx.h"
 #include "Object.h"
 
+#include <DDSTextureLoader.h>
 
 
+
+
+
+//
+//	Material
+//
 CMaterial::CMaterial()
 {
 	m_nReferences = 1;
-	m_pMaterial = new MATERIAL();
+	m_pMaterial = new PS_CB_MATERIAL();
 }
 CMaterial::~CMaterial()
 {
@@ -27,6 +34,9 @@ void CMaterial::Release()
 
 
 
+//
+//	Texture
+//
 CTexture::CTexture(int nTextures)
 {
 	m_nReferences = 1;
@@ -79,9 +89,10 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 	d3dSamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	d3dSamplerDesc.MinLOD = 0;
 	d3dSamplerDesc.MaxLOD = 0;
-	gpCommonState->m_pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
+	gpCommonState->GetDevice()->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
 
-	D3DX11CreateShaderResourceViewFromFile(gpCommonState->m_pd3dDevice, textureAddress, NULL, NULL, &pd3dsrvTexture, NULL);
+	ID3D11Resource *pTexResource = nullptr;
+	CreateDDSTextureFromFile(gpCommonState->GetDevice(), textureAddress, &pTexResource, &pd3dsrvTexture);
 
 	if (m_ppd3dsrvTextures[nIndex]) m_ppd3dsrvTextures[nIndex]->Release();
 	if (m_ppd3dSamplerStates[nIndex]) m_ppd3dSamplerStates[nIndex]->Release();
@@ -98,21 +109,19 @@ void CTexture::SetTexture(int nIndex, WCHAR *textureAddress)
 
 
 
-
-
-
-CObject::CObject(UINT id)
+//
+//	Object
+//
+CObject::CObject()
 {
-	m_pd3dxWorldMatrix = new D3DXMATRIX();
-	D3DXMatrixIdentity(m_pd3dxWorldMatrix);
+	m_pf4x4WorldMatrix = new XMFLOAT4X4();
+	XMStoreFloat4x4(m_pf4x4WorldMatrix, XMMatrixIdentity());
 
 	m_pMesh = nullptr;
 	m_pMaterial = nullptr;
 	m_pTexture = nullptr;
 
-	m_id = id;
-
-	m_pd3dxvDirection = new D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_pf3Direction = new XMFLOAT3(0, 0, 0);
 
 	m_pd3dcbBoneMatrix = nullptr;
 	m_pcbBoneMatrix = nullptr;
@@ -124,8 +133,8 @@ CObject::CObject(UINT id)
 
 	m_eAnimationType = eAnimationType::Idle;
 
-	m_pMaxVer = nullptr;
-	m_pMinVer = nullptr;
+	m_pf3MaxVer = new XMFLOAT3(0, 0, 0);
+	m_pf3MinVer = new XMFLOAT3(0, 0, 0);
 	m_fRadius = 0.0;
 
 	m_pUnitComponent = nullptr;
@@ -165,190 +174,199 @@ void CObject::SetTexture(CTexture *pTexture)
 
 void CObject::SetPositionRelative(float& fx, float& fy, float& fz)
 {
-	D3DXVECTOR3 d3dxvPosition = *GetPosition();
+	XMVECTOR position;
+	position = XMLoadFloat3(GetPosition());
 
-	D3DXVECTOR3 d3dxvRight = *GetRight();
-	D3DXVECTOR3 d3dxvUp = *GetUp();
-	D3DXVECTOR3 d3dxvLookAt = *GetLookAt();
+	position += fx * XMLoadFloat3(GetRight());
+	position += fy * XMLoadFloat3(GetUp());
+	position += fz * XMLoadFloat3(GetLookAt());
 
-	d3dxvPosition += fx * d3dxvRight;
-	d3dxvPosition += fy * d3dxvUp;
-	d3dxvPosition += fz * d3dxvLookAt;
-
-	SetPositionAbsolute(&d3dxvPosition);
+	SetPositionAbsolute(position);
 }
-void CObject::SetPositionRelative(D3DXVECTOR3 *d3dxVec)
+void CObject::SetPositionRelative(CXMVECTOR vec)
 {
-	D3DXVECTOR3 d3dxvPosition = *GetPosition();
+	XMVECTOR position;
+	position = XMLoadFloat3(GetPosition());
 
-	D3DXVECTOR3 d3dxvRight = *GetRight();
-	D3DXVECTOR3 d3dxvUp = *GetUp();
-	D3DXVECTOR3 d3dxvLookAt = *GetLookAt();
+	position += XMVectorGetX(vec) * XMLoadFloat3(GetRight());
+	position += XMVectorGetY(vec) * XMLoadFloat3(GetUp());
+	position += XMVectorGetZ(vec) * XMLoadFloat3(GetLookAt());
 
-	d3dxvPosition += d3dxVec->x * d3dxvRight;
-	d3dxvPosition += d3dxVec->y * d3dxvUp;
-	d3dxvPosition += d3dxVec->z * d3dxvLookAt;
-
-	SetPositionAbsolute(&d3dxvPosition);
+	SetPositionAbsolute(position);
 }
 void CObject::SetPositionAbsolute(float& fx, float& fy, float& fz)
 {
-	m_pd3dxWorldMatrix->_41 = fx;
-	m_pd3dxWorldMatrix->_42 = fy;
-	m_pd3dxWorldMatrix->_43 = fz;
+	m_pf4x4WorldMatrix->_41 = fx;
+	m_pf4x4WorldMatrix->_42 = fy;
+	m_pf4x4WorldMatrix->_43 = fz;
 }
-void CObject::SetPositionAbsolute(D3DXVECTOR3 *d3dxVec)
+void CObject::SetPositionAbsolute(CXMVECTOR vec)
 {
-	m_pd3dxWorldMatrix->_41 = d3dxVec->x;
-	m_pd3dxWorldMatrix->_42 = d3dxVec->y;
-	m_pd3dxWorldMatrix->_43 = d3dxVec->z;
+	m_pf4x4WorldMatrix->_41 = XMVectorGetX(vec);
+	m_pf4x4WorldMatrix->_42 = XMVectorGetY(vec);
+	m_pf4x4WorldMatrix->_43 = XMVectorGetZ(vec);
 }
 void CObject::MoveForward(float& fVar)
 {
-	D3DXVECTOR3 d3dxvPosition = *GetPosition();
+	XMVECTOR position;
+	position = XMLoadFloat3(GetPosition());
+
 	if (m_pUnitComponent)	// 속력이 존재하면 속력 * 시간(fVar)
-		d3dxvPosition += m_pUnitComponent->GetMovingSpeed() * fVar * (*GetLookAt());
+		position += m_pUnitComponent->GetMovingSpeed() * fVar * XMLoadFloat3(GetLookAt());
 	else // 속력이 없으면 거리(fVar)
-		d3dxvPosition += fVar * (*GetLookAt());
-	SetPositionAbsolute(&d3dxvPosition);
+		position += fVar * XMLoadFloat3(GetLookAt());
+
+	SetPositionAbsolute(position);
 }
 
 void CObject::SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll)
 {
-	m_pd3dxvDirection->x += fPitch;
-	m_pd3dxvDirection->y += fYaw;
-	m_pd3dxvDirection->z += fRoll;
+	m_pf3Direction->x += fPitch;
+	m_pf3Direction->y += fYaw;
+	m_pf3Direction->z += fRoll;
 
-	D3DXMATRIX mtxRotate;
-	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(fYaw), (float)D3DXToRadian(fPitch), (float)D3DXToRadian(fRoll));
-	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
+	XMMATRIX mRotate;
+	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
+
+	XMMATRIX mWorld;
+	mWorld = XMLoadFloat4x4(m_pf4x4WorldMatrix);
+
+	mWorld = XMMatrixMultiply(mRotate, mWorld);
+
+	XMStoreFloat4x4(m_pf4x4WorldMatrix, mWorld);
 }
-void CObject::SetDirectionRelative(D3DXVECTOR3 *d3dxVec)
+void CObject::SetDirectionRelative(CXMVECTOR vec)
 {
-	m_pd3dxvDirection->x += d3dxVec->x;
-	m_pd3dxvDirection->y += d3dxVec->y;
-	m_pd3dxvDirection->z += d3dxVec->z;
+	m_pf3Direction->x += XMVectorGetX(vec);
+	m_pf3Direction->y += XMVectorGetY(vec);
+	m_pf3Direction->z += XMVectorGetZ(vec);
 
-	D3DXMATRIX mtxRotate;
-	D3DXMatrixRotationYawPitchRoll(&mtxRotate, (float)D3DXToRadian(d3dxVec->y), (float)D3DXToRadian(d3dxVec->x), (float)D3DXToRadian(d3dxVec->z));
-	(*m_pd3dxWorldMatrix) = mtxRotate * (*m_pd3dxWorldMatrix);
+	XMMATRIX mRotate;
+	mRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(XMVectorGetX(vec)), XMConvertToRadians(XMVectorGetY(vec)), XMConvertToRadians(XMVectorGetZ(vec)));
+
+	XMMATRIX mWorld;
+	mWorld = XMLoadFloat4x4(m_pf4x4WorldMatrix);
+
+	mWorld = XMMatrixMultiply(mRotate, mWorld);
+
+	XMStoreFloat4x4(m_pf4x4WorldMatrix, mWorld);
 }
 void CObject::SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll)
 {
-	m_pd3dxvDirection->x = 0;
-	m_pd3dxvDirection->y = 0;
-	m_pd3dxvDirection->z = 0;
+	m_pf3Direction->x = 0;
+	m_pf3Direction->y = 0;
+	m_pf3Direction->z = 0;
 
 	//   1-1) 회전각을 0,0,0으로 되돌리기 = 현재 회전행렬 얻어오기 > 행렬을 역행렬로 바꾸기 > 역행렬을 현재 월드변환행렬에 곱해주기
 	// v 1-2) 회전각을 0,0,0으로 되돌리기 = 3x3부분을 단위행렬로 바꿈
-	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
-	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
-	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
+	m_pf4x4WorldMatrix->_11 = 1;	m_pf4x4WorldMatrix->_12 = 0;	m_pf4x4WorldMatrix->_13 = 0;
+	m_pf4x4WorldMatrix->_21 = 0;	m_pf4x4WorldMatrix->_22 = 1;	m_pf4x4WorldMatrix->_23 = 0;
+	m_pf4x4WorldMatrix->_31 = 0;	m_pf4x4WorldMatrix->_32 = 0;	m_pf4x4WorldMatrix->_33 = 1;
 
 	// 2) fPitch, fYaw, fRoll로 회전하기
 	SetDirectionRelative(fPitch, fYaw, fRoll);
 }
-void CObject::SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec)
+void CObject::SetDirectionAbsolute(CXMVECTOR vec)
 {
-	m_pd3dxvDirection->x = 0;
-	m_pd3dxvDirection->y = 0;
-	m_pd3dxvDirection->z = 0;
+	m_pf3Direction->x = 0;
+	m_pf3Direction->y = 0;
+	m_pf3Direction->z = 0;
 
-	m_pd3dxWorldMatrix->_11 = 1;	m_pd3dxWorldMatrix->_12 = 0;	m_pd3dxWorldMatrix->_13 = 0;
-	m_pd3dxWorldMatrix->_21 = 0;	m_pd3dxWorldMatrix->_22 = 1;	m_pd3dxWorldMatrix->_23 = 0;
-	m_pd3dxWorldMatrix->_31 = 0;	m_pd3dxWorldMatrix->_32 = 0;	m_pd3dxWorldMatrix->_33 = 1;
+	m_pf4x4WorldMatrix->_11 = 1;	m_pf4x4WorldMatrix->_12 = 0;	m_pf4x4WorldMatrix->_13 = 0;
+	m_pf4x4WorldMatrix->_21 = 0;	m_pf4x4WorldMatrix->_22 = 1;	m_pf4x4WorldMatrix->_23 = 0;
+	m_pf4x4WorldMatrix->_31 = 0;	m_pf4x4WorldMatrix->_32 = 0;	m_pf4x4WorldMatrix->_33 = 1;
 
-	SetDirectionRelative(d3dxVec);
+	SetDirectionRelative(vec);
 }
 
-const D3DXVECTOR3* CObject::GetPosition()
+XMFLOAT3* CObject::GetPosition()
 {
-	return  new D3DXVECTOR3(m_pd3dxWorldMatrix->_41, m_pd3dxWorldMatrix->_42, m_pd3dxWorldMatrix->_43);
+	return new XMFLOAT3(m_pf4x4WorldMatrix->_41, m_pf4x4WorldMatrix->_42, m_pf4x4WorldMatrix->_43);
 }
-const D3DXVECTOR3* CObject::GetDirection()
+XMFLOAT3* CObject::GetDirection()
 {
-	return m_pd3dxvDirection;
-}
-
-const D3DXVECTOR3* CObject::GetRight()
-{
-	D3DXVECTOR3 *pd3dxvRight = new D3DXVECTOR3(m_pd3dxWorldMatrix->_11, m_pd3dxWorldMatrix->_12, m_pd3dxWorldMatrix->_13);
-	D3DXVec3Normalize(pd3dxvRight, pd3dxvRight);
-	return pd3dxvRight;
+	return m_pf3Direction;
 }
 
-const D3DXVECTOR3* CObject::GetUp()
+XMFLOAT3* CObject::GetRight()
 {
-	D3DXVECTOR3 *pd3dxvUp = new D3DXVECTOR3(m_pd3dxWorldMatrix->_21, m_pd3dxWorldMatrix->_22, m_pd3dxWorldMatrix->_23);
-	D3DXVec3Normalize(pd3dxvUp, pd3dxvUp);
-	return pd3dxvUp;
+	return new XMFLOAT3(m_pf4x4WorldMatrix->_11, m_pf4x4WorldMatrix->_12, m_pf4x4WorldMatrix->_13);
 }
 
-const D3DXVECTOR3* CObject::GetLookAt()
+XMFLOAT3* CObject::GetUp()
 {
-	D3DXVECTOR3 *pd3dxvLookAt = new D3DXVECTOR3(m_pd3dxWorldMatrix->_31, m_pd3dxWorldMatrix->_32, m_pd3dxWorldMatrix->_33);
-	D3DXVec3Normalize(pd3dxvLookAt, pd3dxvLookAt);
-	return pd3dxvLookAt;
+	return new XMFLOAT3(m_pf4x4WorldMatrix->_21, m_pf4x4WorldMatrix->_22, m_pf4x4WorldMatrix->_23);
 }
 
-
-
-
+XMFLOAT3* CObject::GetLookAt()
+{
+	return new XMFLOAT3(m_pf4x4WorldMatrix->_31, m_pf4x4WorldMatrix->_32, m_pf4x4WorldMatrix->_33);
+}
 
 void CObject::SetBoundingBox()
 {
-	if (m_pMaxVer)	delete m_pMaxVer;
-	if (m_pMinVer)	delete m_pMinVer;
-	m_pMaxVer = &(m_pMesh->GetMaxVer());
-	m_pMinVer = &(m_pMesh->GetMinVer());
+	if (m_pf3MaxVer)
+	{
+		XMFLOAT3 *temp = m_pf3MaxVer;
+		m_pf3MaxVer = nullptr;
+		delete temp;
+	}
+	if (m_pf3MinVer)
+	{
+		XMFLOAT3 *temp = m_pf3MinVer;
+		m_pf3MinVer = nullptr;
+		delete temp;
+	}
+	m_pf3MaxVer = m_pMesh->GetMaxVer();
+	m_pf3MinVer = m_pMesh->GetMinVer();
 
-	if (m_pMaxVer->x < m_pMinVer->x)
+	if (m_pf3MaxVer->x < m_pf3MinVer->x)
 	{
 		float temp;
-		temp = m_pMaxVer->x;
-		m_pMaxVer->x = m_pMinVer->x;
-		m_pMinVer->x = temp;
+		temp = m_pf3MaxVer->x;
+		m_pf3MaxVer->x = m_pf3MinVer->x;
+		m_pf3MinVer->x = temp;
 	}
-	if (m_pMaxVer->y < m_pMinVer->y)
+	if (m_pf3MaxVer->y < m_pf3MinVer->y)
 	{
 		float temp;
-		temp = m_pMaxVer->y;
-		m_pMaxVer->y = m_pMinVer->y;
-		m_pMinVer->y = temp;
+		temp = m_pf3MaxVer->y;
+		m_pf3MaxVer->y = m_pf3MinVer->y;
+		m_pf3MinVer->y = temp;
 	}
-	if (m_pMaxVer->z < m_pMinVer->z)
+	if (m_pf3MaxVer->z < m_pf3MinVer->z)
 	{
 		float temp;
-		temp = m_pMaxVer->z;
-		m_pMaxVer->z = m_pMinVer->z;
-		m_pMinVer->z = temp;
+		temp = m_pf3MaxVer->z;
+		m_pf3MaxVer->z = m_pf3MinVer->z;
+		m_pf3MinVer->z = temp;
 	}
 
-	m_fRadius = static_cast<float>(sqrt((m_pMinVer->x * m_pMinVer->x) + (m_pMinVer->z * m_pMinVer->z)));
+	m_fRadius = static_cast<float>(sqrt((m_pf3MinVer->x * m_pf3MinVer->x) + (m_pf3MinVer->z * m_pf3MinVer->z)));
 }
 
-const D3DXVECTOR3* CObject::GetMaxVer()
+XMFLOAT3* CObject::GetMaxVer()
 {
-	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVec3TransformCoord(pVertex, m_pMaxVer, m_pd3dxWorldMatrix);
-	return pVertex;
+	XMVECTOR vVertex;
+	vVertex = XMVector3TransformCoord(XMLoadFloat3(m_pf3MaxVer), XMLoadFloat4x4(m_pf4x4WorldMatrix));
+
+	XMFLOAT3* pf3Vertex = new XMFLOAT3();
+	XMStoreFloat3(pf3Vertex, vVertex);
+
+	return pf3Vertex;
 }
-const D3DXVECTOR3* CObject::GetMinVer()
+XMFLOAT3* CObject::GetMinVer()
 {
-	D3DXVECTOR3 *pVertex = new D3DXVECTOR3();
-	D3DXVec3TransformCoord(pVertex, m_pMinVer, m_pd3dxWorldMatrix);
-	return pVertex;
+	XMVECTOR vVertex;
+	vVertex = XMVector3TransformCoord(XMLoadFloat3(m_pf3MinVer), XMLoadFloat4x4(m_pf4x4WorldMatrix));
+
+	XMFLOAT3* pf3Vertex = new XMFLOAT3();
+	XMStoreFloat3(pf3Vertex, vVertex);
+
+	return pf3Vertex;
 }
 
-
-
-
-//===========================================================
-//
-//		애니메이션 재생에 필요한 함수들
-//
-//===========================================================
-void CObject::SetResult(DirectX::XMFLOAT4X4*** result)
+void CObject::SetResult(XMFLOAT4X4*** result)
 {
 	m_pppResult = result;
 }
@@ -377,22 +395,22 @@ void CObject::SetConstantBuffer()
 	BD.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
-	gpCommonState->m_pd3dDevice->CreateBuffer(&BD, NULL, &m_pd3dcbBoneMatrix);
-	gpCommonState->m_pd3dDeviceContext->Map(m_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &d3dMappedResource);
+	gpCommonState->GetDevice()->CreateBuffer(&BD, NULL, &m_pd3dcbBoneMatrix);
+	gpCommonState->GetDeviceContext()->Map(m_pd3dcbBoneMatrix, NULL, D3D11_MAP::D3D11_MAP_WRITE_DISCARD, NULL, &d3dMappedResource);
 	{
 		m_pcbBoneMatrix = (VS_CB_BONE_MATRIX *)d3dMappedResource.pData;
 		for (int i = 0; i < 128; ++i)
-			m_pcbBoneMatrix->m_XMmtxBone[i] = DirectX::XMMatrixIdentity();
+			m_pcbBoneMatrix->m_mtxBone[i] = XMMatrixIdentity();
 	}
-	gpCommonState->m_pd3dDeviceContext->Unmap(m_pd3dcbBoneMatrix, NULL);
+	gpCommonState->GetDeviceContext()->Unmap(m_pd3dcbBoneMatrix, NULL);
 }
 
-
-void CObject::AnimateAndRender(float& time)
+void CObject::Animate()
 {
 	if (eAnimationType::None != m_eAnimationType)
 	{
-		m_fAnimationPlaytime += time * 1000;
+		float fTime = gpCommonState->GetTimer()->GetTimeElapsed();
+		m_fAnimationPlaytime += fTime * 1000;
 
 		/* 현재 애니메이션을 한 번 완료했을 때 */
 		if ((m_fAnimationPlaytime / 10) >= m_iAniMaxTime[static_cast<int>(m_eAnimationType)] / 10)
@@ -406,7 +424,7 @@ void CObject::AnimateAndRender(float& time)
 			}break;
 			case CObject::eAnimationType::Dead:
 			{
-				m_fAnimationPlaytime -= time * 1000;
+				m_fAnimationPlaytime -= fTime * 1000;
 			} break;
 			case CObject::eAnimationType::Attack:
 			case CObject::eAnimationType::Skill1:
@@ -423,15 +441,18 @@ void CObject::AnimateAndRender(float& time)
 
 		for (int i = 0; i < m_iAnimationIndexCount; ++i)
 		{
-			DirectX::XMMATRIX ResultMatrix = DirectX::XMLoadFloat4x4(&m_pppResult[static_cast<int>(m_eAnimationType)][static_cast<int>(m_fAnimationPlaytime) / 10][i]);
-			m_pcbBoneMatrix->m_XMmtxBone[i] = ResultMatrix;
+			XMMATRIX ResultMatrix = XMLoadFloat4x4(&m_pppResult[static_cast<int>(m_eAnimationType)][static_cast<int>(m_fAnimationPlaytime) / 10][i]);
+			m_pcbBoneMatrix->m_mtxBone[i] = ResultMatrix;
 		}
 		if (m_pd3dcbBoneMatrix)
 		{
-			gpCommonState->m_pd3dDeviceContext->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
+			gpCommonState->GetDeviceContext()->VSSetConstantBuffers(VS_SLOT_BONE_MATRIX, 1, &m_pd3dcbBoneMatrix);
 		}
 	}
-	
+}
+
+void CObject::Render()
+{
 	if (m_pMesh) m_pMesh->Render();
 }
 
@@ -461,26 +482,8 @@ void CObject::PlayAnimation(eAnimationType eType)
 
 void CObject::SetComponent()
 {
-	m_pUnitComponent = new CUnitComponet();
+	m_pUnitComponent = new CUnitComponent();
 }
 
 
 
-
-
-
-
-
-
-//CUnit::CUnit(UINT id) : CObject(id)
-//{
-//	m_fStrikingPower = 10;
-//	m_fDefensivePower = 10;
-//	m_fMovingSpeed = 500;
-//	m_fHp = 100;
-//}
-//CUnit::~CUnit()
-//{
-//}
-//
-//

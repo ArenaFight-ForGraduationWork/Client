@@ -1,19 +1,24 @@
-#ifndef SHADER_H_
-#define SHADER_H_
+#pragma once
 
 #include "Object.h"
+#include "d3dx11effect.h"
 
 
 
+
+
+//
+//	Shader - base class
+//
 class CShader
 {
 public:
 	CShader();
 	~CShader();
 
-	virtual void CreateShader();
+	virtual void CreateShader() {}
 	virtual void CreateShaderVariables();
-	virtual void UpdateShaderVariables(D3DXMATRIX *pd3dxmtxWorld = nullptr);
+	virtual void UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld);
 	virtual void UpdateShaderVariables(CMaterial *pMaterial = nullptr);
 	virtual void UpdateShaderVariables(CTexture *pTexture);
 
@@ -21,10 +26,10 @@ public:
 	bool ReleaseObject(UINT id);
 	void ReleaseAllObjects();
 
-	virtual void AnimateObjectAndRender(float time);
+	virtual void AnimateObjectAndRender();
 
 protected:
-	std::vector<CObject*> m_vObjects;
+	vector<CObject*> m_vObjects;
 
 	ID3D11VertexShader *m_pd3dVertexShader;
 	ID3D11InputLayout *m_pd3dVertexLayout;
@@ -38,15 +43,17 @@ protected:
 
 	void CreateVertexShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11VertexShader **ppd3dVertexShader, D3D11_INPUT_ELEMENT_DESC *pd3dInputLayout, UINT nElements, ID3D11InputLayout **ppd3dVertexLayout);
 	void CreatePixelShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11PixelShader **ppd3dPixelShader);
-	//void CreateGeometryShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
+	void CreateGeometryShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderModel, ID3D11GeometryShader **ppd3dGeometryShader);
 };
 
 
 
 
 
-/* 애니메이션이 없는 물체를 위한 셰이더.
-	텍스처 매핑, 빛 사용						*/
+//
+//	Illuminated Textured Shader
+//	애니메이션이 없는 물체를 위한 셰이더. 텍스처 매핑, 빛 사용
+//
 class CIlluminatedTexturedShader : public CShader
 {
 public:
@@ -55,14 +62,19 @@ public:
 
 	virtual void CreateShader();
 	virtual void CreateShaderVariables();
+	virtual void UpdateShaderVariables(const XMFLOAT4X4 *pd3dxmtxWorld);
 	virtual void UpdateShaderVariables(CMaterial *pMaterial = nullptr);
+	virtual void UpdateShaderVariables(CTexture *pTexture);
 };
 
 
 
 
-/* 애니메이션이 있는 물체를 위한 셰이더.
-	텍스처 매핑, 빛, 애니메이션 사용			*/
+
+//
+//	Animating Shader
+//	애니메이션이 있는 물체를 위한 셰이더. 텍스처 매핑, 빛, 애니메이션 사용
+//
 class CAnimatingShader : public CShader
 {
 public:
@@ -75,20 +87,58 @@ public:
 
 
 
-class CTextureShader : public CShader
+
+
+class CParticleEffect
 {
 public:
-	CTextureShader();
-	CTextureShader(const CTextureShader& ref) { }
-	~CTextureShader();
+	CParticleEffect(char *pFilename);
+	CParticleEffect(const CParticleEffect &ref) {}
+	~CParticleEffect();
+
+	ID3DX11Effect* mFX;
+
+	ID3DX11EffectTechnique* StreamOutTech;
+	ID3DX11EffectTechnique* DrawTech;
+
+	ID3DX11EffectMatrixVariable* ViewProj;
+	ID3DX11EffectScalarVariable* GameTime;
+	ID3DX11EffectScalarVariable* TimeStep;
+	ID3DX11EffectVectorVariable* EyePosW;
+	ID3DX11EffectVectorVariable* EmitPosW;
+	ID3DX11EffectVectorVariable* EmitDirW;
+	ID3DX11EffectShaderResourceVariable* TexArray;
+	ID3DX11EffectShaderResourceVariable* RandomTex;
+
+	void SetViewProj(CXMMATRIX M) { ViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+
+	void SetGameTime(float f) { GameTime->SetFloat(f); }
+	void SetTimeStep(float f) { TimeStep->SetFloat(f); }
+
+	void SetEyePosW(CXMVECTOR v) { EyePosW->SetRawValue(&v, 0, sizeof(XMVECTOR)); }
+	void SetEmitPosW(CXMVECTOR v) { EmitPosW->SetRawValue(&v, 0, sizeof(XMVECTOR)); }
+	void SetEmitDirW(CXMVECTOR v) { EmitDirW->SetRawValue(&v, 0, sizeof(XMVECTOR)); }
+
+	void SetTexArray(ID3D11ShaderResourceView* tex) { TexArray->SetResource(tex); }
+	void SetRandomTex(ID3D11ShaderResourceView* tex) { RandomTex->SetResource(tex); }
+};
+class CParticleShader : public CShader
+{
+public:
+	CParticleShader(char *pFilename);
+	CParticleShader(const CParticleShader &ref) {}
+	virtual ~CParticleShader();
 
 	virtual void CreateShader();
 	virtual void CreateShaderVariables();
-	virtual void AnimateObjectAndRender(float time);
+	virtual void UpdateShaderVariables(CXMMATRIX worldMatrix = XMMatrixIdentity());
+	virtual void UpdateShaderVariables(CTexture *pTexture);
+
+	virtual void BuildObjects() {}
+	virtual void ReleaseObjects() {}
+	virtual void Render();
+
+	void SetInputLayout();
+
+	CParticleEffect *m_particle;
 };
-
-
-
-
-
-#endif

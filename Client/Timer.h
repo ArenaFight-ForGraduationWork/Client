@@ -1,13 +1,30 @@
-#ifndef TIMER_H_
-#define TIMER_H_
+#pragma once
 
 
 
-
+// # global variables
 const ULONG MAX_SAMPLE_COUNT = 50;
 
+
+
+
+
+//
+//	Timer
+//
 class CGameTimer
 {
+public:
+	CGameTimer();
+	virtual ~CGameTimer();
+
+	void Tick(float fLockFPS = 0.0f);			// 타이머의 시간을 갱신
+	unsigned long GetFrameRate(LPTSTR lpszString = NULL, int nCharacters = 0); // 프레임 레이트를 반환
+	float GetTimeElapsed();						// 프레임의 평균 경과 시간을 반환
+
+	int GetNowTime() { return ProgressTime; }	// 현재 진행시간. 1초 단위 리턴
+	bool flow1second() { return go1second; }	// true면 1초 지남. false면 뭐.. 0.3초 이런식으로 지난거임
+
 private:
 	bool m_bHardwareHasPerformanceCounter;		// 컴퓨터가 Performance Counter를 가지고 있는 가
 	float m_fTimeScale;							// Scale Counter의 양
@@ -23,19 +40,8 @@ private:
 	unsigned long m_FramePerSecond;				// 초당 프레임 수
 	float m_fFPSTimeElapsed;					// 프레임 레이트 계산 소요 시간
 
-	int ProgressTime;				//게임 진행 시간
-	bool go1second = false;		//1초가 지났나 안지났나
-public:
-	CGameTimer();
-	virtual ~CGameTimer();
-	void Tick(float fLockFPS = 0.0f);			// 타이머의 시간을 갱신
-	unsigned long GetFrameRate(LPTSTR lpszString = NULL, int nCharacters = 0); // 프레임 레이트를 반환
-	float GetTimeElapsed();						// 프레임의 평균 경과 시간을 반환
-
-	int GetNowTime() { return ProgressTime; }		//현재 진행시간. 1초단위 리턴임
-	bool flow1second() { return go1second; }			// true면 1초 지남. false면 뭐.. 0.3초 이런식으로 지난거임
+	int ProgressTime;							// 게임 진행 시간
+	bool go1second = false;						// 1초가 지났나 안지났나
 };
 
 
-
-#endif

@@ -1,7 +1,5 @@
-#ifndef SCENE_H_
-#define SCENE_H_
+#pragma once
 
-#include "Object.h"
 #include "Shader.h"
 #include "Light.h"
 #include "ObjectManager.h"
@@ -10,32 +8,33 @@
 #include "Server.h"
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
-
-#define MODE_MOUSE		0x01
-#define MODE_KEYBOARD	0x02
+#include "Particle.h"
 
 
 
+
+
+//
+//	Scene ( base class )
+//
 class CScene
 {
 public:
 	CScene();
 	~CScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed) = 0;
-	virtual void ProcessInput(float fTimeElapsed) = 0;
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) = 0;
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) = 0;
+	virtual void ProcessInput() = 0;
 
 	virtual void BuildObjects();
 	void ReleaseObjects();
 
-	virtual void AnimateObjectsAndRender(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender();
 
 	virtual void ChangeState() {}
 
 protected:
-	DWORD m_OperationMode;
-
 	POINT	m_ptOldCursorPos;
 	POINT	m_ptNewCursorPos;
 
@@ -44,14 +43,13 @@ protected:
 	CObjectManager *m_pObjectManager;
 	CCameraManager *m_pCameraManager;
 
-	std::unique_ptr<DirectX::SpriteBatch> m_pSpriteBatch;
-	ID3D11ShaderResourceView *m_pTexture;							// 삭제 예정
-	std::vector<ID3D11ShaderResourceView*> m_vTextures;				// m_pTexture 대신 쓸 거
-
-	std::unique_ptr<DirectX::SpriteFont> m_pSpriteFont;
+	unique_ptr<SpriteBatch> m_pSpriteBatch;
+	vector<ID3D11ShaderResourceView*> m_vTextures;
+	unique_ptr<SpriteFont> m_pSpriteFont18;
+	unique_ptr<SpriteFont> m_pSpriteFont14;
 
 private:
-	std::vector<CShader*> m_vShaders;
+	vector<CShader*> m_vShaders;
 
 	CLight *m_pLight;
 };
@@ -59,25 +57,29 @@ private:
 
 
 
+
+//
+//	Intro Scene
+//
 class CIntroScene : public CScene
 {
 public:
 	CIntroScene();
 	~CIntroScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void ProcessInput(float fTimeElapsed) {}
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void ProcessInput() {}
 
 	virtual void BuildObjects();
-	virtual void AnimateObjectsAndRender(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender();
 
 	virtual void ChangeState();
 
 private:
 	BYTE m_bButton;	// 0=아무것도 안 눌림, 1=방 생성(방이름 입력), 2=방 생성(스테이지 입력), 3=방 입장(방이름 입력)
 
-	std::vector<string> m_vStrings;
+	vector<string> m_vStrings;
 	string *m_pTempString;
 
 	const RECT rFramePos = { 0,0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT - 20 };
@@ -94,44 +96,71 @@ private:
 
 	bool _CheckDestination(POINT * pMousePos, const RECT* pDestination);
 
-	void KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	void KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _KeyboardMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void _KeyboardMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
-	void MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	void MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
+	void _MouseMessageInLobby(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void _MouseMessageInRoom(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 };
 
 
 
 
 
+//
+//	First Scene
+//
 class CFirstScene : public CScene
 {
 public:
 	CFirstScene();
 	~CFirstScene();
 
-	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float fTimeElapsed);
-	virtual void ProcessInput(float fTimeElapsed);
+	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void ProcessInput();
 
 	virtual void BuildObjects();
-	virtual void AnimateObjectsAndRender(float fTimeElapsed);
+	virtual void AnimateObjectsAndRender();
 
 private:
 	DWORD m_dwDirectionPrev;
 	DWORD m_dwDirectionNow;
 
 	CFog *m_pFog;
+
+	const RECT rFramePos = { 0,0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT - 20 };
+	const RECT rMyHpBarBackground = { FRAME_BUFFER_WIDTH / 16 - 5, FRAME_BUFFER_HEIGHT / 32 * 28 - 5, FRAME_BUFFER_WIDTH / 16 * 7 + 5, FRAME_BUFFER_HEIGHT / 32 * 29 + 5 };
+	RECT rHpPos = { FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 28, FRAME_BUFFER_WIDTH / 16 * 7, FRAME_BUFFER_HEIGHT / 32 * 29 };
+	const RECT rMonsterHpBarBackground = { FRAME_BUFFER_WIDTH / 4 - 10, FRAME_BUFFER_HEIGHT / 32 * 3 - 10, FRAME_BUFFER_WIDTH / 4 * 3 + 10, FRAME_BUFFER_HEIGHT / 32 * 4 + 10 };
+	RECT rMonsterHpPos = { FRAME_BUFFER_WIDTH / 4, FRAME_BUFFER_HEIGHT / 32 * 3, FRAME_BUFFER_WIDTH / 4 * 3, FRAME_BUFFER_HEIGHT / 32 * 4 };
+	const RECT rPartyBackground[4] = {
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 12 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 13 + 1 },
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 14 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 15 + 1 },
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 16 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 17 + 1 },
+		{ FRAME_BUFFER_WIDTH / 16 - 1, FRAME_BUFFER_HEIGHT / 32 * 18 - 1, FRAME_BUFFER_WIDTH / 16 * 3 + 1, FRAME_BUFFER_HEIGHT / 32 * 19 + 1 },
+	};
+	RECT rPartyHp[4] = {
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 12, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 13 },
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 14, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 15 },
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 16, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 17 },
+		{ FRAME_BUFFER_WIDTH / 16, FRAME_BUFFER_HEIGHT / 32 * 18, FRAME_BUFFER_WIDTH / 16 * 3, FRAME_BUFFER_HEIGHT / 32 * 19 },
+	};
+	bool FinishInitializing;
+	float FireParticleTime = 0.0f;
+
+	vector<CParticle*> m_vParticles;
+	unsigned int m_uiParticleNum = 8;
+	void RenderParticle();
 };
 
 
 
 
 
-
-
-
+//
+// Scene Manager
+//
 class CSceneManager
 {
 public:
@@ -152,7 +181,7 @@ public:
 	CScene* GetNowScene();
 
 private:
-	std::map<eSceneType, CScene*> m_mScenes;
+	map<eSceneType, CScene*> m_mScenes;
 
 	eSceneType m_eNow;
 
@@ -160,5 +189,3 @@ private:
 };
 
 
-
-#endif

@@ -1,21 +1,17 @@
-#ifndef OBJECT_H_
-#define OBJECT_H_
-
-
+#pragma once
 
 #include "Mesh.h"
 #include "ConstantBuffers.h"
+#include <DirectXMath.h>
+using namespace DirectX;
 
 
-/* 재질 관련 정보를 표현 */
-struct MATERIAL
-{
-	D3DXCOLOR m_d3dxcAmbient;
-	D3DXCOLOR m_d3dxcDiffuse;
-	D3DXCOLOR m_d3dxcSpecular; //(r,g,b,a=power)
-	D3DXCOLOR m_d3dxcEmissive;
-};
 
+
+
+//
+//	Material
+//
 class CMaterial
 {
 public:
@@ -25,14 +21,20 @@ public:
 	void AddRef();
 	void Release();
 
-	MATERIAL* GetMaterial() { return m_pMaterial; }
+	PS_CB_MATERIAL* GetMaterial() { return m_pMaterial; }
 
 private:
 	int m_nReferences;
-	MATERIAL *m_pMaterial;
+	PS_CB_MATERIAL *m_pMaterial;
 };
 
 
+
+
+
+//
+//	Texture
+//
 class CTexture
 {
 public:
@@ -52,47 +54,46 @@ public:
 
 private:
 	int m_nReferences;
+	int m_nTextures;
 
 	ID3D11ShaderResourceView **m_ppd3dsrvTextures;
 	ID3D11SamplerState **m_ppd3dSamplerStates;
-
-	int m_nTextures;
 };
 
 
 
 
 
-
-class CUnitComponet;
+//
+//	Object
+//
+class CUnitComponent;
 class CObject
 {
 public:
-	CObject(UINT id);
+	CObject();
 	virtual ~CObject();
 
 	void SetPositionRelative(float& fx, float& fy, float& fz);
-	void SetPositionRelative(D3DXVECTOR3 *d3dxVec);
+	void SetPositionRelative(CXMVECTOR vec);
 	void SetPositionAbsolute(float& fx, float& fy, float& fz);
-	void SetPositionAbsolute(D3DXVECTOR3 *d3dxVec);
+	void SetPositionAbsolute(CXMVECTOR vec);
 	/* 로컬 Z축 방향으로 이동한다. 속력이 있으면 속력*시간(fVar), 없으면 거리(fVar)만큼 움직인다  */
 	virtual void MoveForward(float& fVar);
 
 	void SetDirectionRelative(float& fPitch, float& fYaw, float& fRoll);
-	void SetDirectionRelative(D3DXVECTOR3 *d3dxVec);
+	void SetDirectionRelative(CXMVECTOR vec);
 	void SetDirectionAbsolute(float& fPitch, float& fYaw, float& fRoll);
-	void SetDirectionAbsolute(D3DXVECTOR3 *d3dxVec);
+	void SetDirectionAbsolute(CXMVECTOR vec);
 
 	//객체의 위치, 로컬 x-축, y-축, z-축 방향 벡터를 반환
-	const D3DXVECTOR3* GetPosition();
-	const D3DXVECTOR3* GetDirection();
-	const D3DXVECTOR3* GetRight();
-	const D3DXVECTOR3* GetUp();
-	const D3DXVECTOR3* GetLookAt();
+	XMFLOAT3* GetPosition();
+	XMFLOAT3* GetDirection();
+	XMFLOAT3* GetRight();
+	XMFLOAT3* GetUp();
+	XMFLOAT3* GetLookAt();
 
-	D3DXMATRIX* GetWorldMatrix() { return m_pd3dxWorldMatrix; }
-
-	const UINT& GetId() { return m_id; }
+	XMFLOAT4X4* GetWorldMatrix() { return m_pf4x4WorldMatrix; }
 
 	virtual void SetMesh(CMesh *pMesh);
 	CMesh* GetMesh() { return m_pMesh; }
@@ -104,10 +105,11 @@ public:
 	void SetResourceType(int eType);
 	int& GetResourceType() { return m_iSourceType; }
 
-	void AnimateAndRender(float& time);
+	void Animate();
+	void Render();
 
 	void SetComponent();
-	CUnitComponet* GetComponent() { return m_pUnitComponent; }
+	CUnitComponent* GetComponent() { return m_pUnitComponent; }
 
 	//==============================================================================================
 	//==============================================================================================
@@ -127,59 +129,63 @@ public:
 
 	void SetConstantBuffer();
 	void SetAniIndexCount(int);
-	void SetResult(DirectX::XMFLOAT4X4***);
+	void SetResult(XMFLOAT4X4***);
 	void SetTime(int*);
 
 	void PlayAnimation(eAnimationType eType);
-	//BYTE GetNowAnimation() { return static_cast<BYTE>(m_eAnimationType); }
 	eAnimationType GetNowAnimation() { return m_eAnimationType; }
 
 	//==============================================================================================
 	//==============================================================================================
 	/* Collision Detection */
 private:
-	D3DXVECTOR3 *m_pMaxVer;
-	D3DXVECTOR3 *m_pMinVer;
+	XMFLOAT3 *m_pf3MaxVer;
+	XMFLOAT3 *m_pf3MinVer;
 	float m_fRadius;
 
 public:
 	void SetBoundingBox();
 
-	const D3DXVECTOR3* GetMaxVer();
-	const D3DXVECTOR3* GetMinVer();
+	XMFLOAT3* GetMaxVer();
+	XMFLOAT3* GetMinVer();
 	const float& GetRadius() { return m_fRadius; }
+	//==============================================================================================
+	//==============================================================================================
 
 private:
-	UINT m_id;
-
-	D3DXVECTOR3 *m_pd3dxvDirection;
+	XMFLOAT3 *m_pf3Direction;
 
 	int m_iSourceType;
 	CMesh *m_pMesh;
 	CMaterial *m_pMaterial;
 	CTexture *m_pTexture;
 
-	D3DXMATRIX *m_pd3dxWorldMatrix;
+	XMFLOAT4X4 *m_pf4x4WorldMatrix;
 
 	ID3D11Buffer *m_pd3dcbBoneMatrix;
 	VS_CB_BONE_MATRIX *m_pcbBoneMatrix;
 
-	DirectX::XMFLOAT4X4 ***m_pppResult;
+	XMFLOAT4X4 ***m_pppResult;
 	float m_fAnimationPlaytime;
 	int m_iAniMaxTime[ANIMATION_COUNT];
 	int m_iAnimationIndexCount;
 	eAnimationType m_eAnimationType;
 
-	CUnitComponet *m_pUnitComponent;
+	CUnitComponent *m_pUnitComponent;
 };
 
 
 
-class CUnitComponet
+
+
+//
+//	Unit Component
+//
+class CUnitComponent
 {
 public:
-	CUnitComponet() : m_fStrikingPower(10), m_fDefensivePower(10), m_fMovingSpeed(200), m_fHp(100) {}
-	~CUnitComponet() {}
+	CUnitComponent() : m_fStrikingPower(10), m_fDefensivePower(10), m_fMovingSpeed(300), m_fHp(100) {}
+	~CUnitComponent() {}
 
 	void SetStrikingPower(float& fSp) { m_fStrikingPower = fSp; }
 	void SetDefensivePower(float& fDp) { m_fDefensivePower = fDp; }
@@ -201,7 +207,3 @@ private:
 
 
 
-
-
-
-#endif

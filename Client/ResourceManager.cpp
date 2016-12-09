@@ -2,6 +2,12 @@
 #include "ResourceManager.h"
 
 
+
+
+
+//
+//	Resource
+//
 void CResource::SetIDs(BYTE meshID, BYTE textureID, BYTE materialID, BYTE shaderID)
 {
 	m_MeshId = meshID;
@@ -11,6 +17,12 @@ void CResource::SetIDs(BYTE meshID, BYTE textureID, BYTE materialID, BYTE shader
 }
 
 
+
+
+
+//
+//	Resource Manager
+//
 CResourceManager::CResourceManager()
 {
 	_LoadMesh();
@@ -19,8 +31,7 @@ CResourceManager::CResourceManager()
 	_CreateShaders();
 
 	/*
-		Mesh, Texture, Material, Shader
-											1. object  2. Animation
+		Mesh, Texture, Material, Shader( 0.object  1.Animation )
 	*/
 	for (BYTE i = (BYTE)eResourceType::START; i < (BYTE)eResourceType::END; ++i)
 		m_vResources.push_back(new CResource());
@@ -103,15 +114,15 @@ void CResourceManager::_LoadMesh()
 	m_mMesh[2] = new CImportedMesh("Data\\Buff_Crystal\\ItemObject_Info.txt");
 
 	// 3. 바닥
-	m_mMesh[3] = new CCubeMeshIlluminatedTextured(5000.0f, 1.0f, 5000.0f);
+	m_mMesh[3] = new CCubeMesh(5000.0f, 1.0f, 5000.0f);
 
 	// 4. 나무
 	m_mMesh[4] = new CImportedMesh("Data\\Decoration\\Tree\\tree_info.txt");
 
 	// 5. 만든 벽
-	m_mMesh[5] = new CCubeMeshIlluminatedTextured(2500.0f, 1500.0f, 200.0f);
+	m_mMesh[5] = new CCubeMesh(2500.0f, 1500.0f, 200.0f);
 
-	// 7. 풀
+	// 6. 풀
 	m_mMesh[6] = new CImportedMesh("Data\\Decoration\\Grass\\grass_Info.txt");
 }
 
@@ -121,47 +132,47 @@ void CResourceManager::_LoadTextures()
 
 	/// 0: player
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Human/human.png");
+	tempTexture->SetTexture(0, L"./Data/Human/human.dds");
 	m_mTexture[0] = tempTexture;
 
 	/// 1: monster1=slime
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Slime/monster.png");
+	tempTexture->SetTexture(0, L"./Data/Slime/monster.dds");
 	m_mTexture[1] = tempTexture;
 
 	/// 2: Item_HP
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_RED.png");
+	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_RED.dds");
 	m_mTexture[2] = tempTexture;
 
 	/// 3: floor
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Decoration/Floor/ground.png");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Floor/ground.dds");
 	m_mTexture[3] = tempTexture;
 
 	/// 4: tree
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Decoration/Tree/tree.png");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Tree/tree.dds");
 	m_mTexture[4] = tempTexture;
 
 	/// 5: wall
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Decoration/Wall/wall.jpg");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Wall/bricks.dds");
 	m_mTexture[5] = tempTexture;
 
 	/// 7: Item_buff
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_BLUE.png");
+	tempTexture->SetTexture(0, L"./Data/Buff_Crystal/Item_BLUE.dds");
 	m_mTexture[7] = tempTexture;
 
 	///// 8: Item_?
 	//tempTexture = new CTexture(1);
-	//tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_WHITE.png");
+	//tempTexture->SetTexture(pd3dDevice, 0, L"./Data/Buff_Crystal/Item_WHITE.dds");
 	//m_mTexture[8] = tempTexture;
 
 	/// 9: Grass
 	tempTexture = new CTexture(1);
-	tempTexture->SetTexture(0, L"./Data/Decoration/Grass/grass.jpg");
+	tempTexture->SetTexture(0, L"./Data/Decoration/Grass/grass.dds");
 	m_mTexture[9] = tempTexture;
 }
 void CResourceManager::_LoadMaterials()
@@ -169,10 +180,27 @@ void CResourceManager::_LoadMaterials()
 	CMaterial *tempMaterial;
 
 	tempMaterial = new CMaterial();
-	tempMaterial->GetMaterial()->m_d3dxcDiffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	tempMaterial->GetMaterial()->m_d3dxcAmbient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	tempMaterial->GetMaterial()->m_d3dxcSpecular = D3DXCOLOR(0.5f, 0.5f, 0.5f, 5.0f);
-	tempMaterial->GetMaterial()->m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+
+	tempMaterial->GetMaterial()->m_fDiffuse[0] = 1.0f;
+	tempMaterial->GetMaterial()->m_fDiffuse[1] = 1.0f;
+	tempMaterial->GetMaterial()->m_fDiffuse[2] = 1.0f;
+	tempMaterial->GetMaterial()->m_fDiffuse[3] = 1.0f;
+
+	tempMaterial->GetMaterial()->m_fAmbient[0] = 1.0f;
+	tempMaterial->GetMaterial()->m_fAmbient[1] = 1.0f;
+	tempMaterial->GetMaterial()->m_fAmbient[2] = 1.0f;
+	tempMaterial->GetMaterial()->m_fAmbient[3] = 1.0f;
+
+	tempMaterial->GetMaterial()->m_fSpecular[0] = 0.5f;
+	tempMaterial->GetMaterial()->m_fSpecular[1] = 0.5f;
+	tempMaterial->GetMaterial()->m_fSpecular[2] = 0.5f;
+	tempMaterial->GetMaterial()->m_fSpecular[3] = 5.0f;
+
+	tempMaterial->GetMaterial()->m_fEmissive[0] = 0.0f;
+	tempMaterial->GetMaterial()->m_fEmissive[1] = 0.0f;
+	tempMaterial->GetMaterial()->m_fEmissive[2] = 0.0f;
+	tempMaterial->GetMaterial()->m_fEmissive[3] = 1.0f;
+
 	m_mMaterial[0] = tempMaterial;
 }
 void CResourceManager::_CreateShaders()
@@ -190,12 +218,6 @@ void CResourceManager::_CreateShaders()
 	pShader->CreateShader();
 	pShader->CreateShaderVariables();
 	m_mShader[1] = pShader;
-
-	// 2 : UI. TextureShader
-	pShader = new CTextureShader();
-	pShader->CreateShader();
-	pShader->CreateShaderVariables();
-	m_mShader[2] = pShader;
 }
 
 

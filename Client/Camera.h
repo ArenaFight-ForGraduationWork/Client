@@ -1,9 +1,9 @@
-#ifndef CAMERA_H_
-#define CAMERA_H_
+#pragma once
 
+#include <DirectXMath.h>
+using namespace DirectX;
 
-
-enum class eCameraType : BYTE{
+enum class eCameraType : BYTE {
 	START = 0,
 	THIRD_PERSON_CAMERA = 0,
 	END
@@ -11,6 +11,11 @@ enum class eCameraType : BYTE{
 
 
 
+
+
+//
+//	Camera ( base class )
+//
 class CCamera
 {
 public:
@@ -20,12 +25,10 @@ public:
 	eCameraType GetMode() { return m_eMode; }
 
 	void GenerateViewMatrix();
-	void GenerateViewMatrix(const D3DXVECTOR3 *pd3dxvEyePosition, const D3DXVECTOR3 *pd3dxvLookAt, const D3DXVECTOR3 *pd3dxvUp);
+	void GenerateViewMatrix(CXMVECTOR vEyePosition, CXMVECTOR vLookAt, CXMVECTOR vUp);
 	void RegenerateViewMatrix();
 
 	void GenerateProjectionMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance, const float fAspectRatio, const float fFOVAngle);
-	void GenerateOrthoMatrix(const float fNearPlaneDistance, const float fFarPlaneDistance);
-	D3DXMATRIX* GetOrthoMatrix() { return m_pd3dxmtxOrtho; }
 
 	void CreateShaderVariables();
 	void UpdateShaderVariables();
@@ -33,19 +36,19 @@ public:
 	void SetViewport(DWORD xStart, DWORD yStart, DWORD nWidth, DWORD nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
 	const D3D11_VIEWPORT* GetViewport() { return m_pd3dViewport; }
 
-	const D3DXMATRIX* GetViewMatrix() { return m_pd3dxmtxView; }
-	const D3DXMATRIX* GetProjectionMatrix() { return m_pd3dxmtxProjection; }
-	ID3D11Buffer* GetCameraConstantBuffer() { return(m_pd3dcbCamera); }
+	XMFLOAT4X4* GetViewMatrix() { return m_f4x4View; }
+	XMFLOAT4X4* GetProjectionMatrix() { return m_f4x4Projection; }
+	ID3D11Buffer* GetCameraConstantBuffer() { return m_pd3dcbCamera; }
 
-	void SetPosition(D3DXVECTOR3 d3dxvPosition) { *m_pd3dxvPosition = d3dxvPosition; }
-	const D3DXVECTOR3* GetPosition() { return m_pd3dxvPosition; }
+	void SetPosition(CXMVECTOR vPosition) { XMStoreFloat3(m_f3Position, vPosition); }
+	XMFLOAT3* GetPosition() { return m_f3Position; }
 
-	void SetLookAtPosition(D3DXVECTOR3 d3dxvLookAtWorld) { *m_pd3dxvLookAtWorld = d3dxvLookAtWorld; }
-	const D3DXVECTOR3* GetLookAtPosition() { return m_pd3dxvLookAtWorld; }
+	void SetLookAtPosition(CXMVECTOR vLookAtWorld) { XMStoreFloat3(m_f3LookAtWorld, vLookAtWorld); }
+	CXMVECTOR GetLookAtPosition() { return  XMLoadFloat3(m_f3LookAtWorld); }
 
-	const D3DXVECTOR3* GetRightVector() { return m_pd3dxvRight; }
-	const D3DXVECTOR3* GetUpVector() { return m_pd3dxvUp; }
-	const D3DXVECTOR3* GetLookVector() { return m_pd3dxvLook; }
+	CXMVECTOR GetRightVector() { return  XMLoadFloat3(m_f3Right); }
+	CXMVECTOR GetUpVector() { return  XMLoadFloat3(m_f3Up); }
+	CXMVECTOR GetLookVector() { return  XMLoadFloat3(m_f3Look); }
 
 	const float GetYaw();
 
@@ -54,18 +57,18 @@ public:
 
 	virtual void RotatebyYaw(const float fYaw = 0.0f) = 0;
 	//카메라의 이동, 회전에 따라 카메라의 정보를 갱신하는 가상함수이다.
-	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition) = 0;
+	virtual void Update(CXMVECTOR vPosition) = 0;
 	/*3인칭 카메라에서 카메라가 바라보는 지점을 설정하는 가상함수이다. 일반적으로 플레이어를 바라보도록 설정한다.*/
-	virtual void SetLookAt(const D3DXVECTOR3 *vLookAt) = 0;
+	virtual void SetLookAt(CXMVECTOR vLookAt) = 0;
 
 	void Zoom(const float fZoom);
 
 protected:
-	D3DXVECTOR3 *m_pd3dxvPosition;
+	XMFLOAT3 *m_f3Position;
 
-	D3DXVECTOR3 *m_pd3dxvRight;
-	D3DXVECTOR3 *m_pd3dxvUp;
-	D3DXVECTOR3 *m_pd3dxvLook;
+	XMFLOAT3 *m_f3Right;
+	XMFLOAT3 *m_f3Up;
+	XMFLOAT3 *m_f3Look;
 
 	float m_fTheta;
 	float m_fDistanceFromObject;
@@ -74,19 +77,15 @@ protected:
 	eCameraType m_eMode;
 
 	/* 월드좌표계에서 카메라가 바라보는 점 */
-	D3DXVECTOR3 *m_pd3dxvLookAtWorld;
+	XMFLOAT3 *m_f3LookAtWorld;
 
 	/* 플레이어의 이동에서 카메라의 이동까지의 시간 */
 	float m_fTimeLag;
 
 	/* 카메라 변환행렬 */
-	D3DXMATRIX *m_pd3dxmtxView;
+	XMFLOAT4X4 *m_f4x4View;
 	/* 투영 변환행렬 */
-	D3DXMATRIX *m_pd3dxmtxProjection;
-	/* 정사영 변환행렬 */
-	D3DXMATRIX *m_pd3dxmtxOrtho;
-	/* 카메라 월드변환 행렬 */
-	D3DXMATRIX *m_pd3dxmtxWorld;
+	XMFLOAT4X4 *m_f4x4Projection;
 
 	// 뷰-포트를 나타내는 멤버 변수를 선언한다.
 	D3D11_VIEWPORT *m_pd3dViewport;
@@ -98,20 +97,29 @@ protected:
 };
 
 
+
+
+
+//
+//	Third Person Camera
+//
 class CThirdPersonCamera : public CCamera
 {
 public:
 	CThirdPersonCamera();
 
 	virtual void RotatebyYaw(const float fYaw = 0.0f);
-	virtual void Update(const D3DXVECTOR3 *pd3dxvPosition);
-	virtual void SetLookAt(const D3DXVECTOR3 *vLookAt);
+	virtual void Update(CXMVECTOR vPosition);
+	virtual void SetLookAt(CXMVECTOR vLookAt);
 };
 
 
 
 
 
+//
+//	Camera Manager
+//
 class CCameraManager
 {
 public:
@@ -125,7 +133,7 @@ public:
 	void ChangeCamera(eCameraType eType);
 
 private:
-	std::map<eCameraType, CCamera*> m_mCameras;
+	map<eCameraType, CCamera*> m_mCameras;
 
 	eCameraType m_eNow;
 
@@ -133,4 +141,3 @@ private:
 };
 
 
-#endif
